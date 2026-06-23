@@ -1,5 +1,4 @@
 ;; Tests for i16x8.relaxed_q15mulr_s.
-;; `either` comes from https://github.com/WebAssembly/threads.
 
 (module
     (func (export "i16x8.relaxed_q15mulr_s") (param v128 v128) (result v128) (i16x8.relaxed_q15mulr_s (local.get 0) (local.get 1)))

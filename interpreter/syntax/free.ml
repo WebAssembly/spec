@@ -102,14 +102,10 @@ and storagetype = function
 
 and fieldtype (FieldT (_mut, st)) = storagetype st
 
-and structtype (StructT fts) = list fieldtype fts
-and arraytype (ArrayT ft) = fieldtype ft
-and functype (FuncT (ts1, ts2)) = list valtype ts1 ++ list valtype ts2
-
 and comptype = function
-  | StructCT st -> structtype st
-  | ArrayCT at -> arraytype at
-  | FuncCT ft -> functype ft
+  | StructT fts -> list fieldtype fts
+  | ArrayT ft -> fieldtype ft
+  | FuncT (ts1, ts2) -> list valtype ts1 ++ list valtype ts2
 
 and subtype = function
   | SubT (_fin, uts, ct) -> list typeuse uts ++ comptype ct
@@ -140,24 +136,6 @@ let rec instr (e : instr) =
   match e.it with
   | Unreachable | Nop | Drop -> empty
   | Select tso -> list valtype (Lib.Option.get tso [])
-  | RefIsNull | RefAsNonNull -> empty
-  | RefTest t | RefCast t -> reftype t
-  | RefEq -> empty
-  | RefNull t -> heaptype t
-  | RefFunc x -> funcs (idx x)
-  | RefI31 | I31Get _ -> empty
-  | StructNew (x, _) | ArrayNew (x, _) | ArrayNewFixed (x, _) -> types (idx x)
-  | ArrayNewElem (x, y) -> types (idx x) ++ elems (idx y)
-  | ArrayNewData (x, y) -> types (idx x) ++ datas (idx y)
-  | StructGet (x, _, _) | StructSet (x, _) -> types (idx x)
-  | ArrayGet (x, _) | ArraySet x -> types (idx x)
-  | ArrayLen -> empty
-  | ArrayCopy (x, y) -> types (idx x) ++ types (idx y)
-  | ArrayFill x -> types (idx x)
-  | ArrayInitData (x, y) -> types (idx x) ++ datas (idx y)
-  | ArrayInitElem (x, y) -> types (idx x) ++ elems (idx y)
-  | ExternConvert _ -> empty
-  | Const _ | Test _ | Compare _ | Unary _ | Binary _ | Convert _ -> empty
   | Block (bt, es) | Loop (bt, es) -> blocktype bt ++ block es
   | If (bt, es1, es2) -> blocktype bt ++ block es1 ++ block es2
   | Br x | BrIf x | BrOnNull x | BrOnNonNull x -> labels (idx x)
@@ -186,6 +164,24 @@ let rec instr (e : instr) =
   | MemoryCopy (x, y) -> memories (idx x) ++ memories (idx y)
   | MemoryInit (x, y) -> memories (idx x) ++ datas (idx y)
   | DataDrop x -> datas (idx x)
+  | RefIsNull | RefAsNonNull -> empty
+  | RefTest t | RefCast t -> reftype t
+  | RefEq -> empty
+  | RefNull t -> heaptype t
+  | RefFunc x -> funcs (idx x)
+  | RefI31 | I31Get _ -> empty
+  | StructNew (x, _) | ArrayNew (x, _) | ArrayNewFixed (x, _) -> types (idx x)
+  | ArrayNewElem (x, y) -> types (idx x) ++ elems (idx y)
+  | ArrayNewData (x, y) -> types (idx x) ++ datas (idx y)
+  | StructGet (x, _, _) | StructSet (x, _) -> types (idx x)
+  | ArrayGet (x, _) | ArraySet x -> types (idx x)
+  | ArrayLen -> empty
+  | ArrayCopy (x, y) -> types (idx x) ++ types (idx y)
+  | ArrayFill x -> types (idx x)
+  | ArrayInitData (x, y) -> types (idx x) ++ datas (idx y)
+  | ArrayInitElem (x, y) -> types (idx x) ++ elems (idx y)
+  | ExternConvert _ -> empty
+  | Const _ | Test _ | Compare _ | Unary _ | Binary _ | Convert _ -> empty
   | VecConst _ | VecTest _
   | VecUnary _ | VecBinary _ | VecTernary _ | VecCompare _
   | VecConvert _ | VecShift _ | VecBitmask _

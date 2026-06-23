@@ -1,0 +1,24 @@
+;; Sets
+
+def $disjoint_(syntax X, X*) : bool  hint(show %2 $disjoint)
+def $disjoint_(syntax X, eps) = true
+def $disjoint_(syntax X, x x'*) = ~(x <- x'*) /\ $disjoint_(X, x'*)
+
+
+def $equiv_(syntax X, X*, X*) : bool
+def $equiv_(syntax X, x_1*, x_2*) = true   -- (if x_1 <- x_2*)* -- (if x_2 <- x_1*)*
+def $equiv_(syntax X, x_1*, x_2*) = false  -- otherwise
+
+
+def $concat_(syntax X, X**) : X*  hint(show (++)%2)
+def $concat_(syntax X, eps) = eps
+def $concat_(syntax X, x_1* x**) = x_1* $concat_(X, x**)
+
+
+def $transpose_(syntax X, X**) : X**
+def $transpose_(syntax X, eps^n) = eps
+def $transpose_(syntax X, (x_1 x*)*) = x_1* $transpose_(X, x**)
+
+def $transposeq_(syntax X, X*?) : X?*
+def $transposeq_(syntax X, (eps)) = eps
+def $transposeq_(syntax X, (x_1 x*)?) = x_1? $transposeq_(X, x*?)

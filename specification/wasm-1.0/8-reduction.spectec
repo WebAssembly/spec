@@ -1,0 +1,271 @@
+;;
+;; Configurations
+;;
+
+relation Step: config ~> config                 hint(show "E") hint(tabular)
+relation Step_pure: admininstr* ~> admininstr*  hint(show "E") hint(tabular)
+relation Step_read: config ~> admininstr*       hint(show "E") hint(tabular)
+relation Steps: config ~>* config               hint(show "E") hint(tabular)
+
+rule Step/pure:
+  z; instr*  ~>  z; instr'*
+  -- Step_pure: instr* ~> instr'*
+
+rule Step/read:
+  z; instr*  ~>  z; instr'*
+  -- Step_read: z; instr* ~> instr'*
+
+rule Steps/refl:
+  z; admininstr* ~>* z; admininstr*
+
+rule Steps/trans:
+  z; admininstr*  ~>*  z''; admininstr''*
+  -- Step: z; admininstr*  ~>  z'; admininstr'*
+  -- Steps: z'; admininstr'*  ~>*  z''; admininstr''*
+
+
+;; Expressions
+
+relation Eval_expr: state; expr ~>* state; val*  hint(show "E-expr") hint(tabular)
+
+rule Eval_expr:
+  z; instr*  ~>*  z'; val*
+  -- Steps: z; instr*  ~>*  z'; val*
+
+
+;;
+;; Instructions
+;;
+
+;; Polymorphic instructions
+
+rule Step_pure/unreachable:
+  UNREACHABLE  ~>  TRAP
+
+rule Step_pure/nop:
+  NOP  ~>  eps
+
+rule Step_pure/drop:
+  val DROP  ~>  eps
+
+
+rule Step_pure/select-true:
+  val_1 val_2 (CONST I32 c) SELECT  ~>  val_1
+  -- if c =/= 0
+
+rule Step_pure/select-false:
+  val_1 val_2 (CONST I32 c) SELECT  ~>  val_2
+  -- if c = 0
+
+
+;; Block instructions
+
+rule Step_read/block:
+  z; (BLOCK t? instr*)  ~>  (LABEL_ n `{eps} instr*)
+  -- if t? = eps /\ n = 0 \/ t? =/= eps /\ n = 1  ;; TODO: allow |t?|
+
+rule Step_read/loop:
+  z; (LOOP t? instr*)  ~>  (LABEL_ 0 `{LOOP t? instr*} instr*)
+
+rule Step_pure/if-true:
+  (CONST I32 c) (IF t? instr_1* ELSE instr_2*)  ~>  (BLOCK t? instr_1*)
+  -- if c =/= 0
+
+rule Step_pure/if-false:
+  (CONST I32 c) (IF t? instr_1* ELSE instr_2*)  ~>  (BLOCK t? instr_2*)
+  -- if c = 0
+
+
+rule Step_pure/label-vals:
+  (LABEL_ n `{instr*} val*)  ~>  val*
+
+
+;; Branch instructions
+
+;; TODO: may want a label context instead of bubbling up
+rule Step_pure/br-zero:
+  (LABEL_ n `{instr'*} val'* val^n (BR 0) instr*)  ~>  val^n instr'*
+
+rule Step_pure/br-succ:
+  (LABEL_ n `{instr'*} val* (BR $(l+1)) instr*)  ~>  val* (BR l)
+
+
+rule Step_pure/br_if-true:
+  (CONST I32 c) (BR_IF l)  ~>  (BR l)
+  -- if c =/= 0
+
+rule Step_pure/br_if-false:
+  (CONST I32 c) (BR_IF l)  ~>  eps
+  -- if c = 0
+
+
+rule Step_pure/br_table-lt:
+  (CONST I32 i) (BR_TABLE l* l')  ~>  (BR l*[i])
+  -- if i < |l*|
+
+rule Step_pure/br_table-ge:
+  (CONST I32 i) (BR_TABLE l* l')  ~>  (BR l')
+  -- if i >= |l*|
+
+
+;; Function instructions
+
+rule Step_read/call:
+  z; (CALL x)  ~>  (CALL_ADDR $funcaddr(z)[x])  ;; TODO
+
+rule Step_read/call_indirect-call:
+  z; (CONST I32 i) (CALL_INDIRECT x)  ~>  (CALL_ADDR a)
+  -- if $table(z, 0).REFS[i] = a
+  -- if $type(z, x) = $funcinst(z)[a].TYPE
+
+rule Step_read/call_indirect-trap:
+  z; (CONST I32 i) (CALL_INDIRECT x)  ~>  TRAP
+  -- otherwise
+
+rule Step_read/call_addr:
+  z; val^k (CALL_ADDR a)  ~>  (FRAME_ n `{f} (LABEL_ n `{eps} instr*))
+  -- if $funcinst(z)[a] = {TYPE (t_1^k -> t_2^n), MODULE mm, CODE func}
+  -- if func = FUNC x (LOCAL t)* instr*
+  -- if f = {LOCALS val^k ($default_(t))*, MODULE mm}
+
+
+rule Step_pure/frame-vals:
+  (FRAME_ n `{f} val^n)  ~>  val^n
+
+rule Step_pure/return-frame:
+  (FRAME_ n `{f} val'* val^n RETURN instr*)  ~>  val^n
+
+rule Step_pure/return-label:
+  (LABEL_ n `{instr'*} val* RETURN instr*)  ~>  val* RETURN
+
+
+;; Traps
+
+rule Step_pure/trap-vals:
+  val* TRAP instr*  ~>  TRAP
+  -- if val* =/= eps \/ instr* =/= eps
+
+rule Step_pure/trap-label:
+  (LABEL_ n `{instr'*} TRAP)  ~>  TRAP
+
+rule Step_pure/trap-frame:
+  (FRAME_ n `{f} TRAP)  ~>  TRAP
+
+
+;; Context
+
+rule Step/ctxt-label:
+  z; (LABEL_ n `{instr_0*} instr*)  ~>  z'; (LABEL_ n `{instr_0*} instr'*)
+  -- Step: z; instr* ~> z'; instr'*
+
+rule Step/ctxt-frame:
+  s; f; (FRAME_ n `{f'} instr*)  ~>  s'; f; (FRAME_ n `{f'} instr'*)
+  -- Step: s; f'; instr* ~> s'; f'; instr'*
+
+
+;; Numeric instructions
+
+rule Step_pure/unop-val:
+  (CONST t c_1) (UNOP t unop)  ~>  (CONST t c)
+  -- if c <- $unop_(t, unop, c_1)
+
+rule Step_pure/unop-trap:
+  (CONST t c_1) (UNOP t unop)  ~>  TRAP
+  -- if $unop_(t, unop, c_1) = eps
+
+
+rule Step_pure/binop-val:
+  (CONST t c_1) (CONST t c_2) (BINOP t binop)  ~>  (CONST t c)
+  -- if c <- $binop_(t, binop, c_1, c_2)
+
+rule Step_pure/binop-trap:
+  (CONST t c_1) (CONST t c_2) (BINOP t binop)  ~>  TRAP
+  -- if $binop_(t, binop, c_1, c_2) = eps
+
+
+rule Step_pure/testop:
+  (CONST t c_1) (TESTOP t testop)  ~>  (CONST I32 c)
+  -- if c = $testop_(t, testop, c_1)
+
+rule Step_pure/relop:
+  (CONST t c_1) (CONST t c_2) (RELOP t relop)  ~>  (CONST I32 c)
+  -- if c = $relop_(t, relop, c_1, c_2)
+
+
+rule Step_pure/cvtop-val:
+  (CONST t_1 c_1) (CVTOP t_2 t_1 cvtop)  ~>  (CONST t_2 c)
+  -- if c <- $cvtop__(t_1, t_2, cvtop, c_1)
+
+rule Step_pure/cvtop-trap:
+  (CONST t_1 c_1) (CVTOP t_2 t_1 cvtop)  ~>  TRAP
+  -- if $cvtop__(t_1, t_2, cvtop, c_1) = eps
+
+
+;; Local instructions
+
+rule Step_read/local.get:
+  z; (LOCAL.GET x)  ~>  $local(z, x)
+
+rule Step/local.set:
+  z; val (LOCAL.SET x)  ~>  $with_local(z, x, val); eps
+
+rule Step_pure/local.tee:
+  val (LOCAL.TEE x)  ~>  val val (LOCAL.SET x)
+
+
+;; Global instructions
+
+rule Step_read/global.get:
+  z; (GLOBAL.GET x)  ~>  $global(z, x).VALUE
+
+rule Step/global.set:
+  z; val (GLOBAL.SET x)  ~>  $with_global(z, x, val); eps
+
+
+;; Memory instructions
+
+rule Step_read/load-num-trap:
+  z; (CONST I32 i) (LOAD t ao)  ~>  TRAP
+  -- if $(i + ao.OFFSET + $size(t)/8 > |$mem(z, 0).BYTES|)
+
+rule Step_read/load-num-val:
+  z; (CONST I32 i) (LOAD t ao)  ~>  (CONST t c)
+  -- if $bytes_(t, c) = $mem(z, 0).BYTES[i + ao.OFFSET : $size(t)/8]
+
+rule Step_read/load-pack-trap:
+  z; (CONST I32 i) (LOAD Inn (n _ sx) ao)  ~>  TRAP
+  -- if $(i + ao.OFFSET + n/8 > |$mem(z, 0).BYTES|)
+
+rule Step_read/load-pack-val:
+  z; (CONST I32 i) (LOAD Inn (n _ sx) ao)  ~>  (CONST Inn $extend__(n, $size(Inn), sx, c))
+  -- if $ibytes_(n, c) = $mem(z, 0).BYTES[i + ao.OFFSET : n/8]
+
+
+rule Step/store-num-trap:
+  z; (CONST I32 i) (CONST t c) (STORE t ao)  ~>  z; TRAP
+  -- if $(i + ao.OFFSET + $size(t)/8) > |$mem(z, 0).BYTES|
+
+rule Step/store-num-val:
+  z; (CONST I32 i) (CONST t c) (STORE t ao)  ~>  $with_mem(z, 0, $(i + ao.OFFSET), $($size(t)/8), b*); eps
+  -- if b* = $bytes_(t, c)
+
+rule Step/store-pack-trap:
+  z; (CONST I32 i) (CONST Inn c) (STORE Inn n ao)  ~>  z; TRAP
+  -- if $(i + ao.OFFSET + n/8) > |$mem(z, 0).BYTES|
+
+rule Step/store-pack-val:
+  z; (CONST I32 i) (CONST Inn c) (STORE Inn n ao)  ~>  $with_mem(z, 0, $(i + ao.OFFSET), $(n/8), b*); eps
+  -- if b* = $ibytes_(n, $wrap__($size(Inn), n, c))
+
+
+rule Step_read/memory.size:
+  z; (MEMORY.SIZE)  ~>  (CONST I32 n)
+  -- if $(n * 64 * $Ki) = |$mem(z, 0).BYTES|
+
+
+rule Step/memory.grow-succeed:
+  z; (CONST I32 n) (MEMORY.GROW)  ~>  $with_meminst(z, 0, mi); (CONST I32 $(|$mem(z, 0).BYTES| / (64 * $Ki)))
+  -- if $growmemory($mem(z, 0), n) = mi
+
+rule Step/memory.grow-fail:
+  z; (CONST I32 n) (MEMORY.GROW)  ~>  z; (CONST I32 $inv_signed_(32, $(-1)))

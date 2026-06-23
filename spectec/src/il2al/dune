@@ -1,0 +1,19 @@
+(library
+  (name il2al)
+  (libraries util il al str)
+  (modules
+    animate
+    unify
+    manual
+    translate
+    transpile
+    free
+    preprocess
+    postprocess
+    il_walk
+    encode
+    def
+    il2al_util
+    print
+  )
+)

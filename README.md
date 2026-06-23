@@ -1,3 +1,7 @@
+![Spectec Status](https://github.com/WebAssembly/spec/actions/workflows/ci-spectec.yml/badge.svg)
+![Interpreter Status](https://github.com/WebAssembly/spec/actions/workflows/ci-interpreter.yml/badge.svg)
+![Spec doc Status](https://github.com/WebAssembly/spec/actions/workflows/ci-spec.yml/badge.svg)
+
 [![CI for specs](https://github.com/WebAssembly/spec/actions/workflows/ci-spec.yml/badge.svg)](https://github.com/WebAssembly/spec/actions/workflows/ci-spec.yml)
 [![CI for interpreter & tests](https://github.com/WebAssembly/spec/actions/workflows/ci-interpreter.yml/badge.svg)](https://github.com/WebAssembly/spec/actions/workflows/ci-interpreter.yml)
 
@@ -10,6 +14,7 @@ to add better Content Security Policy (CSP) support to WebAssembly.
 See the [overview](proposals/CSP.md) for a summary of the proposal.
 
 Original README from upstream repository follows...
+
 
 # spec
 

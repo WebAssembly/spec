@@ -1,8 +1,57 @@
 exception InvalidConversion
 
+module I8_ =
+struct
+  let sat_s x = min (max x (-0x80)) 0x7f
+  let sat_u x = min (max x 0) 0xff
+
+  let wrap_i16 x = I8.of_int_s (I16.to_int_s x)
+
+  let wrap_i32 x = I8.of_int_s (I32.to_int_s x)
+
+  let narrow_sat_i16_s x = I8.of_int_s (sat_s (I16.to_int_s x))
+
+  let narrow_sat_i16_u x = I8.of_int_u (sat_u (I16.to_int_s x))
+
+  let narrow_sat_i32_s x = I8.of_int_s (sat_s (I32.to_int_s x))
+
+  let narrow_sat_i32_u x = I8.of_int_u (sat_u (I32.to_int_s x))
+end
+
+module I16_ =
+struct
+  let sat_s x = min (max x (-0x8000)) 0x7fff
+  let sat_u x = min (max x 0) 0xffff
+
+  let extend_i8_s x = I16.of_int_s (I8.to_int_s x)
+
+  let extend_i8_u x = I16.of_int_u (I8.to_int_u x)
+
+  let wrap_i32 x = I16.of_int_s (I32.to_int_s x)
+
+  let narrow_sat_i32_s x = I16.of_int_s (sat_s (I32.to_int_s x))
+
+  let narrow_sat_i32_u x = I16.of_int_u (sat_u (I32.to_int_s x))
+end
+
 module I32_ =
 struct
+  let sat_s x = Int64.min (Int64.max x (-0x8000_0000L)) 0x7fff_ffffL
+  let sat_u x = Int64.min (Int64.max x 0L) 0xffff_ffffL
+
+  let extend_i8_s x = I32.of_int_s (I8.to_int_s x)
+
+  let extend_i8_u x = I32.of_int_u (I8.to_int_u x)
+
+  let extend_i16_s x = I32.of_int_s (I16.to_int_s x)
+
+  let extend_i16_u x = I32.of_int_u (I16.to_int_u x)
+
   let wrap_i64 x = Int64.to_int32 x
+
+  let narrow_sat_i64_s x = Int64.to_int32 (sat_s x)
+
+  let narrow_sat_i64_u x = Int64.to_int32 (sat_u x)
 
   let trunc_f32_s x =
     if F32.ne x x then

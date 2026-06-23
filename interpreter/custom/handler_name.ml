@@ -421,7 +421,7 @@ let check (m : module_) (fmt : format) =
         I32.to_string_u y.it ^ " for function " ^ I32.to_string_u x);
     let ts =
       match Lib.List32.nth comptypes y.it with
-      | FuncCT (FuncT (ts, _)) -> ts
+      | FuncT (ts, _) -> ts
       | _ ->
         check_error map.at ("custom @name: non-function type " ^
           I32.to_string_u y.it ^ " for function " ^ I32.to_string_u x)
@@ -444,7 +444,7 @@ let check (m : module_) (fmt : format) =
         I32.to_string_u x);
     let n =
       match Lib.List32.nth comptypes x with
-      | StructCT (StructT fs) -> Lib.List32.length fs
+      | StructT fts -> Lib.List32.length fts
       | _ ->
         check_error map.at ("custom @name: non-struct type " ^
           I32.to_string_u x)

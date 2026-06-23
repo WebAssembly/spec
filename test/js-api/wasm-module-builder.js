@@ -146,6 +146,10 @@ function wasmRefType(heap_type, is_shared = false) {
   return {opcode: kWasmRef, heap_type: heap_type, is_shared: is_shared};
 }
 
+// Packed storage types
+let kWasmI8 = 0x78;
+let kWasmI16 = 0x77;
+
 let kExternalFunction = 0;
 let kExternalTable = 1;
 let kExternalMemory = 2;
@@ -901,6 +905,8 @@ class WasmModuleBuilder {
     this.types.push(new WasmArray(type, mutability, is_final, supertype_idx));
     return this.types.length - 1;
   }
+
+  nextTypeIndex() { return this.types.length; }
 
   static defaultFor(type) {
     switch (type) {

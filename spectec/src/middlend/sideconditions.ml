@@ -1,0 +1,201 @@
+(*
+This transformation make explicit the following implicit side conditions
+of terms in premises and conclusions:
+
+ * Array access          a[i]         i < |a|
+ * Joint iteration       e*{v1,v2}    |v1*| = |v2*|
+ * Option projection     !(e)         e =!= null
+
+(The option projection would probably be nicer by rewriting !(e) to a fresh
+variable x and require e=?x. Maybe later.)
+*)
+
+open Util
+open Source
+open Il.Ast
+open Il.Free
+
+
+(* Smart constructor for LenE that optimizes |x^n| into n *)
+let lenE e = match e.it with
+| IterE (_, (ListN (ne, _), _)) -> ne
+| _ -> LenE e $$ e.at % (NumT `NatT $ e.at)
+
+(* Smart constructor for IterPr that removes dead iter-variables *)
+let iterPr (pr, (iter, vars)) =
+  let frees = free_prem pr in
+  let vars' = List.filter (fun (id, _) ->
+    Set.mem id.it frees.varid
+  ) vars in
+  IterPr (pr, (iter, vars'))
+
+let is_null e = CmpE (`EqOp, `BoolT, e, OptE None $$ e.at % e.note) $$ e.at % (BoolT $ e.at)
+let is_non_empty e = IfPr (CmpE (`NeOp, `BoolT, e, ListE [] $$ e.at % e.note) $$ e.at % (BoolT $ e.at)) $ e.at
+let equiv e1 e2 = IfPr (BinE (`EquivOp, `BoolT, e1, e2) $$ e1.at % (BoolT $ e1.at)) $ e1.at
+let same_len e1 e2 = IfPr (CmpE (`EqOp, `BoolT, lenE e1, lenE e2) $$ e1.at % (BoolT $ e1.at)) $ e1.at
+(* let has_len ne e = IfPr (CmpE (`EqOp, None, lenE e, ne) $$ e.at % (BoolT $ e.at)) $ e.at *)
+
+(* updates the types in the environment as we go under iteras *)
+let env_under_iter env ((_, vs) : iterexp) =
+  List.fold_left (fun env (v, e) -> Il.Env.bind_var env v e.note) env vs
+
+let iter_side_conditions _env ((iter, vs) : iterexp) : prem list =
+  (* let iter' = if iter = Opt then Opt else List in *)
+  match iter, List.map snd vs with
+  | Opt, e::es -> List.map (fun e' -> equiv (is_null e) (is_null e')) es
+  | List, e::es -> List.map (same_len e) es
+  | List1, e::es -> List.map (same_len e) es @ [is_non_empty e]
+  (* | ListN (ne, None), es -> List.map (has_len ne) es *)
+  | ListN _, _ -> []
+  | _ -> []
+
+(* Expr traversal *)
+let rec t_exp env e : prem list =
+  (* First the conditions to be generated here *)
+  begin match e.it with
+  | CvtE (_exp, t1, t2) when t1 > t2 ->
+    []  (* TODO *)
+  | IdxE (exp1, exp2) ->
+    [IfPr (CmpE (`LtOp, `NatT, exp2, LenE exp1 $$ e.at % exp2.note) $$ e.at % (BoolT $ e.at)) $ e.at]
+  | TheE exp ->
+    [IfPr (CmpE (`NeOp, `BoolT, exp, OptE None $$ e.at % exp.note) $$ e.at % (BoolT $ e.at)) $ e.at]
+  | IterE ({it= CmpE (`EqOp, _,  _, _); _}, iterexp) -> iter_side_conditions env iterexp
+  | MemE (_exp, exp) ->
+    [IfPr (CmpE (`GtOp, `NatT, LenE exp $$ exp.at % (NumT `NatT $ exp.at), NumE (`Nat Z.zero) $$ no_region % (NumT `NatT $ no_region)) $$ e.at % (BoolT $ e.at)) $ e.at]
+  | _ -> []
+  end @
+  (* And now descend *)
+  match e.it with
+  | VarE _ | BoolE _ | NumE _ | TextE _ | OptE None
+  -> []
+  | UnE (_, _, exp)
+  | LenE exp
+  | ProjE (exp, _)
+  | OptE (Some exp)
+  | TheE exp
+  | LiftE exp
+  | CvtE (exp, _, _)
+  | SubE (exp, _, _)
+  -> t_exp env exp
+  | BinE (_, _, exp1, exp2)
+  | CmpE (_, _, exp1, exp2)
+  | IdxE (exp1, exp2)
+  | CompE (exp1, exp2)
+  | MemE (exp1, exp2)
+  | CatE (exp1, exp2)
+  -> t_exp env exp1 @ t_exp env exp2
+  | SliceE (exp1, exp2, exp3)
+  -> t_exp env exp1 @ t_exp env exp2 @ t_exp env exp3
+  | UpdE (exp1, path, exp2)
+  | ExtE (exp1, path, exp2)
+  -> t_exp env exp1 @ t_path env path @ t_exp env exp2
+  | CallE (_, args)
+  -> List.concat_map (t_arg env) args
+  | CaseE (_, exp, _)
+  | UncaseE (exp, _)
+  | DotE (exp, _)
+  -> t_exp env exp
+  | StrE (fields, _)
+  -> List.concat_map (fun (_, exp) -> t_exp env exp) fields
+  | TupE es | ListE es
+  -> List.concat_map (t_exp env) es
+  | IterE (e1, iterexp)
+  ->
+    t_iterexp env iterexp @
+    let env' = env_under_iter env iterexp in
+    List.map (fun pr -> iterPr (pr, iterexp) $ e.at) (t_exp env' e1)
+
+and t_iterexp env (iter, _) = t_iter env iter
+
+and t_iter env = function
+  | ListN (e, _) -> t_exp env e
+  | _ -> []
+
+and t_path env path = match path.it with
+  | RootP -> []
+  | IdxP (path, e) -> t_path env path @ t_exp env e
+  | SliceP (path, e1, e2) -> t_path env path @ t_exp env e1 @ t_exp env e2
+  | DotP (path, _) -> t_path env path
+
+and t_arg env arg = match arg.it with
+  | ExpA exp -> t_exp env exp
+  | TypA _ -> []
+  | DefA _ -> []
+  | GramA _ -> []
+
+
+let rec t_prem env prem =
+  (match prem.it with
+  | RulePr (_, args, _, exp) -> List.concat_map (t_arg env) args @ t_exp env exp
+  | IfPr e -> t_exp env e
+  | LetPr (qs, e1, e2) ->
+    let env' = Il.Env.env_of_params env qs in
+    t_exp env' e1 @ t_exp env' e2
+  | ElsePr -> []
+  | IterPr (prem, iterexp)
+  -> iter_side_conditions env iterexp @
+     t_iterexp env iterexp @
+     let env' = env_under_iter env iterexp in
+     List.map (fun pr -> iterPr (pr, iterexp) $ prem.at) (t_prem env' prem)
+  ) @ [prem]
+
+let t_prems env = List.concat_map (t_prem env)
+
+let is_true_exp env e =
+  match Il.Eval.reduce_exp env e with
+  | Ok {it = BoolE b; _} -> b
+  | _ -> false
+
+(* Is prem always true? *)
+let is_true_prem env prem =
+  match prem.it with
+  | IfPr e -> is_true_exp env e
+  | _ -> false
+
+(* Does prem1 obviously imply prem2? *)
+let rec implies prem1 prem2 =
+  Il.Eq.eq_prem prem1 prem2 ||
+  match prem2.it with
+  | IterPr (prem2', _) -> implies prem1 prem2'
+  | _ -> false
+
+(* Remove empty premise iterators *)
+let rec flatten_empty_iter prem =
+  match prem.it with
+  | IterPr (prem', iterexp) ->
+    let prem'' = flatten_empty_iter prem' in
+    (match iterexp with
+    | ((Opt | List | List1), []) -> prem''
+    | _ -> IterPr (prem'', iterexp) $ prem.at)
+  | _ -> prem
+
+let reduce_prems env prems = prems
+  |> List.map flatten_empty_iter
+  |> Util.Lib.List.filter_not (is_true_prem env)
+  |> Util.Lib.List.nub implies
+
+let t_rule' env = function
+  | RuleD (id, params, mixop, exp, prems) ->
+    let env' = Il.Env.env_of_params env params in
+    let prems' = t_prems env' prems in
+    let extra_prems = t_exp env' exp in
+    let reduced_prems = reduce_prems env (extra_prems @ prems') in
+    RuleD (id, params, mixop, exp, reduced_prems)
+
+let t_rule env x = { x with it = t_rule' env x.it }
+
+let t_rules env = List.map (t_rule env)
+
+let rec t_def' env = function
+  | RecD defs -> RecD (List.map (t_def env) defs)
+  | RelD (id, params, mixop, typ, rules) ->
+    let env' = Il.Env.env_of_params env params in
+    RelD (id, params, mixop, typ, t_rules env' rules)
+  | def -> def
+
+and t_def env x = { x with it = t_def' env x.it }
+
+let transform (defs : script) =
+  let env = Il.Env.env_of_script defs in
+  List.map (t_def env) defs
+

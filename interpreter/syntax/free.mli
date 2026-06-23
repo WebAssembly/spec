@@ -29,7 +29,6 @@ val tagtype : Types.tagtype -> t
 val globaltype : Types.globaltype -> t
 val memorytype : Types.memorytype -> t
 val tabletype : Types.tabletype -> t
-val functype : Types.functype -> t
 val externtype : Types.externtype -> t
 
 val comptype : Types.comptype -> t

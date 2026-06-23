@@ -41,8 +41,7 @@ sig
   val of_lanes : lane list -> t
 
   val splat : lane -> t
-  val extract_lane_s : int -> t -> lane
-  val extract_lane_u : int -> t -> lane
+  val extract_lane : int -> t -> lane
   val replace_lane : int -> t -> lane -> t
 
   val eq : t -> t -> t
@@ -128,7 +127,7 @@ module F64x2 : FloatShape with type lane = F64.t
 
 module V1x128 :
 sig
-  val lognot : t -> t
+  val not_ : t -> t
   val and_ : t -> t -> t
   val or_ : t -> t -> t
   val xor : t -> t -> t
@@ -139,7 +138,7 @@ end
 module V8x16 :
 sig
   val swizzle : t -> t -> t
-  val shuffle : t -> t -> int list -> t
+  val shuffle : int list -> t -> t -> t
 end
 
 

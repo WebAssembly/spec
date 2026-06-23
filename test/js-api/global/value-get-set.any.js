@@ -131,7 +131,14 @@ test(() => {
   const setter = desc.set;
   assert_equals(typeof setter, "function");
 
-  assert_throws_js(TypeError, () => setter.call(global));
+  assert_equals(global.value, 0);
+
+  assert_equals(setter.call(global, undefined), undefined);
+  assert_equals(global.value, 0);
+
+  // Should behave as if 'undefined' was passed as the argument.
+  assert_equals(setter.call(global), undefined);
+  assert_equals(global.value, 0);
 }, "Calling setter without argument");
 
 test(() => {
@@ -150,3 +157,24 @@ test(() => {
   assert_equals(setter.call(global, 1, {}), undefined);
   assert_equals(global.value, 1);
 }, "Stray argument");
+
+test(() => {
+  let global = new WebAssembly.Global({value: "externref", mutable: true});
+  for (let value of [
+    undefined,
+    null,
+    true,
+    1,
+    -0,
+    1.5,
+    -2n,
+    Symbol("test"),
+    "string",
+    {"an": "object"},
+    () => null
+  ]) {
+    global.value = value;
+    assert_equals(global.value, value);
+    assert_equals(global.valueOf(), value);
+  }
+}, "externref global");

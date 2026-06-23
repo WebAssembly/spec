@@ -3,9 +3,9 @@
 
 print_origin("generate_memory_copy.js");
 
-for ( const memtype of ['i32', 'i64'] ) {
+const memtype = INDEX_TYPE;
 
-  const decltype = memtype == 'i64' ? ' i64' : '';
+const decltype = memtype == 'i64' ? ' i64' : '';
 
   // In-bounds tests.
 
@@ -23,80 +23,80 @@ for ( const memtype of ['i32', 'i64'] ) {
 
 (invoke "test")
 `);
-      for (let i = 0; i < expected_result_vector.length; i++) {
-          print(`(assert_return (invoke "load8_u" (${memtype}.const ${i})) (i32.const ${expected_result_vector[i]}))`);
-      }
-  }
+    for (let i = 0; i < expected_result_vector.length; i++) {
+        print(`(assert_return (invoke "load8_u" (${memtype}.const ${i})) (i32.const ${expected_result_vector[i]}))`);
+    }
+}
 
-  const e = 0;
+const e = 0;
 
-  // This just gives the initial state of the memory, with its active
-  // initialisers applied.
-  mem_test("(nop)",
-           [e,e,3,1,4, 1,e,e,e,e, e,e,7,5,2, 3,6,e,e,e, e,e,e,e,e, e,e,e,e,e]);
+// This just gives the initial state of the memory, with its active
+// initialisers applied.
+mem_test("(nop)",
+          [e,e,3,1,4, 1,e,e,e,e, e,e,7,5,2, 3,6,e,e,e, e,e,e,e,e, e,e,e,e,e]);
 
-  // Copy non-zero over non-zero
-  mem_test(`(memory.copy (${memtype}.const 13) (${memtype}.const 2) (${memtype}.const 3))`,
-           [e,e,3,1,4, 1,e,e,e,e, e,e,7,3,1, 4,6,e,e,e, e,e,e,e,e, e,e,e,e,e]);
+// Copy non-zero over non-zero
+mem_test(`(memory.copy (${memtype}.const 13) (${memtype}.const 2) (${memtype}.const 3))`,
+          [e,e,3,1,4, 1,e,e,e,e, e,e,7,3,1, 4,6,e,e,e, e,e,e,e,e, e,e,e,e,e]);
 
-  // Copy non-zero over zero
-  mem_test(`(memory.copy (${memtype}.const 25) (${memtype}.const 15) (${memtype}.const 2))`,
-           [e,e,3,1,4, 1,e,e,e,e, e,e,7,5,2, 3,6,e,e,e, e,e,e,e,e, 3,6,e,e,e]);
+// Copy non-zero over zero
+mem_test(`(memory.copy (${memtype}.const 25) (${memtype}.const 15) (${memtype}.const 2))`,
+          [e,e,3,1,4, 1,e,e,e,e, e,e,7,5,2, 3,6,e,e,e, e,e,e,e,e, 3,6,e,e,e]);
 
-  // Copy zero over non-zero
-  mem_test(`(memory.copy (${memtype}.const 13) (${memtype}.const 25) (${memtype}.const 3))`,
-           [e,e,3,1,4, 1,e,e,e,e, e,e,7,e,e, e,6,e,e,e, e,e,e,e,e, e,e,e,e,e]);
+// Copy zero over non-zero
+mem_test(`(memory.copy (${memtype}.const 13) (${memtype}.const 25) (${memtype}.const 3))`,
+          [e,e,3,1,4, 1,e,e,e,e, e,e,7,e,e, e,6,e,e,e, e,e,e,e,e, e,e,e,e,e]);
 
-  // Copy zero over zero
-  mem_test(`(memory.copy (${memtype}.const 20) (${memtype}.const 22) (${memtype}.const 4))`,
-           [e,e,3,1,4, 1,e,e,e,e, e,e,7,5,2, 3,6,e,e,e, e,e,e,e,e, e,e,e,e,e]);
+// Copy zero over zero
+mem_test(`(memory.copy (${memtype}.const 20) (${memtype}.const 22) (${memtype}.const 4))`,
+          [e,e,3,1,4, 1,e,e,e,e, e,e,7,5,2, 3,6,e,e,e, e,e,e,e,e, e,e,e,e,e]);
 
-  // Copy zero and non-zero entries, non overlapping
-  mem_test(`(memory.copy (${memtype}.const 25) (${memtype}.const 1) (${memtype}.const 3))`,
-           [e,e,3,1,4, 1,e,e,e,e, e,e,7,5,2, 3,6,e,e,e, e,e,e,e,e, e,3,1,e,e]);
+// Copy zero and non-zero entries, non overlapping
+mem_test(`(memory.copy (${memtype}.const 25) (${memtype}.const 1) (${memtype}.const 3))`,
+          [e,e,3,1,4, 1,e,e,e,e, e,e,7,5,2, 3,6,e,e,e, e,e,e,e,e, e,3,1,e,e]);
 
-  // Copy zero and non-zero entries, overlapping, backwards
-  mem_test(`(memory.copy (${memtype}.const 10) (${memtype}.const 12) (${memtype}.const 7))`,
-           [e,e,3,1,4, 1,e,e,e,e, 7,5,2,3,6, e,e,e,e,e, e,e,e,e,e, e,e,e,e,e]);
+// Copy zero and non-zero entries, overlapping, backwards
+mem_test(`(memory.copy (${memtype}.const 10) (${memtype}.const 12) (${memtype}.const 7))`,
+          [e,e,3,1,4, 1,e,e,e,e, 7,5,2,3,6, e,e,e,e,e, e,e,e,e,e, e,e,e,e,e]);
 
-  // Copy zero and non-zero entries, overlapping, forwards
-  mem_test(`(memory.copy (${memtype}.const 12) (${memtype}.const 10) (${memtype}.const 7))`,
-           [e,e,3,1,4, 1,e,e,e,e, e,e,e,e,7, 5,2,3,6,e, e,e,e,e,e, e,e,e,e,e]);
+// Copy zero and non-zero entries, overlapping, forwards
+mem_test(`(memory.copy (${memtype}.const 12) (${memtype}.const 10) (${memtype}.const 7))`,
+          [e,e,3,1,4, 1,e,e,e,e, e,e,e,e,7, 5,2,3,6,e, e,e,e,e,e, e,e,e,e,e]);
 
-  // Out-of-bounds tests.
-  //
-  // The operation is out of bounds of the memory for the source or target, but
-  // must perform the operation up to the appropriate bound.  Major cases:
-  //
-  // - non-overlapping regions
-  // - overlapping regions with src >= dest
-  // - overlapping regions with src == dest
-  // - overlapping regions with src < dest
-  // - arithmetic overflow on src addresses
-  // - arithmetic overflow on target addresses
-  //
-  // for each of those,
-  //
-  // - src address oob
-  // - target address oob
-  // - both oob
+// Out-of-bounds tests.
+//
+// The operation is out of bounds of the memory for the source or target, but
+// must perform the operation up to the appropriate bound.  Major cases:
+//
+// - non-overlapping regions
+// - overlapping regions with src >= dest
+// - overlapping regions with src == dest
+// - overlapping regions with src < dest
+// - arithmetic overflow on src addresses
+// - arithmetic overflow on target addresses
+//
+// for each of those,
+//
+// - src address oob
+// - target address oob
+// - both oob
 
-  function initializers(count, startingAt) {
-      let s = "";
-      for ( let i=0, j=startingAt; i < count; i++, j++ )
-          s += "\\" + (i + 256).toString(16).substring(1);
-      return s;
-  }
+function initializers(count, startingAt) {
+    let s = "";
+    for ( let i=0, j=startingAt; i < count; i++, j++ )
+        s += "\\" + (i + 256).toString(16).substring(1);
+    return s;
+}
 
-  function mem_copy(min, max, shared, srcOffs, targetOffs, len) {
-      let copyDown = srcOffs < targetOffs;
-      let memLength = min * PAGESIZE;
-      let targetAvail = memLength - targetOffs;
-      let srcAvail = memLength - srcOffs;
-      let targetLim = targetOffs + Math.min(len, targetAvail, srcAvail);
-      let srcLim = srcOffs + Math.min(len, targetAvail, srcAvail);
+function mem_copy(min, max, shared, srcOffs, targetOffs, len) {
+    let copyDown = srcOffs < targetOffs;
+    let memLength = min * PAGESIZE;
+    let targetAvail = memLength - targetOffs;
+    let srcAvail = memLength - srcOffs;
+    let targetLim = targetOffs + Math.min(len, targetAvail, srcAvail);
+    let srcLim = srcOffs + Math.min(len, targetAvail, srcAvail);
 
-      print(
+    print(
 `
 (module
   (memory (export "mem") ${min} ${max} ${shared})
@@ -110,61 +110,61 @@ for ( const memtype of ['i32', 'i64'] ) {
              "out of bounds memory access")
 `);
 
-      let immediateOOB = copyDown && (srcOffs + len > memLength || targetOffs + len > memLength);
+    let immediateOOB = copyDown && (srcOffs + len > memLength || targetOffs + len > memLength);
 
-      var s = 0;
-      var i = 0;
-      let k = 0;
-      for (i=0; i < memLength; i++ ) {
-          if (i >= srcOffs && i < srcLim) {
-              print(`(assert_return (invoke "load8_u" (i32.const ${i})) (i32.const ${(s++) & 0xFF}))`);
-              continue;
-          }
-          // Only spot-check for zero, or we'll be here all night.
-          if (++k == 199) {
-              print(`(assert_return (invoke "load8_u" (i32.const ${i})) (i32.const 0))`);
-              k = 0;
-          }
-      }
-  }
+    var s = 0;
+    var i = 0;
+    let k = 0;
+    for (i=0; i < memLength; i++ ) {
+        if (i >= srcOffs && i < srcLim) {
+            print(`(assert_return (invoke "load8_u" (i32.const ${i})) (i32.const ${(s++) & 0xFF}))`);
+            continue;
+        }
+        // Only spot-check for zero, or we'll be here all night.
+        if (++k == 199) {
+            print(`(assert_return (invoke "load8_u" (i32.const ${i})) (i32.const 0))`);
+            k = 0;
+        }
+    }
+}
 
-  // OOB target address, nonoverlapping
-  mem_copy(1, 1, "", 0, PAGESIZE-20, 40);
-  mem_copy(1, 1, "", 0, PAGESIZE-21, 39);
-  if (WITH_SHARED_MEMORY) {
-      mem_copy(2, 4, "shared", 0, 2*PAGESIZE-20, 40);
-      mem_copy(2, 4, "shared", 0, 2*PAGESIZE-21, 39);
-  }
+// OOB target address, nonoverlapping
+mem_copy(1, 1, "", 0, PAGESIZE-20, 40);
+mem_copy(1, 1, "", 0, PAGESIZE-21, 39);
+if (WITH_SHARED_MEMORY) {
+    mem_copy(2, 4, "shared", 0, 2*PAGESIZE-20, 40);
+    mem_copy(2, 4, "shared", 0, 2*PAGESIZE-21, 39);
+}
 
-  // OOB source address, nonoverlapping
-  mem_copy(1, 1, "", PAGESIZE-20, 0, 40);
-  mem_copy(1, 1, "", PAGESIZE-21, 0, 39);
-  if (WITH_SHARED_MEMORY) {
-      mem_copy(2, 4, "shared", 2*PAGESIZE-20, 0, 40);
-      mem_copy(2, 4, "shared", 2*PAGESIZE-21, 0, 39);
-  }
+// OOB source address, nonoverlapping
+mem_copy(1, 1, "", PAGESIZE-20, 0, 40);
+mem_copy(1, 1, "", PAGESIZE-21, 0, 39);
+if (WITH_SHARED_MEMORY) {
+    mem_copy(2, 4, "shared", 2*PAGESIZE-20, 0, 40);
+    mem_copy(2, 4, "shared", 2*PAGESIZE-21, 0, 39);
+}
 
-  // OOB target address, overlapping, src < target
-  mem_copy(1, 1, "", PAGESIZE-50, PAGESIZE-20, 40);
+// OOB target address, overlapping, src < target
+mem_copy(1, 1, "", PAGESIZE-50, PAGESIZE-20, 40);
 
-  // OOB source address, overlapping, target < src
-  mem_copy(1, 1, "", PAGESIZE-20, PAGESIZE-50, 40);
+// OOB source address, overlapping, target < src
+mem_copy(1, 1, "", PAGESIZE-20, PAGESIZE-50, 40);
 
-  // OOB both, overlapping, including target == src
-  mem_copy(1, 1, "", PAGESIZE-30, PAGESIZE-20, 40);
-  mem_copy(1, 1, "", PAGESIZE-20, PAGESIZE-30, 40);
-  mem_copy(1, 1, "", PAGESIZE-20, PAGESIZE-20, 40);
+// OOB both, overlapping, including target == src
+mem_copy(1, 1, "", PAGESIZE-30, PAGESIZE-20, 40);
+mem_copy(1, 1, "", PAGESIZE-20, PAGESIZE-30, 40);
+mem_copy(1, 1, "", PAGESIZE-20, PAGESIZE-20, 40);
 
-  // Arithmetic overflow on source address.
-  mem_copy(1, "", "", PAGESIZE-20, 0, 0xFFFFF000);
+// Arithmetic overflow on source address.
+mem_copy(1, "", "", PAGESIZE-20, 0, 0xFFFFF000);
 
-  // Arithmetic overflow on target adddress is an overlapping case.
-  mem_copy(1, 1, "", PAGESIZE-0x1000, PAGESIZE-20, 0xFFFFFF00);
+// Arithmetic overflow on target adddress is an overlapping case.
+mem_copy(1, 1, "", PAGESIZE-0x1000, PAGESIZE-20, 0xFFFFFF00);
 
-  // Sundry compilation failures.
+// Sundry compilation failures.
 
-  // Module doesn't have a memory.
-  print(
+// Module doesn't have a memory.
+print(
 `
 (assert_invalid
   (module
@@ -173,15 +173,15 @@ for ( const memtype of ['i32', 'i64'] ) {
   "unknown memory 0")
 `);
 
-  // Invalid argument types.  TODO: We can add anyref, funcref, etc here.
-  {
-      const tys = ['i32', 'f32', 'i64', 'f64'];
-      for (let ty1 of tys) {
-      for (let ty2 of tys) {
-      for (let ty3 of tys) {
-          if (ty1 == memtype && ty2 == memtype && ty3 == memtype)
-              continue;  // this is the only valid case
-          print(
+// Invalid argument types.  TODO: We can add anyref, funcref, etc here.
+{
+    const tys = ['i32', 'f32', 'i64', 'f64'];
+    for (let ty1 of tys) {
+    for (let ty2 of tys) {
+    for (let ty3 of tys) {
+        if (ty1 == memtype && ty2 == memtype && ty3 == memtype)
+            continue;  // this is the only valid case
+        print(
 `(assert_invalid
   (module
     (memory${decltype} 1 1)
@@ -189,12 +189,12 @@ for ( const memtype of ['i32', 'i64'] ) {
       (memory.copy (${ty1}.const 10) (${ty2}.const 20) (${ty3}.const 30))))
   "type mismatch")
 `);
-      }}}
-  }
+    }}}
+}
 
-  // Both ranges valid.  Copy 5 bytes backwards by 1 (overlapping).
-  // result = 0x00--(09) 0x55--(11) 0x00--(pagesize-20)
-  print(
+// Both ranges valid.  Copy 5 bytes backwards by 1 (overlapping).
+// result = 0x00--(09) 0x55--(11) 0x00--(pagesize-20)
+print(
 `
 (module
   (memory${decltype} 1 1)
@@ -204,13 +204,13 @@ for ( const memtype of ['i32', 'i64'] ) {
   ${checkRangeCode(memtype)})
 (invoke "test")
 `);
-  checkRange(memtype, 0,    0+9,     0x00);
-  checkRange(memtype, 9,    9+11,    0x55);
-  checkRange(memtype, 9+11, 0x10000, 0x00);
+checkRange(memtype, 0,    0+9,     0x00);
+checkRange(memtype, 9,    9+11,    0x55);
+checkRange(memtype, 9+11, 0x10000, 0x00);
 
-  // Both ranges valid.  Copy 5 bytes forwards by 1 (overlapping).
-  // result = 0x00--(10) 0x55--(11) 0x00--(pagesize-19)
-  print(
+// Both ranges valid.  Copy 5 bytes forwards by 1 (overlapping).
+// result = 0x00--(10) 0x55--(11) 0x00--(pagesize-19)
+print(
 `
 (module
   (memory${decltype} 1 1)
@@ -220,12 +220,12 @@ for ( const memtype of ['i32', 'i64'] ) {
   ${checkRangeCode(memtype)})
 (invoke "test")
 `);
-  checkRange(memtype, 0,     0+10,    0x00);
-  checkRange(memtype, 10,    10+11,   0x55);
-  checkRange(memtype, 10+11, 0x10000, 0x00);
+checkRange(memtype, 0,     0+10,    0x00);
+checkRange(memtype, 10,    10+11,   0x55);
+checkRange(memtype, 10+11, 0x10000, 0x00);
 
-  // Destination range invalid
-  print(
+// Destination range invalid
+print(
 `
 (module
   (memory${decltype} 1 1)
@@ -234,7 +234,7 @@ for ( const memtype of ['i32', 'i64'] ) {
 (assert_trap (invoke "test") "out of bounds memory access")
 `);
 
-  // Destination wraparound the end of 32-bit offset space
+// Destination wraparound the end of 32-bit offset space
 print(
 `(module
   (memory${decltype} 1 1)
@@ -243,7 +243,7 @@ print(
 (assert_trap (invoke "test") "out of bounds memory access")
 `);
 
-  // Source range invalid
+// Source range invalid
 print(
 `(module
   (memory${decltype} 1 1)
@@ -252,7 +252,7 @@ print(
 (assert_trap (invoke "test") "out of bounds memory access")
 `);
 
-  // Source wraparound the end of 32-bit offset space
+// Source wraparound the end of 32-bit offset space
 print(
 `(module
  (memory${decltype} 1 1)
@@ -261,7 +261,7 @@ print(
 (assert_trap (invoke "test") "out of bounds memory access")
 `);
 
-  // Zero len with both offsets in-bounds is a no-op
+// Zero len with both offsets in-bounds is a no-op
 print(
 `(module
   (memory${decltype} 1 1)
@@ -272,11 +272,11 @@ print(
   ${checkRangeCode(memtype)})
 (invoke "test")
 `);
-  checkRange(memtype, 0x00000, 0x08000, 0x55);
-  checkRange(memtype, 0x08000, 0x10000, 0xAA);
+checkRange(memtype, 0x00000, 0x08000, 0x55);
+checkRange(memtype, 0x08000, 0x10000, 0xAA);
 
-  // Zero len with dest offset out-of-bounds at the end of memory is allowed
-  print(
+// Zero len with dest offset out-of-bounds at the end of memory is allowed
+print(
 `(module
   (memory${decltype} 1 1)
   (func (export "test")
@@ -284,8 +284,8 @@ print(
 (invoke "test")
 `);
 
-  // Zero len with dest offset out-of-bounds past the end of memory is not allowed
-  print(
+// Zero len with dest offset out-of-bounds past the end of memory is not allowed
+print(
 `(module
   (memory${decltype} 1 1)
   (func (export "test")
@@ -293,8 +293,8 @@ print(
 (assert_trap (invoke "test") "out of bounds memory access")
 `);
 
-  // Zero len with src offset out-of-bounds at the end of memory is allowed
-  print(
+// Zero len with src offset out-of-bounds at the end of memory is allowed
+print(
 `(module
   (memory${decltype} 1 1)
   (func (export "test")
@@ -302,8 +302,8 @@ print(
 (invoke "test")
 `);
 
-  // Zero len with src offset out-of-bounds past the end of memory is not allowed
-  print(
+// Zero len with src offset out-of-bounds past the end of memory is not allowed
+print(
 `(module
   (memory${decltype} 1 1)
   (func (export "test")
@@ -311,8 +311,8 @@ print(
 (assert_trap (invoke "test") "out of bounds memory access")
 `);
 
-  // Zero len with both dest and src offsets out-of-bounds at the end of memory is allowed
-  print(
+// Zero len with both dest and src offsets out-of-bounds at the end of memory is allowed
+print(
 `(module
   (memory${decltype} 1 1)
   (func (export "test")
@@ -320,8 +320,8 @@ print(
 (invoke "test")
 `);
 
-  // Zero len with both dest and src offsets out-of-bounds past the end of memory is not allowed
-  print(
+// Zero len with both dest and src offsets out-of-bounds past the end of memory is not allowed
+print(
 `(module
   (memory${decltype} 1 1)
   (func (export "test")
@@ -329,9 +329,9 @@ print(
 (assert_trap (invoke "test") "out of bounds memory access")
 `);
 
-  // 100 random fills followed by 100 random copies, in a single-page buffer,
-  // followed by verification of the (now heavily mashed-around) buffer.
-  print(
+// 100 random fills followed by 100 random copies, in a single-page buffer,
+// followed by verification of the (now heavily mashed-around) buffer.
+print(
 `(module
   (memory${decltype} 1 1)
   (func (export "test")
@@ -539,235 +539,234 @@ print(
   ${checkRangeCode(memtype)})
 (invoke "test")
 `);
-  checkRange(memtype, 0, 124, 0);
-  checkRange(memtype, 124, 1517, 9);
-  checkRange(memtype, 1517, 2132, 0);
-  checkRange(memtype, 2132, 2827, 10);
-  checkRange(memtype, 2827, 2921, 92);
-  checkRange(memtype, 2921, 3538, 83);
-  checkRange(memtype, 3538, 3786, 77);
-  checkRange(memtype, 3786, 4042, 97);
-  checkRange(memtype, 4042, 4651, 99);
-  checkRange(memtype, 4651, 5057, 0);
-  checkRange(memtype, 5057, 5109, 99);
-  checkRange(memtype, 5109, 5291, 0);
-  checkRange(memtype, 5291, 5524, 72);
-  checkRange(memtype, 5524, 5691, 92);
-  checkRange(memtype, 5691, 6552, 83);
-  checkRange(memtype, 6552, 7133, 77);
-  checkRange(memtype, 7133, 7665, 99);
-  checkRange(memtype, 7665, 8314, 0);
-  checkRange(memtype, 8314, 8360, 62);
-  checkRange(memtype, 8360, 8793, 86);
-  checkRange(memtype, 8793, 8979, 83);
-  checkRange(memtype, 8979, 9373, 79);
-  checkRange(memtype, 9373, 9518, 95);
-  checkRange(memtype, 9518, 9934, 59);
-  checkRange(memtype, 9934, 10087, 77);
-  checkRange(memtype, 10087, 10206, 5);
-  checkRange(memtype, 10206, 10230, 77);
-  checkRange(memtype, 10230, 10249, 41);
-  checkRange(memtype, 10249, 11148, 83);
-  checkRange(memtype, 11148, 11356, 74);
-  checkRange(memtype, 11356, 11380, 93);
-  checkRange(memtype, 11380, 11939, 74);
-  checkRange(memtype, 11939, 12159, 68);
-  checkRange(memtype, 12159, 12575, 83);
-  checkRange(memtype, 12575, 12969, 79);
-  checkRange(memtype, 12969, 13114, 95);
-  checkRange(memtype, 13114, 14133, 59);
-  checkRange(memtype, 14133, 14404, 76);
-  checkRange(memtype, 14404, 14428, 57);
-  checkRange(memtype, 14428, 14458, 59);
-  checkRange(memtype, 14458, 14580, 32);
-  checkRange(memtype, 14580, 14777, 89);
-  checkRange(memtype, 14777, 15124, 59);
-  checkRange(memtype, 15124, 15126, 36);
-  checkRange(memtype, 15126, 15192, 100);
-  checkRange(memtype, 15192, 15871, 96);
-  checkRange(memtype, 15871, 15998, 95);
-  checkRange(memtype, 15998, 17017, 59);
-  checkRange(memtype, 17017, 17288, 76);
-  checkRange(memtype, 17288, 17312, 57);
-  checkRange(memtype, 17312, 17342, 59);
-  checkRange(memtype, 17342, 17464, 32);
-  checkRange(memtype, 17464, 17661, 89);
-  checkRange(memtype, 17661, 17727, 59);
-  checkRange(memtype, 17727, 17733, 5);
-  checkRange(memtype, 17733, 17893, 96);
-  checkRange(memtype, 17893, 18553, 77);
-  checkRange(memtype, 18553, 18744, 42);
-  checkRange(memtype, 18744, 18801, 76);
-  checkRange(memtype, 18801, 18825, 57);
-  checkRange(memtype, 18825, 18876, 59);
-  checkRange(memtype, 18876, 18885, 77);
-  checkRange(memtype, 18885, 18904, 41);
-  checkRange(memtype, 18904, 19567, 83);
-  checkRange(memtype, 19567, 20403, 96);
-  checkRange(memtype, 20403, 21274, 77);
-  checkRange(memtype, 21274, 21364, 100);
-  checkRange(memtype, 21364, 21468, 74);
-  checkRange(memtype, 21468, 21492, 93);
-  checkRange(memtype, 21492, 22051, 74);
-  checkRange(memtype, 22051, 22480, 68);
-  checkRange(memtype, 22480, 22685, 100);
-  checkRange(memtype, 22685, 22694, 68);
-  checkRange(memtype, 22694, 22821, 10);
-  checkRange(memtype, 22821, 22869, 100);
-  checkRange(memtype, 22869, 24107, 97);
-  checkRange(memtype, 24107, 24111, 37);
-  checkRange(memtype, 24111, 24236, 77);
-  checkRange(memtype, 24236, 24348, 72);
-  checkRange(memtype, 24348, 24515, 92);
-  checkRange(memtype, 24515, 24900, 83);
-  checkRange(memtype, 24900, 25136, 95);
-  checkRange(memtype, 25136, 25182, 85);
-  checkRange(memtype, 25182, 25426, 68);
-  checkRange(memtype, 25426, 25613, 89);
-  checkRange(memtype, 25613, 25830, 96);
-  checkRange(memtype, 25830, 26446, 100);
-  checkRange(memtype, 26446, 26517, 10);
-  checkRange(memtype, 26517, 27468, 92);
-  checkRange(memtype, 27468, 27503, 95);
-  checkRange(memtype, 27503, 27573, 77);
-  checkRange(memtype, 27573, 28245, 92);
-  checkRange(memtype, 28245, 28280, 95);
-  checkRange(memtype, 28280, 29502, 77);
-  checkRange(memtype, 29502, 29629, 42);
-  checkRange(memtype, 29629, 30387, 83);
-  checkRange(memtype, 30387, 30646, 77);
-  checkRange(memtype, 30646, 31066, 92);
-  checkRange(memtype, 31066, 31131, 77);
-  checkRange(memtype, 31131, 31322, 42);
-  checkRange(memtype, 31322, 31379, 76);
-  checkRange(memtype, 31379, 31403, 57);
-  checkRange(memtype, 31403, 31454, 59);
-  checkRange(memtype, 31454, 31463, 77);
-  checkRange(memtype, 31463, 31482, 41);
-  checkRange(memtype, 31482, 31649, 83);
-  checkRange(memtype, 31649, 31978, 72);
-  checkRange(memtype, 31978, 32145, 92);
-  checkRange(memtype, 32145, 32530, 83);
-  checkRange(memtype, 32530, 32766, 95);
-  checkRange(memtype, 32766, 32812, 85);
-  checkRange(memtype, 32812, 33056, 68);
-  checkRange(memtype, 33056, 33660, 89);
-  checkRange(memtype, 33660, 33752, 59);
-  checkRange(memtype, 33752, 33775, 36);
-  checkRange(memtype, 33775, 33778, 32);
-  checkRange(memtype, 33778, 34603, 9);
-  checkRange(memtype, 34603, 35218, 0);
-  checkRange(memtype, 35218, 35372, 10);
-  checkRange(memtype, 35372, 35486, 77);
-  checkRange(memtype, 35486, 35605, 5);
-  checkRange(memtype, 35605, 35629, 77);
-  checkRange(memtype, 35629, 35648, 41);
-  checkRange(memtype, 35648, 36547, 83);
-  checkRange(memtype, 36547, 36755, 74);
-  checkRange(memtype, 36755, 36767, 93);
-  checkRange(memtype, 36767, 36810, 83);
-  checkRange(memtype, 36810, 36839, 100);
-  checkRange(memtype, 36839, 37444, 96);
-  checkRange(memtype, 37444, 38060, 100);
-  checkRange(memtype, 38060, 38131, 10);
-  checkRange(memtype, 38131, 39082, 92);
-  checkRange(memtype, 39082, 39117, 95);
-  checkRange(memtype, 39117, 39187, 77);
-  checkRange(memtype, 39187, 39859, 92);
-  checkRange(memtype, 39859, 39894, 95);
-  checkRange(memtype, 39894, 40257, 77);
-  checkRange(memtype, 40257, 40344, 89);
-  checkRange(memtype, 40344, 40371, 59);
-  checkRange(memtype, 40371, 40804, 77);
-  checkRange(memtype, 40804, 40909, 5);
-  checkRange(memtype, 40909, 42259, 92);
-  checkRange(memtype, 42259, 42511, 77);
-  checkRange(memtype, 42511, 42945, 83);
-  checkRange(memtype, 42945, 43115, 77);
-  checkRange(memtype, 43115, 43306, 42);
-  checkRange(memtype, 43306, 43363, 76);
-  checkRange(memtype, 43363, 43387, 57);
-  checkRange(memtype, 43387, 43438, 59);
-  checkRange(memtype, 43438, 43447, 77);
-  checkRange(memtype, 43447, 43466, 41);
-  checkRange(memtype, 43466, 44129, 83);
-  checkRange(memtype, 44129, 44958, 96);
-  checkRange(memtype, 44958, 45570, 77);
-  checkRange(memtype, 45570, 45575, 92);
-  checkRange(memtype, 45575, 45640, 77);
-  checkRange(memtype, 45640, 45742, 42);
-  checkRange(memtype, 45742, 45832, 72);
-  checkRange(memtype, 45832, 45999, 92);
-  checkRange(memtype, 45999, 46384, 83);
-  checkRange(memtype, 46384, 46596, 95);
-  checkRange(memtype, 46596, 46654, 92);
-  checkRange(memtype, 46654, 47515, 83);
-  checkRange(memtype, 47515, 47620, 77);
-  checkRange(memtype, 47620, 47817, 79);
-  checkRange(memtype, 47817, 47951, 95);
-  checkRange(memtype, 47951, 48632, 100);
-  checkRange(memtype, 48632, 48699, 97);
-  checkRange(memtype, 48699, 48703, 37);
-  checkRange(memtype, 48703, 49764, 77);
-  checkRange(memtype, 49764, 49955, 42);
-  checkRange(memtype, 49955, 50012, 76);
-  checkRange(memtype, 50012, 50036, 57);
-  checkRange(memtype, 50036, 50087, 59);
-  checkRange(memtype, 50087, 50096, 77);
-  checkRange(memtype, 50096, 50115, 41);
-  checkRange(memtype, 50115, 50370, 83);
-  checkRange(memtype, 50370, 51358, 92);
-  checkRange(memtype, 51358, 51610, 77);
-  checkRange(memtype, 51610, 51776, 83);
-  checkRange(memtype, 51776, 51833, 89);
-  checkRange(memtype, 51833, 52895, 100);
-  checkRange(memtype, 52895, 53029, 97);
-  checkRange(memtype, 53029, 53244, 68);
-  checkRange(memtype, 53244, 54066, 100);
-  checkRange(memtype, 54066, 54133, 97);
-  checkRange(memtype, 54133, 54137, 37);
-  checkRange(memtype, 54137, 55198, 77);
-  checkRange(memtype, 55198, 55389, 42);
-  checkRange(memtype, 55389, 55446, 76);
-  checkRange(memtype, 55446, 55470, 57);
-  checkRange(memtype, 55470, 55521, 59);
-  checkRange(memtype, 55521, 55530, 77);
-  checkRange(memtype, 55530, 55549, 41);
-  checkRange(memtype, 55549, 56212, 83);
-  checkRange(memtype, 56212, 57048, 96);
-  checkRange(memtype, 57048, 58183, 77);
-  checkRange(memtype, 58183, 58202, 41);
-  checkRange(memtype, 58202, 58516, 83);
-  checkRange(memtype, 58516, 58835, 95);
-  checkRange(memtype, 58835, 58855, 77);
-  checkRange(memtype, 58855, 59089, 95);
-  checkRange(memtype, 59089, 59145, 77);
-  checkRange(memtype, 59145, 59677, 99);
-  checkRange(memtype, 59677, 60134, 0);
-  checkRange(memtype, 60134, 60502, 89);
-  checkRange(memtype, 60502, 60594, 59);
-  checkRange(memtype, 60594, 60617, 36);
-  checkRange(memtype, 60617, 60618, 32);
-  checkRange(memtype, 60618, 60777, 42);
-  checkRange(memtype, 60777, 60834, 76);
-  checkRange(memtype, 60834, 60858, 57);
-  checkRange(memtype, 60858, 60909, 59);
-  checkRange(memtype, 60909, 60918, 77);
-  checkRange(memtype, 60918, 60937, 41);
-  checkRange(memtype, 60937, 61600, 83);
-  checkRange(memtype, 61600, 62436, 96);
-  checkRange(memtype, 62436, 63307, 77);
-  checkRange(memtype, 63307, 63397, 100);
-  checkRange(memtype, 63397, 63501, 74);
-  checkRange(memtype, 63501, 63525, 93);
-  checkRange(memtype, 63525, 63605, 74);
-  checkRange(memtype, 63605, 63704, 100);
-  checkRange(memtype, 63704, 63771, 97);
-  checkRange(memtype, 63771, 63775, 37);
-  checkRange(memtype, 63775, 64311, 77);
-  checkRange(memtype, 64311, 64331, 26);
-  checkRange(memtype, 64331, 64518, 92);
-  checkRange(memtype, 64518, 64827, 11);
-  checkRange(memtype, 64827, 64834, 26);
-  checkRange(memtype, 64834, 65536, 0);
-}
+checkRange(memtype, 0, 124, 0);
+checkRange(memtype, 124, 1517, 9);
+checkRange(memtype, 1517, 2132, 0);
+checkRange(memtype, 2132, 2827, 10);
+checkRange(memtype, 2827, 2921, 92);
+checkRange(memtype, 2921, 3538, 83);
+checkRange(memtype, 3538, 3786, 77);
+checkRange(memtype, 3786, 4042, 97);
+checkRange(memtype, 4042, 4651, 99);
+checkRange(memtype, 4651, 5057, 0);
+checkRange(memtype, 5057, 5109, 99);
+checkRange(memtype, 5109, 5291, 0);
+checkRange(memtype, 5291, 5524, 72);
+checkRange(memtype, 5524, 5691, 92);
+checkRange(memtype, 5691, 6552, 83);
+checkRange(memtype, 6552, 7133, 77);
+checkRange(memtype, 7133, 7665, 99);
+checkRange(memtype, 7665, 8314, 0);
+checkRange(memtype, 8314, 8360, 62);
+checkRange(memtype, 8360, 8793, 86);
+checkRange(memtype, 8793, 8979, 83);
+checkRange(memtype, 8979, 9373, 79);
+checkRange(memtype, 9373, 9518, 95);
+checkRange(memtype, 9518, 9934, 59);
+checkRange(memtype, 9934, 10087, 77);
+checkRange(memtype, 10087, 10206, 5);
+checkRange(memtype, 10206, 10230, 77);
+checkRange(memtype, 10230, 10249, 41);
+checkRange(memtype, 10249, 11148, 83);
+checkRange(memtype, 11148, 11356, 74);
+checkRange(memtype, 11356, 11380, 93);
+checkRange(memtype, 11380, 11939, 74);
+checkRange(memtype, 11939, 12159, 68);
+checkRange(memtype, 12159, 12575, 83);
+checkRange(memtype, 12575, 12969, 79);
+checkRange(memtype, 12969, 13114, 95);
+checkRange(memtype, 13114, 14133, 59);
+checkRange(memtype, 14133, 14404, 76);
+checkRange(memtype, 14404, 14428, 57);
+checkRange(memtype, 14428, 14458, 59);
+checkRange(memtype, 14458, 14580, 32);
+checkRange(memtype, 14580, 14777, 89);
+checkRange(memtype, 14777, 15124, 59);
+checkRange(memtype, 15124, 15126, 36);
+checkRange(memtype, 15126, 15192, 100);
+checkRange(memtype, 15192, 15871, 96);
+checkRange(memtype, 15871, 15998, 95);
+checkRange(memtype, 15998, 17017, 59);
+checkRange(memtype, 17017, 17288, 76);
+checkRange(memtype, 17288, 17312, 57);
+checkRange(memtype, 17312, 17342, 59);
+checkRange(memtype, 17342, 17464, 32);
+checkRange(memtype, 17464, 17661, 89);
+checkRange(memtype, 17661, 17727, 59);
+checkRange(memtype, 17727, 17733, 5);
+checkRange(memtype, 17733, 17893, 96);
+checkRange(memtype, 17893, 18553, 77);
+checkRange(memtype, 18553, 18744, 42);
+checkRange(memtype, 18744, 18801, 76);
+checkRange(memtype, 18801, 18825, 57);
+checkRange(memtype, 18825, 18876, 59);
+checkRange(memtype, 18876, 18885, 77);
+checkRange(memtype, 18885, 18904, 41);
+checkRange(memtype, 18904, 19567, 83);
+checkRange(memtype, 19567, 20403, 96);
+checkRange(memtype, 20403, 21274, 77);
+checkRange(memtype, 21274, 21364, 100);
+checkRange(memtype, 21364, 21468, 74);
+checkRange(memtype, 21468, 21492, 93);
+checkRange(memtype, 21492, 22051, 74);
+checkRange(memtype, 22051, 22480, 68);
+checkRange(memtype, 22480, 22685, 100);
+checkRange(memtype, 22685, 22694, 68);
+checkRange(memtype, 22694, 22821, 10);
+checkRange(memtype, 22821, 22869, 100);
+checkRange(memtype, 22869, 24107, 97);
+checkRange(memtype, 24107, 24111, 37);
+checkRange(memtype, 24111, 24236, 77);
+checkRange(memtype, 24236, 24348, 72);
+checkRange(memtype, 24348, 24515, 92);
+checkRange(memtype, 24515, 24900, 83);
+checkRange(memtype, 24900, 25136, 95);
+checkRange(memtype, 25136, 25182, 85);
+checkRange(memtype, 25182, 25426, 68);
+checkRange(memtype, 25426, 25613, 89);
+checkRange(memtype, 25613, 25830, 96);
+checkRange(memtype, 25830, 26446, 100);
+checkRange(memtype, 26446, 26517, 10);
+checkRange(memtype, 26517, 27468, 92);
+checkRange(memtype, 27468, 27503, 95);
+checkRange(memtype, 27503, 27573, 77);
+checkRange(memtype, 27573, 28245, 92);
+checkRange(memtype, 28245, 28280, 95);
+checkRange(memtype, 28280, 29502, 77);
+checkRange(memtype, 29502, 29629, 42);
+checkRange(memtype, 29629, 30387, 83);
+checkRange(memtype, 30387, 30646, 77);
+checkRange(memtype, 30646, 31066, 92);
+checkRange(memtype, 31066, 31131, 77);
+checkRange(memtype, 31131, 31322, 42);
+checkRange(memtype, 31322, 31379, 76);
+checkRange(memtype, 31379, 31403, 57);
+checkRange(memtype, 31403, 31454, 59);
+checkRange(memtype, 31454, 31463, 77);
+checkRange(memtype, 31463, 31482, 41);
+checkRange(memtype, 31482, 31649, 83);
+checkRange(memtype, 31649, 31978, 72);
+checkRange(memtype, 31978, 32145, 92);
+checkRange(memtype, 32145, 32530, 83);
+checkRange(memtype, 32530, 32766, 95);
+checkRange(memtype, 32766, 32812, 85);
+checkRange(memtype, 32812, 33056, 68);
+checkRange(memtype, 33056, 33660, 89);
+checkRange(memtype, 33660, 33752, 59);
+checkRange(memtype, 33752, 33775, 36);
+checkRange(memtype, 33775, 33778, 32);
+checkRange(memtype, 33778, 34603, 9);
+checkRange(memtype, 34603, 35218, 0);
+checkRange(memtype, 35218, 35372, 10);
+checkRange(memtype, 35372, 35486, 77);
+checkRange(memtype, 35486, 35605, 5);
+checkRange(memtype, 35605, 35629, 77);
+checkRange(memtype, 35629, 35648, 41);
+checkRange(memtype, 35648, 36547, 83);
+checkRange(memtype, 36547, 36755, 74);
+checkRange(memtype, 36755, 36767, 93);
+checkRange(memtype, 36767, 36810, 83);
+checkRange(memtype, 36810, 36839, 100);
+checkRange(memtype, 36839, 37444, 96);
+checkRange(memtype, 37444, 38060, 100);
+checkRange(memtype, 38060, 38131, 10);
+checkRange(memtype, 38131, 39082, 92);
+checkRange(memtype, 39082, 39117, 95);
+checkRange(memtype, 39117, 39187, 77);
+checkRange(memtype, 39187, 39859, 92);
+checkRange(memtype, 39859, 39894, 95);
+checkRange(memtype, 39894, 40257, 77);
+checkRange(memtype, 40257, 40344, 89);
+checkRange(memtype, 40344, 40371, 59);
+checkRange(memtype, 40371, 40804, 77);
+checkRange(memtype, 40804, 40909, 5);
+checkRange(memtype, 40909, 42259, 92);
+checkRange(memtype, 42259, 42511, 77);
+checkRange(memtype, 42511, 42945, 83);
+checkRange(memtype, 42945, 43115, 77);
+checkRange(memtype, 43115, 43306, 42);
+checkRange(memtype, 43306, 43363, 76);
+checkRange(memtype, 43363, 43387, 57);
+checkRange(memtype, 43387, 43438, 59);
+checkRange(memtype, 43438, 43447, 77);
+checkRange(memtype, 43447, 43466, 41);
+checkRange(memtype, 43466, 44129, 83);
+checkRange(memtype, 44129, 44958, 96);
+checkRange(memtype, 44958, 45570, 77);
+checkRange(memtype, 45570, 45575, 92);
+checkRange(memtype, 45575, 45640, 77);
+checkRange(memtype, 45640, 45742, 42);
+checkRange(memtype, 45742, 45832, 72);
+checkRange(memtype, 45832, 45999, 92);
+checkRange(memtype, 45999, 46384, 83);
+checkRange(memtype, 46384, 46596, 95);
+checkRange(memtype, 46596, 46654, 92);
+checkRange(memtype, 46654, 47515, 83);
+checkRange(memtype, 47515, 47620, 77);
+checkRange(memtype, 47620, 47817, 79);
+checkRange(memtype, 47817, 47951, 95);
+checkRange(memtype, 47951, 48632, 100);
+checkRange(memtype, 48632, 48699, 97);
+checkRange(memtype, 48699, 48703, 37);
+checkRange(memtype, 48703, 49764, 77);
+checkRange(memtype, 49764, 49955, 42);
+checkRange(memtype, 49955, 50012, 76);
+checkRange(memtype, 50012, 50036, 57);
+checkRange(memtype, 50036, 50087, 59);
+checkRange(memtype, 50087, 50096, 77);
+checkRange(memtype, 50096, 50115, 41);
+checkRange(memtype, 50115, 50370, 83);
+checkRange(memtype, 50370, 51358, 92);
+checkRange(memtype, 51358, 51610, 77);
+checkRange(memtype, 51610, 51776, 83);
+checkRange(memtype, 51776, 51833, 89);
+checkRange(memtype, 51833, 52895, 100);
+checkRange(memtype, 52895, 53029, 97);
+checkRange(memtype, 53029, 53244, 68);
+checkRange(memtype, 53244, 54066, 100);
+checkRange(memtype, 54066, 54133, 97);
+checkRange(memtype, 54133, 54137, 37);
+checkRange(memtype, 54137, 55198, 77);
+checkRange(memtype, 55198, 55389, 42);
+checkRange(memtype, 55389, 55446, 76);
+checkRange(memtype, 55446, 55470, 57);
+checkRange(memtype, 55470, 55521, 59);
+checkRange(memtype, 55521, 55530, 77);
+checkRange(memtype, 55530, 55549, 41);
+checkRange(memtype, 55549, 56212, 83);
+checkRange(memtype, 56212, 57048, 96);
+checkRange(memtype, 57048, 58183, 77);
+checkRange(memtype, 58183, 58202, 41);
+checkRange(memtype, 58202, 58516, 83);
+checkRange(memtype, 58516, 58835, 95);
+checkRange(memtype, 58835, 58855, 77);
+checkRange(memtype, 58855, 59089, 95);
+checkRange(memtype, 59089, 59145, 77);
+checkRange(memtype, 59145, 59677, 99);
+checkRange(memtype, 59677, 60134, 0);
+checkRange(memtype, 60134, 60502, 89);
+checkRange(memtype, 60502, 60594, 59);
+checkRange(memtype, 60594, 60617, 36);
+checkRange(memtype, 60617, 60618, 32);
+checkRange(memtype, 60618, 60777, 42);
+checkRange(memtype, 60777, 60834, 76);
+checkRange(memtype, 60834, 60858, 57);
+checkRange(memtype, 60858, 60909, 59);
+checkRange(memtype, 60909, 60918, 77);
+checkRange(memtype, 60918, 60937, 41);
+checkRange(memtype, 60937, 61600, 83);
+checkRange(memtype, 61600, 62436, 96);
+checkRange(memtype, 62436, 63307, 77);
+checkRange(memtype, 63307, 63397, 100);
+checkRange(memtype, 63397, 63501, 74);
+checkRange(memtype, 63501, 63525, 93);
+checkRange(memtype, 63525, 63605, 74);
+checkRange(memtype, 63605, 63704, 100);
+checkRange(memtype, 63704, 63771, 97);
+checkRange(memtype, 63771, 63775, 37);
+checkRange(memtype, 63775, 64311, 77);
+checkRange(memtype, 64311, 64331, 26);
+checkRange(memtype, 64331, 64518, 92);
+checkRange(memtype, 64518, 64827, 11);
+checkRange(memtype, 64827, 64834, 26);
+checkRange(memtype, 64834, 65536, 0);

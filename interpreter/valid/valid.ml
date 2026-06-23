@@ -63,20 +63,20 @@ let init_local (c : context) x =
 let init_locals (c : context) xs =
   List.fold_left init_local c xs
 
-let func_type (c : context) x =
-  match expand_deftype (type_ c x) with
-  | FuncCT ft -> ft
-  | _ -> error x.at ("non-function type " ^ I32.to_string_u x.it)
-
 let struct_type (c : context) x =
   match expand_deftype (type_ c x) with
-  | StructCT st -> st
+  | StructT fts -> fts
   | _ -> error x.at ("non-structure type " ^ I32.to_string_u x.it)
 
 let array_type (c : context) x =
   match expand_deftype (type_ c x) with
-  | ArrayCT at -> at
+  | ArrayT ft -> ft
   | _ -> error x.at ("non-array type " ^ I32.to_string_u x.it)
+
+let func_type (c : context) x =
+  match expand_deftype (type_ c x) with
+  | FuncT (ts1, ts2) -> ts1, ts2
+  | _ -> error x.at ("non-function type " ^ I32.to_string_u x.it)
 
 let refer category (s : Free.Set.t) x =
   if not (Free.Set.mem x.it s) then
@@ -147,23 +147,50 @@ let check_fieldtype (c : context) (ft : fieldtype) at =
   match ft with
   | FieldT (_mut, st) -> check_storagetype c st at
 
-let check_structtype (c : context) (st : structtype) at =
-  match st with
-  | StructT fts -> List.iter (fun ft -> check_fieldtype c ft at) fts
+let check_comptype (c : context) (ct : comptype) at =
+  match ct with
+  | StructT fts ->
+    List.iter (fun ft -> check_fieldtype c ft at) fts
+  | ArrayT ft ->
+    check_fieldtype c ft at
+  | FuncT (ts1, ts2) ->
+    check_resulttype c ts1 at;
+    check_resulttype c ts2 at
 
-let check_arraytype (c : context) (rt : arraytype) at =
-  match rt with
-  | ArrayT ft -> check_fieldtype c ft at
+let check_subtype (c : context) (sut : subtype) at =
+  let SubT (_fin, uts, ct) = sut in
+  List.iter (fun ut -> check_typeuse c ut at) uts;
+  check_comptype c ct at
 
-let check_functype (c : context) (ft : functype) at =
-  let FuncT (ts1, ts2) = ft in
-  check_resulttype c ts1 at;
-  check_resulttype c ts2 at
+let check_subtype_sub (c : context) (sut : subtype) x at =
+  let SubT (_fin, uts, ct) = sut in
+  List.iter (fun uti ->
+    let xi = idx_of_typeuse uti in
+    let SubT (fini, _, cti) = unroll_deftype (type_ c (xi @@ at)) in
+    require (xi < x) at ("forward use of type " ^ I32.to_string_u xi ^
+      " in sub type definition");
+    require (fini = NoFinal) at ("sub type " ^ I32.to_string_u x ^
+      " has final super type " ^ I32.to_string_u xi);
+    require (match_comptype c.types ct cti) at ("sub type " ^ I32.to_string_u x ^
+      " does not match super type " ^ I32.to_string_u xi)
+  ) uts
 
+let check_rectype (c : context) (rt : rectype) at : context =
+  let RecT sts = rt in
+  let x = Lib.List32.length c.types in
+  let dts =
+    try List.map (subst_deftype (subst_of c.types)) (roll_deftypes x rt)
+    with UnknownIndex x -> [type_ c (x @@ at)]  (* force error *)
+  in
+  let c' = {c with types = c.types @ dts} in
+  List.iter (fun st -> check_subtype c' st at) sts;
+  Lib.List32.iteri
+    (fun i st -> check_subtype_sub c' st (Int32.add x i) at) sts;
+  c'
 
 let check_tagtype (c : context) (tt : tagtype) at =
   let TagT ut = tt in
-  let FuncT (ts1, ts2) = func_type c (idx_of_typeuse ut @@ at) in
+  let (ts1, ts2) = func_type c (idx_of_typeuse ut @@ at) in
   require (ts2 = []) at "non-empty tag result type";
   ()
 
@@ -202,40 +229,6 @@ let check_externtype (c : context) (xt : externtype) at =
     check_tabletype c tt at
   | ExternFuncT ut ->
     let _ft = func_type c (idx_of_typeuse ut @@ at) in ()
-
-
-let check_comptype (c : context) (ct : comptype) at =
-  match ct with
-  | StructCT st -> check_structtype c st at
-  | ArrayCT rt -> check_arraytype c rt at
-  | FuncCT ft -> check_functype c ft at
-
-let check_subtype (c : context) (sut : subtype) at =
-  let SubT (_fin, uts, ct) = sut in
-  List.iter (fun ut -> check_typeuse c ut at) uts;
-  check_comptype c ct at
-
-let check_subtype_sub (c : context) (sut : subtype) x at =
-  let SubT (_fin, uts, ct) = sut in
-  List.iter (fun uti ->
-    let xi = idx_of_typeuse uti in
-    let SubT (fini, _, cti) = unroll_deftype (type_ c (xi @@ at)) in
-    require (xi < x) at ("forward use of type " ^ I32.to_string_u xi ^
-      " in sub type definition");
-    require (fini = NoFinal) at ("sub type " ^ I32.to_string_u x ^
-      " has final super type " ^ I32.to_string_u xi);
-    require (match_comptype c.types ct cti) at ("sub type " ^ I32.to_string_u x ^
-      " does not match super type " ^ I32.to_string_u xi)
-  ) uts
-
-let check_rectype (c : context) (rt : rectype) at : context =
-  let RecT sts = rt in
-  let x = Lib.List32.length c.types in
-  let c' = {c with types = c.types @ roll_deftypes x rt} in
-  List.iter (fun st -> check_subtype c' st at) sts;
-  Lib.List32.iteri
-    (fun i st -> check_subtype_sub c' st (Int32.add x i) at) sts;
-  c'
 
 
 let diff_reftype (nul1, ht1) (nul2, ht2) =
@@ -380,7 +373,7 @@ let check_unop unop at =
 let check_vec_binop binop at =
   match binop with
   | Value.(V128 (V128.I8x16 (V128Op.Shuffle is))) ->
-    if List.exists ((<=) 32) is then
+    if List.exists (fun i -> I8.to_int_u i >= 32) is then
       error at "invalid lane index"
   | _ -> ()
 
@@ -426,7 +419,7 @@ let check_blocktype (c : context) (bt : blocktype) at : instrtype =
   | ValBlockType None -> InstrT ([], [], [])
   | ValBlockType (Some t) -> check_valtype c t at; InstrT ([], [t], [])
   | VarBlockType x ->
-    let FuncT (ts1, ts2) = func_type c x in InstrT (ts1, ts2, [])
+    let (ts1, ts2) = func_type c x in InstrT (ts1, ts2, [])
 
 let rec check_instr (c : context) (e : instr) (s : infer_resulttype) : infer_instrtype =
   match e.it with
@@ -533,23 +526,23 @@ let rec check_instr (c : context) (e : instr) (s : infer_resulttype) : infer_ins
     c.results -->... [], []
 
   | Call x ->
-    let FuncT (ts1, ts2) = functype_of_comptype (expand_deftype (func c x)) in
+    let (ts1, ts2) = functype_of_comptype (expand_deftype (func c x)) in
     ts1 --> ts2, []
 
   | CallRef x ->
-    let FuncT (ts1, ts2) = func_type c x in
+    let (ts1, ts2) = func_type c x in
     (ts1 @ [RefT (Null, UseHT (Def (type_ c x)))]) --> ts2, []
 
   | CallIndirect (x, y) ->
     let TableT (at, _lim, t) = table c x in
-    let FuncT (ts1, ts2) = func_type c y in
+    let (ts1, ts2) = func_type c y in
     require (match_reftype c.types t (Null, FuncHT)) x.at
       ("type mismatch: instruction requires table of function type" ^
        " but table has element type " ^ string_of_reftype t);
     (ts1 @ [NumT (numtype_of_addrtype at)]) --> ts2, []
 
   | ReturnCall x ->
-    let FuncT (ts1, ts2) = functype_of_comptype (expand_deftype (func c x)) in
+    let (ts1, ts2) = functype_of_comptype (expand_deftype (func c x)) in
     require (match_resulttype c.types ts2 c.results) e.at
       ("type mismatch: current function requires result type " ^
        string_of_resulttype c.results ^
@@ -557,7 +550,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_resulttype) : infer_ins
     ts1 -->... [], []
 
   | ReturnCallRef x ->
-    let FuncT (ts1, ts2) = func_type c x in
+    let (ts1, ts2) = func_type c x in
     require (match_resulttype c.types ts2 c.results) e.at
       ("type mismatch: current function requires result type " ^
        string_of_resulttype c.results ^
@@ -566,7 +559,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_resulttype) : infer_ins
 
   | ReturnCallIndirect (x, y) ->
     let TableT (at, _lim, t) = table c x in
-    let FuncT (ts1, ts2) = func_type c y in
+    let (ts1, ts2) = func_type c y in
     require (match_reftype c.types t (Null, FuncHT)) x.at
       ("type mismatch: instruction requires table of function type" ^
        " but table has element type " ^ string_of_reftype t);
@@ -579,7 +572,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_resulttype) : infer_ins
   | Throw x ->
     let TagT ut = tag c x in
     let dt = deftype_of_typeuse ut in
-    let FuncT (ts1, ts2) = functype_of_comptype (expand_deftype dt) in
+    let (ts1, ts2) = functype_of_comptype (expand_deftype dt) in
     ts1 -->... [], []
 
   | ThrowRef ->
@@ -680,14 +673,14 @@ let rec check_instr (c : context) (e : instr) (s : infer_resulttype) : infer_ins
   | VecLoadLane (x, memop, i) ->
     let MemoryT (at, _lim) = memory c x in
     let t = check_memop c memop vec_size (fun sz -> Some sz) e.at in
-    require (i < vec_size t / Pack.packed_size memop.pack) e.at
+    require (I8.to_int_u i < vec_size t / Pack.packed_size memop.pack) e.at
       "invalid lane index";
     [NumT (numtype_of_addrtype at); VecT t] -->  [VecT t], []
 
   | VecStoreLane (x, memop, i) ->
     let MemoryT (at, _lim) = memory c x in
     let t = check_memop c memop vec_size (fun sz -> Some sz) e.at in
-    require (i < vec_size t / Pack.packed_size memop.pack) e.at
+    require (I8.to_int_u i < vec_size t / Pack.packed_size memop.pack) e.at
       "invalid lane index";
     [NumT (numtype_of_addrtype at); VecT t] -->  [], []
 
@@ -756,7 +749,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_resulttype) : infer_ins
     [RefT (Null, I31HT)] --> [NumT I32T], []
 
   | StructNew (x, initop) ->
-    let StructT fts = struct_type c x in
+    let fts = struct_type c x in
     require
       ( initop = Explicit || List.for_all (fun ft ->
           defaultable (unpacked_fieldtype ft)) fts ) x.at
@@ -764,27 +757,27 @@ let rec check_instr (c : context) (e : instr) (s : infer_resulttype) : infer_ins
     let ts = if initop = Implicit then [] else List.map unpacked_fieldtype fts in
     ts --> [RefT (NoNull, UseHT (Def (type_ c x)))], []
 
-  | StructGet (x, y, exto) ->
-    let StructT fts = struct_type c x in
-    require (y.it < Lib.List32.length fts) y.at
-      ("unknown field " ^ I32.to_string_u y.it);
-    let FieldT (_mut, st) = Lib.List32.nth fts y.it in
-    require ((exto <> None) == is_packed_storagetype st) y.at
+  | StructGet (x, i, exto) ->
+    let fts = struct_type c x in
+    require (i < Lib.List32.length fts) e.at
+      ("unknown field " ^ I32.to_string_u i);
+    let FieldT (_mut, st) = Lib.List32.nth fts i in
+    require ((exto <> None) == is_packed_storagetype st) e.at
       ("field is " ^ (if exto = None then "packed" else "unpacked"));
     let t = unpacked_storagetype st in
     [RefT (Null, UseHT (Def (type_ c x)))] --> [t], []
 
-  | StructSet (x, y) ->
-    let StructT fts = struct_type c x in
-    require (y.it < Lib.List32.length fts) y.at
-      ("unknown field " ^ I32.to_string_u y.it);
-    let FieldT (mut, st) = Lib.List32.nth fts y.it in
-    require (mut == Var) y.at "field is immutable";
+  | StructSet (x, i) ->
+    let fts = struct_type c x in
+    require (i < Lib.List32.length fts) e.at
+      ("unknown field " ^ I32.to_string_u i);
+    let FieldT (mut, st) = Lib.List32.nth fts i in
+    require (mut == Var) e.at "immutable field";
     let t = unpacked_storagetype st in
     [RefT (Null, UseHT (Def (type_ c x))); t] --> [], []
 
   | ArrayNew (x, initop) ->
-    let ArrayT ft = array_type c x in
+    let ft = array_type c x in
     require
       (initop = Explicit || defaultable (unpacked_fieldtype ft)) x.at
       "array type is not defaultable";
@@ -792,12 +785,12 @@ let rec check_instr (c : context) (e : instr) (s : infer_resulttype) : infer_ins
     (ts @ [NumT I32T]) --> [RefT (NoNull, UseHT (Def (type_ c x)))], []
 
   | ArrayNewFixed (x, n) ->
-    let ArrayT ft = array_type c x in
+    let ft = array_type c x in
     let ts = Lib.List32.make n (unpacked_fieldtype ft) in
     ts --> [RefT (NoNull, UseHT (Def (type_ c x)))], []
 
   | ArrayNewElem (x, y) ->
-    let ArrayT ft = array_type c x in
+    let ft = array_type c x in
     let rt = elem c y in
     require (match_valtype c.types (RefT rt) (unpacked_fieldtype ft)) x.at
       ("type mismatch: element segment's type " ^ string_of_reftype rt ^
@@ -805,7 +798,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_resulttype) : infer_ins
     [NumT I32T; NumT I32T] --> [RefT (NoNull, UseHT (Def (type_ c x)))], []
 
   | ArrayNewData (x, y) ->
-    let ArrayT ft = array_type c x in
+    let ft = array_type c x in
     let () = data c y in
     let t = unpacked_fieldtype ft in
     require (is_numtype t || is_vectype t) x.at
@@ -813,15 +806,15 @@ let rec check_instr (c : context) (e : instr) (s : infer_resulttype) : infer_ins
     [NumT I32T; NumT I32T] --> [RefT (NoNull, UseHT (Def (type_ c x)))], []
 
   | ArrayGet (x, exto) ->
-    let ArrayT (FieldT (_mut, st)) = array_type c x in
+    let FieldT (_mut, st) = array_type c x in
     require ((exto <> None) == is_packed_storagetype st) e.at
       ("array is " ^ (if exto = None then "packed" else "unpacked"));
     let t = unpacked_storagetype st in
     [RefT (Null, UseHT (Def (type_ c x))); NumT I32T] --> [t], []
 
   | ArraySet x ->
-    let ArrayT (FieldT (mut, st)) = array_type c x in
-    require (mut == Var) e.at "array is immutable";
+    let FieldT (mut, st) = array_type c x in
+    require (mut == Var) e.at "immutable array";
     let t = unpacked_storagetype st in
     [RefT (Null, UseHT (Def (type_ c x))); NumT I32T; t] --> [], []
 
@@ -829,21 +822,21 @@ let rec check_instr (c : context) (e : instr) (s : infer_resulttype) : infer_ins
     [RefT (Null, ArrayHT)] --> [NumT I32T], []
 
   | ArrayCopy (x, y) ->
-    let ArrayT (FieldT (mutd, std)) = array_type c x in
-    let ArrayT (FieldT (_muts, sts)) = array_type c y in
-    require (mutd = Var) e.at "array is immutable";
+    let FieldT (mutd, std) = array_type c x in
+    let FieldT (_muts, sts) = array_type c y in
+    require (mutd = Var) e.at "immutable array";
     require (match_storagetype c.types sts std) e.at "array types do not match";
     [RefT (Null, UseHT (Def (type_ c x))); NumT I32T; RefT (Null, UseHT (Def (type_ c y))); NumT I32T; NumT I32T] --> [], []
 
   | ArrayFill x ->
-    let ArrayT (FieldT (mut, st)) = array_type c x in
-    require (mut = Var) e.at "array is immutable";
+    let FieldT (mut, st) = array_type c x in
+    require (mut = Var) e.at "immutable array";
     let t = unpacked_storagetype st in
     [RefT (Null, UseHT (Def (type_ c x))); NumT I32T; t; NumT I32T] --> [], []
 
   | ArrayInitData (x, y) ->
-    let ArrayT (FieldT (mut, st)) = array_type c x in
-    require (mut = Var) e.at "array is immutable";
+    let FieldT (mut, st) = array_type c x in
+    require (mut = Var) e.at "immutable array";
     let () = data c y in
     let t = unpacked_storagetype st in
     require (is_numtype t || is_vectype t) x.at
@@ -851,8 +844,8 @@ let rec check_instr (c : context) (e : instr) (s : infer_resulttype) : infer_ins
     [RefT (Null, UseHT (Def (type_ c x))); NumT I32T; NumT I32T; NumT I32T] --> [], []
 
   | ArrayInitElem (x, y) ->
-    let ArrayT (FieldT (mut, st)) = array_type c x in
-    require (mut = Var) e.at "array is immutable";
+    let FieldT (mut, st) = array_type c x in
+    require (mut = Var) e.at "immutable array";
     let rt = elem c y in
     require (match_valtype c.types (RefT rt) (unpacked_storagetype st)) x.at
       ("type mismatch: element segment's type " ^ string_of_reftype rt ^
@@ -950,14 +943,14 @@ let rec check_instr (c : context) (e : instr) (s : infer_resulttype) : infer_ins
   | VecExtract extractop ->
     let t1 = VecT (type_vec extractop) in
     let t2 = NumT (type_vec_lane extractop) in
-    require (lane_extractop extractop < num_lanes extractop) e.at
+    require (I8.to_int_u (lane_extractop extractop) < num_lanes extractop) e.at
       "invalid lane index";
     [t1] --> [t2], []
 
   | VecReplace replaceop ->
     let t1 = VecT (type_vec replaceop) in
     let t2 = NumT (type_vec_lane replaceop) in
-    require (lane_replaceop replaceop < num_lanes replaceop) e.at
+    require (I8.to_int_u (lane_replaceop replaceop) < num_lanes replaceop) e.at
       "invalid lane index";
     [t1; t2] --> [t1], []
 
@@ -984,12 +977,12 @@ and check_catch (c : context) (cc : catch) (ts : valtype list) at =
   | Catch (x1, x2) ->
     let TagT ut = tag c x1 in
     let dt = deftype_of_typeuse ut in
-    let FuncT (ts1, ts2) = functype_of_comptype (expand_deftype dt) in
+    let (ts1, ts2) = functype_of_comptype (expand_deftype dt) in
     match_target c ts1 (label c x2) cc.at
   | CatchRef (x1, x2) ->
     let TagT ut = tag c x1 in
     let dt = deftype_of_typeuse ut in
-    let FuncT (ts1, ts2) = functype_of_comptype (expand_deftype dt) in
+    let (ts1, ts2) = functype_of_comptype (expand_deftype dt) in
     match_target c (ts1 @ [RefT (NoNull, ExnHT)]) (label c x2) cc.at
   | CatchAll x ->
     match_target c [] (label c x) cc.at
@@ -1024,7 +1017,7 @@ let check_func (c : context) (f : func) : context =
 
 let check_func_body (c : context) (f : func) =
   let Func (x, ls, es) = f.it in
-  let FuncT (ts1, ts2) = func_type c x in
+  let (ts1, ts2) = func_type c x in
   let lts = List.map (check_local c) ls in
   let c' =
     { c with
@@ -1117,7 +1110,7 @@ let check_type (c : context) (t : type_) : context =
 let check_start (c : context) (start : start) =
   let Start x = start.it in
   let ft = functype_of_comptype (expand_deftype (func c x)) in
-  require (ft = FuncT ([], [])) start.at
+  require (ft = ([], [])) start.at
     "start function must not have parameters or results"
 
 let check_import (c : context) (im : import) : context =

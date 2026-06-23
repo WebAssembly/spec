@@ -9,16 +9,15 @@ open Instance
 (* Errors *)
 
 module Link = Error.Make ()
-module Exception = Error.Make ()
 module Trap = Error.Make ()
 module Crash = Error.Make ()
 module Exhaustion = Error.Make ()
 
 exception Link = Link.Error
-exception Exception = Exception.Error
 exception Trap = Trap.Error
 exception Crash = Crash.Error (* failure that cannot happen in valid code *)
 exception Exhaustion = Exhaustion.Error
+exception Exception of region * Exn.t
 
 let table_error at = function
   | Table.Bounds -> "out of bounds table access"
@@ -127,7 +126,7 @@ let any_ref (inst : moduleinst) x i at =
 let func_ref (inst : moduleinst) x i at =
   match any_ref inst x i at with
   | FuncRef f -> f
-  | NullRef _ -> Trap.error at ("uninitialized element " ^ Int64.to_string i)
+  | NullRef -> Trap.error at ("uninitialized element " ^ Int64.to_string i)
   | _ -> Crash.error at ("type mismatch for element " ^ Int64.to_string i)
 
 let blocktype (inst : moduleinst) bt at =
@@ -135,7 +134,7 @@ let blocktype (inst : moduleinst) bt at =
   | ValBlockType None -> InstrT ([], [], [])
   | ValBlockType (Some t) -> InstrT ([], [subst_valtype (subst_of inst) t], [])
   | VarBlockType x ->
-    let FuncT (ts1, ts2) = func_type inst x in InstrT (ts1, ts2, [])
+    let (ts1, ts2) = func_type inst x in InstrT (ts1, ts2, [])
 
 let take n (vs : 'a stack) at =
   try Lib.List.take n vs with Failure _ -> Crash.error at "stack underflow"
@@ -157,25 +156,23 @@ let split n (vs : 'a stack) at = take n vs at, drop n vs at
  *   c : config
  *)
 
+let oob i n j =
+  I64.(lt_u (add i n) i || gt_u (add i n) j)
+
 let mem_oob frame x i n =
-  let mem = (memory frame.inst x) in
-  I64.gt_u (I64.add (addr_of_num i) (addr_of_num n))
-    (Memory.bound mem)
+  oob (addr_of_num i) (addr_of_num n) (Memory.bound (memory frame.inst x))
 
 let data_oob frame x i n =
-  I64.gt_u (I64.add (addr_of_num i) (addr_of_num n))
-    (Data.size (data frame.inst x))
+  oob (addr_of_num i) (addr_of_num n) (Data.size (data frame.inst x))
 
 let table_oob frame x i n =
-  I64.gt_u (I64.add (addr_of_num i) (addr_of_num n))
-    (Table.size (table frame.inst x))
+  oob (addr_of_num i) (addr_of_num n) (Table.size (table frame.inst x))
 
 let elem_oob frame x i n =
-  I64.gt_u (I64.add (addr_of_num i) (addr_of_num n))
-    (Elem.size (elem frame.inst x))
+  oob (addr_of_num i) (addr_of_num n) (Elem.size (elem frame.inst x))
 
 let array_oob a i n =
-  I64.gt_u (I64.add (Convert.I64_.extend_i32_u i) (Convert.I64_.extend_i32_u n))
+  oob (Convert.I64_.extend_i32_u i) (Convert.I64_.extend_i32_u n)
     (Convert.I64_.extend_i32_u (Aggr.array_length a))
 
 let rec step (c : config) : config =
@@ -190,6 +187,15 @@ let rec step (c : config) : config =
 
       | Nop, vs ->
         vs, []
+
+      | Drop, v :: vs' ->
+        vs', []
+
+      | Select _, Num (I32 i) :: v2 :: v1 :: vs' ->
+        if i = 0l then
+          v2 :: vs', []
+        else
+          v1 :: vs', []
 
       | Block (bt, es'), vs ->
         let InstrT (ts1, ts2, _xs) = blocktype c.frame.inst bt e.at in
@@ -225,13 +231,13 @@ let rec step (c : config) : config =
         else
           vs', [Plain (Br (Lib.List32.nth xs i)) @@ e.at]
 
-      | BrOnNull x, Ref (NullRef _) :: vs' ->
+      | BrOnNull x, Ref NullRef :: vs' ->
         vs', [Plain (Br x) @@ e.at]
 
       | BrOnNull x, Ref r :: vs' ->
         Ref r :: vs', []
 
-      | BrOnNonNull x, Ref (NullRef _) :: vs' ->
+      | BrOnNonNull x, Ref NullRef :: vs' ->
         vs', []
 
       | BrOnNonNull x, Ref r :: vs' ->
@@ -257,7 +263,7 @@ let rec step (c : config) : config =
       | Call x, vs ->
         vs, [Invoke (func c.frame.inst x) @@ e.at]
 
-      | CallRef _x, Ref (NullRef _) :: vs ->
+      | CallRef _x, Ref NullRef :: vs ->
         vs, [Trapping "null function reference" @@ e.at]
 
       | CallRef _x, Ref (FuncRef f) :: vs ->
@@ -279,7 +285,7 @@ let rec step (c : config) : config =
         | _ -> assert false
         )
 
-      | ReturnCallRef _x, Ref (NullRef _) :: vs ->
+      | ReturnCallRef _x, Ref NullRef :: vs ->
         vs, [Trapping "null function reference" @@ e.at]
 
       | ReturnCallRef x, vs ->
@@ -302,12 +308,12 @@ let rec step (c : config) : config =
         let t = tag c.frame.inst x in
         let TagT ut = Tag.type_of t in
         let dt = deftype_of_typeuse ut in
-        let FuncT (ts, _) = functype_of_comptype (expand_deftype dt) in
+        let (ts, _) = functype_of_comptype (expand_deftype dt) in
         let n = List.length ts in
         let args, vs' = split n vs e.at in
         vs', [Throwing (t, args) @@ e.at]
 
-      | ThrowRef, Ref (NullRef _) :: vs ->
+      | ThrowRef, Ref NullRef :: vs ->
         vs, [Trapping "null exception reference" @@ e.at]
 
       | ThrowRef, Ref (Exn.(ExnRef (Exn (t, args)))) :: vs ->
@@ -319,15 +325,6 @@ let rec step (c : config) : config =
         let n2 = List.length ts2 in
         let args, vs' = split n1 vs e.at in
         vs', [Handler (n2, cs, ([], [Label (n2, [], (args, List.map plain es')) @@ e.at])) @@ e.at]
-
-      | Drop, v :: vs' ->
-        vs', []
-
-      | Select _, Num (I32 i) :: v2 :: v1 :: vs' ->
-        if i = 0l then
-          v2 :: vs', []
-        else
-          v1 :: vs', []
 
       | LocalGet x, vs ->
         (match !(local c.frame x) with
@@ -493,39 +490,45 @@ let rec step (c : config) : config =
         with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at]);
 
       | VecLoadLane (x, {offset; ty; pack; _}, j), Vec (V128 v) :: Num i :: vs' ->
+        let j = I8.to_int_u j in
         let i_64 = addr_of_num i in
         let mem = memory c.frame.inst x in
         (try
           let v =
             match pack with
             | Pack8 ->
-              V128.I8x16.replace_lane j v
-                (I32Num.of_num 0 (Memory.load_num_packed Pack8 S mem i_64 offset I32T))
+              let num = Memory.load_num_packed Pack8 S mem i_64 offset I32T in
+              V128.I8x16.replace_lane j v (Convert.I8_.wrap_i32 (I32Num.of_num 0 num))
             | Pack16 ->
-              V128.I16x8.replace_lane j v
-                (I32Num.of_num 0 (Memory.load_num_packed Pack16 S mem i_64 offset I32T))
+              let num = Memory.load_num_packed Pack16 S mem i_64 offset I32T in
+              V128.I16x8.replace_lane j v (Convert.I16_.wrap_i32 (I32Num.of_num 0 num))
             | Pack32 ->
-              V128.I32x4.replace_lane j v
-                (I32Num.of_num 0 (Memory.load_num mem i_64 offset I32T))
+              let num = Memory.load_num mem i_64 offset I32T in
+              V128.I32x4.replace_lane j v (I32Num.of_num 0 num)
             | Pack64 ->
-              V128.I64x2.replace_lane j v
-                (I64Num.of_num 0 (Memory.load_num mem i_64 offset I64T))
+              let num = Memory.load_num mem i_64 offset I64T in
+              V128.I64x2.replace_lane j v (I64Num.of_num 0 num)
           in Vec (V128 v) :: vs', []
         with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at])
 
       | VecStoreLane (x, {offset; ty; pack; _}, j), Vec (V128 v) :: Num i :: vs' ->
+        let j = I8.to_int_u j in
         let i_64 = addr_of_num i in
         let mem = memory c.frame.inst x in
         (try
           (match pack with
           | Pack8 ->
-            Memory.store_num_packed Pack8 mem i_64 offset (I32 (V128.I8x16.extract_lane_s j v))
+            let num = I32 (Convert.I32_.extend_i8_s (V128.I8x16.extract_lane j v)) in
+            Memory.store_num_packed Pack8 mem i_64 offset num
           | Pack16 ->
-            Memory.store_num_packed Pack16 mem i_64 offset (I32 (V128.I16x8.extract_lane_s j v))
+            let num = I32 (Convert.I32_.extend_i16_s (V128.I16x8.extract_lane j v)) in
+            Memory.store_num_packed Pack16 mem i_64 offset num
           | Pack32 ->
-            Memory.store_num mem i_64 offset (I32 (V128.I32x4.extract_lane_s j v))
+            let num = I32 (V128.I32x4.extract_lane j v) in
+            Memory.store_num mem i_64 offset num
           | Pack64 ->
-            Memory.store_num mem i_64 offset (I64 (V128.I64x2.extract_lane_s j v))
+            let num = I64 (V128.I64x2.extract_lane j v) in
+            Memory.store_num mem i_64 offset num
           );
           vs', []
         with exn -> vs', [Trapping (memory_error e.at exn) @@ e.at])
@@ -624,19 +627,19 @@ let rec step (c : config) : config =
         vs, []
 
       | RefNull t, vs' ->
-        Ref (NullRef (subst_heaptype (subst_of c.frame.inst) t)) :: vs', []
+        Ref NullRef :: vs', []
 
       | RefFunc x, vs' ->
         let f = func c.frame.inst x in
         Ref (FuncRef f) :: vs', []
 
-      | RefIsNull, Ref (NullRef _) :: vs' ->
+      | RefIsNull, Ref NullRef :: vs' ->
         value_of_bool true :: vs', []
 
       | RefIsNull, Ref _ :: vs' ->
         value_of_bool false :: vs', []
 
-      | RefAsNonNull, Ref (NullRef _) :: vs' ->
+      | RefAsNonNull, Ref NullRef :: vs' ->
         vs', [Trapping "null reference" @@ e.at]
 
       | RefAsNonNull, Ref r :: vs' ->
@@ -661,14 +664,14 @@ let rec step (c : config) : config =
       | RefI31, Num (I32 i) :: vs' ->
         Ref (I31.I31Ref (I31.of_i32 i)) :: vs', []
 
-      | I31Get ext, Ref (NullRef _) :: vs' ->
+      | I31Get ext, Ref NullRef :: vs' ->
         vs', [Trapping "null i31 reference" @@ e.at]
 
       | I31Get ext, Ref (I31.I31Ref i) :: vs' ->
         Num (I32 (I31.to_i32 ext i)) :: vs', []
 
       | StructNew (x, initop), vs' ->
-        let StructT fts = struct_type c.frame.inst x in
+        let fts = struct_type c.frame.inst x in
         let args, vs'' =
           match initop with
           | Explicit ->
@@ -684,30 +687,30 @@ let rec step (c : config) : config =
           with Failure _ -> Crash.error e.at "type mismatch packing value"
         in Ref (Aggr.StructRef struct_) :: vs'', []
 
-      | StructGet (x, y, exto), Ref (NullRef _) :: vs' ->
+      | StructGet (x, i, exto), Ref NullRef :: vs' ->
         vs', [Trapping "null structure reference" @@ e.at]
 
-      | StructGet (x, y, exto), Ref Aggr.(StructRef (Struct (_, fs))) :: vs' ->
+      | StructGet (x, i, exto), Ref Aggr.(StructRef (Struct (_, fs))) :: vs' ->
         let f =
-          try Lib.List32.nth fs y.it
-          with Failure _ -> Crash.error y.at "undefined field"
+          try Lib.List32.nth fs i
+          with Failure _ -> Crash.error e.at "undefined field"
         in
         (try Aggr.read_field f exto :: vs', []
         with Failure _ -> Crash.error e.at "type mismatch reading field")
 
-      | StructSet (x, y), v :: Ref (NullRef _) :: vs' ->
+      | StructSet (x, i), v :: Ref NullRef :: vs' ->
         vs', [Trapping "null structure reference" @@ e.at]
 
-      | StructSet (x, y), v :: Ref Aggr.(StructRef (Struct (_, fs))) :: vs' ->
+      | StructSet (x, i), v :: Ref Aggr.(StructRef (Struct (_, fs))) :: vs' ->
         let f =
-          try Lib.List32.nth fs y.it
-          with Failure _ -> Crash.error y.at "undefined field"
+          try Lib.List32.nth fs i
+          with Failure _ -> Crash.error e.at "undefined field"
         in
         (try Aggr.write_field f v; vs', []
         with Failure _ -> Crash.error e.at "type mismatch writing field")
 
       | ArrayNew (x, initop), Num (I32 n) :: vs' ->
-        let ArrayT (FieldT (_mut, st)) = array_type c.frame.inst x in
+        let FieldT (_mut, st) = array_type c.frame.inst x in
         let arg, vs'' =
           match initop with
           | Explicit -> List.hd vs', List.tl vs'
@@ -745,7 +748,7 @@ let rec step (c : config) : config =
       | ArrayNewData (x, y), Num n :: Num s :: vs' ->
         let n_64 = addr_of_num n in
         let s_64 = addr_of_num s in
-        let ArrayT (FieldT (_mut, st)) = array_type c.frame.inst x in
+        let FieldT (_mut, st) = array_type c.frame.inst x in
         let m_64 = I64.mul n_64 (I64.of_int_u (storage_size st)) in
         if data_oob c.frame y s (I64 m_64) then
           vs', [Trapping (memory_error e.at Memory.Bounds) @@ e.at]
@@ -762,7 +765,7 @@ let rec step (c : config) : config =
             with Failure _ -> Crash.error e.at "type mismatch packing value"
           in Ref (Aggr.ArrayRef array) :: vs', []
 
-      | ArrayGet (x, exto), Num (I32 i) :: Ref (NullRef _) :: vs' ->
+      | ArrayGet (x, exto), Num (I32 i) :: Ref NullRef :: vs' ->
         vs', [Trapping "null array reference" @@ e.at]
 
       | ArrayGet (x, exto), Num (I32 i) :: Ref (Aggr.ArrayRef a) :: vs'
@@ -773,7 +776,7 @@ let rec step (c : config) : config =
         (try Aggr.read_field (Lib.List32.nth fs i) exto :: vs', []
         with Failure _ -> Crash.error e.at "type mismatch reading array")
 
-      | ArraySet x, v :: Num (I32 i) :: Ref (NullRef _) :: vs' ->
+      | ArraySet x, v :: Num (I32 i) :: Ref NullRef :: vs' ->
         vs', [Trapping "null array reference" @@ e.at]
 
       | ArraySet x, v :: Num (I32 i) :: Ref (Aggr.ArrayRef a) :: vs'
@@ -784,18 +787,18 @@ let rec step (c : config) : config =
         (try Aggr.write_field (Lib.List32.nth fs i) v; vs', []
         with Failure _ -> Crash.error e.at "type mismatch writing array")
 
-      | ArrayLen, Ref (NullRef _) :: vs' ->
+      | ArrayLen, Ref NullRef :: vs' ->
         vs', [Trapping "null array reference" @@ e.at]
 
       | ArrayLen, Ref Aggr.(ArrayRef (Array (_, fs))) :: vs' ->
         Num (I32 (Lib.List32.length fs)) :: vs', []
 
       | ArrayCopy (x, y),
-        Num _ :: Num _ :: Ref (NullRef _) :: Num _ :: Ref _ :: vs' ->
+        Num _ :: Num _ :: Ref NullRef :: Num _ :: Ref _ :: vs' ->
         vs', [Trapping "null array reference" @@ e.at]
 
       | ArrayCopy (x, y),
-        Num _ :: Num _ :: Ref _ :: Num _ :: Ref (NullRef _) :: vs' ->
+        Num _ :: Num _ :: Ref _ :: Num _ :: Ref NullRef :: vs' ->
         vs', [Trapping "null array reference" @@ e.at]
 
       | ArrayCopy (x, y),
@@ -809,7 +812,7 @@ let rec step (c : config) : config =
         else
         let exto =
           match arraytype_of_comptype (expand_deftype (Aggr.type_of_array sa)) with
-          | ArrayT (FieldT (_, PackStorageT _)) -> Some U
+          | FieldT (_, PackStorageT _) -> Some U
           | _ -> None
         in
         if I32.le_u d s then
@@ -843,7 +846,7 @@ let rec step (c : config) : config =
             Plain (ArraySet x);
           ]
 
-      | ArrayFill x, Num (I32 n) :: v :: Num (I32 i) :: Ref (NullRef _) :: vs' ->
+      | ArrayFill x, Num (I32 n) :: v :: Num (I32 i) :: Ref NullRef :: vs' ->
         vs', [Trapping "null array reference" @@ e.at]
 
       | ArrayFill x, Num (I32 n) :: v :: Num (I32 i) :: Ref (Aggr.ArrayRef a) :: vs' ->
@@ -865,14 +868,14 @@ let rec step (c : config) : config =
           ]
 
       | ArrayInitData (x, y),
-        Num _ :: Num _ :: Num _ :: Ref (NullRef _) :: vs' ->
+        Num _ :: Num _ :: Num _ :: Ref NullRef :: vs' ->
         vs', [Trapping "null array reference" @@ e.at]
 
       | ArrayInitData (x, y),
         Num (I32 n) :: Num s :: Num (I32 d) :: Ref (Aggr.ArrayRef a) :: vs' ->
         let s_64 = addr_of_num s in
         let n_64 = Convert.I64_.extend_i32_u n in
-        let ArrayT (FieldT (_mut, st)) = array_type c.frame.inst x in
+        let FieldT (_mut, st) = array_type c.frame.inst x in
         let m_64 = I64.mul n_64 (I64.of_int_u (storage_size st)) in
         if array_oob a d n then
           vs', [Trapping "out of bounds array access" @@ e.at]
@@ -896,7 +899,7 @@ let rec step (c : config) : config =
           ]
 
       | ArrayInitElem (x, y),
-        Num _ :: Num _ :: Num _ :: Ref (NullRef _) :: vs' ->
+        Num _ :: Num _ :: Num _ :: Ref NullRef :: vs' ->
         vs', [Trapping "null array reference" @@ e.at]
 
       | ArrayInitElem (x, y),
@@ -923,14 +926,14 @@ let rec step (c : config) : config =
             Plain (ArrayInitElem (x, y));
           ]
 
-      | ExternConvert Internalize, Ref (NullRef _) :: vs' ->
-        Ref (NullRef NoneHT) :: vs', []
+      | ExternConvert Internalize, Ref NullRef :: vs' ->
+        Ref NullRef :: vs', []
 
       | ExternConvert Internalize, Ref (Extern.ExternRef r) :: vs' ->
         Ref r :: vs', []
 
-      | ExternConvert Externalize, Ref (NullRef _) :: vs' ->
-        Ref (NullRef NoExternHT) :: vs', []
+      | ExternConvert Externalize, Ref NullRef :: vs' ->
+        Ref NullRef :: vs', []
 
       | ExternConvert Externalize, Ref r :: vs' ->
         Ref (Extern.ExternRef r) :: vs', []
@@ -1067,7 +1070,7 @@ let rec step (c : config) : config =
       take n vs0 e.at @ vs, []
 
     | Frame (n, frame', (vs', {it = ReturningInvoke (vs0, f); at} :: es')), vs ->
-      let FuncT (ts1, _ts2) = functype_of_comptype (expand_deftype (Func.type_of f)) in
+      let (ts1, _ts2) = functype_of_comptype (expand_deftype (Func.type_of f)) in
       take (List.length ts1) vs0 e.at @ vs, [Invoke f @@ at]
 
     | Frame (n, frame', (vs', e' :: es')), vs when is_jumping e' ->
@@ -1112,15 +1115,14 @@ let rec step (c : config) : config =
       Exhaustion.error e.at "call stack exhausted"
 
     | Invoke f, vs ->
-      let FuncT (ts1, ts2) = functype_of_comptype (expand_deftype (Func.type_of f)) in
+      let (ts1, ts2) = functype_of_comptype (expand_deftype (Func.type_of f)) in
       let n1, n2 = List.length ts1, List.length ts2 in
       let args, vs' = split n1 vs e.at in
       (match f with
       | Func.AstFunc (_, inst', func) ->
         let Func (_x, ls, es) = func.it in
         let m = Lib.Promise.value inst' in
-        let s = subst_of m in
-        let ts = List.map (fun {it = Local t; _} -> subst_valtype s t) ls in
+        let ts = List.map (fun {it = Local t; _} -> t) ls in
         let lvs = List.(rev (map Option.some args) @ map default_value ts) in
         let frame' = {inst = m; locals = List.map ref lvs} in
         let instr' = [Label (n2, [], ([], List.map plain es)) @@ func.at] in
@@ -1142,8 +1144,7 @@ let rec eval (c : config) : value stack =
     Trap.error at msg
 
   | vs, {it = Throwing (a, args); at} :: _ ->
-    let msg = "uncaught exception with args (" ^ string_of_values args ^ ")" in
-    Exception.error at msg
+    raise (Exception (at, Exn.Exn (a, args)))
 
   | vs, es ->
     eval (step c)
@@ -1157,7 +1158,7 @@ let at_func = function
 
 let invoke (func : funcinst) (vs : value list) : value list =
   let at = at_func func in
-  let FuncT (ts1, _ts2) = functype_of_comptype (expand_deftype (Func.type_of func)) in
+  let (ts1, _ts2) = functype_of_comptype (expand_deftype (Func.type_of func)) in
   if List.length vs <> List.length ts1 then
     Crash.error at "wrong number of arguments";
   if not (List.for_all2 (fun v -> Match.match_valtype [] (type_of_value v)) vs ts1) then
@@ -1179,7 +1180,7 @@ let init_type (inst : moduleinst) (type_ : type_) : moduleinst =
   let x = Lib.List32.length inst.types in
   {inst with types = inst.types @ roll_deftypes x rt}
 
-let init_import (inst : moduleinst) (ex : extern) (im : import) : moduleinst =
+let init_import (inst : moduleinst) (ex : externinst) (im : import) : moduleinst =
   let Import (module_name, item_name, xt) = im.it in
   let xt = subst_externtype (subst_of inst) xt in
   let xt' = externtype_of inst.types ex in
@@ -1301,7 +1302,7 @@ let init_list f xs (inst : moduleinst) : moduleinst =
 let init_list2 f xs ys (inst : moduleinst) : moduleinst =
   List.fold_left2 f inst xs ys
 
-let init (m : module_) (exts : extern list) : moduleinst =
+let init (m : module_) (exts : externinst list) : moduleinst =
   if List.length exts <> List.length m.it.imports then
     Link.error m.at "wrong number of imports provided for initialisation";
   let inst =

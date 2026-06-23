@@ -28,8 +28,6 @@ val match_storagetype : context -> storagetype -> storagetype -> bool
 val match_comptype : context -> comptype -> comptype -> bool
 val match_deftype : context -> deftype -> deftype -> bool
 
-val match_functype : context -> functype -> functype -> bool
-
 val match_tabletype : context -> tabletype -> tabletype -> bool
 val match_memorytype : context -> memorytype -> memorytype -> bool
 val match_globaltype : context -> globaltype -> globaltype -> bool

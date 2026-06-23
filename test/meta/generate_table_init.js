@@ -28,6 +28,7 @@ function emit_a() {
 
 function emit_b(insn, table) {
     let tt = table == 2 ? 'i64' : 'i32';
+    let t2 = table == 2 ? '  (table $t2 i64 30 30 funcref)\n' : '\n';
     print(
 `
 (module
@@ -39,8 +40,7 @@ function emit_b(insn, table) {
   (import "a" "ef4" (func (result i32)))    ;; index 4
   (table $t0 30 30 funcref)
   (table $t1 30 30 funcref)
-  (table $t2 i64 30 30 funcref)
-  (elem (table $t${table}) (${tt}.const 2) func 3 1 4 1)
+${t2}  (elem (table $t${table}) (${tt}.const 2) func 3 1 4 1)
   (elem funcref
     (ref.func 2) (ref.func 7) (ref.func 1) (ref.func 8))
   (elem (table $t${table}) (${tt}.const 12) func 7 5 2 3 6)
@@ -84,7 +84,8 @@ emit_a();
 // to count through the vector entries when debugging.
 let e = undefined;
 
-for ( let table of [0, 1, 2] ) {
+const tables = INDEX_TYPE == 'i64' ? [0, 1, 2] : [0,1];
+for ( let table of tables ) {
     let tt = table == 2 ? 'i64' : 'i32';
     // Passive init that overwrites all-null entries
     tab_test(`(table.init $t${table} 1 (${tt}.const 7) (i32.const 0) (i32.const 4))`,
@@ -214,9 +215,34 @@ tab_test2("(elem.drop 1)",
           "(elem.drop 1)",
           undefined);
 
-// drop, then init
+// init from a passive segment succeeds...
+tab_test1("(table.init 1 (i32.const 12) (i32.const 1) (i32.const 1))",
+          0,
+          undefined);
+
+// ...but dropping the segment first makes the same init trap
 tab_test2("(elem.drop 1)",
           "(table.init 1 (i32.const 12) (i32.const 1) (i32.const 1))",
+          "out of bounds table access");
+
+// drop, then init: zero length at zero src and in-range dst is OK
+tab_test2("(elem.drop 1)",
+          "(table.init 1 (i32.const 12) (i32.const 0) (i32.const 0))",
+          undefined);
+
+// drop, then init: zero length, src offset past dropped seg end is invalid
+tab_test2("(elem.drop 1)",
+          "(table.init 1 (i32.const 12) (i32.const 1) (i32.const 0))",
+          "out of bounds table access");
+
+// drop, then init: zero length, dst offset at end of table is OK
+tab_test2("(elem.drop 1)",
+          "(table.init 1 (i32.const 30) (i32.const 0) (i32.const 0))",
+          undefined);
+
+// drop, then init: zero length, dst offset past end of table is invalid
+tab_test2("(elem.drop 1)",
+          "(table.init 1 (i32.const 31) (i32.const 0) (i32.const 0))",
           "out of bounds table access");
 
 // init: seg ix is valid passive, but length to copy > len of seg
@@ -388,3 +414,26 @@ print(
   (elem funcref) (elem funcref) (elem funcref) (elem funcref)
   (elem funcref)
   (func (table.init 64 (i32.const 0) (i32.const 0) (i32.const 0))))`)
+
+// Test that element segments are not re-evaluated on every `table.init`.
+{
+    const tabty = INDEX_TYPE == 'i64' ? ' i64' : '';
+    print(
+`
+;; Test that element segments are not re-evaluated on every \`table.init\`.
+(module
+  (type $arr (array (mut arrayref)))
+
+  (table $table${tabty} 2 arrayref)
+  (elem $elem arrayref (item (array.new_default $arr (i32.const 0))))
+
+  (func (export "run") (result i32)
+    (table.init $table $elem (${INDEX_TYPE}.const 0) (i32.const 0) (i32.const 1))
+    (table.init $table $elem (${INDEX_TYPE}.const 1) (i32.const 0) (i32.const 1))
+    (ref.eq (table.get $table (${INDEX_TYPE}.const 0))
+            (table.get $table (${INDEX_TYPE}.const 1)))
+  )
+)
+
+(assert_return (invoke "run") (i32.const 1))`);
+}

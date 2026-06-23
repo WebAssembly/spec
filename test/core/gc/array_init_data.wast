@@ -12,7 +12,7 @@
       (array.init_data $a $d1 (local.get $1) (i32.const 0) (i32.const 0) (i32.const 0))
     )
   )
-  "array is immutable"
+  "immutable array"
 )
 
 (assert_invalid

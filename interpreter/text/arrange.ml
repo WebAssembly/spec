@@ -10,6 +10,7 @@ open Sexpr
 (* Generic formatting *)
 
 let nat n = I32.to_string_u (I32.of_int_u n)
+let nat8 = I8.to_string_u
 let nat32 = I32.to_string_u
 let nat64 = I64.to_string_u
 
@@ -92,19 +93,11 @@ let decls kind ts = tab kind (atom valtype) ts
 let fieldtype (FieldT (mut, t)) =
   mutability (atom storagetype t) mut
 
-let structtype (StructT fts) =
-  Node ("struct", list (fun ft -> Node ("field", [fieldtype ft])) fts)
-
-let arraytype (ArrayT ft) =
-  Node ("array", [fieldtype ft])
-
-let functype (FuncT (ts1, ts2)) =
-  Node ("func", decls "param" ts1 @ decls "result" ts2)
-
 let comptype = function
-  | StructCT st -> structtype st
-  | ArrayCT at -> arraytype at
-  | FuncCT ft -> functype ft
+  | StructT fts ->
+    Node ("struct", list (fun ft -> Node ("field", [fieldtype ft])) fts)
+  | ArrayT ft -> Node ("array", [fieldtype ft])
+  | FuncT (ts1, ts2) -> Node ("func", decls "param" ts1 @ decls "result" ts2)
 
 let subtype = function
   | SubT (Final, [], ct) -> comptype ct
@@ -296,7 +289,7 @@ struct
     | Max sx -> "max" ^ ext sx
     | AvgrU -> "avgr" ^ ext U
     | Narrow sx -> "narrow_i" ^ double xxxx ^ ext sx
-    | Shuffle is -> "shuffle " ^ String.concat " " (List.map nat is)
+    | Shuffle is -> "shuffle " ^ String.concat " " (List.map nat8 is)
     | Swizzle -> "swizzle"
     | RelaxedSwizzle -> "relaxed_swizzle"
     | RelaxedQ15MulRS -> "relaxed_q15mulr" ^ ext S
@@ -381,15 +374,15 @@ struct
     | Splat -> "splat"
 
   let pextractop xxxx (op : sx nextractop) = match op with
-    | Extract (i, sx) -> "extract_lane" ^ ext sx ^ " " ^ nat i
+    | Extract (i, sx) -> "extract_lane" ^ ext sx ^ " " ^ nat8 i
 
   let extractop xxxx (op : unit nextractop) = match op with
-    | Extract (i, ()) -> "extract_lane " ^ nat i
+    | Extract (i, ()) -> "extract_lane " ^ nat8 i
 
   let replaceop xxxx (op : nreplaceop) = match op with
-    | Replace i -> "replace_lane " ^ nat i
+    | Replace i -> "replace_lane " ^ nat8 i
 
-  let lane_oper (pop, iop, fop) op =
+  let laneoper (pop, iop, fop) op =
     match op with
     | V128.I8x16 o -> pop "8x16" o
     | V128.I16x8 o -> pop "16x8" o
@@ -414,7 +407,7 @@ let voper (vop) op =
 
 let shoper (pop, iop, fop) op =
   match op with
-  | V128 o -> V128.string_of_shape o ^ "." ^ V128Op.lane_oper (pop, iop, fop) o
+  | V128 o -> V128.string_of_shape o ^ "." ^ V128Op.laneoper (pop, iop, fop) o
 
 let unop = oper (IntOp.unop, FloatOp.unop)
 let binop = oper (IntOp.binop, FloatOp.binop)
@@ -469,7 +462,7 @@ let vstoreop x op =
 
 let vlaneop instr x op i =
   memop (instr ^ packsize op.pack ^ "_lane") x vectype op
-    (packed_size op.pack) ^ " " ^ nat i
+    (packed_size op.pack) ^ " " ^ nat8 i
 
 let initop = function
   | Explicit -> ""
@@ -561,9 +554,9 @@ let rec instr e =
     | RefI31 -> "ref.i31", []
     | I31Get sx -> "i31.get" ^ ext sx, []
     | StructNew (x, op) -> "struct.new" ^ initop op ^ " " ^ idx x, []
-    | StructGet (x, y, sxo) ->
-      "struct.get" ^ opt_s ext sxo ^ " " ^ idx x ^ " " ^ idx y, []
-    | StructSet (x, y) -> "struct.set " ^ idx x ^ " " ^ idx y, []
+    | StructGet (x, i, sxo) ->
+      "struct.get" ^ opt_s ext sxo ^ " " ^ idx x ^ " " ^ nat32 i, []
+    | StructSet (x, i) -> "struct.set " ^ idx x ^ " " ^ nat32 i, []
     | ArrayNew (x, op) -> "array.new" ^ initop op ^ " " ^ idx x, []
     | ArrayNewFixed (x, n) -> "array.new_fixed " ^ idx x ^ " " ^ nat32 n, []
     | ArrayNewElem (x, y) -> "array.new_elem " ^ idx x ^ " " ^ idx y, []
@@ -778,16 +771,21 @@ let num mode = if mode = `Binary then hex_string_of_num else string_of_num
 let vec mode = if mode = `Binary then hex_string_of_vec else string_of_vec
 
 let ref_ = function
-  | NullRef t -> Node ("ref.null " ^ heaptype t, [])
+  | Value.NullRef -> Node ("ref.null", [])
   | Script.HostRef n -> Node ("ref.host " ^ nat32 n, [])
   | Extern.ExternRef (Script.HostRef n) -> Node ("ref.extern " ^ nat32 n, [])
   | _ -> assert false
 
-let literal mode lit =
-  match lit.it with
+let value mode v =
+  match v with
   | Num n -> Node (constop n ^ " " ^ num mode n, [])
   | Vec v -> Node (vconstop v ^ " " ^ vec mode v, [])
   | Ref r -> ref_ r
+
+let literal mode lit =
+  match lit.it with
+  | ValLit v -> value mode v
+  | NullLit t -> Node ("ref.null " ^ heaptype t, [])
 
 let definition mode isdef x_opt def =
   try
@@ -837,16 +835,16 @@ let nanop (n : nanop) =
   | _ -> .
 
 let num_pat mode = function
-  | NumPat n -> literal mode (Value.Num n.it @@ n.at)
+  | NumPat n -> literal mode (ValLit (Value.Num n.it) @@ n.at)
   | NanPat nan -> Node (constop nan.it ^ " " ^ nanop nan, [])
 
 let lane_pat mode pat shape =
   let choose fb ft = if mode = `Binary then fb else ft in
   match pat, shape with
   | NumPat {it = Value.I32 i; _}, V128.I8x16 () ->
-    choose I8.to_hex_string I8.to_string_s i
+    choose I8.to_hex_string I8.to_string_s (Convert.I8_.wrap_i32 i)
   | NumPat {it = Value.I32 i; _}, V128.I16x8 () ->
-    choose I16.to_hex_string I16.to_string_s i
+    choose I16.to_hex_string I16.to_string_s (Convert.I16_.wrap_i32 i)
   | NumPat n, _ -> num mode n.it
   | NanPat nan, _ -> nanop nan
 
@@ -858,7 +856,7 @@ let vec_pat mode = function
 let ref_pat = function
   | RefPat r -> ref_ r.it
   | RefTypePat t -> Node ("ref." ^ heaptype t, [])
-  | NullPat -> Node ("ref.null", [])
+  | NullPat t -> Node ("ref.null " ^ heaptype t, [])
 
 let rec result mode res =
   match res.it with

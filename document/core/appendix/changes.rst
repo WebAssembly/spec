@@ -175,7 +175,7 @@ Added instructions that modify ranges of memory or table entries. [#proposal-ref
 
 * New :ref:`passive <syntax-elemmode>` form of :ref:`element segment <syntax-elem>`
 
-* New :ref:`data count section <binary-datacountsec>` in binary format
+* New :ref:`data count section <binary-datacntsec>` in binary format
 
 * Active data and element segments boundaries are no longer checked at compile time but may trap instead
 
@@ -338,7 +338,7 @@ Extended Constant Expressions
 
 Allowed basic numeric computations in constant expressions. [#proposal-extconst]_
 
-* Extended set of :ref:`constant instructions <valid-const>` with:
+* Extended set of :ref:`constant instructions <valid-constant>` with:
 
   - :math:`\K{i}\X{nn}\K{.add}`
   - :math:`\K{i}\X{nn}\K{.sub}`
@@ -367,7 +367,7 @@ Added instructions to perform tail calls. [#proposal-tailcall]_
 Exception Handling
 ..................
 
-Added tag definitions, imports, and exports, and instructions to throw and catch exceptions [#proposal-exn]_
+Added tag definitions, imports, and exports, and instructions to throw and catch exceptions. [#proposal-exn]_
 
 * :ref:`Modules <syntax-module>` may
 
@@ -498,9 +498,9 @@ Added more precise types for references. [#proposal-typedref]_
 
   - |REFFUNC| with more precise result type
 
-* Refined typing of :ref:`local instructions <valid-instr-variable>` and :ref:`instruction sequences <valid-instr-seq>` to track the :ref:`initialization status <syntax-init>` of :ref:`locals <syntax-local>` with non-:ref:`defaultable <valid-defaultable>` type
+* Refined typing of :ref:`local instructions <valid-instr-variable>` and :ref:`instruction sequences <valid-instrs>` to track the :ref:`initialization status <syntax-init>` of :ref:`locals <syntax-local>` with non-defaultable type
 
-* Refined decoding of :ref:`active <syntax-elemmode>` :ref:`element segments <binary-elem>` with implicit element type and plain function indices (opcode :math:`0`) to produce :ref:`non-nullable <syntax-nullable>` :ref:`reference type <syntax-reftype>`.
+* Refined decoding of :ref:`active <syntax-elemmode>` :ref:`element segments <binary-elem>` with implicit element type and plain function indices (opcode :math:`0`) to produce :ref:`non-null <syntax-null>` :ref:`reference type <syntax-reftype>`
 
 * Extended :ref:`table definitions <syntax-table>` with optional initializer expression
 
@@ -584,7 +584,7 @@ Added managed reference types. [#proposal-gc]_
   - |ANYCONVERTEXTERN|
   - |EXTERNCONVERTANY|
 
-* Extended set of :ref:`constant instructions <valid-const>` with:
+* Extended set of :ref:`constant instructions <valid-constant>` with:
 
   - |REFI31|
   - |STRUCTNEW|
@@ -604,26 +604,26 @@ Relaxed Vector Instructions
 Added new *relaxed* vector instructions,
 whose behaviour is non-deterministic and implementation-dependent. [#proposal-relaxed]_
 
-* New binary :ref:`vector instruction <syntax-instr-relaxed>`:
+* New binary :ref:`vector instruction <syntax-instr-vec-relaxed>`:
 
   - :math:`\K{f}\!N\!\K{x}\!M\!\K{.relaxed\_min}`
   - :math:`\K{f}\!N\!\K{x}\!M\!\K{.relaxed\_max}`
   - :math:`\K{i16x8.relaxed\_q15mulr\_s}`
   - :math:`\K{i16x8.relaxed\_dot\_i8x16\_i7x16\_s}`
 
-* New ternary :ref:`vector instruction <syntax-instr-relaxed>`:
+* New ternary :ref:`vector instruction <syntax-instr-vec-relaxed>`:
 
   - :math:`\K{f}\!N\!\K{x}\!M\!\K{.relaxed\_madd}`
   - :math:`\K{f}\!N\!\K{x}\!M\!\K{.relaxed\_nmadd}`
   - :math:`\K{i}\!N\!\K{x}\!M\!\K{.relaxed\_laneselect}`
   - :math:`\K{i32x4.relaxed\_dot\_i8x16\_i7x16\_add\_s}`
 
-* New conversion :ref:`vector instructions <syntax-instr-relaxed>`:
+* New conversion :ref:`vector instructions <syntax-instr-vec-relaxed>`:
 
   - :math:`\K{i32x4.relaxed\_trunc\_f32x4\_}\sx`
   - :math:`\K{i32x4.relaxed\_trunc\_f64x2\_}\sx\K{\_zero}`
 
-* New byte reordering :ref:`vector instruction <syntax-instr-relaxed>`:
+* New byte reordering :ref:`vector instruction <syntax-instr-vec-relaxed>`:
 
   - :math:`\K{i8x16.relaxed\_swizzle}`
 
@@ -686,4 +686,4 @@ mirroring the role of custom sections in the binary format. [#proposal-annot]_
    https://github.com/WebAssembly/spec/tree/main/proposals/relaxed-simd/
 
 .. [#proposal-annot]
-   https://github.com/WebAssembly/annotations/tree/main/proposals/annotations/
+   https://github.com/WebAssembly/spec/tree/main/proposals/annotations/
