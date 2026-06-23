@@ -2502,10 +2502,19 @@ C \href{../valid/instructions.html#valid-instr}{\vdash} {\mathit{sh}}_1 {.} {{\h
 </li>
 <li><p>Or:</p>
 <blockquote>
+<div><ul class="simple">
+<li><p>The instruction sequence <span class="math notranslate nohighlight">\({{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}}^\ast}\)</span> is of the form <span class="math notranslate nohighlight">\({\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}'}\)</span>.</p></li>
+<li><p>The <a class="reference internal" href="conventions.html#syntax-instrtype"><span class="std std-ref">instruction type</span></a> <span class="math notranslate nohighlight">\({\mathit{it}}\)</span> is of the form <span class="math notranslate nohighlight">\({t_1^\ast}~{\mathrel{\href{../valid/conventions.html#syntax-instrtype}{\rightarrow}}}_{{x^\ast}}\,{t_2^\ast}\)</span>.</p></li>
+<li><p>The <a class="reference internal" href="../syntax/instructions.html#syntax-instr"><span class="std std-ref">instruction</span></a> <span class="math notranslate nohighlight">\({\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}'}\)</span> is <a class="reference internal" href="#valid-instr"><span class="std std-ref">valid</span></a> with the <a class="reference internal" href="conventions.html#syntax-instrtype"><span class="std std-ref">instruction type</span></a> <span class="math notranslate nohighlight">\({t_1^\ast}~{\mathrel{\href{../valid/conventions.html#syntax-instrtype}{\rightarrow}}}_{{x^\ast}}\,{t_2^\ast}\)</span>.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>Or:</p>
+<blockquote>
 <div><ul>
-<li><p>The instruction sequence <span class="math notranslate nohighlight">\({{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}}^\ast}\)</span> is of the form <span class="math notranslate nohighlight">\({\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}}_1~{{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}}_2^\ast}\)</span>.</p></li>
+<li><p>The instruction sequence <span class="math notranslate nohighlight">\({{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}}^\ast}\)</span> is of the form <span class="math notranslate nohighlight">\({{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}}_1^\ast}~{{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}}_2^\ast}\)</span>.</p></li>
 <li><p>The <a class="reference internal" href="conventions.html#syntax-instrtype"><span class="std std-ref">instruction type</span></a> <span class="math notranslate nohighlight">\({\mathit{it}}\)</span> is of the form <span class="math notranslate nohighlight">\({t_1^\ast}~{\mathrel{\href{../valid/conventions.html#syntax-instrtype}{\rightarrow}}}_{{x_1^\ast}~{x_2^\ast}}\,{t_3^\ast}\)</span>.</p></li>
-<li><p>The <a class="reference internal" href="../syntax/instructions.html#syntax-instr"><span class="std std-ref">instruction</span></a> <span class="math notranslate nohighlight">\({\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}}_1\)</span> is <a class="reference internal" href="#valid-instr"><span class="std std-ref">valid</span></a> with the <a class="reference internal" href="conventions.html#syntax-instrtype"><span class="std std-ref">instruction type</span></a> <span class="math notranslate nohighlight">\({t_1^\ast}~{\mathrel{\href{../valid/conventions.html#syntax-instrtype}{\rightarrow}}}_{{x_1^\ast}}\,{t_2^\ast}\)</span>.</p></li>
+<li><p>The instruction sequence <span class="math notranslate nohighlight">\({{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}}_1^\ast}\)</span> is <a class="reference internal" href="#valid-instr"><span class="std std-ref">valid</span></a> with the <a class="reference internal" href="conventions.html#syntax-instrtype"><span class="std std-ref">instruction type</span></a> <span class="math notranslate nohighlight">\({t_1^\ast}~{\mathrel{\href{../valid/conventions.html#syntax-instrtype}{\rightarrow}}}_{{x_1^\ast}}\,{t_2^\ast}\)</span>.</p></li>
 <li><p>For all <span class="math notranslate nohighlight">\(x_1\)</span> in <span class="math notranslate nohighlight">\({x_1^\ast}\)</span>:</p>
 <blockquote>
 <div><ul class="simple">
@@ -2549,13 +2558,22 @@ C \href{../valid/instructions.html#valid-instrs}{\vdash} \epsilon : \epsilon \ri
 <div class="math notranslate nohighlight">
 \[\begin{array}{&#64;{}c&#64;{}}\displaystyle
 \frac{
-C \href{../valid/instructions.html#valid-instr}{\vdash} {\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}}_1 : {t_1^\ast} \mathrel{\href{../valid/conventions.html#syntax-instrtype}{\rightarrow}}_{{x_1^\ast}} {t_2^\ast}
+C \href{../valid/instructions.html#valid-instr}{\vdash} {\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}} : {t_1^\ast} \mathrel{\href{../valid/conventions.html#syntax-instrtype}{\rightarrow}}_{{x^\ast}} {t_2^\ast}
+}{
+C \href{../valid/instructions.html#valid-instrs}{\vdash} {\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}} : {t_1^\ast} \mathrel{\href{../valid/conventions.html#syntax-instrtype}{\rightarrow}}_{{x^\ast}} {t_2^\ast}
+}
+\qquad
+\end{array}\]</div>
+<div class="math notranslate nohighlight">
+\[\begin{array}{&#64;{}c&#64;{}}\displaystyle
+\frac{
+C \href{../valid/instructions.html#valid-instrs}{\vdash} {{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}}_1^\ast} : {t_1^\ast} \mathrel{\href{../valid/conventions.html#syntax-instrtype}{\rightarrow}}_{{x_1^\ast}} {t_2^\ast}
  \qquad
 (C{.}\href{../valid/conventions.html#context}{\mathsf{locals}}{}[x_1] = {\href{../valid/conventions.html#syntax-init}{\mathit{init}}}~t)^\ast
  \qquad
 C{}[{.}\href{../syntax/modules.html#syntax-local}{\mathsf{local}}{}[{x_1^\ast}] = {(\href{../valid/conventions.html#syntax-init}{\mathsf{set}}~t)^\ast}] \href{../valid/instructions.html#valid-instrs}{\vdash} {{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}}_2^\ast} : {t_2^\ast} \mathrel{\href{../valid/conventions.html#syntax-instrtype}{\rightarrow}}_{{x_2^\ast}} {t_3^\ast}
 }{
-C \href{../valid/instructions.html#valid-instrs}{\vdash} {\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}}_1~{{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}}_2^\ast} : {t_1^\ast} \mathrel{\href{../valid/conventions.html#syntax-instrtype}{\rightarrow}}_{{x_1^\ast}~{x_2^\ast}} {t_3^\ast}
+C \href{../valid/instructions.html#valid-instrs}{\vdash} {{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}}_1^\ast}~{{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}}_2^\ast} : {t_1^\ast} \mathrel{\href{../valid/conventions.html#syntax-instrtype}{\rightarrow}}_{{x_1^\ast}~{x_2^\ast}} {t_3^\ast}
 }
 \qquad
 \end{array}\]</div>
@@ -2571,6 +2589,14 @@ C \href{../valid/types.html#valid-instrtype}{\vdash} {\mathit{it}'} : \href{../v
 C \href{../valid/instructions.html#valid-instrs}{\vdash} {{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}}^\ast} : {\mathit{it}'}
 }
 \qquad
+\end{array}\]</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This <em>subsumption rule</em> allows to weaken the type of an instruction sequence to a supertype,
+which includes the ability to drop init variables <span class="math notranslate nohighlight">\({x^\ast}\)</span> from the instruction type in a context where they are not needed, for example, at the end of the body of a <a class="reference internal" href="#valid-block"><span class="std std-ref">block</span></a>.</p>
+</div>
+<div class="math notranslate nohighlight">
+\[\begin{array}{&#64;{}c&#64;{}}\displaystyle
 \frac{
 C \href{../valid/instructions.html#valid-instrs}{\vdash} {{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}}^\ast} : {t_1^\ast} \mathrel{\href{../valid/conventions.html#syntax-instrtype}{\rightarrow}}_{{x^\ast}} {t_2^\ast}
  \qquad
@@ -2582,15 +2608,14 @@ C \href{../valid/instructions.html#valid-instrs}{\vdash} {{\href{../syntax/instr
 \end{array}\]</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>In combination with the previous rule,
-subsumption allows to compose instructions whose types would not directly fit otherwise.
+<p>In combination with the previous two rules,
+this <em>frame rule</em> allows to compose instructions whose types would not directly fit otherwise.
 For example, consider the instruction sequence</p>
 <div class="math notranslate nohighlight">
 \[(\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~1)~(\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~2)~(\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}} {.} \href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{add}})\]</div>
 <p>To type this sequence, its subsequence <span class="math notranslate nohighlight">\((\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~2)~(\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}} {.} \href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{add}})\)</span> needs to be valid with an intermediate type.
 But the direct type of <span class="math notranslate nohighlight">\((\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~2)\)</span> is <span class="math notranslate nohighlight">\(\epsilon \rightarrow \href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}\)</span>, not matching the two inputs expected by <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}} {.} \href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{add}}\)</span>.
-The subsumption rule allows to weaken the type of <span class="math notranslate nohighlight">\((\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~2)\)</span> to the supertype <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}} \rightarrow \href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}~\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}\)</span>, such that it can be composed with <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}} {.} \href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{add}}\)</span> and yields the intermediate type <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}} \rightarrow \href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}~\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}\)</span> for the subsequence. That can in turn be composed with the first constant.</p>
-<p>Furthermore, subsumption allows to drop init variables <span class="math notranslate nohighlight">\({x^\ast}\)</span> from the instruction type in a context where they are not needed, for example, at the end of the body of a <a class="reference internal" href="#valid-block"><span class="std std-ref">block</span></a>.</p>
+The rule allows to weaken the type of <span class="math notranslate nohighlight">\((\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~2)\)</span> to the supertype <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}} \rightarrow \href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}~\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}\)</span>, such that it can be composed with <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}} {.} \href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{add}}\)</span> and yields the intermediate type <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}} \rightarrow \href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}~\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}\)</span> for the subsequence. That can in turn be composed with the first constant.</p>
 </div>
 </section>
 <section id="expressions">
