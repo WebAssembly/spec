@@ -4143,11 +4143,13 @@ relation Local_ok: `%|-%:%`(context, local, localtype)
   ;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec
   rule set{C : context, t : valtype}:
     `%|-%:%`(C, LOCAL_local(t), `%%`_localtype(SET_init, t))
+    -- Valtype_ok: `%|-%:OK`(C, t)
     -- Defaultable: `|-%DEFAULTABLE`(t,)
 
   ;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec
   rule unset{C : context, t : valtype}:
     `%|-%:%`(C, LOCAL_local(t), `%%`_localtype(UNSET_init, t))
+    -- Valtype_ok: `%|-%:OK`(C, t)
     -- Nondefaultable: `|-%NONDEFAULTABLE`(t,)
 
 ;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec
@@ -4255,13 +4257,13 @@ relation Export_ok: `%|-%:%%`(context, export, name, externtype)
 ;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec
 rec {
 
-;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec:136.1-136.100
+;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec:138.1-138.100
 relation Globals_ok: `%|-%:%`(context, global*, globaltype*)
-  ;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec:181.1-182.17
+  ;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec:183.1-184.17
   rule empty{C : context}:
     `%|-%:%`(C, [], [])
 
-  ;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec:184.1-187.54
+  ;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec:186.1-189.54
   rule cons{C : context, global_1 : global, `global*` : global*, gt_1 : globaltype, `gt*` : globaltype*}:
     `%|-%:%`(C, [global_1] ++ global*{global <- `global*`}, [gt_1] ++ gt*{gt <- `gt*`})
     -- Global_ok: `%|-%:%`(C, global_1, gt_1)
@@ -4271,13 +4273,13 @@ relation Globals_ok: `%|-%:%`(context, global*, globaltype*)
 ;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec
 rec {
 
-;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec:135.1-135.98
+;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec:137.1-137.98
 relation Types_ok: `%|-%:%`(context, type*, deftype*)
-  ;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec:173.1-174.17
+  ;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec:175.1-176.17
   rule empty{C : context}:
     `%|-%:%`(C, [], [])
 
-  ;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec:176.1-179.49
+  ;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec:178.1-181.49
   rule cons{C : context, type_1 : type, `type*` : type*, `dt_1*` : deftype*, `dt*` : deftype*}:
     `%|-%:%`(C, [type_1] ++ type*{type <- `type*`}, dt_1*{dt_1 <- `dt_1*`} ++ dt*{dt <- `dt*`})
     -- Type_ok: `%|-%:%`(C, type_1, dt_1*{dt_1 <- `dt_1*`})
@@ -16010,11 +16012,13 @@ relation Local_ok: `%|-%:%`(context, local, localtype)
   ;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec
   rule set{C : context, t : valtype}:
     `%|-%:%`(C, LOCAL_local(t), `%%`_localtype(SET_init, t))
+    -- Valtype_ok: `%|-%:OK`(C, t)
     -- Defaultable: `|-%DEFAULTABLE`(t,)
 
   ;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec
   rule unset{C : context, t : valtype}:
     `%|-%:%`(C, LOCAL_local(t), `%%`_localtype(UNSET_init, t))
+    -- Valtype_ok: `%|-%:OK`(C, t)
     -- Nondefaultable: `|-%NONDEFAULTABLE`(t,)
 
 ;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec
@@ -16122,13 +16126,13 @@ relation Export_ok: `%|-%:%%`(context, export, name, externtype)
 ;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec
 rec {
 
-;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec:136.1-136.100
+;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec:138.1-138.100
 relation Globals_ok: `%|-%:%`(context, global*, globaltype*)
-  ;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec:181.1-182.17
+  ;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec:183.1-184.17
   rule empty{C : context}:
     `%|-%:%`(C, [], [])
 
-  ;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec:184.1-187.54
+  ;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec:186.1-189.54
   rule cons{C : context, global_1 : global, `global*` : global*, gt_1 : globaltype, `gt*` : globaltype*}:
     `%|-%:%`(C, [global_1] ++ global*{global <- `global*`}, [gt_1] ++ gt*{gt <- `gt*`})
     -- Global_ok: `%|-%:%`(C, global_1, gt_1)
@@ -16138,13 +16142,13 @@ relation Globals_ok: `%|-%:%`(context, global*, globaltype*)
 ;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec
 rec {
 
-;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec:135.1-135.98
+;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec:137.1-137.98
 relation Types_ok: `%|-%:%`(context, type*, deftype*)
-  ;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec:173.1-174.17
+  ;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec:175.1-176.17
   rule empty{C : context}:
     `%|-%:%`(C, [], [])
 
-  ;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec:176.1-179.49
+  ;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec:178.1-181.49
   rule cons{C : context, type_1 : type, `type*` : type*, `dt_1*` : deftype*, `dt*` : deftype*}:
     `%|-%:%`(C, [type_1] ++ type*{type <- `type*`}, dt_1*{dt_1 <- `dt_1*`} ++ dt*{dt <- `dt*`})
     -- Type_ok: `%|-%:%`(C, type_1, dt_1*{dt_1 <- `dt_1*`})
@@ -27987,11 +27991,13 @@ relation Local_ok: `%|-%:%`(context, local, localtype)
   ;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec
   rule set{C : context, t : valtype}:
     `%|-%:%`(C, LOCAL_local(t), `%%`_localtype(SET_init, t))
+    -- Valtype_ok: `%|-%:OK`(C, t)
     -- Defaultable: `|-%DEFAULTABLE`(t,)
 
   ;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec
   rule unset{C : context, t : valtype}:
     `%|-%:%`(C, LOCAL_local(t), `%%`_localtype(UNSET_init, t))
+    -- Valtype_ok: `%|-%:OK`(C, t)
     -- Nondefaultable: `|-%NONDEFAULTABLE`(t,)
 
 ;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec
@@ -28109,13 +28115,13 @@ relation Export_ok: `%|-%:%%`(context, export, name, externtype)
 ;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec
 rec {
 
-;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec:136.1-136.100
+;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec:138.1-138.100
 relation Globals_ok: `%|-%:%`(context, global*, globaltype*)
-  ;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec:181.1-182.17
+  ;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec:183.1-184.17
   rule empty{C : context}:
     `%|-%:%`(C, [], [])
 
-  ;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec:184.1-187.54
+  ;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec:186.1-189.54
   rule cons{C : context, global_1 : global, `global*` : global*, gt_1 : globaltype, `gt*` : globaltype*}:
     `%|-%:%`(C, [global_1] ++ global*{global <- `global*`}, [gt_1] ++ gt*{gt <- `gt*`})
     -- Global_ok: `%|-%:%`(C, global_1, gt_1)
@@ -28125,13 +28131,13 @@ relation Globals_ok: `%|-%:%`(context, global*, globaltype*)
 ;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec
 rec {
 
-;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec:135.1-135.98
+;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec:137.1-137.98
 relation Types_ok: `%|-%:%`(context, type*, deftype*)
-  ;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec:173.1-174.17
+  ;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec:175.1-176.17
   rule empty{C : context}:
     `%|-%:%`(C, [], [])
 
-  ;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec:176.1-179.49
+  ;; ../../../../specification/wasm-latest/2.4-validation.modules.spectec:178.1-181.49
   rule cons{C : context, type_1 : type, `type*` : type*, `dt_1*` : deftype*, `dt*` : deftype*}:
     `%|-%:%`(C, [type_1] ++ type*{type <- `type*`}, dt_1*{dt_1 <- `dt_1*`} ++ dt*{dt <- `dt*`})
     -- Type_ok: `%|-%:%`(C, type_1, dt_1*{dt_1 <- `dt_1*`})
