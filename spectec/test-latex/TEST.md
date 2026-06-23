@@ -5077,7 +5077,7 @@ $$
 \frac{
 C \vdash {\mathit{typeuse}} : \mathsf{ok}
  \qquad
-{\mathit{typeuse}} \approx_{C} \mathsf{func}~{t_1^\ast} \rightarrow {t_2^\ast}
+{\mathit{typeuse}} \approx_{C} \mathsf{func}~{t_1^\ast} \rightarrow {}[]
 }{
 C \vdash {\mathit{typeuse}} : \mathsf{ok}
 } \, {[\textsc{\scriptsize K{-}tag}]}

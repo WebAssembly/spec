@@ -3171,10 +3171,10 @@ relation Limits_ok: `%|-%:%`(context, limits, nat)
 ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec
 relation Tagtype_ok: `%|-%:OK`(context, tagtype)
   ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec
-  rule _{C : context, typeuse : typeuse, `t_1*` : valtype*, `t_2*` : valtype*}:
+  rule _{C : context, typeuse : typeuse, `t_1*` : valtype*}:
     `%|-%:OK`(C, typeuse)
     -- Typeuse_ok: `%|-%:OK`(C, typeuse)
-    -- Expand_use: `%~~_%%`(typeuse, C, `FUNC%->%`_comptype(`%`_resulttype(t_1*{t_1 <- `t_1*`},), `%`_resulttype(t_2*{t_2 <- `t_2*`},)))
+    -- Expand_use: `%~~_%%`(typeuse, C, `FUNC%->%`_comptype(`%`_resulttype(t_1*{t_1 <- `t_1*`},), `%`_resulttype([],)))
 
 ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec
 relation Globaltype_ok: `%|-%:OK`(context, globaltype)
@@ -15038,10 +15038,10 @@ relation Limits_ok: `%|-%:%`(context, limits, nat)
 ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec
 relation Tagtype_ok: `%|-%:OK`(context, tagtype)
   ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec
-  rule _{C : context, typeuse : typeuse, `t_1*` : valtype*, `t_2*` : valtype*}:
+  rule _{C : context, typeuse : typeuse, `t_1*` : valtype*}:
     `%|-%:OK`(C, typeuse)
     -- Typeuse_ok: `%|-%:OK`(C, typeuse)
-    -- Expand_use: `%~~_%%`(typeuse, C, `FUNC%->%`_comptype(`%`_resulttype(t_1*{t_1 <- `t_1*`},), `%`_resulttype(t_2*{t_2 <- `t_2*`},)))
+    -- Expand_use: `%~~_%%`(typeuse, C, `FUNC%->%`_comptype(`%`_resulttype(t_1*{t_1 <- `t_1*`},), `%`_resulttype([],)))
 
 ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec
 relation Globaltype_ok: `%|-%:OK`(context, globaltype)
@@ -26927,10 +26927,10 @@ relation Limits_ok: `%|-%:%`(context, limits, nat)
 ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec
 relation Tagtype_ok: `%|-%:OK`(context, tagtype)
   ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec
-  rule _{C : context, typeuse : typeuse, `t_1*` : valtype*, `t_2*` : valtype*}:
+  rule _{C : context, typeuse : typeuse, `t_1*` : valtype*}:
     `%|-%:OK`(C, typeuse)
     -- Typeuse_ok: `%|-%:OK`(C, typeuse)
-    -- Expand_use: `%~~_%%`(typeuse, C, `FUNC%->%`_comptype(`%`_resulttype(t_1*{t_1 <- `t_1*`},), `%`_resulttype(t_2*{t_2 <- `t_2*`},)))
+    -- Expand_use: `%~~_%%`(typeuse, C, `FUNC%->%`_comptype(`%`_resulttype(t_1*{t_1 <- `t_1*`},), `%`_resulttype([],)))
 
 ;; ../../../../specification/wasm-latest/2.1-validation.types.spectec
 relation Globaltype_ok: `%|-%:OK`(context, globaltype)
