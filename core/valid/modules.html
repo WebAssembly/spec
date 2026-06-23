@@ -327,6 +327,7 @@ C \href{../valid/modules.html#valid-func}{\vdash} \href{../syntax/modules.html#s
 <p>The <a class="reference internal" href="../syntax/modules.html#syntax-local"><span class="std std-ref">local</span></a> <span class="math notranslate nohighlight">\((\href{../syntax/modules.html#syntax-local}{\mathsf{local}}~t)\)</span> is <a class="reference internal" href="#valid-local"><span class="std std-ref">valid</span></a> with the <a class="reference internal" href="conventions.html#syntax-localtype"><span class="std std-ref">local type</span></a> <span class="math notranslate nohighlight">\(({\href{../valid/conventions.html#syntax-init}{\mathit{init}}}~t)\)</span> if:</p>
 <blockquote>
 <div><ul>
+<li><p>The <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value type</span></a> <span class="math notranslate nohighlight">\(t\)</span> is <a class="reference internal" href="types.html#valid-valtype"><span class="std std-ref">valid</span></a>.</p></li>
 <li><p>Either:</p>
 <blockquote>
 <div><ul class="simple">
@@ -348,12 +349,16 @@ C \href{../valid/modules.html#valid-func}{\vdash} \href{../syntax/modules.html#s
 <div class="math notranslate nohighlight">
 \[\begin{array}{&#64;{}c&#64;{}}\displaystyle
 \frac{
+C \href{../valid/types.html#valid-valtype}{\vdash} t : \href{../valid/types.html#valid-valtype}{\mathsf{ok}}
+ \qquad
 {{\href{../exec/runtime.html#aux-default}{\mathrm{default}}}}_{t} \neq \epsilon
 }{
 C \href{../valid/modules.html#valid-local}{\vdash} \href{../syntax/modules.html#syntax-local}{\mathsf{local}}~t : \href{../valid/conventions.html#syntax-init}{\mathsf{set}}~t
 }
 \qquad
 \frac{
+C \href{../valid/types.html#valid-valtype}{\vdash} t : \href{../valid/types.html#valid-valtype}{\mathsf{ok}}
+ \qquad
 {{\href{../exec/runtime.html#aux-default}{\mathrm{default}}}}_{t} = \epsilon
 }{
 C \href{../valid/modules.html#valid-local}{\vdash} \href{../syntax/modules.html#syntax-local}{\mathsf{local}}~t : \href{../valid/conventions.html#syntax-init}{\mathsf{unset}}~t
