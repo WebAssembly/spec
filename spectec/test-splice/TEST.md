@@ -104,13 +104,13 @@ C \vdash \epsilon : \epsilon \rightarrow \epsilon
 }
 \qquad
 \frac{
-C \vdash {\mathit{instr}}_1 : {t_1^\ast} \rightarrow_{{x_1^\ast}} {t_2^\ast}
+C \vdash {{\mathit{instr}}_1^\ast} : {t_1^\ast} \rightarrow_{{x_1^\ast}} {t_2^\ast}
  \qquad
 (C{.}\mathsf{locals}{}[x_1] = {\mathit{init}}~t)^\ast
  \qquad
 C{}[{.}\mathsf{local}{}[{x_1^\ast}] = {(\mathsf{set}~t)^\ast}] \vdash {{\mathit{instr}}_2^\ast} : {t_2^\ast} \rightarrow_{{x_2^\ast}} {t_3^\ast}
 }{
-C \vdash {\mathit{instr}}_1~{{\mathit{instr}}_2^\ast} : {t_1^\ast} \rightarrow_{{x_1^\ast}~{x_2^\ast}} {t_3^\ast}
+C \vdash {{\mathit{instr}}_1^\ast}~{{\mathit{instr}}_2^\ast} : {t_1^\ast} \rightarrow_{{x_1^\ast}~{x_2^\ast}} {t_3^\ast}
 }
 \\[3ex]\displaystyle
 \frac{
@@ -1192,6 +1192,7 @@ warning: rule `Instr_ok2/frame` was never spliced
 warning: rule `Instr_ok2/handler` was never spliced
 warning: rule `Instr_ok2/trap` was never spliced
 warning: rule `Instrs_ok/empty` was spliced more than once
+warning: rule `Instrs_ok/instr` was never spliced
 warning: rule `Instrs_ok/sub` was never spliced
 warning: rule `Instrs_ok/frame` was spliced more than once
 warning: rule `Instrs_ok2/empty` was never spliced
@@ -2210,6 +2211,7 @@ warning: rule prose `Instr_ok2/trap` was never spliced
 warning: rule prose `Instrs_ok` was never spliced
 warning: rule prose `Instrs_ok/empty` was never spliced
 warning: rule prose `Instrs_ok/frame` was never spliced
+warning: rule prose `Instrs_ok/instr` was never spliced
 warning: rule prose `Instrs_ok/seq` was never spliced
 warning: rule prose `Instrs_ok/sub` was never spliced
 warning: rule prose `Instrs_ok2` was never spliced

@@ -1358,22 +1358,28 @@ $${rule-prose: Instrs_ok}
 
 $${rule: Instrs_ok/empty}
 
+$${rule: Instrs_ok/instr}
+
 $${rule: Instrs_ok/seq}
 
-$${rule: {Instrs_ok/sub Instrs_ok/frame}}
+$${rule: Instrs_ok/sub}
 
 .. note::
-   In combination with the previous rule,
-   subsumption allows to compose instructions whose types would not directly fit otherwise.
+   This *subsumption rule* allows to weaken the type of an instruction sequence to a supertype,
+   which includes the ability to drop init variables ${:x*} from the instruction type in a context where they are not needed, for example, at the end of the body of a :ref:`block <valid-block>`.
+
+$${rule: Instrs_ok/frame}
+
+.. note::
+   In combination with the previous two rules,
+   this *frame rule* allows to compose instructions whose types would not directly fit otherwise.
    For example, consider the instruction sequence
 
    $${instr*: (CONST I32 1) (CONST I32 2) (BINOP I32 ADD)}
 
    To type this sequence, its subsequence ${instr*: (CONST I32 2) (BINOP I32 ADD)} needs to be valid with an intermediate type.
    But the direct type of ${instr: (CONST I32 2)} is ${instrtype: eps -> I32}, not matching the two inputs expected by ${instr: $($(BINOP I32 ADD))}.
-   The subsumption rule allows to weaken the type of ${instr: (CONST I32 2)} to the supertype ${instrtype: I32 -> I32 I32}, such that it can be composed with ${instr: $($(BINOP I32 ADD))} and yields the intermediate type ${instrtype: I32 -> I32 I32} for the subsequence. That can in turn be composed with the first constant.
-
-   Furthermore, subsumption allows to drop init variables ${:x*} from the instruction type in a context where they are not needed, for example, at the end of the body of a :ref:`block <valid-block>`.
+   The rule allows to weaken the type of ${instr: (CONST I32 2)} to the supertype ${instrtype: I32 -> I32 I32}, such that it can be composed with ${instr: $($(BINOP I32 ADD))} and yields the intermediate type ${instrtype: I32 -> I32 I32} for the subsequence. That can in turn be composed with the first constant.
 
 
 .. index:: expression, result type
