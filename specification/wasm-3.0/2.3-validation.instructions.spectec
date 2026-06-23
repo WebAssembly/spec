@@ -613,10 +613,14 @@ rule Instr_ok/vcvtop:
 rule Instrs_ok/empty:
   C |- eps : eps -> eps
 
+rule Instrs_ok/instr:
+  C |- instr : t_1* ->_(x*) t_2*
+  -- Instr_ok: C |- instr_1 : t_1* ->_(x*) t_2*
+
 ;; TODO(3, rossberg): enable x_1*#x_2* to avoid space
 rule Instrs_ok/seq:
-  C |- instr_1 instr_2* : t_1* ->_(x_1* x_2*) t_3*
-  -- Instr_ok: C |- instr_1 : t_1* ->_(x_1*) t_2*
+  C |- instr_1* instr_2* : t_1* ->_(x_1* x_2*) t_3*
+  -- Instrs_ok: C |- instr_1* : t_1* ->_(x_1*) t_2*
   -- (if C.LOCALS[x_1] = init t)*
   -- Instrs_ok: $with_locals(C, x_1*, (SET t)*) |- instr_2* : t_2* ->_(x_2*) t_3*
 
