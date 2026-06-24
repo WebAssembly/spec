@@ -5,16 +5,6 @@
 [![CI for specs](https://github.com/WebAssembly/spec/actions/workflows/ci-spec.yml/badge.svg)](https://github.com/WebAssembly/spec/actions/workflows/ci-spec.yml)
 [![CI for interpreter & tests](https://github.com/WebAssembly/spec/actions/workflows/ci-interpreter.yml/badge.svg)](https://github.com/WebAssembly/spec/actions/workflows/ci-interpreter.yml)
 
-# Content Security Policy Proposal for WebAssembly
-
-This repository is a clone of github.com/WebAssembly/spec/. It is meant for
-discussion, prototype specification and implementation of a proposal
-to add better Content Security Policy (CSP) support to WebAssembly.
-
-See the [overview](proposals/CSP.md) for a summary of the proposal.
-
-Original README from upstream repository follows...
-
 
 # spec
 
