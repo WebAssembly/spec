@@ -1178,11 +1178,11 @@ let rec translate_rgroup' (rule: rule_def) =
     | (None, b) -> Some b, List.tl blocks
   in
 
-  (* HARDCODE: Insert ThrowI if the current wasm instruction is throw_ref *)
-  let throw_block = if instr_name <> "throw_ref" then [] else
-    match List.hd pops |> lhs_of_prem |> it with
-    | TupE (e :: _) -> [throwI (translate_exp e)]
-    | _ -> assert false
+  (* HARDCODE: Insert ThrowI as the fallthrough for throw_addr when no matching
+     LABEL_, FRAME_, or HANDLER_ context is found, signalling an unhandled exception. *)
+  let throw_block = if instr_name <> "throw_addr" then [] else
+    let winstr = extract_winstr (List.hd rgroup) rule.at in
+    [throwI (translate_exp winstr)]
   in
 
   let ctxt_block = match ctxt_blocks with
