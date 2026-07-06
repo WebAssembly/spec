@@ -583,7 +583,7 @@ rule Step/vstore-val:
 
 rule Step/vstore_lane-oob:
   z; (CONST I32 i) (VCONST V128 c) (VSTORE_LANE V128 N ao j)  ~>  z; TRAP
-  -- if $(i + ao.OFFSET + N) > |$mem(z, 0).BYTES|
+  -- if $(i + ao.OFFSET + N/8) > |$mem(z, 0).BYTES|
 
 rule Step/vstore_lane-val:
   z; (CONST I32 i) (VCONST V128 c) (VSTORE_LANE V128 N ao j)  ~>  $with_mem(z, 0, $(i + ao.OFFSET), $(N/8), b*); eps
