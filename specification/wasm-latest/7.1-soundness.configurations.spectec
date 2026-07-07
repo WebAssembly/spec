@@ -343,7 +343,8 @@ rule Localval_ok/set:
   -- Val_ok: s |- val : t
 
 rule Localval_ok/unset:
-  s |- eps : UNSET BOT
+  s |- eps : UNSET t
+  -- Valtype_ok: {} |- t : OK
 
 rule Frame_ok:
   s |- {LOCALS (val?)*, MODULE moduleinst} : C ++ {LOCALS lct*}
