@@ -7737,7 +7737,7 @@ The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\as
 
 #. Pop the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i)` from the stack.
 
-#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + N > {|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
+#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + N / 8 > {|z{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}|}`, then:
 
    a. Trap.
 
@@ -12350,7 +12350,7 @@ Step/vstore_lane V128 N ao j
 3. Pop the value (V128.CONST c) from the stack.
 4. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 5. Pop the value (I32.CONST i) from the stack.
-6. If (((i + ao.OFFSET) + N) > |$mem(z, 0).BYTES|), then:
+6. If (((i + ao.OFFSET) + (N / 8)) > |$mem(z, 0).BYTES|), then:
   a. Trap.
 7. Let M be (128 / N).
 8. Let Jnn be $jsize^-1(N).
@@ -17891,7 +17891,7 @@ The value :math:`{{\mathit{val}}^?}` is :ref:`valid <valid-val>` with the local 
 
       * The initialization status :math:`{\mathit{init}}` is of the form :math:`\mathsf{unset}`.
 
-      * The value type :math:`t` is of the form :math:`\mathsf{bot}`.
+      * Under the context :math:`\{ \mathsf{return}~\epsilon \}`, the value type :math:`t` is :ref:`valid <valid-val>`.
 
 
 
@@ -17904,7 +17904,10 @@ The value :math:`{\mathit{val}}` is :ref:`valid <valid-val>` with the local type
 
 
 
-The value :math:`\epsilon` is :ref:`valid <valid-val>` with the local type :math:`(\mathsf{unset}~\mathsf{bot})`.
+The value :math:`\epsilon` is :ref:`valid <valid-val>` with the local type :math:`(\mathsf{unset}~t)` if:
+
+
+   * Under the context :math:`\{ \mathsf{return}~\epsilon \}`, the value type :math:`t` is :ref:`valid <valid-val>`.
 
 
 
@@ -21690,7 +21693,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
 
-#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + N > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
+#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + N / 8 > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
 
    a. Trap.
 
@@ -29817,14 +29820,15 @@ Localval_ok
   - Or:
     - val? is ?().
     - init is UNSET.
-    - t is BOT.
+    - Under the context { RETURN: ?() }, t is valid.
 
 Localval_ok/set
 - the value ?(val) is valid with the local type (SET t) if:
   - the value val is valid with the value type t.
 
 Localval_ok/unset
-- the value ?() is valid with the local type (UNSET BOT).
+- the value ?() is valid with the local type (UNSET t) if:
+  - Under the context { RETURN: ?() }, the value type t is valid.
 
 Datainst_ok
 - the data instance { BYTES: b* } is valid with the data type OK.
@@ -31641,7 +31645,7 @@ Step/vstore_lane V128 N x ao j
 3. Pop the value (V128.CONST c) from the stack.
 4. Assert: Due to validation, a value of value type num is on the top of the stack.
 5. Pop the value (at.CONST i) from the stack.
-6. If (((i + ao.OFFSET) + N) > |$mem(z, x).BYTES|), then:
+6. If (((i + ao.OFFSET) + (N / 8)) > |$mem(z, x).BYTES|), then:
   a. Trap.
 7. Let M be (128 / N).
 8. Let Jnn be $jsize^-1(N).

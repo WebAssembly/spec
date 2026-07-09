@@ -13,9 +13,9 @@ syntax pack_(Pnn) = iN($psizenn(Pnn))
 syntax lane_(lanetype)
 syntax lane_(numtype) = num_(numtype)
 syntax lane_(packtype) = pack_(packtype)
-syntax lane_(Jnn) = iN($lsize(Jnn))  ;; HACK
+syntax lane_(Jnn) = iN($lsizenn(Jnn))  ;; HACK
 
-syntax vec_(Vnn) = vN($vsize(Vnn))
+syntax vec_(Vnn) = vN($vsizenn(Vnn))
 
 syntax lit_(storagetype)
 syntax lit_(numtype) = num_(numtype)

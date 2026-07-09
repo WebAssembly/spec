@@ -2025,11 +2025,11 @@ syntax lane_(lanetype : lanetype)
 
 
   ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec
-  syntax lane_{Jnn : Jnn}((Jnn : Jnn <: lanetype)) = iN($lsize((Jnn : Jnn <: lanetype)))
+  syntax lane_{Jnn : Jnn}((Jnn : Jnn <: lanetype)) = iN($lsizenn((Jnn : Jnn <: lanetype)))
 
 
 ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec
-syntax vec_{Vnn : Vnn}(Vnn) = vN($vsize(Vnn))
+syntax vec_{Vnn : Vnn}(Vnn) = vN($vsizenn(Vnn))
 
 ;; ../../../../specification/wasm-latest/1.3-syntax.instructions.spectec
 syntax lit_(storagetype : storagetype)
@@ -7524,10 +7524,10 @@ relation Step: `%~>%`(config, config)
     `%~>%`(`%;%`_config(z, [CONST_instr((at : addrtype <: numtype), i) VCONST_instr(V128_vectype, c) VSTORE_instr(V128_vectype, x, ao)]), `%;%`_config($with_mem(z, x, (i!`%`_num_.0 + ao.OFFSET_memarg!`%`_u64.0), ((($vsize(V128_vectype) : nat <:> rat) / (8 : nat <:> rat)) : rat <:> nat), b*{b <- `b*`}), []))
     -- if (b*{b <- `b*`} = $vbytes_(V128_vectype, c))
 
-  ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:530.1-533.50
+  ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:530.1-533.52
   rule `vstore_lane-oob`{z : state, at : addrtype, i : num_((at : addrtype <: numtype)), c : vec_(V128_Vnn), N : N, x : idx, ao : memarg, j : laneidx}:
     `%~>%`(`%;%`_config(z, [CONST_instr((at : addrtype <: numtype), i) VCONST_instr(V128_vectype, c) VSTORE_LANE_instr(V128_vectype, `%`_sz(N,), x, ao, j)]), `%;%`_config(z, [TRAP_instr]))
-    -- if (((i!`%`_num_.0 + ao.OFFSET_memarg!`%`_u64.0) + N) > |$mem(z, x).BYTES_meminst|)
+    -- if (((i!`%`_num_.0 + ao.OFFSET_memarg!`%`_u64.0) + (((N : nat <:> rat) / (8 : nat <:> rat)) : rat <:> nat)) > |$mem(z, x).BYTES_meminst|)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:535.1-540.49
   rule `vstore_lane-val`{z : state, at : addrtype, i : num_((at : addrtype <: numtype)), c : vec_(V128_Vnn), N : N, x : idx, ao : memarg, j : laneidx, `b*` : byte*, Jnn : Jnn, M : M}:
@@ -8166,8 +8166,9 @@ relation Localval_ok: `%|-%:%`(store, val?, localtype)
     -- Val_ok: `%|-%:%`(s, val, t)
 
   ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
-  rule unset{s : store}:
-    `%|-%:%`(s, ?(), `%%`_localtype(UNSET_init, BOT_valtype))
+  rule unset{s : store, t : valtype}:
+    `%|-%:%`(s, ?(), `%%`_localtype(UNSET_init, t))
+    -- Valtype_ok: `%|-%:OK`({TYPES [], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], RETURN ?(), REFS [], RECS []}, t)
 
 ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
 relation Datainst_ok: `%|-%:%`(store, datainst, datatype)

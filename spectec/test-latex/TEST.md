@@ -3649,8 +3649,8 @@ $$
 \begin{array}[t]{@{}lrrl@{}l@{}}
 & {{\mathit{lane}}}_{{\mathit{numtype}}} & ::= & {{\mathit{num}}}_{{\mathit{numtype}}} \\
 & {{\mathit{lane}}}_{{\mathit{packtype}}} & ::= & {{\mathit{pack}}}_{{\mathit{packtype}}} \\
-& {{\mathit{lane}}}_{{\mathsf{i}}{N}} & ::= & {i}{{|{\mathsf{i}}{N}|}} \\
-& {{\mathit{vec}}}_{{\mathsf{v}}{N}} & ::= & {v}{{|{\mathsf{v}}{N}|}} \\
+& {{\mathit{lane}}}_{{\mathsf{i}}{N}} & ::= & {i}{N} \\
+& {{\mathit{vec}}}_{{\mathsf{v}}{N}} & ::= & {v}{N} \\
 \end{array}
 $$
 
@@ -10311,7 +10311,7 @@ $$
 \begin{array}[t]{@{}lrcl@{}l@{}}
 {[\textsc{\scriptsize E{-}vstore\_lane{-}oob}]} \quad & z ; ({\mathit{at}}{.}\mathsf{const}~i)~(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)~({\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}}{N}{\mathsf{\_}}{\mathsf{lane}}~x~{\mathit{ao}}~j) & \hookrightarrow & z ; \mathsf{trap} &  \\
 &&& \multicolumn{2}{@{}l@{}}{\quad
-\quad \mbox{if}~ i + {\mathit{ao}}{.}\mathsf{offset} + N > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}
+\quad \mbox{if}~ i + {\mathit{ao}}{.}\mathsf{offset} + N / 8 > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}
 } \\
 {[\textsc{\scriptsize E{-}vstore\_lane{-}val}]} \quad & z ; ({\mathit{at}}{.}\mathsf{const}~i)~(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)~({\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}}{N}{\mathsf{\_}}{\mathsf{lane}}~x~{\mathit{ao}}~j) & \hookrightarrow & z{}[{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8] = {b^\ast}] ; \epsilon &  \\
 &&& \multicolumn{2}{@{}l@{}}{\quad
@@ -14855,8 +14855,9 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
+\{  \} \vdash t : \mathsf{ok}
 }{
-s \vdash \epsilon : \mathsf{unset}~\mathsf{bot}
+s \vdash \epsilon : \mathsf{unset}~t
 } \, {[\textsc{\scriptsize Localval\_ok{-}unset}]}
 \qquad
 \end{array}
