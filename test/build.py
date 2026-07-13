@@ -50,11 +50,11 @@ def compile_wasm_interpreter():
         sys.exit(1)
     print("Done!")
 
-def ensure_wasm_executable(path_to_wasm):
+def ensure_wasm_executable():
     """
     Ensure we have built the wasm spec interpreter.
     """
-    result = call(path_to_wasm, '-v', '-e', '')
+    result = call(WASM_EXEC, '-v', '-e', '')
     if result != 0:
         print('Unable to run the wasm executable')
         sys.exit(1)
@@ -260,7 +260,7 @@ if __name__ == '__main__':
     if args.compile:
         compile_wasm_interpreter()
 
-    ensure_wasm_executable(WASM_EXEC)
+    ensure_wasm_executable()
 
     if js_dir is not None:
         ensure_empty_dir(js_dir)
