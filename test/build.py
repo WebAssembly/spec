@@ -30,14 +30,17 @@ def run(*cmd):
 
 # Preconditions.
 def ensure_remove_dir(path):
+    """Remove `path` if it exists."""
     if os.path.exists(path):
         shutil.rmtree(path)
 
 def ensure_empty_dir(path):
+    """Create an empty directory at `path`, removing any existing one."""
     ensure_remove_dir(path)
     os.mkdir(path)
 
 def compile_wasm_interpreter():
+    """Compile the wasm interpreter; exit the process if this fails."""
     print("Recompiling the wasm interpreter...")
     result = run('make', '-C', INTERPRETER_DIR, 'clean', 'default')
     if result.returncode != 0:
@@ -48,7 +51,7 @@ def compile_wasm_interpreter():
 
 def ensure_wasm_executable():
     """
-    Ensure we have built the wasm spec interpreter.
+    Ensure we have built the wasm spec interpreter; exit the process if it doesn't exist.
     """
     result = run(WASM_EXEC, '-v', '-e', '')
     if result.returncode != 0:
@@ -58,14 +61,19 @@ def ensure_wasm_executable():
 
 # JS harness.
 def convert_one_wast_file(inputs):
+    """Translate a `.wast` to JS using the wasm spec interpreter."""
     wast_file, js_file = inputs
     print('Compiling {} to JS...'.format(wast_file))
     return run(WASM_EXEC, wast_file, '-j', '-o', js_file)
 
 def convert_wast_to_js(out_js_dir):
     """
-    Compile all the wast files to JS and store the results in the JS dir,
+    Compile the wast files in `WAST_TESTS_DIR` to JS and store the results in `out_js_dir`,
     which is cleared first.
+
+    This excludes the tests with `.fail.` in the file name.
+
+    The compilation happens in parallel, using 8 processes.
     """
 
     ensure_empty_dir(out_js_dir)
@@ -99,6 +107,12 @@ def convert_wast_to_js(out_js_dir):
     return [js_file for (wast_file, js_file) in inputs]
 
 def copy_harness_files(out_js_dir, include_harness):
+    """
+    Copy harness files into `out_js_dir/harness`.
+
+    This always includes the {sync,async}_index.js files,
+    and the testharness files if `include_harness` is true.
+    """
     harness_dir = os.path.join(out_js_dir, 'harness')
     ensure_empty_dir(harness_dir)
 
@@ -109,6 +123,7 @@ def copy_harness_files(out_js_dir, include_harness):
         shutil.copy(js_file, harness_dir)
 
 def build_js(out_js_dir):
+    """Entry point for building all the JS tests."""
     print('Building JS...')
     convert_wast_to_js(out_js_dir)
     copy_harness_files(out_js_dir, False)
@@ -136,6 +151,8 @@ HTML_BOTTOM = """
 """
 
 def wrap_single_test(js_file):
+    """Replace the file at `js_file` with one that wraps the code in an IIFE that also calls
+    `reinitializeRegistry()` after the test."""
     test_func_name = os.path.basename(js_file).replace('.', '_').replace('-', '_')
 
     content = "(function {}() {{\n".format(test_func_name)
@@ -168,6 +185,12 @@ def build_html_from_js(tests, html_dir, use_sync):
             f.write(content)
 
 def build_html(html_dir, use_sync):
+    """
+    Entry point for building the HTML versions of the tests.
+
+    We assume the tests will be run using a global copy of `testharness.js`, served from
+    `/resources` as happens in web-platform-tests.
+    """
     print("Building HTML tests...")
 
     js_html_dir = os.path.join(html_dir, 'js')
@@ -183,6 +206,7 @@ def build_html(html_dir, use_sync):
 
 # Front page harness.
 def build_front_page(out_dir, use_sync):
+    """Entry point for building a single HTML file including all of the tests."""
     print('Building front page containing all the HTML tests...')
 
     js_out_dir = os.path.join(out_dir, 'js')
