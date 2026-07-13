@@ -63,7 +63,14 @@ def convert_one_wast_file(inputs):
     return run(WASM_EXEC, wast_file, '-j', '-o', js_file)
 
 def convert_wast_to_js(out_js_dir):
-    """Compile all the wast files to JS and store the results in the JS dir."""
+    """
+    Compile all the wast files to JS and store the results in the JS dir,
+    which is cleared first.
+    """
+
+    ensure_empty_dir(out_js_dir)
+    for d in WAST_TEST_SUBDIRS:
+        ensure_empty_dir(os.path.join(out_js_dir, d))
 
     inputs = []
 
@@ -103,9 +110,6 @@ def copy_harness_files(out_js_dir, include_harness):
 
 def build_js(out_js_dir):
     print('Building JS...')
-    ensure_empty_dir(out_js_dir)
-    for d in WAST_TEST_SUBDIRS:
-        ensure_empty_dir(os.path.join(out_js_dir, d))
     convert_wast_to_js(out_js_dir)
     copy_harness_files(out_js_dir, False)
     print('Done building JS.')
@@ -143,14 +147,10 @@ def wrap_single_test(js_file):
         f.write(content)
 
 def build_html_js(out_dir):
-    ensure_empty_dir(out_dir)
-    for d in WAST_TEST_SUBDIRS:
-        ensure_empty_dir(os.path.join(out_dir, d))
-    copy_harness_files(out_dir, True)
-
     tests = convert_wast_to_js(out_dir)
     for js_file in tests:
         wrap_single_test(js_file)
+    copy_harness_files(out_dir, True)
     return tests
 
 def build_html_from_js(tests, html_dir, use_sync):
