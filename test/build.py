@@ -173,7 +173,7 @@ def build_html(html_dir, use_sync):
     js_html_dir = os.path.join(html_dir, 'js')
 
     tests = convert_wast_to_js(js_html_dir)
-    copy_harness_files(js_html_dir, True)
+    copy_harness_files(js_html_dir, False)
 
     print('Building WPT tests from JS tests...')
     build_html_from_js(tests, html_dir, use_sync)
