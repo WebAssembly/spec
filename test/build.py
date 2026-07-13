@@ -27,11 +27,6 @@ def run(*cmd):
                           stdout=subprocess.PIPE,
                           stderr=subprocess.STDOUT,
                           universal_newlines=True)
-def call(*cmd):
-    return subprocess.call(cmd,
-                           stdout=subprocess.PIPE,
-                           stderr=subprocess.STDOUT,
-                           universal_newlines=True)
 
 # Preconditions.
 def ensure_remove_dir(path):
@@ -44,9 +39,10 @@ def ensure_empty_dir(path):
 
 def compile_wasm_interpreter():
     print("Recompiling the wasm interpreter...")
-    result = call('make', '-C', INTERPRETER_DIR, 'clean', 'default')
-    if result != 0:
-        print("Couldn't recompile wasm spec interpreter")
+    result = run('make', '-C', INTERPRETER_DIR, 'clean', 'default')
+    if result.returncode != 0:
+        print("Couldn't recompile wasm spec interpreter. Output follows:")
+        print(result.stdout)
         sys.exit(1)
     print("Done!")
 
@@ -54,9 +50,10 @@ def ensure_wasm_executable():
     """
     Ensure we have built the wasm spec interpreter.
     """
-    result = call(WASM_EXEC, '-v', '-e', '')
-    if result != 0:
-        print('Unable to run the wasm executable')
+    result = run(WASM_EXEC, '-v', '-e', '')
+    if result.returncode != 0:
+        print("Unable to run the wasm executable. Output follows:")
+        print(result.stdout)
         sys.exit(1)
 
 # JS harness.
