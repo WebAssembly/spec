@@ -204,6 +204,34 @@ def build_html(html_dir, use_sync):
     print("Done building HTML tests.")
 
 
+def build_any_js(output_dir, use_sync):
+    """
+    Entry point for building the `.any.js` versions of the tests.
+    """
+    print("Building `.any.js` tests...")
+
+    tests = convert_wast_to_js(output_dir)
+
+    index_path = "sync_index.js" if use_sync else "async_index.js"
+    for js_file in tests:
+        harness_path = os.path.relpath(os.path.join(output_dir, "harness"), os.path.dirname(js_file))
+        with open(js_file, "r") as f:
+            content = f.read()
+
+        with open(js_file.replace(".js", ".any.js"), "w") as f:
+            f.write(f"""\
+// META: script={harness_path}/{index_path}
+// META: global=window
+""")
+            f.write(content)
+
+        os.remove(js_file)
+
+    copy_harness_files(output_dir, False)
+
+    print("Done building `.any.js` tests.")
+
+
 # Front page harness.
 def build_front_page(out_dir, use_sync):
     """Entry point for building a single HTML file including all of the tests."""
@@ -245,6 +273,11 @@ def process_args():
                         help="Relative path to the output directory for the Web Platform tests.",
                         type=str)
 
+    parser.add_argument('--any-js',
+                        dest="any_js_dir",
+                        help="Relative path to the output directory for the `.any.js` Web Platform tests.",
+                        type=str)
+
     parser.add_argument('--front',
                         dest="front_dir",
                         help="Relative path to the output directory for the front page.",
@@ -271,9 +304,10 @@ if __name__ == '__main__':
 
     js_dir = args.js_dir
     html_dir = args.html_dir
+    any_js_dir = args.any_js_dir
     front_dir = args.front_dir
 
-    if front_dir is None and js_dir is None and html_dir is None:
+    if all(d is None for d in [js_dir, html_dir, any_js_dir, front_dir]):
         print('At least one mode must be selected.\n')
         parser.print_help()
         sys.exit(1)
@@ -291,6 +325,9 @@ if __name__ == '__main__':
         for d in WAST_TEST_SUBDIRS:
             ensure_empty_dir(os.path.join(html_dir, d))
         build_html(html_dir, args.use_sync)
+
+    if any_js_dir is not None:
+        build_any_js(any_js_dir, args.use_sync)
 
     if front_dir is not None:
         ensure_empty_dir(front_dir)
