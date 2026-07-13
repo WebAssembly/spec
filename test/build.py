@@ -146,13 +146,6 @@ def wrap_single_test(js_file):
     with open(js_file, 'w') as f:
         f.write(content)
 
-def build_html_js(out_dir):
-    tests = convert_wast_to_js(out_dir)
-    for js_file in tests:
-        wrap_single_test(js_file)
-    copy_harness_files(out_dir, True)
-    return tests
-
 def build_html_from_js(tests, html_dir, use_sync):
     for js_file in tests:
         subdir = os.path.basename(os.path.dirname(js_file))
@@ -179,7 +172,10 @@ def build_html(html_dir, use_sync):
 
     js_html_dir = os.path.join(html_dir, 'js')
 
-    tests = build_html_js(js_html_dir)
+    tests = convert_wast_to_js(js_html_dir)
+    for js_file in tests:
+        wrap_single_test(js_file)
+    copy_harness_files(js_html_dir, True)
 
     print('Building WPT tests from JS tests...')
     build_html_from_js(tests, html_dir, use_sync)
@@ -193,7 +189,10 @@ def build_front_page(out_dir, use_sync):
 
     js_out_dir = os.path.join(out_dir, 'js')
 
-    tests = build_html_js(js_out_dir)
+    tests = convert_wast_to_js(js_out_dir)
+    for js_file in tests:
+        wrap_single_test(js_file)
+    copy_harness_files(js_out_dir, True)
 
     front_page = os.path.join(out_dir, 'index.html')
     js_harness = "sync_index.js" if use_sync else "async_index.js"
