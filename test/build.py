@@ -103,6 +103,9 @@ def copy_harness_files(out_js_dir, include_harness):
 
 def build_js(out_js_dir):
     print('Building JS...')
+    ensure_empty_dir(out_js_dir)
+    for d in WAST_TEST_SUBDIRS:
+        ensure_empty_dir(os.path.join(out_js_dir, d))
     convert_wast_to_js(out_js_dir)
     copy_harness_files(out_js_dir, False)
     print('Done building JS.')
@@ -260,9 +263,6 @@ if __name__ == '__main__':
     ensure_wasm_executable()
 
     if js_dir is not None:
-        ensure_empty_dir(js_dir)
-        for d in WAST_TEST_SUBDIRS:
-            ensure_empty_dir(os.path.join(js_dir, d))
         build_js(js_dir)
 
     if html_dir is not None:
