@@ -185,7 +185,7 @@ def build_html(html_dir, use_sync):
 
 
 # Front page harness.
-def build_front_page(out_dir, js_dir, use_sync):
+def build_front_page(out_dir, use_sync):
     print('Building front page containing all the HTML tests...')
 
     js_out_dir = os.path.join(out_dir, 'js')
@@ -273,6 +273,6 @@ if __name__ == '__main__':
 
     if front_dir is not None:
         ensure_empty_dir(front_dir)
-        build_front_page(front_dir, js_dir, args.use_sync)
+        build_front_page(front_dir, args.use_sync)
 
     print('Done!')
