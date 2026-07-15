@@ -8963,7 +8963,7 @@ $$
 
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}}
-\mbox{(host function)} & {\mathit{hostfunc}} & ::= & \ldots \\
+\mbox{(host function)} & {\mathit{hostfunc}} & ::= & \mathbb{T} \\
 & {\mathit{code}} & ::= & {\mathit{func}} ~~|~~ {\mathit{hostfunc}} \\
 \mbox{(tag instance)} & {\mathit{taginst}} & ::= & \{ \begin{array}[t]{@{}l@{}l@{}}
 \mathsf{type}~{\mathit{tagtype}} \} \\
@@ -9401,6 +9401,23 @@ $$
 {\land}~ ({i'} \leq j)^? \\
 {\land}~ {i'} \leq {2^{{|{\mathit{at}}|} - 16}} \\
 \end{array} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}[t]{@{}lrrl@{}l@{}}
+& {\mathit{hostcallresult}} & ::= & {\mathit{store}}, {\mathit{result}} \\
+& & | & \mathsf{bot} \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{{\mathit{val}}^\ast} & = & {{\mathit{val}}^\ast} \\
+( \mathsf{ref{.}exn\_addr}~a )~\mathsf{throw\_ref} & = & (\mathsf{ref{.}exn}~a)~\mathsf{throw\_ref} \\
+\mathsf{trap} & = & \mathsf{trap} \\
 \end{array}
 $$
 
@@ -9925,7 +9942,30 @@ $$
 \end{array}
 $$
 
-\vspace{1ex}
+$$
+\begin{array}[t]{@{}lrcl@{}l@{}}
+{[\textsc{\scriptsize E{-}call\_ref{-}hostfunc{-}res}]} \quad & s ; f ; {{\mathit{val}}^{n}}~(\mathsf{ref{.}func}~a)~(\mathsf{call\_ref}~y) & \hookrightarrow & {s'} ; f ; {\mathit{result}} &  \\
+&&& \multicolumn{2}{@{}l@{}}{\quad
+\quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ (s ; f){.}\mathsf{funcs}{}[a] = {\mathit{fi}} \\
+{\land}~ {\mathit{fi}}{.}\mathsf{type} \approx \mathsf{func}~{t_1^{n}} \rightarrow {t_2^{m}} \\
+{\land}~ {\mathit{fi}}{.}\mathsf{code} = {\mathit{hf}} \\
+{\land}~ {s'}, {\mathit{result}} \in {\mathrm{hostcall}}({\mathit{hf}}, s, {{\mathit{val}}^{n}}) \\
+\end{array}
+} \\
+{[\textsc{\scriptsize E{-}call\_ref{-}hostfunc{-}div}]} \quad & s ; f ; {{\mathit{val}}^{n}}~(\mathsf{ref{.}func}~a)~(\mathsf{call\_ref}~y) & \hookrightarrow & s ; f ; (\mathsf{ref{.}func}~a)~(\mathsf{call\_ref}~y) &  \\
+&&& \multicolumn{2}{@{}l@{}}{\quad
+\quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ (s ; f){.}\mathsf{funcs}{}[a] = {\mathit{fi}} \\
+{\land}~ {\mathit{fi}}{.}\mathsf{type} \approx \mathsf{func}~{t_1^{n}} \rightarrow {t_2^{m}} \\
+{\land}~ {\mathit{fi}}{.}\mathsf{code} = {\mathit{hf}} \\
+{\land}~ \mathsf{bot} \in {\mathrm{hostcall}}({\mathit{hf}}, s, {{\mathit{val}}^{n}}) \\
+\end{array}
+} \\
+\end{array}
+$$
 
 $$
 \begin{array}[t]{@{}lrcl@{}l@{}}

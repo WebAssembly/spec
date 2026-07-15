@@ -54,7 +54,7 @@ var res : result
 
 ;; Instances
 
-syntax hostfunc hint(desc "host function") hint(macro "%" "FI%") = `...
+syntax hostfunc hint(desc "host function") hint(macro "%" "FI%") = _HOSTFUNC text
 syntax funccode hint(show code) hint(macro "funccode") = func | hostfunc
 
 syntax taginst hint(desc "tag instance") hint(macro "%" "HI%") =
@@ -329,3 +329,18 @@ def $growmem(meminst, n) = meminst'
   -- if $(i' = |b*| / (64 * $Ki) + n)
   -- (if i' <= j)?
   -- if i' <= $(2^($size(at) - 16))
+
+
+;; Host functions
+
+syntax hostcallresult =
+  | RES store result hint(show %, %)
+  | BOT
+
+def $hostcall(hostfunc, store, val*) : hostcallresult*  hint(show %4 <- %1(%2, %3))
+def $hostcall hint(builtin)
+
+def $lift_result(result) : instr*  hint(show %)
+def $lift_result(_VALS val*) = val*
+def $lift_result(`(REF.EXN_ADDR a) THROW_REF) = (REF.EXN_ADDR a) THROW_REF
+def $lift_result(TRAP) = TRAP
