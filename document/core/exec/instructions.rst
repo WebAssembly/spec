@@ -141,9 +141,6 @@ $${rule: {Step_read/call}}
 
 .. _exec-call_ref:
 
-:math:`\CALLREF~x`
-..................
-
 $${rule-prose: Step_read/call_ref}
 
 $${rule: {Step_read/call_ref-*}}
@@ -255,7 +252,8 @@ $${rule: Step_pure/label-vals}
 Exception Handling
 ~~~~~~~~~~~~~~~~~~
 
-The following auxiliary rules define the semantics of entering and exiting ${:TRY_TABLE} blocks.
+The following auxiliary rules define the semantics of entering and exiting ${:TRY_TABLE} blocks,
+and of throwing exceptions.
 
 .. _exec-handler-enter:
 
@@ -296,6 +294,16 @@ When the end of a ${:TRY_TABLE} block is reached without a jump, :ref:`exception
 7. Jump to the position after the end of the administrative instruction associated with the handler ${:H}.
 
 $${rule: Step_pure/handler-vals}
+
+
+.. _exec-throw_addr:
+
+Throwing an exception
+.....................
+
+$${rule-prose: Step_read/throw_addr}
+
+$${rule: Step_read/throw_addr-*}
 
 
 .. index:: ! call, function, function instance, label, frame
@@ -1145,4 +1153,4 @@ $${rule: Eval_expr}
 
 .. note::
    Evaluation iterates this reduction rule until reaching a value.
-   Expressions constituting :ref:`function <syntax-func>` bodies are executed during function :ref:`invocation <exec-invoke>`.
+   Expressions constituting :ref:`function <syntax-func>` bodies are executed during function :ref:`calls <exec-call_addr>`.
