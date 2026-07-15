@@ -393,7 +393,7 @@ Note:
 
 <div algorithm>
   To <dfn>compile a WebAssembly module</dfn> from source bytes |bytes|, perform the following steps:
-    1. Perform [$HostEnsureCanCompileWasmBytes()$].
+    1. Perform [=?=] [$HostEnsureCanCompileWasmBytes()$].
         Note: This operation terminates with a {{CompileError}} exception if the operation is not permitted.
     1. Let |module| be [=module_decode=](|bytes|). If |module| is [=error=], return [=error=].
     1. If [=module_validate=](|module|) is [=error=], return [=error=].
