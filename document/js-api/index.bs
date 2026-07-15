@@ -393,6 +393,8 @@ Note:
 
 <div algorithm>
   To <dfn>compile a WebAssembly module</dfn> from source bytes |bytes|, perform the following steps:
+    1. Perform [=?=] [$HostEnsureCanCompileWasmBytes()$].
+        Note: This operation terminates with a {{CompileError}} exception if the operation is not permitted.
     1. Let |module| be [=module_decode=](|bytes|). If |module| is [=error=], return [=error=].
     1. If [=module_validate=](|module|) is [=error=], return [=error=].
     1. Return |module|.
@@ -652,6 +654,7 @@ The verification of WebAssembly type requirements is deferred to the
 <div algorithm>
   The <dfn method for="WebAssembly">instantiate(|bytes|, |importObject|, |options|)</dfn> method, when invoked, performs the following steps:
     1. Let |stableBytes| be a [=get a copy of the buffer source|copy of the bytes held by the buffer=] |bytes|.
+    1. Perform [$HostEnsureCanCompileWasmBytes()$]
     1. [=Asynchronously compile a WebAssembly module=] from |stableBytes| using |options| and let |promiseOfModule| be the result.
     1. [=Instantiate a promise of a module|Instantiate=] |promiseOfModule| with imports |importObject| and return the result.
 </div>
@@ -2204,6 +2207,18 @@ Note: ECMAScript doesn't specify any sort of behavior on out-of-memory condition
     See [Issue 879](https://github.com/WebAssembly/spec/issues/879) for further discussion.
 </div>
 
+<h2>Implementation-defined Operations</h2>
+
+<h3 id="host-ensure-can-compile-wasm-bytes">HostEnsureCanCompileWasmBytes()</h3>
+
+<dfn abstract-op>HostEnsureCanCompileWasmBytes()</dfn> is an implementation-defined abstract operation
+that allows host environments to block certain WebAssembly functions which
+compile bytes into WebAssembly code.
+
+An implementation of HostEnsureCanCompileWasmBytes may complete normally or
+abruptly. Any abrupt completions will be propagated to its callers. The default
+implementation of HostEnsureCanCompileWasmBytes is to unconditionally return an
+empty normal completion.
 
 <h2 id="limits">Implementation-defined Limits</h2>
 
