@@ -1,3 +1,17 @@
 (lang dune 3.0)
 (using menhir 2.0)
 (using mdx 0.2)
+
+(license Apache-2.0)
+(source (github WebAssembly/spec))
+(authors "Andreas Rossberg <rossberg@mpi-sws.org" "SpecTec Team")
+(maintainers "Andreas Rossberg <rossberg@mpi-sws.org" "SpecTec Team")
+
+(package
+  (name spectec)
+  (synopsis "Specification tool chain for Wasm")
+  (depends
+    (ocaml (>= 5.4))
+    (menhir (>= 20220210))
+  )
+)

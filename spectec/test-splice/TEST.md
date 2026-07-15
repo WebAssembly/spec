@@ -104,13 +104,13 @@ C \vdash \epsilon : \epsilon \rightarrow \epsilon
 }
 \qquad
 \frac{
-C \vdash {\mathit{instr}}_1 : {t_1^\ast} \rightarrow_{{x_1^\ast}} {t_2^\ast}
+C \vdash {{\mathit{instr}}_1^\ast} : {t_1^\ast} \rightarrow_{{x_1^\ast}} {t_2^\ast}
  \qquad
 (C{.}\mathsf{locals}{}[x_1] = {\mathit{init}}~t)^\ast
  \qquad
 C{}[{.}\mathsf{local}{}[{x_1^\ast}] = {(\mathsf{set}~t)^\ast}] \vdash {{\mathit{instr}}_2^\ast} : {t_2^\ast} \rightarrow_{{x_2^\ast}} {t_3^\ast}
 }{
-C \vdash {\mathit{instr}}_1~{{\mathit{instr}}_2^\ast} : {t_1^\ast} \rightarrow_{{x_1^\ast}~{x_2^\ast}} {t_3^\ast}
+C \vdash {{\mathit{instr}}_1^\ast}~{{\mathit{instr}}_2^\ast} : {t_1^\ast} \rightarrow_{{x_1^\ast}~{x_2^\ast}} {t_3^\ast}
 }
 \\[3ex]\displaystyle
 \frac{
@@ -803,8 +803,8 @@ warning: grammar `Tnull` was never spliced
 warning: grammar `Tnum` was never spliced
 warning: grammar `Tnumtype` was never spliced
 warning: grammar `Toffset` was never spliced
-warning: grammar `Toffset_/plain` was never spliced
-warning: grammar `Toffset_/abbrev` was never spliced
+warning: grammar `Toffsetexpr_/plain` was never spliced
+warning: grammar `Toffsetexpr_/abbrev` was never spliced
 warning: grammar `Tpacktype` was never spliced
 warning: grammar `Tparam_/base` was never spliced
 warning: grammar `Tparam_/abbrev` was never spliced
@@ -1184,14 +1184,16 @@ warning: rule `Instr_ok/vextternop` was never spliced
 warning: rule `Instr_ok/vnarrow` was never spliced
 warning: rule `Instr_ok/vcvtop` was never spliced
 warning: rule `Instr_ok2/plain` was never spliced
-warning: rule `Instr_ok2/call_ref` was never spliced
-warning: rule `Instr_ok2/return_call_ref` was never spliced
 warning: rule `Instr_ok2/ref` was never spliced
 warning: rule `Instr_ok2/label` was never spliced
 warning: rule `Instr_ok2/frame` was never spliced
 warning: rule `Instr_ok2/handler` was never spliced
+warning: rule `Instr_ok2/call_addr` was never spliced
+warning: rule `Instr_ok2/return_call_addr` was never spliced
+warning: rule `Instr_ok2/throw_addr` was never spliced
 warning: rule `Instr_ok2/trap` was never spliced
 warning: rule `Instrs_ok/empty` was spliced more than once
+warning: rule `Instrs_ok/instr` was never spliced
 warning: rule `Instrs_ok/sub` was never spliced
 warning: rule `Instrs_ok/frame` was spliced more than once
 warning: rule `Instrs_ok2/empty` was never spliced
@@ -1366,21 +1368,24 @@ warning: rule `Step_read/br_on_cast_fail-fail` was never spliced
 warning: rule `Step_read/call` was never spliced
 warning: rule `Step_read/call_ref-null` was never spliced
 warning: rule `Step_read/call_ref-func` was never spliced
+warning: rule `Step_read/call_addr` was never spliced
 warning: rule `Step_read/return_call` was never spliced
-warning: rule `Step_read/return_call_ref-label` was never spliced
-warning: rule `Step_read/return_call_ref-handler` was never spliced
-warning: rule `Step_read/return_call_ref-frame-null` was never spliced
-warning: rule `Step_read/return_call_ref-frame-addr` was never spliced
+warning: rule `Step_read/return_call_ref-null` was never spliced
+warning: rule `Step_read/return_call_ref-func` was never spliced
+warning: rule `Step_read/return_call_addr-label` was never spliced
+warning: rule `Step_read/return_call_addr-handler` was never spliced
+warning: rule `Step_read/return_call_addr-frame` was never spliced
 warning: rule `Step_read/throw_ref-null` was never spliced
-warning: rule `Step_read/throw_ref-instrs` was never spliced
-warning: rule `Step_read/throw_ref-label` was never spliced
-warning: rule `Step_read/throw_ref-frame` was never spliced
-warning: rule `Step_read/throw_ref-handler-empty` was never spliced
-warning: rule `Step_read/throw_ref-handler-catch` was never spliced
-warning: rule `Step_read/throw_ref-handler-catch_ref` was never spliced
-warning: rule `Step_read/throw_ref-handler-catch_all` was never spliced
-warning: rule `Step_read/throw_ref-handler-catch_all_ref` was never spliced
-warning: rule `Step_read/throw_ref-handler-next` was never spliced
+warning: rule `Step_read/throw_ref-addr` was never spliced
+warning: rule `Step_read/throw_addr-instrs` was never spliced
+warning: rule `Step_read/throw_addr-label` was never spliced
+warning: rule `Step_read/throw_addr-frame` was never spliced
+warning: rule `Step_read/throw_addr-handler-empty` was never spliced
+warning: rule `Step_read/throw_addr-handler-catch` was never spliced
+warning: rule `Step_read/throw_addr-handler-catch_ref` was never spliced
+warning: rule `Step_read/throw_addr-handler-catch_all` was never spliced
+warning: rule `Step_read/throw_addr-handler-catch_all_ref` was never spliced
+warning: rule `Step_read/throw_addr-handler-next` was never spliced
 warning: rule `Step_read/try_table` was never spliced
 warning: rule `Step_read/local.get` was never spliced
 warning: rule `Step_read/global.get` was never spliced
@@ -2199,17 +2204,19 @@ warning: rule prose `Instr_ok/vvternop` was never spliced
 warning: rule prose `Instr_ok/vvtestop` was never spliced
 warning: rule prose `Instr_ok/vvunop` was never spliced
 warning: rule prose `Instr_ok2` was never spliced
-warning: rule prose `Instr_ok2/call_ref` was never spliced
+warning: rule prose `Instr_ok2/call_addr` was never spliced
 warning: rule prose `Instr_ok2/frame` was never spliced
 warning: rule prose `Instr_ok2/handler` was never spliced
 warning: rule prose `Instr_ok2/label` was never spliced
 warning: rule prose `Instr_ok2/plain` was never spliced
 warning: rule prose `Instr_ok2/ref` was never spliced
-warning: rule prose `Instr_ok2/return_call_ref` was never spliced
+warning: rule prose `Instr_ok2/return_call_addr` was never spliced
+warning: rule prose `Instr_ok2/throw_addr` was never spliced
 warning: rule prose `Instr_ok2/trap` was never spliced
 warning: rule prose `Instrs_ok` was never spliced
 warning: rule prose `Instrs_ok/empty` was never spliced
 warning: rule prose `Instrs_ok/frame` was never spliced
+warning: rule prose `Instrs_ok/instr` was never spliced
 warning: rule prose `Instrs_ok/seq` was never spliced
 warning: rule prose `Instrs_ok/sub` was never spliced
 warning: rule prose `Instrs_ok2` was never spliced
@@ -2355,6 +2362,7 @@ warning: rule prose `Step_read/block` was never spliced
 warning: rule prose `Step_read/br_on_cast` was never spliced
 warning: rule prose `Step_read/br_on_cast_fail` was never spliced
 warning: rule prose `Step_read/call` was never spliced
+warning: rule prose `Step_read/call_addr` was never spliced
 warning: rule prose `Step_read/call_ref` was never spliced
 warning: rule prose `Step_read/global.get` was never spliced
 warning: rule prose `Step_read/load` was never spliced
@@ -2373,8 +2381,8 @@ warning: rule prose `Step_read/ref.func` was never spliced
 warning: rule prose `Step_read/ref.null` was never spliced
 warning: rule prose `Step_read/ref.test` was never spliced
 warning: rule prose `Step_read/return_call` was never spliced
+warning: rule prose `Step_read/return_call_addr` was never spliced
 warning: rule prose `Step_read/return_call_ref` was never spliced
-warning: rule prose `Step_read/return_call_ref-frame-*` was never spliced
 warning: rule prose `Step_read/struct.get` was never spliced
 warning: rule prose `Step_read/struct.new_default` was never spliced
 warning: rule prose `Step_read/table.copy` was never spliced
@@ -2384,9 +2392,10 @@ warning: rule prose `Step_read/table.get` was never spliced
 warning: rule prose `Step_read/table.init` was never spliced
 warning: rule prose `Step_read/table.init-oob-*` was never spliced
 warning: rule prose `Step_read/table.size` was never spliced
+warning: rule prose `Step_read/throw_addr` was never spliced
+warning: rule prose `Step_read/throw_addr-handler-*` was never spliced
+warning: rule prose `Step_read/throw_addr-instrs-*` was never spliced
 warning: rule prose `Step_read/throw_ref` was never spliced
-warning: rule prose `Step_read/throw_ref-handler-*` was never spliced
-warning: rule prose `Step_read/throw_ref-instrs-*` was never spliced
 warning: rule prose `Step_read/try_table` was never spliced
 warning: rule prose `Step_read/vload` was never spliced
 warning: rule prose `Step_read/vload-pack-*` was never spliced

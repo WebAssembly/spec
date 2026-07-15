@@ -179,7 +179,9 @@ The offset and alignment immediates to memory instructions are optional.
 The offset defaults to ${:0}, the alignment to the storage size of the respective memory access, which is its *natural alignment*.
 Lexically, an ${grammar-case: Toffset} or ${grammar-case: Talign_} phrase is considered a single :ref:`keyword token <text-keyword>`, so no :ref:`white space <text-space>` is allowed around the ${grammar-case: "="}.
 
-$${grammar: {Tmemarg_ Toffset Talign_ Tlaneidx Tplaininstr_/memory-plain Tplaininstr_/data}}
+$${grammar: {Tmemarg_ Toffset Talign_ Tlaneidx}}
+
+$${grammar: {Tplaininstr_/memory-plain Tplaininstr_/data}}
 
 
 Abbreviations

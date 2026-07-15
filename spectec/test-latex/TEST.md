@@ -3649,8 +3649,8 @@ $$
 \begin{array}[t]{@{}lrrl@{}l@{}}
 & {{\mathit{lane}}}_{{\mathit{numtype}}} & ::= & {{\mathit{num}}}_{{\mathit{numtype}}} \\
 & {{\mathit{lane}}}_{{\mathit{packtype}}} & ::= & {{\mathit{pack}}}_{{\mathit{packtype}}} \\
-& {{\mathit{lane}}}_{{\mathsf{i}}{N}} & ::= & {i}{{|{\mathsf{i}}{N}|}} \\
-& {{\mathit{vec}}}_{{\mathsf{v}}{N}} & ::= & {v}{{|{\mathsf{v}}{N}|}} \\
+& {{\mathit{lane}}}_{{\mathsf{i}}{N}} & ::= & {i}{N} \\
+& {{\mathit{vec}}}_{{\mathsf{v}}{N}} & ::= & {v}{N} \\
 \end{array}
 $$
 
@@ -5077,7 +5077,7 @@ $$
 \frac{
 C \vdash {\mathit{typeuse}} : \mathsf{ok}
  \qquad
-{\mathit{typeuse}} \approx_{C} \mathsf{func}~{t_1^\ast} \rightarrow {t_2^\ast}
+{\mathit{typeuse}} \approx_{C} \mathsf{func}~{t_1^\ast} \rightarrow {}[]
 }{
 C \vdash {\mathit{typeuse}} : \mathsf{ok}
 } \, {[\textsc{\scriptsize K{-}tag}]}
@@ -7332,13 +7332,24 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C \vdash {\mathit{instr}}_1 : {t_1^\ast} \rightarrow_{{x_1^\ast}} {t_2^\ast}
+C \vdash {\mathit{instr}} : {t_1^\ast} \rightarrow_{{x^\ast}} {t_2^\ast}
+}{
+C \vdash {\mathit{instr}} : {t_1^\ast} \rightarrow_{{x^\ast}} {t_2^\ast}
+} \, {[\textsc{\scriptsize T{-}instr*{-}instr}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+C \vdash {{\mathit{instr}}_1^\ast} : {t_1^\ast} \rightarrow_{{x_1^\ast}} {t_2^\ast}
  \qquad
 (C{.}\mathsf{locals}{}[x_1] = {\mathit{init}}~t)^\ast
  \qquad
 C{}[{.}\mathsf{local}{}[{x_1^\ast}] = {(\mathsf{set}~t)^\ast}] \vdash {{\mathit{instr}}_2^\ast} : {t_2^\ast} \rightarrow_{{x_2^\ast}} {t_3^\ast}
 }{
-C \vdash {\mathit{instr}}_1~{{\mathit{instr}}_2^\ast} : {t_1^\ast} \rightarrow_{{x_1^\ast}~{x_2^\ast}} {t_3^\ast}
+C \vdash {{\mathit{instr}}_1^\ast}~{{\mathit{instr}}_2^\ast} : {t_1^\ast} \rightarrow_{{x_1^\ast}~{x_2^\ast}} {t_3^\ast}
 } \, {[\textsc{\scriptsize T{-}instr*{-}seq}]}
 \qquad
 \end{array}
@@ -7661,6 +7672,8 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
+C \vdash t : \mathsf{ok}
+ \qquad
 {{\mathrm{default}}}_{t} \neq \epsilon
 }{
 C \vdash \mathsf{local}~t : \mathsf{set}~t
@@ -7672,6 +7685,8 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
+C \vdash t : \mathsf{ok}
+ \qquad
 {{\mathrm{default}}}_{t} = \epsilon
 }{
 C \vdash \mathsf{local}~t : \mathsf{unset}~t
@@ -7889,16 +7904,16 @@ $\boxed{{\mathit{context}} \vdash {{\mathit{global}}^\ast} : {{\mathit{globaltyp
 
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}}
-& {\mathit{nonfuncs}} & ::= & {{\mathit{global}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast} \\
+& {\mathit{nonfuncs}} & ::= & {{\mathit{global}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{export}}^\ast} \\
 \end{array}
 $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{\mathrm{funcidx}}({{\mathit{global}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast}) & = & & \\
+{\mathrm{funcidx}}({{\mathit{global}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{export}}^\ast}) & = & & \\
  \multicolumn{4}{@{}l@{}}{\quad
 \begin{array}[t]{@{}l@{}}
-{\mathrm{funcidx}}(\mathsf{module}~\epsilon~\epsilon~\epsilon~{{\mathit{global}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{table}}^\ast}~\epsilon~\epsilon~{{\mathit{elem}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast}) \\
+{\mathrm{funcidx}}(\mathsf{module}~\epsilon~\epsilon~\epsilon~{{\mathit{global}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{table}}^\ast}~\epsilon~\epsilon~{{\mathit{elem}}^\ast}~\epsilon~{{\mathit{export}}^\ast}) \\
 \end{array}
 } \\
 \end{array}
@@ -7936,7 +7951,7 @@ C = {C'} \oplus \{ \mathsf{tags}~{{\mathit{jt}}_{\mathsf{i}}^\ast}~{{\mathit{jt}
  \\
 {C'} = \{ \mathsf{types}~{{\mathit{dt}'}^\ast},\;\allowbreak \mathsf{globals}~{{\mathit{gt}}_{\mathsf{i}}^\ast},\;\allowbreak \mathsf{funcs}~{{\mathit{dt}}_{\mathsf{i}}^\ast}~{{\mathit{dt}}^\ast},\;\allowbreak \mathsf{refs}~{x^\ast} \}
  \qquad
-{x^\ast} = {\mathrm{funcidx}}({{\mathit{global}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})
+{x^\ast} = {\mathrm{funcidx}}({{\mathit{global}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{export}}^\ast})
  \\
 {{\mathit{jt}}_{\mathsf{i}}^\ast} = {\mathrm{tags}}({{\mathit{xt}}_{\mathsf{i}}^\ast})
  \qquad
@@ -10295,7 +10310,7 @@ $$
 \begin{array}[t]{@{}lrcl@{}l@{}}
 {[\textsc{\scriptsize E{-}vstore\_lane{-}oob}]} \quad & z ; ({\mathit{at}}{.}\mathsf{const}~i)~(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)~({\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}}{N}{\mathsf{\_}}{\mathsf{lane}}~x~{\mathit{ao}}~j) & \hookrightarrow & z ; \mathsf{trap} &  \\
 &&& \multicolumn{2}{@{}l@{}}{\quad
-\quad \mbox{if}~ i + {\mathit{ao}}{.}\mathsf{offset} + N > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}
+\quad \mbox{if}~ i + {\mathit{ao}}{.}\mathsf{offset} + N / 8 > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}
 } \\
 {[\textsc{\scriptsize E{-}vstore\_lane{-}val}]} \quad & z ; ({\mathit{at}}{.}\mathsf{const}~i)~(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)~({\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}}{N}{\mathsf{\_}}{\mathsf{lane}}~x~{\mathit{ao}}~j) & \hookrightarrow & z{}[{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : N / 8] = {b^\ast}] ; \epsilon &  \\
 &&& \multicolumn{2}{@{}l@{}}{\quad
@@ -13018,7 +13033,7 @@ $$
 
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}l@{}l@{}}
-& {{\mathtt{memarg}}}_{N} & ::= & n{:}{{\mathtt{align}}}_{N}~~m{:}{\mathtt{offset}} & \quad\Rightarrow\quad{} & \{ \mathsf{align}~n,\;\allowbreak \mathsf{offset}~m \} \\
+& {{\mathtt{memarg}}}_{N} & ::= & m{:}{\mathtt{offset}}~~n{:}{{\mathtt{align}}}_{N} & \quad\Rightarrow\quad{} & \{ \mathsf{align}~n,\;\allowbreak \mathsf{offset}~m \} \\
 & {\mathtt{offset}} & ::= & \mbox{‘\texttt{offset{=}}’}~~m{:}{\mathtt{u64}} & \quad\Rightarrow\quad{} & m \\
 & & | & \epsilon & \quad\Rightarrow\quad{} & 0 \\
 & {{\mathtt{align}}}_{N} & ::= & \mbox{‘\texttt{align{=}}’}~~m{:}{\mathtt{u64}} & \quad\Rightarrow\quad{} & n & \quad \mbox{if}~ m = {2^{n}} \\
@@ -13666,7 +13681,7 @@ $$
 (\mathsf{data}~{b^\ast}~\mathsf{passive}, \{ \mathsf{datas}~({{\mathit{id}}^?}) \}) \\
 \end{array}
 } \\
-& & | & \mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{data}’}~~{{\mathit{id}}^?}{:}{{\mathtt{id}}^?}~~x{:}{{\mathtt{memuse}}}_{I}~~e{:}{{\mathtt{offset}}}_{I}~~{b^\ast}{:}{\mathtt{datastring}}~~\mbox{‘\texttt{{)}}’} & \quad\Rightarrow\quad{} & & \\
+& & | & \mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{data}’}~~{{\mathit{id}}^?}{:}{{\mathtt{id}}^?}~~x{:}{{\mathtt{memuse}}}_{I}~~e{:}{{\mathtt{offsetexpr}}}_{I}~~{b^\ast}{:}{\mathtt{datastring}}~~\mbox{‘\texttt{{)}}’} & \quad\Rightarrow\quad{} & & \\
 &&& \multicolumn{4}{@{}l@{}}{\quad
 \begin{array}[t]{@{}l@{}}
 (\mathsf{data}~{b^\ast}~(\mathsf{active}~x~e), \{ \mathsf{datas}~({{\mathit{id}}^?}) \}) \\
@@ -13675,7 +13690,7 @@ $$
 & {\mathtt{datastring}} & ::= & {{b^\ast}^\ast}{:}{{\mathtt{string}}^\ast} & \quad\Rightarrow\quad{} & {\bigoplus}\, {{b^\ast}^\ast} \\
 & {{\mathtt{memuse}}}_{I} & ::= & \mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{memory}’}~~x{:}{{\mathtt{memidx}}}_{I}~~\mbox{‘\texttt{{)}}’} & \quad\Rightarrow\quad{} & x \\
 & & | & \epsilon & \quad\equiv\quad{} & \mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{memory}’}~~\mbox{‘\texttt{0}’}~~\mbox{‘\texttt{{)}}’} \\
-& {{\mathtt{offset}}}_{I} & ::= & \mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{offset}’}~~e{:}{{\mathtt{expr}}}_{I}~~\mbox{‘\texttt{{)}}’} & \quad\Rightarrow\quad{} & e \\
+& {{\mathtt{offsetexpr}}}_{I} & ::= & \mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{offset}’}~~e{:}{{\mathtt{expr}}}_{I}~~\mbox{‘\texttt{{)}}’} & \quad\Rightarrow\quad{} & e \\
 & & | & {{\mathtt{foldedinstr}}}_{I} & \quad\equiv\quad{} & \mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{offset}’}~~{{\mathtt{foldedinstr}}}_{I}~~\mbox{‘\texttt{{)}}’} \\
 \end{array}
 $$
@@ -13690,7 +13705,7 @@ $$
 (\mathsf{elem}~{\mathit{rt}}~{e^\ast}~\mathsf{passive}, \{ \mathsf{elems}~({{\mathit{id}}^?}) \}) \\
 \end{array}
 } \\
-& & | & \mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{elem}’}~~{{\mathit{id}}^?}{:}{{\mathtt{id}}^?}~~x{:}{{\mathtt{tableuse}}}_{I}~~{e'}{:}{{\mathtt{offset}}}_{I}~~({\mathit{rt}}, {e^\ast}){:}{{\mathtt{elemlist}}}_{I}~~\mbox{‘\texttt{{)}}’} & \quad\Rightarrow\quad{} & & \\
+& & | & \mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{elem}’}~~{{\mathit{id}}^?}{:}{{\mathtt{id}}^?}~~x{:}{{\mathtt{tableuse}}}_{I}~~{e'}{:}{{\mathtt{offsetexpr}}}_{I}~~({\mathit{rt}}, {e^\ast}){:}{{\mathtt{elemlist}}}_{I}~~\mbox{‘\texttt{{)}}’} & \quad\Rightarrow\quad{} & & \\
 &&& \multicolumn{4}{@{}l@{}}{\quad
 \begin{array}[t]{@{}l@{}}
 (\mathsf{elem}~{\mathit{rt}}~{e^\ast}~(\mathsf{active}~x~{e'}), \{ \mathsf{elems}~({{\mathit{id}}^?}) \}) \\
@@ -13702,10 +13717,10 @@ $$
 (\mathsf{elem}~{\mathit{rt}}~{e^\ast}~\mathsf{declare}, \{ \mathsf{elems}~({{\mathit{id}}^?}) \}) \\
 \end{array}
 } \\
-& & | & \mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{elem}’}~~{{\mathtt{offset}}}_{I}~~{\mathtt{list}}({{\mathtt{funcidx}}}_{I})~~\mbox{‘\texttt{{)}}’} & \quad\equiv\quad{} & & \\
+& & | & \mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{elem}’}~~{{\mathtt{offsetexpr}}}_{I}~~{\mathtt{list}}({{\mathtt{funcidx}}}_{I})~~\mbox{‘\texttt{{)}}’} & \quad\equiv\quad{} & & \\
 &&& \multicolumn{4}{@{}l@{}}{\quad
 \begin{array}[t]{@{}l@{}}
-\mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{elem}’}~~{{\mathtt{offset}}}_{I}~~\mbox{‘\texttt{func}’}~~{\mathtt{list}}({{\mathtt{funcidx}}}_{I})~~\mbox{‘\texttt{{)}}’} \\
+\mbox{‘\texttt{{(}}’}~~\mbox{‘\texttt{elem}’}~~{{\mathtt{offsetexpr}}}_{I}~~\mbox{‘\texttt{func}’}~~{\mathtt{list}}({{\mathtt{funcidx}}}_{I})~~\mbox{‘\texttt{{)}}’} \\
 \end{array}
 } \\
 & {{\mathtt{elemlist}}}_{I} & ::= & {\mathit{rt}}{:}{{\mathtt{reftype}}}_{I}~~{e^\ast}{:}{\mathtt{list}}({{\mathtt{elemexpr}}}_{I}) & \quad\Rightarrow\quad{} & ({\mathit{rt}}, {e^\ast}) \\
@@ -14495,6 +14510,8 @@ $$
 {({\mathit{exportinst}}{.}\mathsf{name})^\ast}~{\mathrm{disjoint}}
  \\
 ({\mathit{exportinst}}{.}\mathsf{addr} \in {(\mathsf{tag}~{\mathit{tagaddr}})^\ast}~{(\mathsf{global}~{\mathit{globaladdr}})^\ast}~{(\mathsf{mem}~{\mathit{memaddr}})^\ast}~{(\mathsf{table}~{\mathit{tableaddr}})^\ast}~{(\mathsf{func}~{\mathit{funcaddr}})^\ast})^\ast
+ \\
+k \leq {|{{\mathit{funcaddr}}^\ast}|}
 \end{array}
 }{
 s \vdash \{ \begin{array}[t]{@{}l@{}}
@@ -14516,7 +14533,7 @@ s \vdash \{ \begin{array}[t]{@{}l@{}}
   \mathsf{funcs}~{{\mathit{deftype}}_{\mathsf{f}}^\ast},\; \\
   \mathsf{datas}~{{\mathit{datatype}}^\ast},\; \\
   \mathsf{elems}~{{\mathit{elemtype}}^\ast},\; \\
-  \mathsf{refs}~{(i)^{i<{|{{\mathit{funcaddr}}^\ast}|}}} \}\end{array}
+  \mathsf{refs}~{(i)^{i<k}} \}\end{array}
 } \, {[\textsc{\scriptsize Moduleinst\_ok}]}
 \qquad
 \end{array}
@@ -14846,8 +14863,9 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
+\{  \} \vdash t : \mathsf{ok}
 }{
-s \vdash \epsilon : \mathsf{unset}~\mathsf{bot}
+s \vdash \epsilon : \mathsf{unset}~t
 } \, {[\textsc{\scriptsize Localval\_ok{-}unset}]}
 \qquad
 \end{array}

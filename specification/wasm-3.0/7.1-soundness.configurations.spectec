@@ -175,7 +175,7 @@ rule Moduleinst_ok:
              FUNCS deftype_F*,
              DATAS datatype*,
              ELEMS elemtype*,
-             REFS (i)^(i<|funcaddr*|)
+             REFS (i)^(i<k)
            }
   -- (Deftype_ok: {} |- deftype : OK)*
   -- (Externaddr_ok: s |- TAG tagaddr : TAG tagtype)*
@@ -193,6 +193,8 @@ rule Moduleinst_ok:
   -- if $disjoint_(name, (exportinst.NAME)*)
   ----
   -- (if exportinst.ADDR <- (TAG tagaddr)* (GLOBAL globaladdr)* (MEM memaddr)* (TABLE tableaddr)* (FUNC funcaddr)*)*
+  ----
+  -- if k <= |funcaddr*|
 
 
 ;; Store
@@ -344,7 +346,8 @@ rule Localval_ok/set:
   -- Val_ok: s |- val : t
 
 rule Localval_ok/unset:
-  s |- eps : UNSET BOT
+  s |- eps : UNSET t
+  -- Valtype_ok: {} |- t : OK
 
 rule Frame_ok:
   s |- {LOCALS (val?)*, MODULE moduleinst} : C ++ {LOCALS lct*}

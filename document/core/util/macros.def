@@ -1081,6 +1081,7 @@
 .. |Tlocals| mathdef:: \xref{text/modules}{text-local}{\T{locals}}
 .. |Tdata| mathdef:: \xref{text/modules}{text-data}{\T{data}}
 .. |Tdatastring| mathdef:: \xref{text/modules}{text-datastring}{\T{datastring}}
+.. |Toffsetexpr| mathdef:: \xref{text/modules}{text-offsetexpr}{\T{offsetexpr}}
 .. |Tmemuse| mathdef:: \xref{text/modules}{text-memuse}{\T{memuse}}
 .. |Tstart| mathdef:: \xref{text/modules}{text-start}{\T{start}}
 

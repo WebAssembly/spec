@@ -64,7 +64,7 @@ grammar Tlocal_(I)/abbrev : (local*, idctxt) =
 grammar Tdata_(I) : (data, idctxt) =
   | "(" "data" id?:Tid? b*:Tdatastring ")" =>
     (DATA b* PASSIVE, {DATAS (id?)})
-  | "(" "data" id?:Tid? x:Tmemuse_(I) e:Toffset_(I) b*:Tdatastring ")" =>
+  | "(" "data" id?:Tid? x:Tmemuse_(I) e:Toffsetexpr_(I) b*:Tdatastring ")" =>
     (DATA b* (ACTIVE x e), {DATAS (id?)})
 
 grammar Tdatastring : byte* =
@@ -77,11 +77,11 @@ grammar Tmemuse_(I)/plain : memidx =
 grammar Tmemuse_(I)/abbrev : memidx =
   ... | eps == "(" "memory" "0" ")"
 
-grammar Toffset_(I)/plain : expr =
+grammar Toffsetexpr_(I)/plain : expr =
   | "(" "offset" e:Texpr_(I) ")" => e
   | ...
 
-grammar Toffset_(I)/abbrev : expr =
+grammar Toffsetexpr_(I)/abbrev : expr =
   ... | Tfoldedinstr_(I) == "(" "offset" Tfoldedinstr_(I) ")"
 
 
@@ -90,15 +90,15 @@ grammar Toffset_(I)/abbrev : expr =
 grammar Telem_(I)/plain : (elem, idctxt) =
   | "(" "elem" id?:Tid? (rt,e*):Telemlist_(I) ")" =>
     (ELEM rt e* PASSIVE, {ELEMS (id?)})
-  | "(" "elem" id?:Tid? x:Ttableuse_(I) e':Toffset_(I) (rt,e*):Telemlist_(I) ")" =>
+  | "(" "elem" id?:Tid? x:Ttableuse_(I) e':Toffsetexpr_(I) (rt,e*):Telemlist_(I) ")" =>
     (ELEM rt e* (ACTIVE x e'), {ELEMS (id?)})
   | "(" "elem" id?:Tid? "declare" (rt,e*):Telemlist_(I) ")" =>
     (ELEM rt e* DECLARE, {ELEMS (id?)})
   | ...
 
 grammar Telem_(I)/abbrev : (elem, idctxt) = ...
-  | "(" "elem" Toffset_(I) Tlist(Tfuncidx_(I)) ")" ==
-    "(" "elem" Toffset_(I) "func" Tlist(Tfuncidx_(I)) ")"
+  | "(" "elem" Toffsetexpr_(I) Tlist(Tfuncidx_(I)) ")" ==
+    "(" "elem" Toffsetexpr_(I) "func" Tlist(Tfuncidx_(I)) ")"
 
 grammar Telemlist_(I)/plain : (reftype, expr*) =
   | rt:Treftype_(I) e*:Tlist(Telemexpr_(I)) => (rt, e*)

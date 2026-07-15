@@ -219,7 +219,7 @@ rule Limits_ok:
 rule Tagtype_ok:
   C |- typeuse : OK
   -- Typeuse_ok: C |- typeuse : OK
-  -- Expand_use: typeuse ~~_C $($(FUNC t_1* -> t_2*))
+  -- Expand_use: typeuse ~~_C $($(FUNC t_1* -> []))
 
 rule Globaltype_ok:
   C |- MUT? t : OK

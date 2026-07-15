@@ -175,7 +175,7 @@ grammar Tplaininstr_(I)/elem : instr = ...
 ;; Memory instructions
 
 grammar Tmemarg_(N) : memarg =
-  | n:Talign_(N) m:Toffset => {ALIGN n, OFFSET m}
+  | m:Toffset n:Talign_(N) => {ALIGN n, OFFSET m}
 
 grammar Toffset : u64 =
   | "offset=" m:Tu64 => m
