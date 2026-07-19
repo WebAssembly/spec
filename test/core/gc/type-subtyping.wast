@@ -113,6 +113,23 @@
 )
 
 (module
+  (func $f (result (ref array)) unreachable)
+  (func (result (ref eq))
+    return_call $f
+  )
+)
+
+(assert_invalid
+  (module
+    (func $f (result (ref eq)) unreachable)
+    (func (result (ref array))
+      return_call $f
+    )
+  )
+  "type mismatch"
+)
+
+(module
   (rec (type $f1 (sub (func))) (type (struct (field (ref $f1)))))
   (rec (type $f2 (sub (func))) (type (struct (field (ref $f2)))))
   (rec (type $g1 (sub $f1 (func))) (type (struct)))
@@ -398,6 +415,27 @@
 (assert_return (invoke "run"))
 (assert_trap (invoke "fail1") "indirect call type mismatch")
 (assert_trap (invoke "fail2") "indirect call type mismatch")
+
+(module
+  (type $t (func (result (ref array))))
+  (table 0 funcref)
+  (func (result (ref eq))
+    i32.const 0
+    return_call_indirect (type $t)
+  )
+)
+
+(assert_invalid
+  (module
+    (type $t (func (result (ref eq))))
+    (table 0 funcref)
+    (func (result (ref array))
+      i32.const 0
+      return_call_indirect (type $t)
+    )
+  )
+  "type mismatch"
+)
 
 (module
   (rec (type $f1 (sub (func))) (type (struct (field (ref $f1)))))
