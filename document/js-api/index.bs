@@ -40,10 +40,8 @@ urlPrefix: https://tc39.github.io/ecma262/; spec: ECMASCRIPT
         text: AbstractClosure; url: sec-abstract-closure
         text: CreateBuiltinFunction; url: sec-createbuiltinfunction
         text: PromiseCapabilityRecord; url: sec-promisecapability-records
-        text: EvaluateCall; url: sec-evaluatecall
-        text: ExecutionContext; url: sec-execution-contexts
+        text: Execution Context; url: sec-execution-contexts
         text: IsPromise; url: sec-ispromise
-        text: PerformPromiseThen; url: sec-performpromisethen
         text: Execution Context Stack; url: execution-context-stack
     type: dfn
         url: sec-returnifabrupt-shorthands
