@@ -1351,9 +1351,17 @@ and render_exp env e =
   | MemE (e1, e2) -> render_exp env e1 ^ " \\in " ^ render_exp env e2
   | LenE e1 -> "{|" ^ render_exp env e1 ^ "|}"
   | SizeE id -> "||" ^ render_gramid env id ^ "||"
-  | ParenE ({it = SeqE [{it = AtomE atom; _}; _]; _} as e1)
-    when render_atom env atom = "" ->
-    render_exp env e1
+  | ParenE ({it = SeqE (_::_::_ as es); _} as e1) ->
+    let es', _ = Lib.List.split_last es in
+    if
+      List.for_all (function
+        | {it = AtomE atom; _} -> render_atom env atom = ""
+        | _ -> false
+      ) es'
+    then
+      render_exp env e1
+    else
+      "(" ^ render_exp env e1 ^ ")"
   | ParenE e1 -> "(" ^ render_exp env e1 ^ ")"
   | TupE es -> "(" ^ render_exps ", " env es ^ ")"
   | InfixE (e1, atom, e2) ->
