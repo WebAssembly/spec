@@ -3,7 +3,7 @@ WebAssembly Specification
 
 .. only:: html
 
-   | Release |release| + js-promise-integration (Draft, |today|)
+   | Release |release|
 
    | Editor: Andreas Rossberg
 
