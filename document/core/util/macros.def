@@ -3,11 +3,11 @@
 .. External Standards
 .. ------------------
 
-.. |WasmDraft| replace:: https://webassembly.github.io/js-promise-integration/core/
-.. _WasmDraft: https://webassembly.github.io/js-promise-integration/core/
+.. |WasmDraft| replace:: [pagelink]
+.. _WasmDraft: [pagelink]
 
-.. |WasmIssues| replace:: https://github.com/webassembly/js-promise-integration/issues/
-.. _WasmIssues: https://github.com/webassembly/js-promise-integration/issues/
+.. |WasmIssues| replace:: [issuelink]
+.. _WasmIssues: [issuelink]
 
 .. |IEEE754| replace:: IEEE 754-2019
 .. _IEEE754: https://ieeexplore.ieee.org/document/8766229
