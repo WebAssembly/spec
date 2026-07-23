@@ -3910,12 +3910,12 @@ $$
 & & | & \mathsf{br\_on\_cast}~{\mathit{labelidx}}~{\mathit{reftype}}~{\mathit{reftype}} \\
 & & | & \mathsf{br\_on\_cast\_fail}~{\mathit{labelidx}}~{\mathit{reftype}}~{\mathit{reftype}} \\
 & & | & \mathsf{call}~{\mathit{funcidx}} \\
-& & | & \mathsf{call\_ref}~{\mathit{typeuse}} \\
-& & | & \mathsf{call\_indirect}~{\mathit{tableidx}}~{\mathit{typeuse}} \\
+& & | & \mathsf{call\_ref}~{\mathit{typeidx}} \\
+& & | & \mathsf{call\_indirect}~{\mathit{tableidx}}~{\mathit{typeidx}} \\
 & & | & \mathsf{return} \\
 & & | & \mathsf{return\_call}~{\mathit{funcidx}} \\
-& & | & \mathsf{return\_call\_ref}~{\mathit{typeuse}} \\
-& & | & \mathsf{return\_call\_indirect}~{\mathit{tableidx}}~{\mathit{typeuse}} \\
+& & | & \mathsf{return\_call\_ref}~{\mathit{typeidx}} \\
+& & | & \mathsf{return\_call\_indirect}~{\mathit{tableidx}}~{\mathit{typeidx}} \\
 & & | & \mathsf{throw}~{\mathit{tagidx}} \\
 & & | & \mathsf{throw\_ref} \\
 & & | & \mathsf{try\_table}~{\mathit{blocktype}}~{\mathit{list}}({\mathit{catch}})~{{\mathit{instr}}^\ast} \\
@@ -4097,20 +4097,20 @@ $$
 \end{array}
 } \\
 {\mathrm{free}}_{\mathit{instr}}(\mathsf{call}~{\mathit{funcidx}}) & = & {\mathrm{free}}_{\mathit{funcidx}}({\mathit{funcidx}}) \\
-{\mathrm{free}}_{\mathit{instr}}(\mathsf{call\_ref}~{\mathit{typeuse}}) & = & {\mathrm{free}}_{\mathit{typeuse}}({\mathit{typeuse}}) \\
-{\mathrm{free}}_{\mathit{instr}}(\mathsf{call\_indirect}~{\mathit{tableidx}}~{\mathit{typeuse}}) & = & & \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{call\_ref}~{\mathit{typeidx}}) & = & {\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}}) \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{call\_indirect}~{\mathit{tableidx}}~{\mathit{typeidx}}) & = & & \\
  \multicolumn{4}{@{}l@{}}{\quad
 \begin{array}[t]{@{}l@{}}
-{\mathrm{free}}_{\mathit{tableidx}}({\mathit{tableidx}}) \oplus {\mathrm{free}}_{\mathit{typeuse}}({\mathit{typeuse}}) \\
+{\mathrm{free}}_{\mathit{tableidx}}({\mathit{tableidx}}) \oplus {\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}}) \\
 \end{array}
 } \\
 {\mathrm{free}}_{\mathit{instr}}(\mathsf{return}) & = & \{  \} \\
 {\mathrm{free}}_{\mathit{instr}}(\mathsf{return\_call}~{\mathit{funcidx}}) & = & {\mathrm{free}}_{\mathit{funcidx}}({\mathit{funcidx}}) \\
-{\mathrm{free}}_{\mathit{instr}}(\mathsf{return\_call\_ref}~{\mathit{typeuse}}) & = & {\mathrm{free}}_{\mathit{typeuse}}({\mathit{typeuse}}) \\
-{\mathrm{free}}_{\mathit{instr}}(\mathsf{return\_call\_indirect}~{\mathit{tableidx}}~{\mathit{typeuse}}) & = & & \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{return\_call\_ref}~{\mathit{typeidx}}) & = & {\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}}) \\
+{\mathrm{free}}_{\mathit{instr}}(\mathsf{return\_call\_indirect}~{\mathit{tableidx}}~{\mathit{typeidx}}) & = & & \\
  \multicolumn{4}{@{}l@{}}{\quad
 \begin{array}[t]{@{}l@{}}
-{\mathrm{free}}_{\mathit{tableidx}}({\mathit{tableidx}}) \oplus {\mathrm{free}}_{\mathit{typeuse}}({\mathit{typeuse}}) \\
+{\mathrm{free}}_{\mathit{tableidx}}({\mathit{tableidx}}) \oplus {\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}}) \\
 \end{array}
 } \\
 {\mathrm{free}}_{\mathit{instr}}(\mathsf{throw}~{\mathit{tagidx}}) & = & {\mathrm{free}}_{\mathit{tagidx}}({\mathit{tagidx}}) \\
@@ -8955,7 +8955,7 @@ $$
 & & | & \mathsf{ref{.}host}~{\mathit{hostaddr}} \\
 & & | & \mathsf{ref{.}extern}~{\mathit{ref}} \\
 \mbox{(value)} & {\mathit{val}} & ::= & {\mathit{num}} ~~|~~ {\mathit{vec}} ~~|~~ {\mathit{ref}} \\
-\mbox{(result)} & {\mathit{result}} & ::= & {{\mathit{val}}^\ast} ~~|~~ ( \mathsf{ref{.}exn\_addr}~{\mathit{exnaddr}} )~\mathsf{throw\_ref} ~~|~~ \mathsf{trap} \\
+\mbox{(result)} & {\mathit{result}} & ::= & {{\mathit{val}}^\ast} ~~|~~ \mathsf{throw\_addr}~{\mathit{exnaddr}} ~~|~~ \mathsf{trap} \\
 \end{array}
 $$
 
@@ -9059,6 +9059,9 @@ $$
 & & | & {{\mathsf{label}}_{n}}{\{ {{\mathit{instr}}^\ast} \}}~{{\mathit{instr}}^\ast} \\
 & & | & {{\mathsf{frame}}_{n}}{\{ {\mathit{frame}} \}}~{{\mathit{instr}}^\ast} \\
 & & | & {{\mathsf{handler}}_{n}}{\{ {{\mathit{catch}}^\ast} \}}~{{\mathit{instr}}^\ast} \\
+& & | & \mathsf{call\_addr}~{\mathit{funcaddr}} \\
+& & | & \mathsf{return\_call\_addr}~{\mathit{funcaddr}} \\
+& & | & \mathsf{throw\_addr}~{\mathit{exnaddr}} \\
 & & | & \mathsf{trap} \\
 \end{array}
 $$
@@ -9910,9 +9913,10 @@ $$
 
 $$
 \begin{array}[t]{@{}lrcl@{}l@{}}
-{[\textsc{\scriptsize E{-}call}]} \quad & z ; (\mathsf{call}~x) & \hookrightarrow & (\mathsf{ref{.}func}~a)~(\mathsf{call\_ref}~z{.}\mathsf{funcs}{}[a]{.}\mathsf{type}) & \quad \mbox{if}~ z{.}\mathsf{module}{.}\mathsf{funcs}{}[x] = a \\
-{[\textsc{\scriptsize E{-}call\_ref{-}null}]} \quad & z ; (\mathsf{ref{.}null})~(\mathsf{call\_ref}~y) & \hookrightarrow & \mathsf{trap} \\
-{[\textsc{\scriptsize E{-}call\_ref{-}func}]} \quad & z ; {{\mathit{val}}^{n}}~(\mathsf{ref{.}func}~a)~(\mathsf{call\_ref}~y) & \hookrightarrow & ({{\mathsf{frame}}_{m}}{\{ f \}}~({{\mathsf{label}}_{m}}{\{ \epsilon \}}~{{\mathit{instr}}^\ast})) &  \\
+{[\textsc{\scriptsize E{-}call}]} \quad & z ; (\mathsf{call}~x) & \hookrightarrow & (\mathsf{call\_addr}~a) & \quad \mbox{if}~ z{.}\mathsf{module}{.}\mathsf{funcs}{}[x] = a \\
+{[\textsc{\scriptsize E{-}call\_ref{-}null}]} \quad & z ; (\mathsf{ref{.}null})~(\mathsf{call\_ref}~x) & \hookrightarrow & \mathsf{trap} \\
+{[\textsc{\scriptsize E{-}call\_ref{-}func}]} \quad & z ; (\mathsf{ref{.}func}~a)~(\mathsf{call\_ref}~x) & \hookrightarrow & (\mathsf{call\_addr}~a) \\
+{[\textsc{\scriptsize E{-}call\_addr}]} \quad & z ; {{\mathit{val}}^{n}}~(\mathsf{call\_addr}~a) & \hookrightarrow & ({{\mathsf{frame}}_{m}}{\{ f \}}~({{\mathsf{label}}_{m}}{\{ \epsilon \}}~{{\mathit{instr}}^\ast})) &  \\
 &&& \multicolumn{2}{@{}l@{}}{\quad
 \quad
 \begin{array}[t]{@{}l@{}}
@@ -9929,18 +9933,12 @@ $$
 
 $$
 \begin{array}[t]{@{}lrcl@{}l@{}}
-{[\textsc{\scriptsize E{-}return\_call}]} \quad & z ; (\mathsf{return\_call}~x) & \hookrightarrow & (\mathsf{ref{.}func}~a)~(\mathsf{return\_call\_ref}~z{.}\mathsf{funcs}{}[a]{.}\mathsf{type}) & \quad \mbox{if}~ z{.}\mathsf{module}{.}\mathsf{funcs}{}[x] = a \\
-\end{array}
-$$
-
-\vspace{1ex}
-
-$$
-\begin{array}[t]{@{}lrcl@{}l@{}}
-{[\textsc{\scriptsize E{-}return\_call\_ref{-}label}]} \quad & z ; ({{\mathsf{label}}_{k}}{\{ {{\mathit{instr}'}^\ast} \}}~{{\mathit{val}}^\ast}~(\mathsf{return\_call\_ref}~y)~{{\mathit{instr}}^\ast}) & \hookrightarrow & {{\mathit{val}}^\ast}~(\mathsf{return\_call\_ref}~y) \\
-{[\textsc{\scriptsize E{-}return\_call\_ref{-}handler}]} \quad & z ; ({{\mathsf{handler}}_{k}}{\{ {{\mathit{catch}}^\ast} \}}~{{\mathit{val}}^\ast}~(\mathsf{return\_call\_ref}~y)~{{\mathit{instr}}^\ast}) & \hookrightarrow & {{\mathit{val}}^\ast}~(\mathsf{return\_call\_ref}~y) \\
-{[\textsc{\scriptsize E{-}return\_call\_ref{-}frame{-}null}]} \quad & z ; ({{\mathsf{frame}}_{k}}{\{ f \}}~{{\mathit{val}}^\ast}~(\mathsf{ref{.}null})~(\mathsf{return\_call\_ref}~y)~{{\mathit{instr}}^\ast}) & \hookrightarrow & \mathsf{trap} \\
-{[\textsc{\scriptsize E{-}return\_call\_ref{-}frame{-}addr}]} \quad & z ; ({{\mathsf{frame}}_{k}}{\{ f \}}~{{\mathit{val}'}^\ast}~{{\mathit{val}}^{n}}~(\mathsf{ref{.}func}~a)~(\mathsf{return\_call\_ref}~y)~{{\mathit{instr}}^\ast}) & \hookrightarrow & {{\mathit{val}}^{n}}~(\mathsf{ref{.}func}~a)~(\mathsf{call\_ref}~y) &  \\
+{[\textsc{\scriptsize E{-}return\_call}]} \quad & z ; (\mathsf{return\_call}~x) & \hookrightarrow & (\mathsf{return\_call\_addr}~a) & \quad \mbox{if}~ z{.}\mathsf{module}{.}\mathsf{funcs}{}[x] = a \\
+{[\textsc{\scriptsize E{-}return\_call\_ref{-}null}]} \quad & z ; (\mathsf{ref{.}null})~(\mathsf{return\_call\_ref}~x) & \hookrightarrow & \mathsf{trap} \\
+{[\textsc{\scriptsize E{-}return\_call\_ref{-}func}]} \quad & z ; (\mathsf{ref{.}func}~a)~(\mathsf{return\_call\_ref}~x) & \hookrightarrow & (\mathsf{return\_call\_addr}~a) \\
+{[\textsc{\scriptsize E{-}return\_call\_addr{-}label}]} \quad & z ; ({{\mathsf{label}}_{k}}{\{ {{\mathit{instr}'}^\ast} \}}~{{\mathit{val}}^\ast}~(\mathsf{return\_call\_addr}~a)~{{\mathit{instr}}^\ast}) & \hookrightarrow & {{\mathit{val}}^\ast}~(\mathsf{return\_call\_addr}~a) \\
+{[\textsc{\scriptsize E{-}return\_call\_addr{-}handler}]} \quad & z ; ({{\mathsf{handler}}_{k}}{\{ {{\mathit{catch}}^\ast} \}}~{{\mathit{val}}^\ast}~(\mathsf{return\_call\_addr}~a)~{{\mathit{instr}}^\ast}) & \hookrightarrow & {{\mathit{val}}^\ast}~(\mathsf{return\_call\_addr}~a) \\
+{[\textsc{\scriptsize E{-}return\_call\_addr{-}frame}]} \quad & z ; ({{\mathsf{frame}}_{k}}{\{ f \}}~{{\mathit{val}'}^\ast}~{{\mathit{val}}^{n}}~(\mathsf{return\_call\_addr}~a)~{{\mathit{instr}}^\ast}) & \hookrightarrow & {{\mathit{val}}^{n}}~(\mathsf{call\_addr}~a) &  \\
 &&& \multicolumn{2}{@{}l@{}}{\quad
 \quad \mbox{if}~ z{.}\mathsf{funcs}{}[a]{.}\mathsf{type} \approx \mathsf{func}~{t_1^{n}} \rightarrow {t_2^{m}}
 } \\
@@ -9971,7 +9969,7 @@ $$
 
 $$
 \begin{array}[t]{@{}lrcl@{}l@{}}
-{[\textsc{\scriptsize E{-}throw}]} \quad & z ; {{\mathit{val}}^{n}}~(\mathsf{throw}~x) & \hookrightarrow & z{}[{.}\mathsf{exns} \mathrel{{=}{\oplus}} {\mathit{exn}}] ; (\mathsf{ref{.}exn}~a)~\mathsf{throw\_ref} & \quad
+{[\textsc{\scriptsize E{-}throw}]} \quad & z ; {{\mathit{val}}^{n}}~(\mathsf{throw}~x) & \hookrightarrow & z{}[{.}\mathsf{exns} \mathrel{{=}{\oplus}} {\mathit{exn}}] ; (\mathsf{throw\_addr}~a) & \quad
 \begin{array}[t]{@{}l@{}}
 \mbox{if}~ z{.}\mathsf{tags}{}[x]{.}\mathsf{type} \approx \mathsf{func}~{t^{n}} \rightarrow \epsilon \\
 {\land}~ a = {|z{.}\mathsf{exns}|} \\
@@ -9983,14 +9981,15 @@ $$
 $$
 \begin{array}[t]{@{}lrcl@{}l@{}}
 {[\textsc{\scriptsize E{-}throw\_ref{-}null}]} \quad & z ; (\mathsf{ref{.}null})~\mathsf{throw\_ref} & \hookrightarrow & \mathsf{trap} \\
-{[\textsc{\scriptsize E{-}throw\_ref{-}instrs}]} \quad & z ; {{\mathit{val}}^\ast}~(\mathsf{ref{.}exn}~a)~\mathsf{throw\_ref}~{{\mathit{instr}}^\ast} & \hookrightarrow & (\mathsf{ref{.}exn}~a)~\mathsf{throw\_ref} &  \\
+{[\textsc{\scriptsize E{-}throw\_ref{-}addr}]} \quad & z ; (\mathsf{ref{.}exn}~a)~\mathsf{throw\_ref} & \hookrightarrow & (\mathsf{throw\_addr}~a) \\
+{[\textsc{\scriptsize E{-}throw\_addr{-}instrs}]} \quad & z ; {{\mathit{val}}^\ast}~(\mathsf{throw\_addr}~a)~{{\mathit{instr}}^\ast} & \hookrightarrow & (\mathsf{throw\_addr}~a) &  \\
 &&& \multicolumn{2}{@{}l@{}}{\quad
 \quad \mbox{if}~ {{\mathit{val}}^\ast} \neq \epsilon \lor {{\mathit{instr}}^\ast} \neq \epsilon
 } \\
-{[\textsc{\scriptsize E{-}throw\_ref{-}label}]} \quad & z ; ({{\mathsf{label}}_{n}}{\{ {{\mathit{instr}'}^\ast} \}}~(\mathsf{ref{.}exn}~a)~\mathsf{throw\_ref}) & \hookrightarrow & (\mathsf{ref{.}exn}~a)~\mathsf{throw\_ref} \\
-{[\textsc{\scriptsize E{-}throw\_ref{-}frame}]} \quad & z ; ({{\mathsf{frame}}_{n}}{\{ f \}}~(\mathsf{ref{.}exn}~a)~\mathsf{throw\_ref}) & \hookrightarrow & (\mathsf{ref{.}exn}~a)~\mathsf{throw\_ref} \\
-{[\textsc{\scriptsize E{-}throw\_ref{-}handler{-}empty}]} \quad & z ; ({{\mathsf{handler}}_{n}}{\{ \epsilon \}}~(\mathsf{ref{.}exn}~a)~\mathsf{throw\_ref}) & \hookrightarrow & (\mathsf{ref{.}exn}~a)~\mathsf{throw\_ref} \\
-{[\textsc{\scriptsize E{-}throw\_ref{-}handler{-}catch}]} \quad & z ; ({{\mathsf{handler}}_{n}}{\{ (\mathsf{catch}~x~l)~{{\mathit{catch}'}^\ast} \}}~(\mathsf{ref{.}exn}~a)~\mathsf{throw\_ref}) & \hookrightarrow & {{\mathit{val}}^\ast}~(\mathsf{br}~l) &  \\
+{[\textsc{\scriptsize E{-}throw\_addr{-}label}]} \quad & z ; ({{\mathsf{label}}_{n}}{\{ {{\mathit{instr}'}^\ast} \}}~(\mathsf{throw\_addr}~a)) & \hookrightarrow & (\mathsf{throw\_addr}~a) \\
+{[\textsc{\scriptsize E{-}throw\_addr{-}frame}]} \quad & z ; ({{\mathsf{frame}}_{n}}{\{ f \}}~(\mathsf{throw\_addr}~a)) & \hookrightarrow & (\mathsf{throw\_addr}~a) \\
+{[\textsc{\scriptsize E{-}throw\_addr{-}handler{-}empty}]} \quad & z ; ({{\mathsf{handler}}_{n}}{\{ \epsilon \}}~(\mathsf{throw\_addr}~a)) & \hookrightarrow & (\mathsf{throw\_addr}~a) \\
+{[\textsc{\scriptsize E{-}throw\_addr{-}handler{-}catch}]} \quad & z ; ({{\mathsf{handler}}_{n}}{\{ (\mathsf{catch}~x~l)~{{\mathit{catch}'}^\ast} \}}~(\mathsf{throw\_addr}~a)) & \hookrightarrow & {{\mathit{val}}^\ast}~(\mathsf{br}~l) &  \\
 &&& \multicolumn{2}{@{}l@{}}{\quad
 \quad
 \begin{array}[t]{@{}l@{}}
@@ -9998,7 +9997,7 @@ $$
 {\land}~ {{\mathit{val}}^\ast} = z{.}\mathsf{exns}{}[a]{.}\mathsf{fields} \\
 \end{array}
 } \\
-{[\textsc{\scriptsize E{-}throw\_ref{-}handler{-}catch\_ref}]} \quad & z ; ({{\mathsf{handler}}_{n}}{\{ (\mathsf{catch\_ref}~x~l)~{{\mathit{catch}'}^\ast} \}}~(\mathsf{ref{.}exn}~a)~\mathsf{throw\_ref}) & \hookrightarrow & {{\mathit{val}}^\ast}~(\mathsf{ref{.}exn}~a)~(\mathsf{br}~l) &  \\
+{[\textsc{\scriptsize E{-}throw\_addr{-}handler{-}catch\_ref}]} \quad & z ; ({{\mathsf{handler}}_{n}}{\{ (\mathsf{catch\_ref}~x~l)~{{\mathit{catch}'}^\ast} \}}~(\mathsf{throw\_addr}~a)) & \hookrightarrow & {{\mathit{val}}^\ast}~(\mathsf{ref{.}exn}~a)~(\mathsf{br}~l) &  \\
 &&& \multicolumn{2}{@{}l@{}}{\quad
 \quad
 \begin{array}[t]{@{}l@{}}
@@ -10006,9 +10005,9 @@ $$
 {\land}~ {{\mathit{val}}^\ast} = z{.}\mathsf{exns}{}[a]{.}\mathsf{fields} \\
 \end{array}
 } \\
-{[\textsc{\scriptsize E{-}throw\_ref{-}handler{-}catch\_all}]} \quad & z ; ({{\mathsf{handler}}_{n}}{\{ (\mathsf{catch\_all}~l)~{{\mathit{catch}'}^\ast} \}}~(\mathsf{ref{.}exn}~a)~\mathsf{throw\_ref}) & \hookrightarrow & (\mathsf{br}~l) \\
-{[\textsc{\scriptsize E{-}throw\_ref{-}handler{-}catch\_all\_ref}]} \quad & z ; ({{\mathsf{handler}}_{n}}{\{ (\mathsf{catch\_all\_ref}~l)~{{\mathit{catch}'}^\ast} \}}~(\mathsf{ref{.}exn}~a)~\mathsf{throw\_ref}) & \hookrightarrow & (\mathsf{ref{.}exn}~a)~(\mathsf{br}~l) \\
-{[\textsc{\scriptsize E{-}throw\_ref{-}handler{-}next}]} \quad & z ; ({{\mathsf{handler}}_{n}}{\{ {\mathit{catch}}~{{\mathit{catch}'}^\ast} \}}~(\mathsf{ref{.}exn}~a)~\mathsf{throw\_ref}) & \hookrightarrow & ({{\mathsf{handler}}_{n}}{\{ {{\mathit{catch}'}^\ast} \}}~(\mathsf{ref{.}exn}~a)~\mathsf{throw\_ref}) &  \\
+{[\textsc{\scriptsize E{-}throw\_addr{-}handler{-}catch\_all}]} \quad & z ; ({{\mathsf{handler}}_{n}}{\{ (\mathsf{catch\_all}~l)~{{\mathit{catch}'}^\ast} \}}~(\mathsf{throw\_addr}~a)) & \hookrightarrow & (\mathsf{br}~l) \\
+{[\textsc{\scriptsize E{-}throw\_addr{-}handler{-}catch\_all\_ref}]} \quad & z ; ({{\mathsf{handler}}_{n}}{\{ (\mathsf{catch\_all\_ref}~l)~{{\mathit{catch}'}^\ast} \}}~(\mathsf{throw\_addr}~a)) & \hookrightarrow & (\mathsf{ref{.}exn}~a)~(\mathsf{br}~l) \\
+{[\textsc{\scriptsize E{-}throw\_addr{-}handler{-}next}]} \quad & z ; ({{\mathsf{handler}}_{n}}{\{ {\mathit{catch}}~{{\mathit{catch}'}^\ast} \}}~(\mathsf{throw\_addr}~a)) & \hookrightarrow & ({{\mathsf{handler}}_{n}}{\{ {{\mathit{catch}'}^\ast} \}}~(\mathsf{throw\_addr}~a)) &  \\
 &&& \multicolumn{2}{@{}l@{}}{\quad
 \quad \mbox{otherwise}
 } \\
@@ -11344,7 +11343,7 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{\mathrm{invoke}}(s, {\mathit{funcaddr}}, {{\mathit{val}}^\ast}) & = & s ; \{ \mathsf{module}~\{  \} \} ; {{\mathit{val}}^\ast}~(\mathsf{ref{.}func}~{\mathit{funcaddr}})~(\mathsf{call\_ref}~s{.}\mathsf{funcs}{}[{\mathit{funcaddr}}]{.}\mathsf{type}) &  \\
+{\mathrm{invoke}}(s, {\mathit{funcaddr}}, {{\mathit{val}}^\ast}) & = & s ; \{ \mathsf{module}~\{  \} \} ; {{\mathit{val}}^\ast}~(\mathsf{call\_addr}~{\mathit{funcaddr}}) &  \\
 && \multicolumn{2}{@{}l@{}}{\quad
 \quad
 \begin{array}[t]{@{}l@{}}
@@ -14141,38 +14140,6 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C \vdash y : \mathsf{ok}
- \qquad
-y \approx_{C} \mathsf{func}~{t_1^\ast} \rightarrow {t_2^\ast}
-}{
-s ; C \vdash \mathsf{call\_ref}~y : {t_1^\ast}~(\mathsf{ref}~\mathsf{null}~y) \rightarrow {t_2^\ast}
-} \, {[\textsc{\scriptsize Instr\_ok2{-}call\_ref}]}
-\qquad
-\end{array}
-$$
-
-$$
-\begin{array}{@{}c@{}}\displaystyle
-\frac{
-C \vdash y : \mathsf{ok}
- \qquad
-y \approx_{C} \mathsf{func}~{t_1^\ast} \rightarrow {t_2^\ast}
- \qquad
-C{.}\mathsf{return} = ({{t'}_2^\ast})
- \qquad
-C \vdash {t_2^\ast} \leq {{t'}_2^\ast}
- \qquad
-C \vdash {t_3^\ast} \rightarrow {t_4^\ast} : \mathsf{ok}
-}{
-s ; C \vdash \mathsf{return\_call\_ref}~y : {t_3^\ast}~{t_1^\ast}~(\mathsf{ref}~\mathsf{null}~y) \rightarrow {t_4^\ast}
-} \, {[\textsc{\scriptsize Instr\_ok2{-}return\_call\_ref}]}
-\qquad
-\end{array}
-$$
-
-$$
-\begin{array}{@{}c@{}}\displaystyle
-\frac{
 s \vdash {\mathit{ref}} : {\mathit{rt}}
 }{
 s ; C \vdash {\mathit{ref}} : \epsilon \rightarrow {\mathit{rt}}
@@ -14218,6 +14185,47 @@ s ; C \vdash {{\mathit{instr}}^\ast} : \epsilon \rightarrow_{{x^\ast}} {t^\ast}
 }{
 s ; C \vdash {{\mathsf{handler}}_{n}}{\{ {{\mathit{catch}}^\ast} \}}~{{\mathit{instr}}^\ast} : \epsilon \rightarrow {t^\ast}
 } \, {[\textsc{\scriptsize Instr\_ok2{-}handler}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+s{.}\mathsf{funcs}{}[a]{.}\mathsf{type} \approx \mathsf{func}~{t_1^\ast} \rightarrow {t_2^\ast}
+}{
+s ; C \vdash \mathsf{call\_addr}~a : {t_1^\ast} \rightarrow {t_2^\ast}
+} \, {[\textsc{\scriptsize Instr\_ok2{-}call\_addr}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+s{.}\mathsf{funcs}{}[a]{.}\mathsf{type} \approx \mathsf{func}~{t_1^\ast} \rightarrow {t_2^\ast}
+ \qquad
+C{.}\mathsf{return} = ({{t'}_2^\ast})
+ \qquad
+C \vdash {t_2^\ast} \leq {{t'}_2^\ast}
+ \qquad
+C \vdash {t_3^\ast} \rightarrow {t_4^\ast} : \mathsf{ok}
+}{
+s ; C \vdash \mathsf{return\_call\_addr}~a : {t_3^\ast}~{t_1^\ast} \rightarrow {t_4^\ast}
+} \, {[\textsc{\scriptsize Instr\_ok2{-}return\_call\_addr}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+s{.}\mathsf{exns}{}[a] = {\mathit{exn}}
+ \qquad
+C \vdash {t_1^\ast} \rightarrow {t_2^\ast} : \mathsf{ok}
+}{
+s ; C \vdash \mathsf{throw\_addr}~a : {t_1^\ast} \rightarrow {t_2^\ast}
+} \, {[\textsc{\scriptsize Instr\_ok2{-}throw\_addr}]}
 \qquad
 \end{array}
 $$

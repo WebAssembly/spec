@@ -141,29 +141,9 @@ $${rule: {Step_read/call}}
 
 .. _exec-call_ref:
 
-:math:`\CALLREF~x`
-..................
+$${rule-prose: Step_read/call_ref}
 
-.. todo:: (*) Prose not spliced, for the prose merges the two cases of null and non-null references.
-
-1. Assert: due to :ref:`validation <valid-call_ref>`, a null or :ref:`function reference <syntax-ref>` is on the top of the stack.
-
-2. Pop the reference value :math:`r` from the stack.
-
-3. If :math:`r` is :math:`\REFNULL~\X{ht}`, then:
-
-    a. Trap.
-
-4. Assert: due to :ref:`validation <valid-call_ref>`, :math:`r` is a :ref:`function reference <syntax-ref>`.
-
-5. Let :math:`\REFFUNCADDR~a` be the reference :math:`r`.
-
-6. :ref:`Invoke <exec-invoke>` the function instance at address :math:`a`.
-
-$${rule: {Step_read/call_ref-null}}
-
-.. note::
-   The formal rule for calling a non-null function reference is described :ref:`below <exec-invoke>`.
+$${rule: {Step_read/call_ref-*}}
 
 
 .. _exec-call_indirect:
@@ -272,18 +252,19 @@ $${rule: Step_pure/label-vals}
 Exception Handling
 ~~~~~~~~~~~~~~~~~~
 
-The following auxiliary rules define the semantics of entering and exiting ${:TRY_TABLE} blocks.
+The following auxiliary rules define the semantics of entering and exiting ${:TRY_TABLE} blocks,
+and of throwing exceptions.
 
 .. _exec-handler-enter:
 
 Entering :math:`\instr^\ast` with label :math:`L` and exception handler :math:`H`
 .................................................................................
 
-1. Push :math:`H` to the stack.
+1. Push ${:H} to the stack.
 
-2. Push :math:`L` onto the stack.
+2. Push ${:L} onto the stack.
 
-3. Jump to the start of the instruction sequence :math:`\instr^\ast`.
+3. Jump to the start of the instruction sequence ${:instr*}.
 
 .. note::
    No formal reduction rule is needed for entering an exception :ref:`handler <syntax-handler>`
@@ -298,21 +279,31 @@ Exiting an exception handler
 
 When the end of a ${:TRY_TABLE} block is reached without a jump, :ref:`exception <exception>`, or :ref:`trap <trap>`, then the following steps are performed.
 
-1. Let :math:`m` be the number of values on the top of the stack.
+1. Let ${:m} be the number of values on the top of the stack.
 
-2. Pop the values :math:`\val^m` from the stack.
+2. Pop the values ${:val^m} from the stack.
 
 3. Assert: due to :ref:`validation <valid-instrs>`, a handler and a label are now on the top of the stack.
 
 4. Pop the label from the stack.
 
-5. Pop the handler :math:`H` from the stack.
+5. Pop the handler ${:H} from the stack.
 
-6. Push :math:`\val^m` back to the stack.
+6. Push ${:val^m} back to the stack.
 
-7. Jump to the position after the end of the administrative instruction associated with the handler :math:`H`.
+7. Jump to the position after the end of the administrative instruction associated with the handler ${:H}.
 
 $${rule: Step_pure/handler-vals}
+
+
+.. _exec-throw_addr:
+
+Throwing an exception
+.....................
+
+$${rule-prose: Step_read/throw_addr}
+
+$${rule: Step_read/throw_addr-*}
 
 
 .. index:: ! call, function, function instance, label, frame
@@ -325,32 +316,11 @@ through one of the :ref:`call instructions <exec-instr-control>`
 and returning from it.
 
 
-.. _exec-invoke:
+.. _exec-call_addr:
 
-Invocation of :ref:`function reference <syntax-ref.func>` :math:`(\REFFUNCADDR~a)`
-..................................................................................
+$${rule-prose: Step_read/call_addr}
 
-1. Assert: due to :ref:`validation <valid-call>`, :math:`S.\SFUNCS[a]` exists.
-
-2. Let :math:`f` be the :ref:`function instance <syntax-funcinst>`, :math:`S.\SFUNCS[a]`.
-
-3. Let :math:`\TFUNC~[t_1^n] \Tarrow [t_2^m]` be the :ref:`composite type <syntax-comptype>` :math:`\expanddt(\X{f}.\FITYPE)`.
-
-4. Let :math:`\FUNC~x~\local^\ast~\instr^\ast` be the :ref:`function <syntax-func>` :math:`f.\FICODE`.
-
-5. Assert: due to :ref:`validation <valid-call>`, :math:`n` values are on the top of the stack.
-
-6. Pop the values :math:`\val^n` from the stack.
-
-7. Let :math:`F` be the :ref:`frame <syntax-frame>` :math:`\{ \AMODULE~F.\FIMODULE, \ALOCALS~\val^n~(\default_t)^\ast \}`.
-
-8. Push the activation of :math:`f` with arity :math:`m` to the stack.
-
-9. Let :math:`L` be the :ref:`label <syntax-label>` whose arity is :math:`m` and whose continuation is the end of the function.
-
-10. :ref:`Enter <exec-instrs-enter>` the instruction sequence :math:`\instr^\ast` with label :math:`L` and no values.
-
-$${rule: {Step_read/call_ref-func}}
+$${rule: {Step_read/call_addr}}
 
 .. note::
    For non-defaultable types, the respective local is left uninitialized by these rules.
@@ -363,19 +333,19 @@ Returning from a function
 
 When the end of a function is reached without a jump (including through |RETURN|), or an :ref:`exception <exception>` or :ref:`trap <trap>` aborting it, then the following steps are performed.
 
-1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
+1. Let ${:F} be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
-2. Let :math:`n` be the arity of the activation of :math:`F`.
+2. Let ${:n} be the arity of the activation of ${:F}.
 
-3. Assert: due to :ref:`validation <valid-instrs>`, there are :math:`n` values on the top of the stack.
+3. Assert: due to :ref:`validation <valid-instrs>`, there are ${:n} values on the top of the stack.
 
-4. Pop the results :math:`\val^n` from the stack.
+4. Pop the results ${:val^n} from the stack.
 
-5. Assert: due to :ref:`validation <valid-func>`, the frame :math:`F` is now on the top of the stack.
+5. Assert: due to :ref:`validation <valid-func>`, the frame ${:F} is now on the top of the stack.
 
 6. Pop the frame from the stack.
 
-7. Push :math:`\val^n` back to the stack.
+7. Push ${:val^n} back to the stack.
 
 8. Jump to the instruction after the original call.
 
@@ -1183,4 +1153,4 @@ $${rule: Eval_expr}
 
 .. note::
    Evaluation iterates this reduction rule until reaching a value.
-   Expressions constituting :ref:`function <syntax-func>` bodies are executed during function :ref:`invocation <exec-invoke>`.
+   Expressions constituting :ref:`function <syntax-func>` bodies are executed during function :ref:`calls <exec-call_addr>`.
