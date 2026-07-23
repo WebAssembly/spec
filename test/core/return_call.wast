@@ -91,6 +91,11 @@
   (func (export "type-f64-i64-to-i32-f32") (param f64 i64) (result i32 f32)
     (return_call $swizzle (local.get 0) (local.get 1))
   )
+
+  ;; Result subtyping
+  (type $t (func))
+  (func $f (result (ref null $t)) (ref.null $t))
+  (func (export "type-funcref") (result funcref) (return_call $f))
 )
 
 (assert_return (invoke "type-i32") (i32.const 0x132))
@@ -134,6 +139,7 @@
 (assert_return (invoke "odd" (i64.const 999_999)) (i32.const 44))
 (assert_return (invoke "tailprint_i32_f32" (i32.const 5) (f32.const 91.0)))
 (assert_return (invoke "type-f64-i64-to-i32-f32" (f64.const 4.2) (i64.const 99)) (i32.const 99) (f32.const 4.2))
+(assert_return (invoke "type-funcref") (ref.null func))
 
 ;; Invalid typing
 
@@ -148,6 +154,14 @@
   (module
     (func $type-num-vs-num (result i32) (return_call 1) (i32.const 0))
     (func (result i64) (i64.const 1))
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (type $t (func))
+    (func $type-ref-vs-funcref (result (ref null $t)) (return_call 1))
+    (func (result funcref) (unreachable))
   )
   "type mismatch"
 )
