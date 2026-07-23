@@ -37,6 +37,7 @@ rule Instr_ok2/label:
 rule Instr_ok2/frame:
   s; C |- FRAME_ n `{f} instr* : eps -> t^n
   -- Frame_ok: s |- f : C'
+  -- if C'.RETURN = t^n
   -- Expr_ok2: s; C' |- instr* : t^n
   -- Resulttype_ok: {} |- t^n : OK
 
