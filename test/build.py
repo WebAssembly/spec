@@ -27,46 +27,58 @@ def run(*cmd):
                           stdout=subprocess.PIPE,
                           stderr=subprocess.STDOUT,
                           universal_newlines=True)
-def call(*cmd):
-    return subprocess.call(cmd,
-                           stdout=subprocess.PIPE,
-                           stderr=subprocess.STDOUT,
-                           universal_newlines=True)
 
 # Preconditions.
 def ensure_remove_dir(path):
+    """Remove `path` if it exists."""
     if os.path.exists(path):
         shutil.rmtree(path)
 
 def ensure_empty_dir(path):
+    """Create an empty directory at `path`, removing any existing one."""
     ensure_remove_dir(path)
     os.mkdir(path)
 
 def compile_wasm_interpreter():
+    """Compile the wasm interpreter; exit the process if this fails."""
     print("Recompiling the wasm interpreter...")
-    result = call('make', '-C', INTERPRETER_DIR, 'clean', 'default')
-    if result != 0:
-        print("Couldn't recompile wasm spec interpreter")
+    result = run('make', '-C', INTERPRETER_DIR, 'clean', 'default')
+    if result.returncode != 0:
+        print("Couldn't recompile wasm spec interpreter. Output follows:")
+        print(result.stdout)
         sys.exit(1)
     print("Done!")
 
-def ensure_wasm_executable(path_to_wasm):
+def ensure_wasm_executable():
     """
-    Ensure we have built the wasm spec interpreter.
+    Ensure we have built the wasm spec interpreter; exit the process if it doesn't exist.
     """
-    result = call(path_to_wasm, '-v', '-e', '')
-    if result != 0:
-        print('Unable to run the wasm executable')
+    result = run(WASM_EXEC, '-v', '-e', '')
+    if result.returncode != 0:
+        print("Unable to run the wasm executable. Output follows:")
+        print(result.stdout)
         sys.exit(1)
 
 # JS harness.
 def convert_one_wast_file(inputs):
+    """Translate a `.wast` to JS using the wasm spec interpreter."""
     wast_file, js_file = inputs
     print('Compiling {} to JS...'.format(wast_file))
     return run(WASM_EXEC, wast_file, '-j', '-o', js_file)
 
 def convert_wast_to_js(out_js_dir):
-    """Compile all the wast files to JS and store the results in the JS dir."""
+    """
+    Compile the wast files in `WAST_TESTS_DIR` to JS and store the results in `out_js_dir`,
+    which is cleared first.
+
+    This excludes the tests with `.fail.` in the file name.
+
+    The compilation happens in parallel, using 8 processes.
+    """
+
+    ensure_empty_dir(out_js_dir)
+    for d in WAST_TEST_SUBDIRS:
+        ensure_empty_dir(os.path.join(out_js_dir, d))
 
     inputs = []
 
@@ -95,6 +107,12 @@ def convert_wast_to_js(out_js_dir):
     return [js_file for (wast_file, js_file) in inputs]
 
 def copy_harness_files(out_js_dir, include_harness):
+    """
+    Copy harness files into `out_js_dir/harness`.
+
+    This always includes the {sync,async}_index.js files,
+    and the testharness files if `include_harness` is true.
+    """
     harness_dir = os.path.join(out_js_dir, 'harness')
     ensure_empty_dir(harness_dir)
 
@@ -105,6 +123,7 @@ def copy_harness_files(out_js_dir, include_harness):
         shutil.copy(js_file, harness_dir)
 
 def build_js(out_js_dir):
+    """Entry point for building all the JS tests."""
     print('Building JS...')
     convert_wast_to_js(out_js_dir)
     copy_harness_files(out_js_dir, False)
@@ -132,6 +151,8 @@ HTML_BOTTOM = """
 """
 
 def wrap_single_test(js_file):
+    """Replace the file at `js_file` with one that wraps the code in an IIFE that also calls
+    `reinitializeRegistry()` after the test."""
     test_func_name = os.path.basename(js_file).replace('.', '_').replace('-', '_')
 
     content = "(function {}() {{\n".format(test_func_name)
@@ -141,17 +162,6 @@ def wrap_single_test(js_file):
 
     with open(js_file, 'w') as f:
         f.write(content)
-
-def build_html_js(out_dir):
-    ensure_empty_dir(out_dir)
-    for d in WAST_TEST_SUBDIRS:
-        ensure_empty_dir(os.path.join(out_dir, d))
-    copy_harness_files(out_dir, True)
-
-    tests = convert_wast_to_js(out_dir)
-    for js_file in tests:
-        wrap_single_test(js_file)
-    return tests
 
 def build_html_from_js(tests, html_dir, use_sync):
     for js_file in tests:
@@ -175,11 +185,18 @@ def build_html_from_js(tests, html_dir, use_sync):
             f.write(content)
 
 def build_html(html_dir, use_sync):
+    """
+    Entry point for building the HTML versions of the tests.
+
+    We assume the tests will be run using a global copy of `testharness.js`, served from
+    `/resources` as happens in web-platform-tests.
+    """
     print("Building HTML tests...")
 
     js_html_dir = os.path.join(html_dir, 'js')
 
-    tests = build_html_js(js_html_dir)
+    tests = convert_wast_to_js(js_html_dir)
+    copy_harness_files(js_html_dir, False)
 
     print('Building WPT tests from JS tests...')
     build_html_from_js(tests, html_dir, use_sync)
@@ -187,13 +204,45 @@ def build_html(html_dir, use_sync):
     print("Done building HTML tests.")
 
 
+def build_any_js(output_dir, use_sync):
+    """
+    Entry point for building the `.any.js` versions of the tests.
+    """
+    print("Building `.any.js` tests...")
+
+    tests = convert_wast_to_js(output_dir)
+
+    index_path = "sync_index.js" if use_sync else "async_index.js"
+    for js_file in tests:
+        harness_path = os.path.relpath(os.path.join(output_dir, "harness"), os.path.dirname(js_file))
+        with open(js_file, "r") as f:
+            content = f.read()
+
+        with open(js_file.replace(".js", ".any.js"), "w") as f:
+            f.write(f"""\
+// META: script={harness_path}/{index_path}
+// META: global=window
+""")
+            f.write(content)
+
+        os.remove(js_file)
+
+    copy_harness_files(output_dir, False)
+
+    print("Done building `.any.js` tests.")
+
+
 # Front page harness.
-def build_front_page(out_dir, js_dir, use_sync):
+def build_front_page(out_dir, use_sync):
+    """Entry point for building a single HTML file including all of the tests."""
     print('Building front page containing all the HTML tests...')
 
     js_out_dir = os.path.join(out_dir, 'js')
 
-    tests = build_html_js(js_out_dir)
+    tests = convert_wast_to_js(js_out_dir)
+    for js_file in tests:
+        wrap_single_test(js_file)
+    copy_harness_files(js_out_dir, True)
 
     front_page = os.path.join(out_dir, 'index.html')
     js_harness = "sync_index.js" if use_sync else "async_index.js"
@@ -224,6 +273,11 @@ def process_args():
                         help="Relative path to the output directory for the Web Platform tests.",
                         type=str)
 
+    parser.add_argument('--any-js',
+                        dest="any_js_dir",
+                        help="Relative path to the output directory for the `.any.js` Web Platform tests.",
+                        type=str)
+
     parser.add_argument('--front',
                         dest="front_dir",
                         help="Relative path to the output directory for the front page.",
@@ -250,9 +304,10 @@ if __name__ == '__main__':
 
     js_dir = args.js_dir
     html_dir = args.html_dir
+    any_js_dir = args.any_js_dir
     front_dir = args.front_dir
 
-    if front_dir is None and js_dir is None and html_dir is None:
+    if all(d is None for d in [js_dir, html_dir, any_js_dir, front_dir]):
         print('At least one mode must be selected.\n')
         parser.print_help()
         sys.exit(1)
@@ -260,12 +315,9 @@ if __name__ == '__main__':
     if args.compile:
         compile_wasm_interpreter()
 
-    ensure_wasm_executable(WASM_EXEC)
+    ensure_wasm_executable()
 
     if js_dir is not None:
-        ensure_empty_dir(js_dir)
-        for d in WAST_TEST_SUBDIRS:
-            ensure_empty_dir(os.path.join(js_dir, d))
         build_js(js_dir)
 
     if html_dir is not None:
@@ -274,8 +326,11 @@ if __name__ == '__main__':
             ensure_empty_dir(os.path.join(html_dir, d))
         build_html(html_dir, args.use_sync)
 
+    if any_js_dir is not None:
+        build_any_js(any_js_dir, args.use_sync)
+
     if front_dir is not None:
         ensure_empty_dir(front_dir)
-        build_front_page(front_dir, js_dir, args.use_sync)
+        build_front_page(front_dir, args.use_sync)
 
     print('Done!')
