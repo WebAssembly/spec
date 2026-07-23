@@ -1910,7 +1910,7 @@ To <dfn>validate an import for builtins</dfn> with |import|, enabled builtins |b
 
 <h3 id="builtins-js-string">String Builtins</h3>
 
-String builtins adapt the interface of the [=String=] builtin object. The [=builtin-set/name=] for this set is `js-string`, and the [=builtin-set/qualified name=] is `wasm:js-string`.
+String builtins adapt the interface of the [=String=] builtin object. The [=builtin-set/name=] for this set is `js/string`, and the [=builtin-set/qualified name=] is `wasm:js/string`. The [=builtin-set/name=] `js-string` (with [=builtin-set/qualified name=] `wasm:js-string`) is also registered for the same set of builtins for backwards compatibility.
 
 Note: The algorithms in this section refer to JS builtins defined on [=String=]. These refer to the actual builtin and do not perform a dynamic lookup on the [=String=] object.
 
