@@ -5,11 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Instructions &#8212; WebAssembly 3.0 (2026-07-23)</title>
+    <title>Instructions &#8212; WebAssembly 3.0 (2026-07-24)</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=686e5160" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=057308f9" />
-    <script src="../_static/documentation_options.js?v=ab5e93aa"></script>
+    <script src="../_static/documentation_options.js?v=25056264"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>window.MathJax = {"tex": {"maxBuffer": 30720, "macros": {"multicolumn": ["", 2]}}, "options": {"menuOptions": {"settings": {"enrich": false}}}}</script>
@@ -465,7 +465,7 @@
 </ol>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}[t]{&#64;{}l&#64;{}rcl&#64;{}l&#64;{}}
-&amp; z ; (\href{../exec/runtime.html#syntax-ref}{\mathsf{ref{.}null}})~(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{call\_ref}}~y) &amp; \href{../exec/conventions.html#exec-notation}{\hookrightarrow} &amp; \href{../exec/runtime.html#syntax-trap}{\mathsf{trap}} \\
+&amp; z ; (\href{../exec/runtime.html#syntax-ref}{\mathsf{ref{.}null}})~(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{call\_ref}}~y) &amp; \href{../exec/conventions.html#exec-notation}{\hookrightarrow} &amp; z ; \href{../exec/runtime.html#syntax-trap}{\mathsf{trap}} \\
 \end{array}\end{split}\]</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -909,20 +909,21 @@ and returning from it.</p>
 <section id="invocation-of-function-reference-xref-exec-runtime-syntax-ref-mathsf-ref-func-a">
 <span id="exec-invoke"></span><h3>Invocation of <a class="reference internal" href="../syntax/instructions.html#syntax-ref-func"><span class="std std-ref">function reference</span></a> <span class="math notranslate nohighlight">\((\href{../exec/runtime.html#syntax-ref}{\mathsf{ref{.}func}}~a)\)</span><a class="headerlink" href="#invocation-of-function-reference-xref-exec-runtime-syntax-ref-mathsf-ref-func-a" title="Link to this heading">¶</a></h3>
 <ol class="arabic simple">
-<li><p>Assert: due to <a class="reference internal" href="../valid/instructions.html#valid-call"><span class="std std-ref">validation</span></a>, <span class="math notranslate nohighlight">\(S.\href{../exec/runtime.html#syntax-store}{\mathsf{funcs}}[a]\)</span> exists.</p></li>
-<li><p>Let <span class="math notranslate nohighlight">\(f\)</span> be the <a class="reference internal" href="runtime.html#syntax-funcinst"><span class="std std-ref">function instance</span></a>, <span class="math notranslate nohighlight">\(S.\href{../exec/runtime.html#syntax-store}{\mathsf{funcs}}[a]\)</span>.</p></li>
-<li><p>Let <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-comptype}{\mathsf{func}}~[t_1^n] \href{../syntax/types.html#syntax-comptype}{\rightarrow} [t_2^m]\)</span> be the <a class="reference internal" href="../syntax/types.html#syntax-comptype"><span class="std std-ref">composite type</span></a> <span class="math notranslate nohighlight">\(\href{../valid/conventions.html#aux-expand-deftype}{\mathrm{expand}}(\mathit{f}.\href{../exec/runtime.html#syntax-funcinst}{\mathsf{type}})\)</span>.</p></li>
-<li><p>Let <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-func}{\mathsf{func}}~x~\href{../syntax/modules.html#syntax-local}{\mathit{local}}^\ast~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast\)</span> be the <a class="reference internal" href="../syntax/modules.html#syntax-func"><span class="std std-ref">function</span></a> <span class="math notranslate nohighlight">\(f.\href{../exec/runtime.html#syntax-funcinst}{\mathsf{code}}\)</span>.</p></li>
+<li><p>Let <span class="math notranslate nohighlight">\(z\)</span> be the current state.</p></li>
+<li><p>Assert: due to <a class="reference internal" href="../valid/instructions.html#valid-call"><span class="std std-ref">validation</span></a>, <span class="math notranslate nohighlight">\(z.\href{../exec/runtime.html#syntax-store}{\mathsf{funcs}}[a]\)</span> exists.</p></li>
+<li><p>Let <span class="math notranslate nohighlight">\(\mathit{fi}\)</span> be the <a class="reference internal" href="runtime.html#syntax-funcinst"><span class="std std-ref">function instance</span></a>, <span class="math notranslate nohighlight">\(z.\href{../exec/runtime.html#syntax-store}{\mathsf{funcs}}[a]\)</span>.</p></li>
+<li><p>Let <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-comptype}{\mathsf{func}}~[t_1^n] \href{../syntax/types.html#syntax-comptype}{\rightarrow} [t_2^m]\)</span> be the <a class="reference internal" href="../syntax/types.html#syntax-comptype"><span class="std std-ref">composite type</span></a> <span class="math notranslate nohighlight">\(\href{../valid/conventions.html#aux-expand-deftype}{\mathrm{expand}}(\mathit{fi}.\href{../exec/runtime.html#syntax-funcinst}{\mathsf{type}})\)</span>.</p></li>
+<li><p>Let <span class="math notranslate nohighlight">\(\href{../syntax/modules.html#syntax-func}{\mathsf{func}}~x~(\href{../syntax/modules.html#syntax-local}{\mathit{local}}~t)^\ast~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast\)</span> be the <a class="reference internal" href="../syntax/modules.html#syntax-func"><span class="std std-ref">function</span></a> <span class="math notranslate nohighlight">\(\mathit{fi}.\href{../exec/runtime.html#syntax-funcinst}{\mathsf{code}}\)</span>.</p></li>
 <li><p>Assert: due to <a class="reference internal" href="../valid/instructions.html#valid-call"><span class="std std-ref">validation</span></a>, <span class="math notranslate nohighlight">\(n\)</span> values are on the top of the stack.</p></li>
 <li><p>Pop the values <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-val}{\mathit{val}}^n\)</span> from the stack.</p></li>
-<li><p>Let <span class="math notranslate nohighlight">\(F\)</span> be the <a class="reference internal" href="runtime.html#syntax-frame"><span class="std std-ref">frame</span></a> <span class="math notranslate nohighlight">\(\{ \href{../exec/runtime.html#syntax-frame}{\mathsf{module}}~F.\href{../exec/runtime.html#syntax-funcinst}{\mathsf{module}}, \href{../exec/runtime.html#syntax-frame}{\mathsf{locals}}~\href{../exec/runtime.html#syntax-val}{\mathit{val}}^n~(\href{../exec/runtime.html#aux-default}{\mathrm{default}}_t)^\ast \}\)</span>.</p></li>
+<li><p>Let <span class="math notranslate nohighlight">\(f\)</span> be the <a class="reference internal" href="runtime.html#syntax-frame"><span class="std std-ref">frame</span></a> <span class="math notranslate nohighlight">\(\{ \href{../exec/runtime.html#syntax-frame}{\mathsf{locals}}~\href{../exec/runtime.html#syntax-val}{\mathit{val}}^n~(\href{../exec/runtime.html#aux-default}{\mathrm{default}}_t)^\ast, \href{../exec/runtime.html#syntax-frame}{\mathsf{module}}~\mathit{fi}.\href{../exec/runtime.html#syntax-funcinst}{\mathsf{module}} \}\)</span>.</p></li>
 <li><p>Push the activation of <span class="math notranslate nohighlight">\(f\)</span> with arity <span class="math notranslate nohighlight">\(m\)</span> to the stack.</p></li>
 <li><p>Let <span class="math notranslate nohighlight">\(L\)</span> be the <a class="reference internal" href="runtime.html#syntax-label"><span class="std std-ref">label</span></a> whose arity is <span class="math notranslate nohighlight">\(m\)</span> and whose continuation is the end of the function.</p></li>
 <li><p><a class="reference internal" href="#exec-instrs-enter"><span class="std std-ref">Enter</span></a> the instruction sequence <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast\)</span> with label <span class="math notranslate nohighlight">\(L\)</span> and no values.</p></li>
 </ol>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}[t]{&#64;{}l&#64;{}rcl&#64;{}l&#64;{}}
-&amp; z ; {{\href{../exec/runtime.html#syntax-val}{\mathit{val}}}^{n}}~(\href{../exec/runtime.html#syntax-ref}{\mathsf{ref{.}func}}~a)~(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{call\_ref}}~y) &amp; \href{../exec/conventions.html#exec-notation}{\hookrightarrow} &amp; ({{\href{../exec/runtime.html#syntax-frame}{\mathsf{frame}}}_{m}}{\{ f \}}~({{\href{../exec/runtime.html#syntax-label}{\mathsf{label}}}_{m}}{\{ \epsilon \}}~{{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}}^\ast})) &amp;  \\
+&amp; z ; {{\href{../exec/runtime.html#syntax-val}{\mathit{val}}}^{n}}~(\href{../exec/runtime.html#syntax-ref}{\mathsf{ref{.}func}}~a)~(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{call\_ref}}~y) &amp; \href{../exec/conventions.html#exec-notation}{\hookrightarrow} &amp; z ; ({{\href{../exec/runtime.html#syntax-frame}{\mathsf{frame}}}_{m}}{\{ f \}}~({{\href{../exec/runtime.html#syntax-label}{\mathsf{label}}}_{m}}{\{ \epsilon \}}~{{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}}^\ast})) &amp;  \\
 &amp;&amp;&amp; \multicolumn{2}{&#64;{}l&#64;{}}{\quad
 \quad
 \begin{array}[t]{&#64;{}l&#64;{}}
@@ -966,36 +967,37 @@ according to its <a class="reference internal" href="../syntax/types.html#syntax
 However, all store modifications must result in an <a class="reference internal" href="../appendix/properties.html#extend-store"><span class="std std-ref">extension</span></a> of the original store, i.e., they must only modify mutable contents and must not have instances removed.
 Furthermore, the resulting store must be <a class="reference internal" href="../appendix/properties.html#valid-store"><span class="std std-ref">valid</span></a>, i.e., all data and code in it is well-typed.</p>
 <div class="math notranslate nohighlight">
-\[\begin{split}~\\[-1ex]
-\begin{array}{l}
-\begin{array}{lcl&#64;{\qquad}l}
-S; \href{../exec/runtime.html#syntax-val}{\mathit{val}}^n~(\href{../exec/runtime.html#syntax-ref}{\mathsf{ref{.}func}}~a)~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{call\_ref}} &amp;\href{../exec/conventions.html#exec-notation}{\hookrightarrow}&amp; S'; \href{../exec/runtime.html#syntax-result}{\mathit{result}}
+\[\begin{split}\begin{array}[t]{&#64;{}l&#64;{}rcl&#64;{}l&#64;{}}
+&amp; s ; f ; {{\href{../exec/runtime.html#syntax-val}{\mathit{val}}}^{n}}~(\href{../exec/runtime.html#syntax-ref}{\mathsf{ref{.}func}}~a)~(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{call\_ref}}~y) &amp; \href{../exec/conventions.html#exec-notation}{\hookrightarrow} &amp; {s'} ; f ; {\href{../exec/runtime.html#syntax-result}{\mathit{result}}} &amp;  \\
+&amp;&amp;&amp; \multicolumn{2}{&#64;{}l&#64;{}}{\quad
+\quad
+\begin{array}[t]{&#64;{}l&#64;{}}
+\mbox{if}~ (s ; f){.}\href{../exec/runtime.html#syntax-state}{\mathsf{funcs}}{}[a] = {\mathit{fi}} \\
+{\land}~ {\mathit{fi}}{.}\href{../exec/runtime.html#syntax-funcinst}{\mathsf{type}} \mathrel{\href{../valid/conventions.html#aux-expand-deftype}{\approx}} \href{../syntax/types.html#syntax-comptype}{\mathsf{func}}~{t_1^{n}} \href{../syntax/types.html#syntax-comptype}{\rightarrow} {t_2^{m}} \\
+{\land}~ {\mathit{fi}}{.}\href{../exec/runtime.html#syntax-funcinst}{\mathsf{code}} = {\mathit{hf}} \\
+{\land}~ ({s'}, {\href{../exec/runtime.html#syntax-result}{\mathit{result}}}) \in {{\mathit{hf}}}{(s, {{\href{../exec/runtime.html#syntax-val}{\mathit{val}}}^{n}})} \\
 \end{array}
-\\ \qquad
-  \begin{array}[t]{&#64;{}r&#64;{~}l&#64;{}}
-  \mathrel{\mbox{if}} &amp; S.\href{../exec/runtime.html#syntax-store}{\mathsf{funcs}}[a] = \{ \href{../exec/runtime.html#syntax-funcinst}{\mathsf{type}}~\href{../valid/conventions.html#syntax-deftype}{\mathit{deftype}}, \href{../exec/runtime.html#syntax-funcinst}{\mathsf{hostfunc}}~\mathit{hf} \} \\
-  \wedge &amp; \href{../valid/conventions.html#syntax-deftype}{\mathit{deftype}} \approx \href{../syntax/types.html#syntax-comptype}{\mathsf{func}}~[t_1^n] \href{../syntax/types.html#syntax-comptype}{\rightarrow} [t_2^m] \\
-  \wedge &amp; (S'; \href{../exec/runtime.html#syntax-result}{\mathit{result}}) \in \mathit{hf}(S; \href{../exec/runtime.html#syntax-val}{\mathit{val}}^n) \\
-  \end{array} \\
-\begin{array}{lcl&#64;{\qquad}l}
-S; \href{../exec/runtime.html#syntax-val}{\mathit{val}}^n~(\href{../exec/runtime.html#syntax-ref}{\mathsf{ref{.}func}}~a)~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{call\_ref}} &amp;\href{../exec/conventions.html#exec-notation}{\hookrightarrow}&amp; S; \href{../exec/runtime.html#syntax-val}{\mathit{val}}^n~(\href{../exec/runtime.html#syntax-ref}{\mathsf{ref{.}func}}~a)~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{call\_ref}}
+} \\
+&amp; s ; f ; {{\href{../exec/runtime.html#syntax-val}{\mathit{val}}}^{n}}~(\href{../exec/runtime.html#syntax-ref}{\mathsf{ref{.}func}}~a)~(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{call\_ref}}~y) &amp; \href{../exec/conventions.html#exec-notation}{\hookrightarrow} &amp; s ; f ; (\href{../exec/runtime.html#syntax-ref}{\mathsf{ref{.}func}}~a)~(\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{call\_ref}}~y) &amp;  \\
+&amp;&amp;&amp; \multicolumn{2}{&#64;{}l&#64;{}}{\quad
+\quad
+\begin{array}[t]{&#64;{}l&#64;{}}
+\mbox{if}~ (s ; f){.}\href{../exec/runtime.html#syntax-state}{\mathsf{funcs}}{}[a] = {\mathit{fi}} \\
+{\land}~ {\mathit{fi}}{.}\href{../exec/runtime.html#syntax-funcinst}{\mathsf{type}} \mathrel{\href{../valid/conventions.html#aux-expand-deftype}{\approx}} \href{../syntax/types.html#syntax-comptype}{\mathsf{func}}~{t_1^{n}} \href{../syntax/types.html#syntax-comptype}{\rightarrow} {t_2^{m}} \\
+{\land}~ {\mathit{fi}}{.}\href{../exec/runtime.html#syntax-funcinst}{\mathsf{code}} = {\mathit{hf}} \\
+{\land}~ \bot \in {{\mathit{hf}}}{(s, {{\href{../exec/runtime.html#syntax-val}{\mathit{val}}}^{n}})} \\
 \end{array}
-\\ \qquad
-  \begin{array}[t]{&#64;{}r&#64;{~}l&#64;{}}
-  \mathrel{\mbox{if}} &amp; S.\href{../exec/runtime.html#syntax-store}{\mathsf{funcs}}[a] = \{ \href{../exec/runtime.html#syntax-funcinst}{\mathsf{type}}~\href{../valid/conventions.html#syntax-deftype}{\mathit{deftype}}, \href{../exec/runtime.html#syntax-funcinst}{\mathsf{hostfunc}}~\mathit{hf} \} \\
-  \wedge &amp; \href{../valid/conventions.html#syntax-deftype}{\mathit{deftype}} \approx \href{../syntax/types.html#syntax-comptype}{\mathsf{func}}~[t_1^n] \href{../syntax/types.html#syntax-comptype}{\rightarrow} [t_2^m] \\
-  \wedge &amp; \bot \in \mathit{hf}(S; \href{../exec/runtime.html#syntax-val}{\mathit{val}}^n) \\
-  \end{array} \\
+} \\
 \end{array}\end{split}\]</div>
-<p>Here, <span class="math notranslate nohighlight">\(\mathit{hf}(S; \href{../exec/runtime.html#syntax-val}{\mathit{val}}^n)\)</span> denotes the implementation-defined execution of host function <span class="math notranslate nohighlight">\(\mathit{hf}\)</span> in current store <span class="math notranslate nohighlight">\(S\)</span> with arguments <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-val}{\mathit{val}}^n\)</span>.
-It yields a set of possible outcomes, where each element is either a pair of a modified store <span class="math notranslate nohighlight">\(S'\)</span> and a <a class="reference internal" href="runtime.html#syntax-result"><span class="std std-ref">result</span></a>
+<p>Here, <span class="math notranslate nohighlight">\({{\mathit{hf}}}{(s, {{\href{../exec/runtime.html#syntax-val}{\mathit{val}}}^{n}})}\)</span> denotes the implementation-defined execution of host function <span class="math notranslate nohighlight">\({\mathit{hf}}\)</span> in current store <span class="math notranslate nohighlight">\(s\)</span> with arguments <span class="math notranslate nohighlight">\({{\href{../exec/runtime.html#syntax-val}{\mathit{val}}}^{n}}\)</span>.
+It yields a set of possible outcomes, where each element is either a pair of a modified store <span class="math notranslate nohighlight">\({s'}\)</span> and a <a class="reference internal" href="runtime.html#syntax-result"><span class="std std-ref">result</span></a>
 or the special value <span class="math notranslate nohighlight">\(\bot\)</span> indicating divergence.
 A host function is non-deterministic if there is at least one argument for which the set of outcomes is not singular.</p>
 <p>For a WebAssembly implementation to be <a class="reference internal" href="../appendix/properties.html#soundness"><span class="std std-ref">sound</span></a> in the presence of host functions,
 every <a class="reference internal" href="runtime.html#syntax-funcinst"><span class="std std-ref">host function instance</span></a> must be <a class="reference internal" href="../appendix/properties.html#valid-hostfuncinst"><span class="std std-ref">valid</span></a>,
 which means that it adheres to suitable pre- and post-conditions:
-under a <a class="reference internal" href="../appendix/properties.html#valid-store"><span class="std std-ref">valid store</span></a> <span class="math notranslate nohighlight">\(S\)</span>, and given arguments <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-val}{\mathit{val}}^n\)</span> matching the ascribed parameter types <span class="math notranslate nohighlight">\(t_1^n\)</span>,
-executing the host function must yield a non-empty set of possible outcomes each of which is either divergence or consists of a valid store <span class="math notranslate nohighlight">\(S'\)</span> that is an <a class="reference internal" href="../appendix/properties.html#extend-store"><span class="std std-ref">extension</span></a> of <span class="math notranslate nohighlight">\(S\)</span> and a result matching the ascribed return types <span class="math notranslate nohighlight">\(t_2^m\)</span>.
+under a <a class="reference internal" href="../appendix/properties.html#valid-store"><span class="std std-ref">valid store</span></a> <span class="math notranslate nohighlight">\(s\)</span>, and given arguments <span class="math notranslate nohighlight">\({{\href{../exec/runtime.html#syntax-val}{\mathit{val}}}^{n}}\)</span> matching the ascribed parameter types <span class="math notranslate nohighlight">\({t_1^{n}}\)</span>,
+executing the host function must yield a non-empty set of possible outcomes each of which is either divergence or consists of a valid store <span class="math notranslate nohighlight">\({s'}\)</span> that is an <a class="reference internal" href="../appendix/properties.html#extend-store"><span class="std std-ref">extension</span></a> of <span class="math notranslate nohighlight">\(s\)</span> and a result matching the ascribed return types <span class="math notranslate nohighlight">\({t_2^{m}}\)</span>.
 All these notions are made precise in the <a class="reference internal" href="../appendix/properties.html#soundness"><span class="std std-ref">Appendix</span></a>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
