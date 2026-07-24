@@ -9408,7 +9408,7 @@ $$
 
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}}
-& {\mathit{hostcallresult}} & ::= & {\mathit{store}}, {\mathit{result}} \\
+& {\mathit{hostcallresult}} & ::= & ({\mathit{store}}, {\mathit{result}}) \\
 & & | & \mathsf{bot} \\
 \end{array}
 $$
@@ -9951,7 +9951,7 @@ $$
 \mbox{if}~ (s ; f){.}\mathsf{funcs}{}[a] = {\mathit{fi}} \\
 {\land}~ {\mathit{fi}}{.}\mathsf{type} \approx \mathsf{func}~{t_1^{n}} \rightarrow {t_2^{m}} \\
 {\land}~ {\mathit{fi}}{.}\mathsf{code} = {\mathit{hf}} \\
-{\land}~ {s'}, {\mathit{result}} \in {\mathrm{hostcall}}({\mathit{hf}}, s, {{\mathit{val}}^{n}}) \\
+{\land}~ ({s'}, {\mathit{result}}) \in {\mathit{hf}}~(s, {{\mathit{val}}^{n}}) \\
 \end{array}
 } \\
 {[\textsc{\scriptsize E{-}call\_ref{-}hostfunc{-}div}]} \quad & s ; f ; {{\mathit{val}}^{n}}~(\mathsf{ref{.}func}~a)~(\mathsf{call\_ref}~y) & \hookrightarrow & s ; f ; (\mathsf{ref{.}func}~a)~(\mathsf{call\_ref}~y) &  \\
@@ -9961,7 +9961,7 @@ $$
 \mbox{if}~ (s ; f){.}\mathsf{funcs}{}[a] = {\mathit{fi}} \\
 {\land}~ {\mathit{fi}}{.}\mathsf{type} \approx \mathsf{func}~{t_1^{n}} \rightarrow {t_2^{m}} \\
 {\land}~ {\mathit{fi}}{.}\mathsf{code} = {\mathit{hf}} \\
-{\land}~ \mathsf{bot} \in {\mathrm{hostcall}}({\mathit{hf}}, s, {{\mathit{val}}^{n}}) \\
+{\land}~ \mathsf{bot} \in {\mathit{hf}}~(s, {{\mathit{val}}^{n}}) \\
 \end{array}
 } \\
 \end{array}

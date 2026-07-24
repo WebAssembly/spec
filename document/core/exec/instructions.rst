@@ -330,25 +330,27 @@ and returning from it.
 Invocation of :ref:`function reference <syntax-ref.func>` :math:`(\REFFUNCADDR~a)`
 ..................................................................................
 
-1. Assert: due to :ref:`validation <valid-call>`, :math:`S.\SFUNCS[a]` exists.
+1. Let :math:`z` be the current state.
 
-2. Let :math:`f` be the :ref:`function instance <syntax-funcinst>`, :math:`S.\SFUNCS[a]`.
+2. Assert: due to :ref:`validation <valid-call>`, :math:`z.\SFUNCS[a]` exists.
 
-3. Let :math:`\TFUNC~[t_1^n] \Tarrow [t_2^m]` be the :ref:`composite type <syntax-comptype>` :math:`\expanddt(\X{f}.\FITYPE)`.
+3. Let :math:`\X{fi}` be the :ref:`function instance <syntax-funcinst>`, :math:`z.\SFUNCS[a]`.
 
-4. Let :math:`\FUNC~x~\local^\ast~\instr^\ast` be the :ref:`function <syntax-func>` :math:`f.\FICODE`.
+4. Let :math:`\TFUNC~[t_1^n] \Tarrow [t_2^m]` be the :ref:`composite type <syntax-comptype>` :math:`\expanddt(\X{fi}.\FITYPE)`.
 
-5. Assert: due to :ref:`validation <valid-call>`, :math:`n` values are on the top of the stack.
+5. Let :math:`\FUNC~x~(\local~t)^\ast~\instr^\ast` be the :ref:`function <syntax-func>` :math:`\X{fi}.\FICODE`.
 
-6. Pop the values :math:`\val^n` from the stack.
+6. Assert: due to :ref:`validation <valid-call>`, :math:`n` values are on the top of the stack.
 
-7. Let :math:`F` be the :ref:`frame <syntax-frame>` :math:`\{ \AMODULE~F.\FIMODULE, \ALOCALS~\val^n~(\default_t)^\ast \}`.
+7. Pop the values :math:`\val^n` from the stack.
 
-8. Push the activation of :math:`f` with arity :math:`m` to the stack.
+8. Let :math:`f` be the :ref:`frame <syntax-frame>` :math:`\{ \ALOCALS~\val^n~(\default_t)^\ast, \AMODULE~\X{fi}.\FIMODULE \}`.
 
-9. Let :math:`L` be the :ref:`label <syntax-label>` whose arity is :math:`m` and whose continuation is the end of the function.
+9. Push the activation of :math:`f` with arity :math:`m` to the stack.
 
-10. :ref:`Enter <exec-instrs-enter>` the instruction sequence :math:`\instr^\ast` with label :math:`L` and no values.
+10. Let :math:`L` be the :ref:`label <syntax-label>` whose arity is :math:`m` and whose continuation is the end of the function.
+
+11. :ref:`Enter <exec-instrs-enter>` the instruction sequence :math:`\instr^\ast` with label :math:`L` and no values.
 
 $${rule: {Step/call_ref-func}}
 
@@ -397,39 +399,18 @@ A host function may also modify the :ref:`store <syntax-store>`.
 However, all store modifications must result in an :ref:`extension <extend-store>` of the original store, i.e., they must only modify mutable contents and must not have instances removed.
 Furthermore, the resulting store must be :ref:`valid <valid-store>`, i.e., all data and code in it is well-typed.
 
-.. math::
-   ~\\[-1ex]
-   \begin{array}{l}
-   \begin{array}{lcl@{\qquad}l}
-   S; \val^n~(\REFFUNCADDR~a)~\CALLREF &\stepto& S'; \result
-   \end{array}
-   \\ \qquad
-     \begin{array}[t]{@{}r@{~}l@{}}
-     \iff & S.\SFUNCS[a] = \{ \FITYPE~\deftype, \FIHOSTFUNC~\X{hf} \} \\
-     \wedge & \deftype \approx \TFUNC~[t_1^n] \Tarrow [t_2^m] \\
-     \wedge & (S'; \result) \in \X{hf}(S; \val^n) \\
-     \end{array} \\
-   \begin{array}{lcl@{\qquad}l}
-   S; \val^n~(\REFFUNCADDR~a)~\CALLREF &\stepto& S; \val^n~(\REFFUNCADDR~a)~\CALLREF
-   \end{array}
-   \\ \qquad
-     \begin{array}[t]{@{}r@{~}l@{}}
-     \iff & S.\SFUNCS[a] = \{ \FITYPE~\deftype, \FIHOSTFUNC~\X{hf} \} \\
-     \wedge & \deftype \approx \TFUNC~[t_1^n] \Tarrow [t_2^m] \\
-     \wedge & \bot \in \X{hf}(S; \val^n) \\
-     \end{array} \\
-   \end{array}
+$${rule: {Step/call_ref-hostfunc-*}}
 
-Here, :math:`\X{hf}(S; \val^n)` denotes the implementation-defined execution of host function :math:`\X{hf}` in current store :math:`S` with arguments :math:`\val^n`.
-It yields a set of possible outcomes, where each element is either a pair of a modified store :math:`S'` and a :ref:`result <syntax-result>`
+Here, :math:`\X{hf}(s, \val^n)` denotes the implementation-defined execution of host function :math:`\X{hf}` in current store :math:`s` with arguments :math:`\val^n`.
+It yields a set of possible outcomes, where each element is either a pair of a modified store :math:`s'` and a :ref:`result <syntax-result>`
 or the special value :math:`\bot` indicating divergence.
 A host function is non-deterministic if there is at least one argument for which the set of outcomes is not singular.
 
 For a WebAssembly implementation to be :ref:`sound <soundness>` in the presence of host functions,
 every :ref:`host function instance <syntax-funcinst>` must be :ref:`valid <valid-hostfuncinst>`,
 which means that it adheres to suitable pre- and post-conditions:
-under a :ref:`valid store <valid-store>` :math:`S`, and given arguments :math:`\val^n` matching the ascribed parameter types :math:`t_1^n`,
-executing the host function must yield a non-empty set of possible outcomes each of which is either divergence or consists of a valid store :math:`S'` that is an :ref:`extension <extend-store>` of :math:`S` and a result matching the ascribed return types :math:`t_2^m`.
+under a :ref:`valid store <valid-store>` :math:`s`, and given arguments :math:`\val^n` matching the ascribed parameter types :math:`t_1^n`,
+executing the host function must yield a non-empty set of possible outcomes each of which is either divergence or consists of a valid store :math:`s'` that is an :ref:`extension <extend-store>` of :math:`s` and a result matching the ascribed return types :math:`t_2^m`.
 All these notions are made precise in the :ref:`Appendix <soundness>`.
 
 .. note::
