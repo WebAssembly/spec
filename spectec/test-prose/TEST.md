@@ -19019,15 +19019,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
 
-#. Assert: Due to validation, :math:`{|{\mathit{hf}}~(s, {{\mathit{val}}^{n}})|} > 0`.
+#. Assert: Due to validation, :math:`{|{{\mathit{hf}}}{(s, {{\mathit{val}}^{n}})}|} > 0`.
 
-#. If an element of :math:`{\mathit{hf}}~(s, {{\mathit{val}}^{n}})` is some :math:`({\mathit{store}}, {\mathit{result}})`, then:
+#. If an element of :math:`{{\mathit{hf}}}{(s, {{\mathit{val}}^{n}})}` is some :math:`({\mathit{store}}, {\mathit{result}})`, then:
 
-   a. Let :math:`(({s'}, {\mathit{result}}))` be the destructuring of an element of :math:`{\mathit{hf}}~(s, {{\mathit{val}}^{n}})`.
+   a. Let :math:`(({s'}, {\mathit{result}}))` be the destructuring of an element of :math:`{{\mathit{hf}}}{(s, {{\mathit{val}}^{n}})}`.
 
    #. Execute the sequence :math:`{\mathit{result}}`.
 
-#. If :math:`\mathsf{bot}` is contained in :math:`{\mathit{hf}}~(s, {{\mathit{val}}^{n}})`, then:
+#. If :math:`\mathsf{bot}` is contained in :math:`{{\mathit{hf}}}{(s, {{\mathit{val}}^{n}})}`, then:
 
    a. Push the value :math:`(\mathsf{ref{.}func}~a)` to the stack.
 
@@ -21559,15 +21559,15 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       #) Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
 
-      #) If :math:`{|{\mathit{hf}}~(s, {{\mathit{val}}^{n}})|} > 0`, then:
+      #) If :math:`{|{{\mathit{hf}}}{(s, {{\mathit{val}}^{n}})}|} > 0`, then:
 
-         a) If an element of :math:`{\mathit{hf}}~(s, {{\mathit{val}}^{n}})` is some :math:`({\mathit{store}}, {\mathit{result}})`, then:
+         a) If an element of :math:`{{\mathit{hf}}}{(s, {{\mathit{val}}^{n}})}` is some :math:`({\mathit{store}}, {\mathit{result}})`, then:
 
-            1. Let :math:`(({s'}, {\mathit{result}}))` be the destructuring of an element of :math:`{\mathit{hf}}~(s, {{\mathit{val}}^{n}})`.
+            1. Let :math:`(({s'}, {\mathit{result}}))` be the destructuring of an element of :math:`{{\mathit{hf}}}{(s, {{\mathit{val}}^{n}})}`.
 
             #. Execute the sequence :math:`{\mathit{result}}`.
 
-         #) If :math:`\mathsf{bot}` is contained in :math:`{\mathit{hf}}~(s, {{\mathit{val}}^{n}})`, then:
+         #) If :math:`\mathsf{bot}` is contained in :math:`{{\mathit{hf}}}{(s, {{\mathit{val}}^{n}})}`, then:
 
             1. Push the value :math:`(\mathsf{ref{.}func}~a)` to the stack.
 

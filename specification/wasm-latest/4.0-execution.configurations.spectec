@@ -337,7 +337,7 @@ syntax hostcallresult =
   | RES store result hint(show (%, %))
   | BOT              hint(macro "bot")
 
-def $hostcall(hostfunc, store, val*) : hostcallresult*  hint(show %1(%2, %3))
+def $hostcall(hostfunc, store, val*) : hostcallresult*  hint(show %1#(%2, %3))
 def $hostcall hint(builtin)
 
 def $lift_result(result) : instr*  hint(show %)
