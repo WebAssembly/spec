@@ -6453,18 +6453,6 @@ relation Step_read: `%~>%`(config, instr*)
     -- if ($moduleinst(z).FUNCS_moduleinst[x!`%`_idx.0] = a)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
-  rule `call_ref-null`{z : state, yy : typeuse}:
-    `%~>%`(`%;%`_config(z, [`REF.NULL_ADDR`_instr CALL_REF_instr(yy)]), [TRAP_instr])
-
-  ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
-  rule `call_ref-func`{z : state, n : n, `val*` : val*, a : addr, yy : typeuse, m : m, f : frame, `instr*` : instr*, fi : funcinst, `t_1*` : valtype*, `t_2*` : valtype*, x : idx, `t*` : valtype*}:
-    `%~>%`(`%;%`_config(z, (val : val <: instr)^n{val <- `val*`} ++ [`REF.FUNC_ADDR`_instr(a) CALL_REF_instr(yy)]), [`FRAME_%{%}%`_instr(m, f, [`LABEL_%{%}%`_instr(m, [], instr*{instr <- `instr*`})])])
-    -- if ($funcinst(z)[a] = fi)
-    -- Expand: `%~~%`(fi.TYPE_funcinst, `FUNC%->%`_comptype(`%`_resulttype(t_1^n{t_1 <- `t_1*`},), `%`_resulttype(t_2^m{t_2 <- `t_2*`},)))
-    -- if (fi.CODE_funcinst = FUNC_funccode(x, LOCAL_local(t)*{t <- `t*`}, instr*{instr <- `instr*`}))
-    -- if (f = {LOCALS ?(val)^n{val <- `val*`} ++ $default_(t)*{t <- `t*`}, MODULE fi.MODULE_funcinst})
-
-  ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule return_call{z : state, x : idx, a : addr}:
     `%~>%`(`%;%`_config(z, [RETURN_CALL_instr(x)]), [`REF.FUNC_ADDR`_instr(a) RETURN_CALL_REF_instr($funcinst(z)[a].TYPE_funcinst : deftype <: typeuse)])
     -- if ($moduleinst(z).FUNCS_moduleinst[x!`%`_idx.0] = a)
@@ -6995,6 +6983,18 @@ relation Step: `%~>%`(config, config)
   rule `ctxt-frame`{s : store, f : frame, n : n, f' : frame, `instr*` : instr*, s' : store, f'' : frame, `instr'*` : instr*}:
     `%~>%`(`%;%`_config(`%;%`_state(s, f), [`FRAME_%{%}%`_instr(n, f', instr*{instr <- `instr*`})]), `%;%`_config(`%;%`_state(s', f), [`FRAME_%{%}%`_instr(n, f'', instr'*{instr' <- `instr'*`})]))
     -- Step: `%~>%`(`%;%`_config(`%;%`_state(s, f'), instr*{instr <- `instr*`}), `%;%`_config(`%;%`_state(s', f''), instr'*{instr' <- `instr'*`}))
+
+  ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:173.1-174.48
+  rule `call_ref-null`{z : state, yy : typeuse}:
+    `%~>%`(`%;%`_config(z, [`REF.NULL_ADDR`_instr CALL_REF_instr(yy)]), `%;%`_config(z, [TRAP_instr]))
+
+  ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:176.1-182.61
+  rule `call_ref-func`{z : state, n : n, `val*` : val*, a : addr, yy : typeuse, m : m, f : frame, `instr*` : instr*, fi : funcinst, `t_1*` : valtype*, `t_2*` : valtype*, x : idx, `t*` : valtype*}:
+    `%~>%`(`%;%`_config(z, (val : val <: instr)^n{val <- `val*`} ++ [`REF.FUNC_ADDR`_instr(a) CALL_REF_instr(yy)]), `%;%`_config(z, [`FRAME_%{%}%`_instr(m, f, [`LABEL_%{%}%`_instr(m, [], instr*{instr <- `instr*`})])]))
+    -- if ($funcinst(z)[a] = fi)
+    -- Expand: `%~~%`(fi.TYPE_funcinst, `FUNC%->%`_comptype(`%`_resulttype(t_1^n{t_1 <- `t_1*`},), `%`_resulttype(t_2^m{t_2 <- `t_2*`},)))
+    -- if (fi.CODE_funcinst = FUNC_funccode(x, LOCAL_local(t)*{t <- `t*`}, instr*{instr <- `instr*`}))
+    -- if (f = {LOCALS ?(val)^n{val <- `val*`} ++ $default_(t)*{t <- `t*`}, MODULE fi.MODULE_funcinst})
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:184.1-190.59
   rule `call_ref-hostfunc-res`{s : store, f : frame, n : n, `val*` : val*, a : addr, yy : typeuse, s' : store, result : result, fi : funcinst, `t_1*` : valtype*, m : m, `t_2*` : valtype*, hf : text}:
@@ -18363,18 +18363,6 @@ relation Step_read: `%~>%`(config, instr*)
     -- if ($moduleinst(z).FUNCS_moduleinst[x!`%`_idx.0] = a)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
-  rule `call_ref-null`{z : state, yy : typeuse}:
-    `%~>%`(`%;%`_config(z, [`REF.NULL_ADDR`_instr CALL_REF_instr(yy)]), [TRAP_instr])
-
-  ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
-  rule `call_ref-func`{z : state, n : n, `val*` : val*, a : addr, yy : typeuse, m : m, f : frame, `instr*` : instr*, fi : funcinst, `t_1*` : valtype*, `t_2*` : valtype*, x : idx, `t*` : valtype*}:
-    `%~>%`(`%;%`_config(z, (val : val <: instr)^n{val <- `val*`} ++ [`REF.FUNC_ADDR`_instr(a) CALL_REF_instr(yy)]), [`FRAME_%{%}%`_instr(m, f, [`LABEL_%{%}%`_instr(m, [], instr*{instr <- `instr*`})])])
-    -- if ($funcinst(z)[a] = fi)
-    -- Expand: `%~~%`(fi.TYPE_funcinst, `FUNC%->%`_comptype(`%`_resulttype(t_1^n{t_1 <- `t_1*`},), `%`_resulttype(t_2^m{t_2 <- `t_2*`},)))
-    -- if (fi.CODE_funcinst = FUNC_funccode(x, LOCAL_local(t)*{t <- `t*`}, instr*{instr <- `instr*`}))
-    -- if (f = {LOCALS ?(val)^n{val <- `val*`} ++ $default_(t)*{t <- `t*`}, MODULE fi.MODULE_funcinst})
-
-  ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule return_call{z : state, x : idx, a : addr}:
     `%~>%`(`%;%`_config(z, [RETURN_CALL_instr(x)]), [`REF.FUNC_ADDR`_instr(a) RETURN_CALL_REF_instr($funcinst(z)[a].TYPE_funcinst : deftype <: typeuse)])
     -- if ($moduleinst(z).FUNCS_moduleinst[x!`%`_idx.0] = a)
@@ -18905,6 +18893,18 @@ relation Step: `%~>%`(config, config)
   rule `ctxt-frame`{s : store, f : frame, n : n, f' : frame, `instr*` : instr*, s' : store, f'' : frame, `instr'*` : instr*}:
     `%~>%`(`%;%`_config(`%;%`_state(s, f), [`FRAME_%{%}%`_instr(n, f', instr*{instr <- `instr*`})]), `%;%`_config(`%;%`_state(s', f), [`FRAME_%{%}%`_instr(n, f'', instr'*{instr' <- `instr'*`})]))
     -- Step: `%~>%`(`%;%`_config(`%;%`_state(s, f'), instr*{instr <- `instr*`}), `%;%`_config(`%;%`_state(s', f''), instr'*{instr' <- `instr'*`}))
+
+  ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:173.1-174.48
+  rule `call_ref-null`{z : state, yy : typeuse}:
+    `%~>%`(`%;%`_config(z, [`REF.NULL_ADDR`_instr CALL_REF_instr(yy)]), `%;%`_config(z, [TRAP_instr]))
+
+  ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:176.1-182.61
+  rule `call_ref-func`{z : state, n : n, `val*` : val*, a : addr, yy : typeuse, m : m, f : frame, `instr*` : instr*, fi : funcinst, `t_1*` : valtype*, `t_2*` : valtype*, x : idx, `t*` : valtype*}:
+    `%~>%`(`%;%`_config(z, (val : val <: instr)^n{val <- `val*`} ++ [`REF.FUNC_ADDR`_instr(a) CALL_REF_instr(yy)]), `%;%`_config(z, [`FRAME_%{%}%`_instr(m, f, [`LABEL_%{%}%`_instr(m, [], instr*{instr <- `instr*`})])]))
+    -- if ($funcinst(z)[a] = fi)
+    -- Expand: `%~~%`(fi.TYPE_funcinst, `FUNC%->%`_comptype(`%`_resulttype(t_1^n{t_1 <- `t_1*`},), `%`_resulttype(t_2^m{t_2 <- `t_2*`},)))
+    -- if (fi.CODE_funcinst = FUNC_funccode(x, LOCAL_local(t)*{t <- `t*`}, instr*{instr <- `instr*`}))
+    -- if (f = {LOCALS ?(val)^n{val <- `val*`} ++ $default_(t)*{t <- `t*`}, MODULE fi.MODULE_funcinst})
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:184.1-190.59
   rule `call_ref-hostfunc-res`{s : store, f : frame, n : n, `val*` : val*, a : addr, yy : typeuse, s' : store, result : result, fi : funcinst, `t_1*` : valtype*, m : m, `t_2*` : valtype*, hf : text}:
@@ -30422,19 +30422,6 @@ relation Step_read: `%~>%`(config, instr*)
     -- if ($moduleinst(z).FUNCS_moduleinst[x!`%`_idx.0] = a)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
-  rule `call_ref-null`{z : state, yy : typeuse}:
-    `%~>%`(`%;%`_config(z, [`REF.NULL_ADDR`_instr CALL_REF_instr(yy)]), [TRAP_instr])
-
-  ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
-  rule `call_ref-func`{z : state, n : n, `val*` : val*, a : addr, yy : typeuse, m : m, f : frame, `instr*` : instr*, fi : funcinst, `t_1*` : valtype*, `t_2*` : valtype*, x : idx, `t*` : valtype*}:
-    `%~>%`(`%;%`_config(z, (val : val <: instr)^n{val <- `val*`} ++ [`REF.FUNC_ADDR`_instr(a) CALL_REF_instr(yy)]), [`FRAME_%{%}%`_instr(m, f, [`LABEL_%{%}%`_instr(m, [], instr*{instr <- `instr*`})])])
-    -- if (a < |$funcinst(z)|)
-    -- if ($funcinst(z)[a] = fi)
-    -- Expand: `%~~%`(fi.TYPE_funcinst, `FUNC%->%`_comptype(`%`_resulttype(t_1^n{t_1 <- `t_1*`},), `%`_resulttype(t_2^m{t_2 <- `t_2*`},)))
-    -- if (fi.CODE_funcinst = FUNC_funccode(x, LOCAL_local(t)*{t <- `t*`}, instr*{instr <- `instr*`}))
-    -- if (f = {LOCALS ?(val)^n{val <- `val*`} ++ $default_(t)*{t <- `t*`}, MODULE fi.MODULE_funcinst})
-
-  ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule return_call{z : state, x : idx, a : addr}:
     `%~>%`(`%;%`_config(z, [RETURN_CALL_instr(x)]), [`REF.FUNC_ADDR`_instr(a) RETURN_CALL_REF_instr($funcinst(z)[a].TYPE_funcinst : deftype <: typeuse)])
     -- if (a < |$funcinst(z)|)
@@ -30991,6 +30978,19 @@ relation Step: `%~>%`(config, config)
   rule `ctxt-frame`{s : store, f : frame, n : n, f' : frame, `instr*` : instr*, s' : store, f'' : frame, `instr'*` : instr*}:
     `%~>%`(`%;%`_config(`%;%`_state(s, f), [`FRAME_%{%}%`_instr(n, f', instr*{instr <- `instr*`})]), `%;%`_config(`%;%`_state(s', f), [`FRAME_%{%}%`_instr(n, f'', instr'*{instr' <- `instr'*`})]))
     -- Step: `%~>%`(`%;%`_config(`%;%`_state(s, f'), instr*{instr <- `instr*`}), `%;%`_config(`%;%`_state(s', f''), instr'*{instr' <- `instr'*`}))
+
+  ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:173.1-174.48
+  rule `call_ref-null`{z : state, yy : typeuse}:
+    `%~>%`(`%;%`_config(z, [`REF.NULL_ADDR`_instr CALL_REF_instr(yy)]), `%;%`_config(z, [TRAP_instr]))
+
+  ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:176.1-182.61
+  rule `call_ref-func`{z : state, n : n, `val*` : val*, a : addr, yy : typeuse, m : m, f : frame, `instr*` : instr*, fi : funcinst, `t_1*` : valtype*, `t_2*` : valtype*, x : idx, `t*` : valtype*}:
+    `%~>%`(`%;%`_config(z, (val : val <: instr)^n{val <- `val*`} ++ [`REF.FUNC_ADDR`_instr(a) CALL_REF_instr(yy)]), `%;%`_config(z, [`FRAME_%{%}%`_instr(m, f, [`LABEL_%{%}%`_instr(m, [], instr*{instr <- `instr*`})])]))
+    -- if (a < |$funcinst(z)|)
+    -- if ($funcinst(z)[a] = fi)
+    -- Expand: `%~~%`(fi.TYPE_funcinst, `FUNC%->%`_comptype(`%`_resulttype(t_1^n{t_1 <- `t_1*`},), `%`_resulttype(t_2^m{t_2 <- `t_2*`},)))
+    -- if (fi.CODE_funcinst = FUNC_funccode(x, LOCAL_local(t)*{t <- `t*`}, instr*{instr <- `instr*`}))
+    -- if (f = {LOCALS ?(val)^n{val <- `val*`} ++ $default_(t)*{t <- `t*`}, MODULE fi.MODULE_funcinst})
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:184.1-190.59
   rule `call_ref-hostfunc-res`{s : store, f : frame, n : n, `val*` : val*, a : addr, yy : typeuse, s' : store, result : result, fi : funcinst, `t_1*` : valtype*, m : m, `t_2*` : valtype*, hf : text}:

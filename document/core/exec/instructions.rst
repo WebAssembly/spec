@@ -160,7 +160,7 @@ $${rule: {Step_read/call}}
 
 6. :ref:`Invoke <exec-invoke>` the function instance at address :math:`a`.
 
-$${rule: {Step_read/call_ref-null}}
+$${rule: {Step/call_ref-null}}
 
 .. note::
    The formal rule for calling a non-null function reference is described :ref:`below <exec-invoke>`.
@@ -350,7 +350,7 @@ Invocation of :ref:`function reference <syntax-ref.func>` :math:`(\REFFUNCADDR~a
 
 10. :ref:`Enter <exec-instrs-enter>` the instruction sequence :math:`\instr^\ast` with label :math:`L` and no values.
 
-$${rule: {Step_read/call_ref-func}}
+$${rule: {Step/call_ref-func}}
 
 .. note::
    For non-defaultable types, the respective local is left uninitialized by these rules.

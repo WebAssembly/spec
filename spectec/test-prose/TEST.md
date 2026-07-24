@@ -18993,6 +18993,47 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
    a. Trap.
 
 
+:math:`\mathsf{call\_ref}~y`
+............................
+
+
+1. Let :math:`f` be the topmost :math:`\mathsf{frame}`.
+
+#. Assert: Due to validation, a value is on the top of the stack.
+
+#. Pop the value :math:`(\mathsf{ref{.}func}~a)` from the stack.
+
+#. Assert: Due to validation, :math:`a < {|(s, f){.}\mathsf{funcs}|}`.
+
+#. Let :math:`{\mathit{fi}}` be the function instance :math:`(s, f){.}\mathsf{funcs}{}[a]`.
+
+#. Assert: Due to validation, :math:`{\mathit{fi}}{.}\mathsf{code}` is some :math:`\mathbb{T}`.
+
+#. Let :math:`{\mathit{hf}}` be :math:`{\mathit{fi}}{.}\mathsf{code}`.
+
+#. Assert: Due to validation, the :ref:`expansion <aux-expand-deftype>` of :math:`{\mathit{fi}}{.}\mathsf{type}` is some :math:`\mathsf{func}~{\mathit{resulttype}} \rightarrow {\mathit{resulttype}}`.
+
+#. Let :math:`(\mathsf{func}~{t_1^{n}}~\rightarrow~{t_2^{m}})` be the destructuring of the :ref:`expansion <aux-expand-deftype>` of :math:`{\mathit{fi}}{.}\mathsf{type}`.
+
+#. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
+
+#. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
+
+#. Assert: Due to validation, :math:`{|{\mathrm{hostcall}}({\mathit{hf}}, s, {{\mathit{val}}^{n}})|} > 0`.
+
+#. If an element of :math:`{\mathrm{hostcall}}({\mathit{hf}}, s, {{\mathit{val}}^{n}})` is some :math:`{\mathit{store}}, {\mathit{result}}`, then:
+
+   a. Let :math:`({s'}, {\mathit{result}})` be the destructuring of an element of :math:`{\mathrm{hostcall}}({\mathit{hf}}, s, {{\mathit{val}}^{n}})`.
+
+   #. Execute the sequence :math:`{\mathit{result}}`.
+
+#. If :math:`\mathsf{bot}` is contained in :math:`{\mathrm{hostcall}}({\mathit{hf}}, s, {{\mathit{val}}^{n}})`, then:
+
+   a. Push the value :math:`(\mathsf{ref{.}func}~a)` to the stack.
+
+   #. Execute the instruction :math:`(\mathsf{call\_ref}~y)`.
+
+
 :math:`{\mathit{nt}}{.}\mathsf{store}~x~{\mathit{ao}}`
 ......................................................
 
@@ -20043,59 +20084,6 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Push the value :math:`(\mathsf{ref{.}func}~a)` to the stack.
 
 #. Execute the instruction :math:`(\mathsf{call\_ref}~z{.}\mathsf{funcs}{}[a]{.}\mathsf{type})`.
-
-
-:math:`\mathsf{call\_ref}~y`
-............................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop the value :math:`{\mathit{val}'}` from the stack.
-
-#. If :math:`{\mathit{val}'} = \mathsf{ref{.}null}`, then:
-
-   a. Trap.
-
-#. Assert: Due to validation, :math:`{\mathit{val}'}` is some :math:`\mathsf{ref{.}func}~{\mathit{funcaddr}}`.
-
-#. Let :math:`(\mathsf{ref{.}func}~a)` be the destructuring of :math:`{\mathit{val}'}`.
-
-#. Assert: Due to validation, :math:`a < {|z{.}\mathsf{funcs}|}`.
-
-#. Let :math:`{\mathit{fi}}` be the function instance :math:`z{.}\mathsf{funcs}{}[a]`.
-
-#. Assert: Due to validation, :math:`{\mathit{fi}}{.}\mathsf{code}` is some :math:`\mathsf{func}~{\mathit{typeidx}}~{{\mathit{local}}^\ast}~{\mathit{expr}}`.
-
-#. Let :math:`(\mathsf{func}~x~{{\mathit{local}}_0^\ast}~{{\mathit{instr}}^\ast})` be the destructuring of :math:`{\mathit{fi}}{.}\mathsf{code}`.
-
-#. Let :math:`{t^\ast}` be the value type sequence :math:`\epsilon`.
-
-#. For each :math:`{\mathit{local}}_0` in :math:`{{\mathit{local}}_0^\ast}`, do:
-
-   a. Let :math:`(\mathsf{local}~t)` be the destructuring of :math:`{\mathit{local}}_0`.
-
-   #. Append :math:`t` to :math:`{t^\ast}`.
-
-#. Assert: Due to validation, the :ref:`expansion <aux-expand-deftype>` of :math:`{\mathit{fi}}{.}\mathsf{type}` is some :math:`\mathsf{func}~{\mathit{resulttype}} \rightarrow {\mathit{resulttype}}`.
-
-#. Let :math:`(\mathsf{func}~{t_1^{n}}~\rightarrow~{t_2^{m}})` be the destructuring of the :ref:`expansion <aux-expand-deftype>` of :math:`{\mathit{fi}}{.}\mathsf{type}`.
-
-#. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
-
-#. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
-
-#. Let :math:`f` be the frame :math:`\{ \mathsf{locals}~{{\mathit{val}}^{n}}~{{{\mathrm{default}}}_{t}^\ast},\;\allowbreak \mathsf{module}~{\mathit{fi}}{.}\mathsf{module} \}`.
-
-#. Let :math:`{f'}` be the :math:`\mathsf{frame}` :math:`f` whose arity is :math:`m`.
-
-#. Push the :math:`\mathsf{frame}` :math:`{f'}`.
-
-#. Let :math:`L` be the :math:`\mathsf{label}` whose arity is :math:`m` and whose continuation is the end of the block.
-
-#. Enter the block :math:`{{\mathit{instr}}^\ast}` with the :math:`\mathsf{label}` :math:`L`.
 
 
 :math:`\mathsf{return\_call}~x`
@@ -21501,6 +21489,89 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Else if :math:`n = 0`, then:
 
    a. Do nothing.
+
+
+:math:`\mathsf{call\_ref}~y`
+............................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, a value is on the top of the stack.
+
+#. Pop the value :math:`{\mathit{val}'}` from the stack.
+
+#. If :math:`{\mathit{val}'} = \mathsf{ref{.}null}`, then:
+
+   a. Trap.
+
+#. Assert: Due to validation, :math:`{\mathit{val}'}` is some :math:`\mathsf{ref{.}func}~{\mathit{funcaddr}}`.
+
+#. Let :math:`(\mathsf{ref{.}func}~a)` be the destructuring of :math:`{\mathit{val}'}`.
+
+#. If :math:`a < {|z{.}\mathsf{funcs}|}`, then:
+
+   a. Let :math:`{\mathit{fi}}` be the function instance :math:`z{.}\mathsf{funcs}{}[a]`.
+
+   #. If :math:`{\mathit{fi}}{.}\mathsf{code}` is some :math:`\mathsf{func}~{\mathit{typeidx}}~{{\mathit{local}}^\ast}~{\mathit{expr}}`, then:
+
+      1) Let :math:`(\mathsf{func}~x~{{\mathit{local}}_0^\ast}~{{\mathit{instr}}^\ast})` be the destructuring of :math:`{\mathit{fi}}{.}\mathsf{code}`.
+
+      #) Let :math:`{t^\ast}` be the value type sequence :math:`\epsilon`.
+
+      #) For each :math:`{\mathit{local}}_0` in :math:`{{\mathit{local}}_0^\ast}`, do:
+
+         a) Let :math:`(\mathsf{local}~t)` be the destructuring of :math:`{\mathit{local}}_0`.
+
+         #) Append :math:`t` to :math:`{t^\ast}`.
+
+      #) Assert: Due to validation, the :ref:`expansion <aux-expand-deftype>` of :math:`{\mathit{fi}}{.}\mathsf{type}` is some :math:`\mathsf{func}~{\mathit{resulttype}} \rightarrow {\mathit{resulttype}}`.
+
+      #) Let :math:`(\mathsf{func}~{t_1^{n}}~\rightarrow~{t_2^{m}})` be the destructuring of the :ref:`expansion <aux-expand-deftype>` of :math:`{\mathit{fi}}{.}\mathsf{type}`.
+
+      #) Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
+
+      #) Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
+
+      #) Let :math:`f` be the frame :math:`\{ \mathsf{locals}~{{\mathit{val}}^{n}}~{{{\mathrm{default}}}_{t}^\ast},\;\allowbreak \mathsf{module}~{\mathit{fi}}{.}\mathsf{module} \}`.
+
+      #) Let :math:`{f'}` be the :math:`\mathsf{frame}` :math:`f` whose arity is :math:`m`.
+
+      #) Push the :math:`\mathsf{frame}` :math:`{f'}`.
+
+      #) Let :math:`L` be the :math:`\mathsf{label}` whose arity is :math:`m` and whose continuation is the end of the block.
+
+      #) Enter the block :math:`{{\mathit{instr}}^\ast}` with the :math:`\mathsf{label}` :math:`L`.
+
+#. If :math:`a < {|(s, f){.}\mathsf{funcs}|}`, then:
+
+   a. Let :math:`{\mathit{fi}}` be the function instance :math:`(s, f){.}\mathsf{funcs}{}[a]`.
+
+   #. If :math:`{\mathit{fi}}{.}\mathsf{code}` is some :math:`\mathbb{T}`, then:
+
+      1) Let :math:`{\mathit{hf}}` be :math:`{\mathit{fi}}{.}\mathsf{code}`.
+
+      #) Assert: Due to validation, the :ref:`expansion <aux-expand-deftype>` of :math:`{\mathit{fi}}{.}\mathsf{type}` is some :math:`\mathsf{func}~{\mathit{resulttype}} \rightarrow {\mathit{resulttype}}`.
+
+      #) Let :math:`(\mathsf{func}~{t_1^{n}}~\rightarrow~{t_2^{m}})` be the destructuring of the :ref:`expansion <aux-expand-deftype>` of :math:`{\mathit{fi}}{.}\mathsf{type}`.
+
+      #) Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
+
+      #) Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
+
+      #) If :math:`{|{\mathrm{hostcall}}({\mathit{hf}}, s, {{\mathit{val}}^{n}})|} > 0`, then:
+
+         a) If an element of :math:`{\mathrm{hostcall}}({\mathit{hf}}, s, {{\mathit{val}}^{n}})` is some :math:`{\mathit{store}}, {\mathit{result}}`, then:
+
+            1. Let :math:`({s'}, {\mathit{result}})` be the destructuring of an element of :math:`{\mathrm{hostcall}}({\mathit{hf}}, s, {{\mathit{val}}^{n}})`.
+
+            #. Execute the sequence :math:`{\mathit{result}}`.
+
+         #) If :math:`\mathsf{bot}` is contained in :math:`{\mathrm{hostcall}}({\mathit{hf}}, s, {{\mathit{val}}^{n}})`, then:
+
+            1. Push the value :math:`(\mathsf{ref{.}func}~a)` to the stack.
+
+            #. Execute the instruction :math:`(\mathsf{call\_ref}~y)`.
 
 
 :math:`\mathsf{throw}~x`
@@ -26703,6 +26774,27 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Fail.
 
 
+:math:`{\mathit{result}}`
+.........................
+
+
+1. If :math:`{\mathit{result}}` is some :math:`{{\mathit{val}}^\ast}`, then:
+
+   a. Let :math:`{{\mathit{val}}^\ast}` be the result :math:`{\mathit{result}}`.
+
+   #. Return :math:`{{\mathit{val}}^\ast}`.
+
+#. If :math:`{\mathit{result}}` is some :math:`( \mathsf{ref{.}exn\_addr}~{\mathit{exnaddr}} )~\mathsf{throw\_ref}`, then:
+
+   a. Let :math:`(a)` be the destructuring of :math:`{\mathit{result}}`.
+
+   #. Return :math:`(\mathsf{ref{.}exn}~a)~\mathsf{throw\_ref}`.
+
+#. Assert: Due to validation, :math:`{\mathit{result}} = \mathsf{trap}`.
+
+#. Return :math:`\mathsf{trap}`.
+
+
 :math:`{{\mathrm{inst}}}_{{\mathit{moduleinst}}}(t)`
 ....................................................
 
@@ -30363,6 +30455,26 @@ Step_read/memory.init-oob-* x y
 9. If ((j + n) > |$data(z, y).BYTES|), then:
   a. Trap.
 
+Step/call_ref-hostfunc-* yy
+1. Let (FRAME_ _ { f }) be the topmost FRAME_.
+2. Assert: Due to validation, a value is on the top of the stack.
+3. Pop the value (REF.FUNC_ADDR a) from the stack.
+4. Assert: Due to validation, (a < |$funcinst((s, f))|).
+5. Let fi be $funcinst((s, f))[a].
+6. Assert: Due to validation, fi.CODE is some _HOSTFUNC.
+7. Let (_HOSTFUNC hf) be fi.CODE.
+8. Assert: Due to validation, $Expand(fi.TYPE) is some ->.
+9. Let (FUNC t_1^n -> t_2^m) be $Expand(fi.TYPE).
+10. Assert: Due to validation, there are at least n values on the top of the stack.
+11. Pop the values val^n from the stack.
+12. Assert: Due to validation, (|$hostcall((_HOSTFUNC hf), s, val^n)| > 0).
+13. If an element of $hostcall((_HOSTFUNC hf), s, val^n) is some RES, then:
+  a. Let (RES s' result) be an element of $hostcall((_HOSTFUNC hf), s, val^n).
+  b. Execute the sequence $lift_result(result).
+14. If BOT is contained in $hostcall((_HOSTFUNC hf), s, val^n), then:
+  a. Push the value (REF.FUNC_ADDR a) to the stack.
+  b. Execute the instruction (CALL_REF yy).
+
 Step/store-num-* nt ?() x ao
 1. Let z be the current state.
 2. Assert: Due to validation, a value of value type nt is on the top of the stack.
@@ -30854,30 +30966,6 @@ Step_read/call x
 4. Assert: Due to validation, (a < |$funcinst(z)|).
 5. Push the value (REF.FUNC_ADDR a) to the stack.
 6. Execute the instruction (CALL_REF $funcinst(z)[a].TYPE).
-
-Step_read/call_ref yy
-1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
-3. Pop the value val' from the stack.
-4. If (val' = REF.NULL_ADDR), then:
-  a. Trap.
-5. Assert: Due to validation, val' is some REF.FUNC_ADDR.
-6. Let (REF.FUNC_ADDR a) be val'.
-7. Assert: Due to validation, (a < |$funcinst(z)|).
-8. Let fi be $funcinst(z)[a].
-9. Assert: Due to validation, fi.CODE is some FUNC.
-10. Let (FUNC x local_0* instr*) be fi.CODE.
-11. Let t* be [].
-12. For each local_0 in local_0*, do:
-  a. Let (LOCAL t) be local_0.
-  b. Append t to the t*.
-13. Assert: Due to validation, $Expand(fi.TYPE) is some ->.
-14. Let (FUNC t_1^n -> t_2^m) be $Expand(fi.TYPE).
-15. Assert: Due to validation, there are at least n values on the top of the stack.
-16. Pop the values val^n from the stack.
-17. Let f be { LOCALS: ?(val)^n :: $default_(t)*; MODULE: fi.MODULE }.
-18. Push the frame (FRAME_ m { f }) to the stack.
-19. Enter instr* with label (LABEL_ m { [] }).
 
 Step_read/return_call x
 1. Let z be the current state.
@@ -31554,6 +31642,45 @@ Step_read/array.init_data x y
     10) Execute the instruction (ARRAY.INIT_DATA x y).
 15. Else if (n = 0), then:
   a. Do nothing.
+
+Step/call_ref yy
+1. Let z be the current state.
+2. Assert: Due to validation, a value is on the top of the stack.
+3. Pop the value val' from the stack.
+4. If (val' = REF.NULL_ADDR), then:
+  a. Trap.
+5. Assert: Due to validation, val' is some REF.FUNC_ADDR.
+6. Let (REF.FUNC_ADDR a) be val'.
+7. If (a < |$funcinst(z)|), then:
+  a. Let fi be $funcinst(z)[a].
+  b. If fi.CODE is some FUNC, then:
+    1) Let (FUNC x local_0* instr*) be fi.CODE.
+    2) Let t* be [].
+    3) For each local_0 in local_0*, do:
+      a) Let (LOCAL t) be local_0.
+      b) Append t to the t*.
+    4) Assert: Due to validation, $Expand(fi.TYPE) is some ->.
+    5) Let (FUNC t_1^n -> t_2^m) be $Expand(fi.TYPE).
+    6) Assert: Due to validation, there are at least n values on the top of the stack.
+    7) Pop the values val^n from the stack.
+    8) Let f be { LOCALS: ?(val)^n :: $default_(t)*; MODULE: fi.MODULE }.
+    9) Push the frame (FRAME_ m { f }) to the stack.
+    10) Enter instr* with label (LABEL_ m { [] }).
+8. If (a < |$funcinst((s, f))|), then:
+  a. Let fi be $funcinst((s, f))[a].
+  b. If fi.CODE is some _HOSTFUNC, then:
+    1) Let (_HOSTFUNC hf) be fi.CODE.
+    2) Assert: Due to validation, $Expand(fi.TYPE) is some ->.
+    3) Let (FUNC t_1^n -> t_2^m) be $Expand(fi.TYPE).
+    4) Assert: Due to validation, there are at least n values on the top of the stack.
+    5) Pop the values val^n from the stack.
+    6) If (|$hostcall((_HOSTFUNC hf), s, val^n)| > 0), then:
+      a) If an element of $hostcall((_HOSTFUNC hf), s, val^n) is some RES, then:
+        1. Let (RES s' result) be an element of $hostcall((_HOSTFUNC hf), s, val^n).
+        2. Execute the sequence $lift_result(result).
+      b) If BOT is contained in $hostcall((_HOSTFUNC hf), s, val^n), then:
+        1. Push the value (REF.FUNC_ADDR a) to the stack.
+        2. Execute the instruction (CALL_REF yy).
 
 Step/throw x
 1. Let z be the current state.
@@ -33985,6 +34112,16 @@ growmem meminst n
   a. Let meminst' be { TYPE: at ([ i' .. j? ]) PAGE; BYTES: b* :: 0^(n * (64 * $Ki())) }.
   b. Return meminst'.
 5. Fail.
+
+lift_result result
+1. If result is some _VALS, then:
+  a. Let (_VALS val*) be result.
+  b. Return val*.
+2. If result is some (, then:
+  a. Let ((REF.EXN_ADDR a )THROW_REF) be result.
+  b. Return [(REF.EXN_ADDR a), THROW_REF].
+3. Assert: Due to validation, (result = TRAP).
+4. Return [TRAP].
 
 inst_valtype moduleinst t
 1. Return $subst_all_valtype(t, moduleinst.TYPES).
