@@ -91,13 +91,62 @@ print(
 (invoke "test")
 `);
 
-// drop, then init
+// init from a passive segment succeeds...
+print(
+`(module
+  ${PREAMBLE}
+  (func (export "test")
+    (memory.init 0 (${memtype}.const 1234) (i32.const 0) (i32.const 1))))
+(invoke "test")
+`);
+
+// ...but dropping the segment first makes the same init trap
 print(
 `(module
   ${PREAMBLE}
   (func (export "test")
     (data.drop 0)
-    (memory.init 0 (${memtype}.const 1234) (i32.const 1) (i32.const 1))))
+    (memory.init 0 (${memtype}.const 1234) (i32.const 0) (i32.const 1))))
+(assert_trap (invoke "test") "out of bounds memory access")
+`);
+
+// drop, then init: zero length at zero src and in-range dst is OK
+print(
+`(module
+  ${PREAMBLE}
+  (func (export "test")
+    (data.drop 0)
+    (memory.init 0 (${memtype}.const 1234) (i32.const 0) (i32.const 0))))
+(invoke "test")
+`);
+
+// drop, then init: zero length, src offset past dropped seg end is invalid
+print(
+`(module
+  ${PREAMBLE}
+  (func (export "test")
+    (data.drop 0)
+    (memory.init 0 (${memtype}.const 1234) (i32.const 1) (i32.const 0))))
+(assert_trap (invoke "test") "out of bounds memory access")
+`);
+
+// drop, then init: zero length, dst offset at end of memory is OK
+print(
+`(module
+  ${PREAMBLE}
+  (func (export "test")
+    (data.drop 0)
+    (memory.init 0 (${memtype}.const 0x10000) (i32.const 0) (i32.const 0))))
+(invoke "test")
+`);
+
+// drop, then init: zero length, dst offset past end of memory is invalid
+print(
+`(module
+  ${PREAMBLE}
+  (func (export "test")
+    (data.drop 0)
+    (memory.init 0 (${memtype}.const 0x10001) (i32.const 0) (i32.const 0))))
 (assert_trap (invoke "test") "out of bounds memory access")
 `);
 

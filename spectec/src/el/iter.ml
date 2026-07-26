@@ -164,7 +164,7 @@ and prem pr =
   visit_prem pr;
   match pr.it with
   | VarPr (x, t) -> varid x; typ t
-  | RulePr (x, e) -> relid x; exp e
+  | RulePr (x, as_, e) -> relid x; args as_; exp e
   | IfPr e -> exp e
   | ElsePr -> ()
   | IterPr (pr1, it) -> prem pr1; iter it
@@ -213,7 +213,7 @@ and param p =
   match p.it with
   | ExpP (x, t) -> varid x; typ t
   | TypP x -> typid x
-  | GramP (x, t) -> gramid x; typ t
+  | GramP (x, ps, t) -> gramid x; params ps; typ t
   | DefP (x, ps, t) -> defid x; params ps; typ t
 
 and args as_ = list arg as_
@@ -225,6 +225,7 @@ let hintdef d =
   | TypH (x1, x2, hs) -> typid x1; ruleid x2; hints hs
   | GramH (x1, x2, hs) -> gramid x1; ruleid x2; hints hs
   | RelH (x, hs) -> relid x; hints hs
+  | RuleH (x1, x2, hs) -> relid x1; ruleid x2; hints hs
   | VarH (x, hs) -> varid x; hints hs
   | DecH (x, hs) -> defid x; hints hs
 
@@ -236,8 +237,8 @@ let def d =
   | GramD (x1, x2, ps, t, gr, hs) -> typid x1; ruleid x2; params ps; typ t; gram gr; hints hs
   | VarD (x, t, hs) -> varid x; typ t; hints hs
   | SepD -> ()
-  | RelD (x, t, hs) -> relid x; typ t; hints hs
-  | RuleD (x1, x2, e, prs) -> relid x1; ruleid x2; exp e; prems prs
+  | RelD (x, ps, t, hs) -> relid x; params ps; typ t; hints hs
+  | RuleD (x1, ps, x2, e, prs, hs) -> relid x1; params ps; ruleid x2; exp e; prems prs; hints hs
   | DecD (x, ps, t, hs) -> defid x; params ps; typ t; hints hs
   | DefD (x, as_, e, prs) -> defid x; args as_; exp e; prems prs
   | HintD hd -> hintdef hd
@@ -359,7 +360,7 @@ and clone_gram gram =
 and clone_prem pr =
   (match pr.it with
   | VarPr (x, t) -> VarPr (x, clone_typ t)
-  | RulePr (x, e) -> RulePr (x, clone_exp e)
+  | RulePr (x, as_, e) -> RulePr (x, List.map clone_arg as_, clone_exp e)
   | IfPr e -> IfPr (clone_exp e)
   | ElsePr -> ElsePr
   | IterPr (pr1, it) -> IterPr (clone_prem pr1, clone_iter it)
@@ -377,7 +378,7 @@ and clone_param p =
   (match p.it with
   | ExpP (x, t) -> ExpP (x, clone_typ t)
   | TypP x -> TypP x
-  | GramP (x, t) -> GramP (x, clone_typ t)
+  | GramP (x, ps, t) -> GramP (x, List.map clone_param ps, clone_typ t)
   | DefP (x, ps, t) -> DefP (x, List.map clone_param ps, clone_typ t)
   ) $ p.at
 
@@ -389,6 +390,7 @@ let clone_hintdef d =
   | TypH (x1, x2, hs) -> TypH (x1, x2, List.map clone_hint hs)
   | GramH (x1, x2, hs) -> GramH (x1, x2, List.map clone_hint hs)
   | RelH (x, hs) -> RelH (x, List.map clone_hint hs)
+  | RuleH (x1, x2, hs) -> RuleH (x1, x2, List.map clone_hint hs)
   | VarH (x, hs) -> VarH (x, List.map clone_hint hs)
   | DecH (x, hs) -> DecH (x, List.map clone_hint hs)
   ) $ d.at
@@ -400,8 +402,8 @@ let clone_def d =
   | GramD (x1, x2, ps, t, gr, hs) -> GramD (x1, x2, List.map clone_param ps, clone_typ t, clone_gram gr, List.map clone_hint hs)
   | VarD (x, t, hs) -> VarD (x, clone_typ t, List.map clone_hint hs)
   | SepD -> SepD
-  | RelD (x, t, hs) -> RelD (x, clone_typ t, List.map clone_hint hs)
-  | RuleD (x1, x2, e, prs) -> RuleD (x1, x2, clone_exp e, Convert.map_nl_list clone_prem prs)
+  | RelD (x, ps, t, hs) -> RelD (x, List.map clone_param ps, clone_typ t, List.map clone_hint hs)
+  | RuleD (x1, ps, x2, e, prs, hs) -> RuleD (x1, List.map clone_param ps, x2, clone_exp e, Convert.map_nl_list clone_prem prs, List.map clone_hint hs)
   | DecD (x, ps, t, hs) -> DecD (x, List.map clone_param ps, clone_typ t, List.map clone_hint hs)
   | DefD (x, as_, e, prs) -> DefD (x, List.map clone_arg as_, clone_exp e, Convert.map_nl_list clone_prem prs)
   | HintD hd -> HintD (clone_hintdef hd)

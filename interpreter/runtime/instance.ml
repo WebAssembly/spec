@@ -21,9 +21,9 @@ and tableinst = Table.t
 and funcinst = moduleinst Lib.Promise.t Func.t
 and datainst = Data.t
 and eleminst = Elem.t
-and exportinst = Ast.name * extern
+and exportinst = Ast.name * externinst
 
-and extern =
+and externinst =
   | ExternTag of taginst
   | ExternGlobal of globalinst
   | ExternMemory of memoryinst

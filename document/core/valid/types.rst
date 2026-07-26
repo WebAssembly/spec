@@ -196,16 +196,10 @@ Recursive Types
 
 :ref:`Recursive types <syntax-rectype>` are validated with respect to the first :ref:`type index <syntax-typeidx>` defined by the recursive group.
 
-:math:`\TREC~\subtype^\ast`
-...........................
-
 $${rule-prose: Rectype_ok}
 
 $${rule: {Rectype_ok/empty Rectype_ok/cons}}
 
-
-:math:`\TSUB~\TFINAL^?~y^\ast~\comptype`
-........................................
 
 $${rule-prose: Subtype_ok}
 

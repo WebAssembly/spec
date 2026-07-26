@@ -4,7 +4,7 @@ open Xl
 (* Terminals *)
 
 type atom = Atom.atom
-type mixop = Mixop.mixop
+type mixop = unit Mixop.mixop
 
 (* Types *)
 
@@ -98,6 +98,7 @@ and expr' =
   | TopValuesE of expr                            (* "at least expr number of values on the top of the stack" *)
   (* Administrative Instructions *)
   | SubE of id * typ                              (* varid, with specific type *)
+  | RelE of id * expr list                        (* Placeholder for untranslated relations *)
   | YetE of string                                (* for future not yet implemented feature *)
 
 and path = path' phrase
@@ -145,9 +146,9 @@ and instr' =
 (* Algorithms *)
 
 type algorithm = algorithm' phrase
-and algorithm' =                                    (* `algorithm` f`(`expr*`)` `{`instr*`}` *)
-  | RuleA of atom * anchor * arg list * instr list  (* reduction rule *)
-  | FuncA of id * arg list * instr list             (* helper function *)
+and algorithm' =                                     (* `algorithm` f`(`expr*`)` `{`instr*`}` *)
+  | RuleA of mixop * anchor * arg list * instr list  (* reduction rule *)
+  | FuncA of id * arg list * instr list              (* helper function *)
 
 
 (* Scripts *)

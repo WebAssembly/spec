@@ -95,11 +95,11 @@ Recursive Types
 $${definition: before}
 
 .. _syntax-oktypeidx:
-.. _syntax-oktypeidxnat:
+.. _syntax-oktypenat:
 
 $${syntax+:
   oktypeidx
-  oktypeidxnat
+  oktypenat
 }
 
 $${rule+:

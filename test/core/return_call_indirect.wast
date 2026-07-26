@@ -234,6 +234,14 @@
   (func (export "call_mpmr") (param f64 i64) (result i32 f32)
     (return_call_indirect $tab4 (param f64 i64) (result i32 f32) (local.get 0) (local.get 1) (i32.const 1))
   )
+
+  ;; Result subtyping
+  (type $t (func))
+  (func $f (result (ref null $t)) (ref.null $t))
+  (table $tab5 funcref (elem $f))
+  (func (export "type-funcref") (result funcref)
+    (return_call_indirect $tab5 (result (ref null $t)) (i32.const 0))
+  )
 )
 
 (assert_return (invoke "type-i32") (i32.const 0x132))
@@ -294,6 +302,7 @@
 
 (assert_return (invoke "call_tailprint" (i32.const 5) (f32.const 91.0)))
 (assert_return (invoke "call_mpmr" (f64.const 4.2) (i64.const 99)) (i32.const 99) (f32.const 4.2))
+(assert_return (invoke "type-funcref") (ref.null func))
 
 ;; Invalid syntax
 
@@ -444,6 +453,16 @@
     (type (func (result i64)))
     (table 0 funcref)
     (func $type-num-vs-num (i32.eqz (return_call_indirect (type 0) (i32.const 0))))
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (type $t (func))
+    (table 0 funcref)
+    (func $type-ref-vs-funcref (result (ref null $t))
+      (return_call_indirect (result funcref) (i32.const 0))
+    )
   )
   "type mismatch"
 )

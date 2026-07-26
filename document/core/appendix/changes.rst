@@ -338,7 +338,7 @@ Extended Constant Expressions
 
 Allowed basic numeric computations in constant expressions. [#proposal-extconst]_
 
-* Extended set of :ref:`constant instructions <valid-const>` with:
+* Extended set of :ref:`constant instructions <valid-constant>` with:
 
   - :math:`\K{i}\X{nn}\K{.add}`
   - :math:`\K{i}\X{nn}\K{.sub}`
@@ -584,7 +584,7 @@ Added managed reference types. [#proposal-gc]_
   - |ANYCONVERTEXTERN|
   - |EXTERNCONVERTANY|
 
-* Extended set of :ref:`constant instructions <valid-const>` with:
+* Extended set of :ref:`constant instructions <valid-constant>` with:
 
   - |REFI31|
   - |STRUCTNEW|

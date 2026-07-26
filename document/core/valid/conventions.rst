@@ -167,7 +167,6 @@ In addition, the following auxiliary relation denotes the *expansion* of a :ref:
 $${rule: Expand {Expand_use/*}}
 
 $${relation-ignore: Expand Expand_use}
-$${definition-ignore: expanddt}
 
 
 .. index:: ! instruction type, value type, result type, instruction, local, local index
@@ -219,7 +218,6 @@ Validity of an individual definition is specified relative to a *context*,
 which collects relevant information about the surrounding :ref:`module <syntax-module>` and the definitions in scope:
 
 * *Types*: the list of :ref:`types <syntax-type>` defined in the current module.
-* *Recursive Types*: the list of :ref:`sub types <syntax-subtype>` in the current group of recursive types.
 * *Functions*: the list of :ref:`functions <syntax-func>` declared in the current module, represented by a :ref:`defined type <syntax-deftype>` that :ref:`expands <aux-expand-deftype>` to their :ref:`function type <syntax-functype>`.
 * *Tables*: the list of :ref:`tables <syntax-table>` declared in the current module, represented by their :ref:`table type <syntax-tabletype>`.
 * *Memories*: the list of :ref:`memories <syntax-mem>` declared in the current module, represented by their :ref:`memory type <syntax-memtype>`.
@@ -239,7 +237,10 @@ The label stack is the only part of the context that changes as validation of an
 
 More concretely, contexts are defined as :ref:`records <notation-record>` ${:C} with abstract syntax:
 
-$${syntax: context}
+$${syntax: context/syn}
+
+.. note::
+   The definition of contexts needs to be :ref:`extended <context-ext>` with additional fields for the purpose of proving :ref:`type soundness <soundness>`.
 
 
 .. index:: ! type closure

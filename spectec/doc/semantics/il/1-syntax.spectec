@@ -1,0 +1,202 @@
+;; Identifiers
+
+syntax id = text
+syntax atom = text
+syntax mixop = atom**
+
+
+;; Types
+
+syntax numtyp =
+  | NAT                ;; `nat`
+  | INT                ;; `int`
+  | RAT                ;; `rat`
+  | REAL               ;; `real`
+
+syntax optyp =
+  | BOOL               ;; `bool`
+  | TEXT               ;; `text`
+  | numtyp
+
+syntax typ =
+  | optyp
+  | TUP typbind*       ;; (id : typ , ... , id : typ)
+  | ITER typ iter      ;; typ iter
+  | VAR id arg*        ;; typid(arg*)
+  | MATCH id arg* WITH inst*  ;; `match` typid(arg*) `with` inst*
+
+syntax deftyp =
+  | ALIAS typ
+  | STRUCT typfield*
+  | VARIANT typcase*
+
+syntax typbind = id `: typ
+syntax typfield = atom `: typprems
+syntax typcase = mixop `: typprems
+syntax typprems = typ `- quantprems
+syntax quantprems = `{quant*} prem*
+
+def $trueqpr : quantprems
+def $trueqpr = `{eps} eps
+
+
+;; Iterators
+
+syntax iter =
+  | QUEST              ;; `?`
+  | STAR               ;; `*`
+  | PLUS               ;; `+`
+  | SUP id exp         ;; `^` id `<` exp
+
+
+;; Expressions
+
+syntax num =
+  | NAT nat
+  | INT int
+  | RAT rat
+  | REAL real
+
+syntax boolunop =
+  | NOT                ;; `~`
+
+syntax boolbinop =
+  | AND                ;; `/\`
+  | OR                 ;; `\/`
+  | IMPL               ;; `==>`
+  | EQUIV              ;; `<=>`
+
+syntax numunop =
+  | PLUS               ;; `+`
+  | MINUS              ;; `-`
+
+syntax numbinop =
+  | ADD                ;; `+`
+  | SUB                ;; `-`
+  | MUL                ;; `*`
+  | DIV                ;; `/`
+  | MOD                ;; `\`
+  | POW                ;; `^`
+
+syntax numcmpop =
+  | LT                 ;; `<`
+  | GT                 ;; `>`
+  | LE                 ;; `<=`
+  | GE                 ;; `>=`
+
+syntax polycmpop =
+  | EQ                 ;; `=`
+  | NE                 ;; `=/=`
+
+syntax unop = boolunop | numunop
+syntax binop = boolbinop | numbinop
+syntax cmpop = polycmpop | numcmpop
+
+
+syntax val =
+  | num                     ;; num
+  | BOOL bool               ;; bool
+  | TEXT text               ;; text
+  | TUP val*                ;; ( val* )
+  | INJ typ mixop val `- quantprems?  -- if quantprems? = $trueqpr  ;; mixop val
+  | OPT val?                ;; val?
+  | LIST val*               ;; [ val* ]
+  | STR typ valfield*       ;; { valfield* }
+
+syntax valfield = atom `= val `- quantprems?  -- if quantprems? = $trueqpr  ;; atom `=` val
+
+
+syntax exp =
+  | num                     ;; num
+  | VAR id                  ;; varid
+  | BOOL bool               ;; bool
+  | TEXT text               ;; text
+  | UN unop exp             ;; unop exp
+  | BIN binop exp exp       ;; exp binop exp
+  | CMP cmpop exp exp       ;; exp cmpop exp
+  | TUP exp*                ;; ( exp* )
+  | INJ typ mixop exp `- quantprems? ;; mixop exp (no prems = not yet checked)
+  | OPT exp?                ;; exp?
+  | LIST exp*               ;; [ exp* ]
+  | LIFT exp                ;; exp : _? <: _*
+  | STR typ expfield*       ;; { expfield* }
+  | SEL exp nat             ;; exp.n
+  | LEN exp                 ;; | exp |
+  | MEM exp exp             ;; exp `<-` exp
+  | CAT exp exp             ;; exp `++` exp
+  | ACC exp path            ;; exp[ path ]
+  | UPD exp path exp        ;; exp[ path = exp ]
+  | EXT exp path exp        ;; exp[ path =.. exp ]
+  | CALL id arg*            ;; defid( arg* )
+  | ITER exp iter exppull*  ;; exp iter{ exppull* }
+  | CVT exp numtyp numtyp   ;; exp : numtyp1 <:> numtyp2
+  | SUB exp typ typ         ;; exp : typ1 <: typ2
+  | MATCH arg* WITH clause* ;; `match` arg* `with` clause*
+
+syntax expfield = atom `= exp `- quantprems?  ;; atom `=` val (no prems = not yet checked)
+syntax exppull = id `: typ `<- exp
+syntax exppush = exp `-> id `: typ
+syntax expprems = exp `- prem*
+
+syntax path =
+  | ROOT               ;;
+  | THE path           ;; path!
+  | IDX path exp       ;; path[ exp ]
+  | SLICE path exp exp ;; path[ exp : exp ]
+  | DOT path atom      ;; path.atom
+  | PROJ path mixop    ;; path!mixop
+
+
+;; Grammars
+
+syntax sym =
+  | VAR id arg*        ;; gramid( arg* )
+  | NUM nat            ;; num
+  | TEXT text          ;; text
+  | SEQ sym*           ;; sym*
+  | ALT sym*           ;; sym `|` sym
+  | RANGE sym sym      ;; sym `|` `...` `|` sym
+  | ITER sym iter exppull*   ;; sym iter{ exppull* }
+  | ATTR exp sym       ;; exp `:` sym
+
+
+;; Definitions
+
+syntax arg =
+  | TYP typ
+  | EXP exp
+  | FUN id
+  | GRAM sym
+
+syntax param =
+  | TYP id
+  | EXP id `: typ
+  | FUN id `: param* `-> typ
+  | GRAM id `: param* `-> typ
+
+syntax quant = param
+
+syntax prem =
+  | REL id arg* `: exp
+  | IF exp
+  | ELSE
+  | NOT prem
+  | LET `{quant*} exp `= exp
+  | ITER prem iter exppull* exppush*
+
+syntax dec =
+  | TYP id param* `= inst*
+  | REL id param* `: typ `= rul*
+  | FUN id param* `: typ `= clause*
+  | GRAM id param* `: typ `= prod*
+  | REC dec*
+
+syntax inst = INST `{quant*} arg* `=> deftyp
+syntax rul = RULE `{quant*} expprems
+syntax clause = CLAUSE `{quant*} arg* `=> expprems
+syntax prod = PROD `{quant*} sym `=> expprems
+
+
+;; Scripts
+
+syntax script = dec*

@@ -1,5 +1,9 @@
 (* Things that should be in the OCaml library... *)
 
+val fst3 : 'a * 'b * 'c -> 'a
+val snd3 : 'a * 'b * 'c -> 'b
+val thd3 : 'a * 'b * 'c -> 'c
+
 module List :
 sig
   val take : int -> 'a list -> 'a list (* raises Failure *)

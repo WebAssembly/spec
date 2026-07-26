@@ -7,7 +7,6 @@ open Al_util
 open Print
 open Free
 
-module IlEval = Il.Eval
 
 (* Error *)
 
@@ -68,7 +67,10 @@ let il_env: IlEnv.t ref = ref IlEnv.empty
 
 let varT s = VarT (s $ no_region, []) $ no_region
 
-let is_trivial_mixop = List.for_all (fun atoms -> List.length atoms = 0)
+let rec is_trivial_mixop = function
+  | Mixop.Arg () -> true
+  | Mixop.Seq mixops -> List.for_all is_trivial_mixop mixops
+  | _ -> false
 
 
 (* Subtyping *)
@@ -77,11 +79,12 @@ let get_deftyps (id: Il.Ast.id) (args: Il.Ast.arg list): deftyp list =
   match IlEnv.find_opt_typ !il_env id with
   | Some (_, insts) ->
     let typ_of_arg arg =
-      match (IlEval.reduce_arg !il_env arg).it with
-      | ExpA { it=SubE (_, typ, _); _ } -> typ
-      | ExpA { note; _ } -> note
-      | TypA typ -> typ
-      | a -> failwith ("TODO: " ^ Il.Print.string_of_arg (a $ arg.at))
+      match Il.Eval.reduce_arg !il_env arg with
+      | Ok {it = ExpA { it=SubE (_, typ, _); _ }; _} -> typ
+      | Ok {it = ExpA { note; _ }; _} -> note
+      | Ok {it = TypA typ; _} -> typ
+      | Ok arg' -> failwith ("TODO: " ^ Il.Print.string_of_arg arg')
+      | Error _ -> failwith ("Undefined: " ^ Il.Print.string_of_arg arg)
     in
     let get_syntax_arg_name arg = 
       match arg.it with
@@ -107,7 +110,7 @@ let get_deftyps (id: Il.Ast.id) (args: Il.Ast.arg list): deftyp list =
     let get_deftyp inst =
       let InstD (_, inst_args, deftyp) = inst.it in
       let valid_arg arg inst_arg = 
-        IlEval.sub_typ !il_env (typ_of_arg arg) (typ_of_arg inst_arg)
+        Il.Eval.sub_typ !il_env (typ_of_arg arg) (typ_of_arg inst_arg)
       in
       if List.for_all2 valid_arg args inst_args then
         Some deftyp
@@ -128,7 +131,7 @@ let rec unify_deftyp_opt (deftyp: deftyp) : typ option =
   | StructT _ -> None
   | VariantT typcases
   when List.for_all (fun (mixop', _, _) -> is_trivial_mixop mixop') typcases ->
-    typcases |> List.map (fun (_mixop, (_bs, typ, _ps), _hs) -> typ) |> unify_typs_opt
+    typcases |> List.map (fun (_mixop, (typ, _qs, _ps), _hs) -> typ) |> unify_typs_opt
   | _ -> None
 
 and unify_deftyps_opt : deftyp list -> typ option = function
@@ -196,7 +199,7 @@ let rec sub_typ typ1 typ2 =
     match typ1'.it, typ2'.it with
     | IterT (typ1'', _), IterT (typ2'', _) -> sub_typ typ1'' typ2''
     | NumT _, NumT _ -> true
-    | _, _ -> IlEval.sub_typ !il_env typ1' typ2'
+    | _, _ -> Il.Eval.sub_typ !il_env typ1' typ2'
   with Util.Error.Error (_, "undeclared type") -> false
 
 let rec matches typ1 typ2 =
@@ -226,7 +229,7 @@ let rec get_typfields_of_inst (inst: inst) : typfield list =
   match dt.it with
   | StructT typfields -> typfields
   | AliasT typ -> get_typfields typ
-  | VariantT [mixop, (_, typ, _), _] when is_trivial_mixop mixop ->
+  | VariantT [mixop, (typ, _, _), _] when is_trivial_mixop mixop ->
     get_typfields typ
   (* TODO: some variants of struct type *)
   | VariantT _ -> []
@@ -279,7 +282,7 @@ let check_evalctx source typ =
   | _ -> error_mismatch source typ (varT "evalctx")
 
 let check_field source source_typ expr_record typfield =
-  let atom, (_, typ, _), _ = typfield in
+  let atom, (typ, _, _), _ = typfield in
   (* TODO: Use record api *)
   let f e = e |> fst |> Atom.eq atom in
   match List.find_opt f expr_record with
@@ -317,7 +320,7 @@ let check_call source id args result_typ =
       | DefA aid, DefP (_, pparams, ptyp) ->
         (match IlEnv.find_opt_def !il_env (aid $ no_region) with
         | Some (aparams, atyp, _) -> 
-          if not (IlEval.sub_typ !il_env atyp ptyp) then
+          if not (Il.Eval.sub_typ !il_env atyp ptyp) then
             error_valid
               "argument's return type is not a subtype of parameter's return type"
               source
@@ -337,7 +340,7 @@ let check_call source id args result_typ =
             let aptyp = typ_of_param aparam in
             let pptyp = typ_of_param pparam in
 
-            if not (IlEval.sub_typ !il_env pptyp aptyp) then
+            if not (Il.Eval.sub_typ !il_env pptyp aptyp) then
               error_valid
                 "parameter's parameter type is not a subtype of argument's return type"
                 source
@@ -402,7 +405,7 @@ let check_inv_call source id indices args result_typ =
     | _ ->
       let arg2typ arg = (
         match arg.it with
-        | ExpA exp -> (Il.Ast.VarE ("" $ no_region) $$ no_region % exp.note, exp.note)
+        | ExpA exp -> ("_" $ no_region, exp.note)
         | a -> error_valid (Printf.sprintf "wrong result argument")
           source (Print.string_of_arg (a $ no_region))
       ) in
@@ -443,7 +446,7 @@ let access (source: source) (typ: typ) (path: path) : typ =
   | DotP atom ->
     let typfields = get_typfields typ in
     match List.find_opt (fun (field, _, _) -> Atom.eq field atom) typfields with
-    | Some (_, (_, typ', _), _) -> typ'
+    | Some (_, (typ', _, _), _) -> typ'
     | None -> error_field source typ atom
 
 
@@ -555,20 +558,20 @@ and valid_expr env (expr: expr) : unit =
   | CaseE (op, exprs) ->
     let is_evalctx_id id =
       let evalctx_ids = List.filter_map (fun (mixop, _, _) ->
-        let atom = mixop |> List.hd |> List.hd in
+        let atom = Mixop.flatten mixop |> List.hd |> List.hd in
         match atom.it with
         | Atom.Atom s -> Some s
         | _ -> None
       ) (get_typcases source evalctxT) in
       List.mem id evalctx_ids
     in
-    (match op with
+    (match Mixop.flatten op with
     | [[{ it=Atom id; _ }]] when is_evalctx_id id ->
       check_case source exprs (TupT [] $ no_region)
     | _ -> 
       List.iter (valid_expr env) exprs;
       let tcs = get_typcases source expr.note in
-      let _binds, typ, _prems = find_case source tcs op in
+      let typ, _qs, _prems = find_case source tcs op in
       check_case source exprs typ;
     )
   | CallE (id, args) ->
@@ -629,6 +632,8 @@ and valid_expr env (expr: expr) : unit =
     valid_expr env expr1;
     check_bool source expr.note;
     check_num source expr1.note
+  | RelE (_, exprs) ->
+    List.iter (valid_expr env) exprs
   | SubE _ | YetE _ -> error_valid "invalid expression" source ""
   )
 

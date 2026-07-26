@@ -9,6 +9,7 @@ TR: https://www.w3.org/TR/wasm-web-api-2/
 ED: https://webassembly.github.io/spec/web-api/
 Implementation Report: https://webassembly.org/features/
 Editor: Ms2ger, w3cid 46309, Igalia
+Editor: Ryan Hunt, w3cid 112030, Mozilla Foundation
 Repository: WebAssembly/spec
 Abstract: This document describes the integration of WebAssembly with the broader web platform.
 Markup Shorthands: css no, markdown yes
@@ -40,7 +41,7 @@ Date: now
 </pre>
 
 <pre class="anchors">
-urlPrefix: https://tc39.github.io/ecma262/; spec: ECMASCRIPT
+urlPrefix: https://tc39.es/ecma262/; spec: ECMASCRIPT
     type: exception; for: ECMAScript
         text: TypeError; url: sec-native-error-types-used-in-this-standard-typeerror
     type: interface
@@ -61,7 +62,6 @@ urlPrefix: https://webassembly.github.io/spec/js-api/; spec: WASMJS
         text: WebAssemblyInstantiatedSource; url: #dictdef-webassemblyinstantiatedsource
     type: dfn
         text: compile a WebAssembly module; url: #compile-a-webassembly-module
-        text: instantiate a WebAssembly module; url: #instantiate-a-webassembly-module
         text: instantiate; url: #dom-webassembly-instantiate
         text: asynchronously compile a webassembly module; url: #asynchronously-compile-a-webassembly-module
         text: instantiate a promise of a module; url: #instantiate-a-promise-of-a-module

@@ -57,7 +57,7 @@ However, some operations :ref:`convert <aux-signed>` them to signed based on a t
    The main integer types occurring in this specification are ${:u8}, ${:u32}, ${:u64}, and ${:u128}.
    However, other sizes occur as auxiliary constructions, e.g., in the definition of :ref:`floating-point <syntax-float>` numbers.
 
-${syntax-ignore: u8 u16 u31 u32 u64 u128 s33}
+${syntax-ignore: u8 u16 u31 u32 u64 s33 i32 i64 i128}
 
 
 Conventions

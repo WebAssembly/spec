@@ -10,6 +10,7 @@ project = 'NanoWasm'
 title = 'NanoWasm Specification'
 author = 'The SpecTec Team'
 language = 'en'
+today = ' '  # Avoid spurious diffs
 
 exclude_patterns = ['_build', 'output', 'Thumbs.db', '.DS_Store']
 
@@ -37,7 +38,10 @@ mathjax3_config = {
 latex_elements = {
    'papersize': 'a4paper',
    # Don't type-set cross references with emphasis.
-   'preamble': '\\renewcommand\\sphinxcrossref[1]{#1}\n',
+   'preamble':
+     '\\renewcommand\\sphinxcrossref[1]{#1}\n' +
+     '\\pdfinfoomitdate=1\n' +
+     '\\pdftrailerid{}\n'
 }
 
 # Grouping the document tree into LaTeX files. List of tuples

@@ -2208,7 +2208,7 @@ The previous operators are lifted to operators on arguments of vector type by wr
        \land~i_2^\ast = \lanes_{\K{i}N_1\K{x}M_1}(c_2)[h \slice k] \\
        \land~{i'_1}^\ast = \extend^{\sx}_{N_1, N_2}(i_1)^\ast \\
        \land~{i'_2}^\ast = \extend^{\sx}_{N_1, N_2}(i_2)^\ast \\
-       \land~j^\ast = f_{N_2}({i'_1}^\ast, {i'_1}^\ast) \\
+       \land~j^\ast = f_{N_2}({i'_1}^\ast, {i'_2}^\ast) \\
        \end{array}
    \end{array}
 

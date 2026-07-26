@@ -179,7 +179,9 @@ The offset and alignment immediates to memory instructions are optional.
 The offset defaults to ${:0}, the alignment to the storage size of the respective memory access, which is its *natural alignment*.
 Lexically, an ${grammar-case: Toffset} or ${grammar-case: Talign_} phrase is considered a single :ref:`keyword token <text-keyword>`, so no :ref:`white space <text-space>` is allowed around the ${grammar-case: "="}.
 
-$${grammar: {Tmemarg_ Toffset Talign_ Tlaneidx Tplaininstr_/memory-plain Tplaininstr_/data}}
+$${grammar: {Tmemarg_ Toffset Talign_ Tlaneidx}}
+
+$${grammar: {Tplaininstr_/memory-plain Tplaininstr_/data}}
 
 
 Abbreviations
@@ -201,6 +203,22 @@ Reference Instructions
 .. _text-ref.func:
 .. _text-ref.is_null:
 .. _text-ref.as_non_null:
+.. _text-ref.test:
+.. _text-ref.cast:
+
+$${grammar: {Tplaininstr_/ref}}
+
+
+.. index:: aggregate instruction
+   pair: text format; instruction
+.. _text-instr-aggr:
+
+Aggregate Instructions
+~~~~~~~~~~~~~~~~~~~~~~
+
+.. _text-ref.i31:
+.. _text-i31.get_s:
+.. _text-i31.get_u:
 .. _text-struct.new:
 .. _text-struct.new_default:
 .. _text-struct.get:
@@ -221,15 +239,10 @@ Reference Instructions
 .. _text-array.copy:
 .. _text-array.init_data:
 .. _text-array.init_elem:
-.. _text-ref.i31:
-.. _text-i31.get_s:
-.. _text-i31.get_u:
-.. _text-ref.test:
-.. _text-ref.cast:
 .. _text-any.convert_extern:
 .. _text-extern.convert_any:
 
-$${grammar: {Tplaininstr_/ref Tplaininstr_/i31 Tplaininstr_/struct Tplaininstr_/array Tplaininstr_/extern}}
+$${grammar: {Tplaininstr_/i31 Tplaininstr_/struct Tplaininstr_/array Tplaininstr_/extern}}
 
 
 .. index:: numeric instruction
@@ -392,6 +405,7 @@ $${grammar: {
   Tplaininstr_/vec-extbin-i16x8
   Tplaininstr_/vec-extun-i32x4
   Tplaininstr_/vec-extbin-i32x4
+  Tplaininstr_/vec-exttern-i32x4
   Tplaininstr_/vec-extbin-i64x2
 }}
 
