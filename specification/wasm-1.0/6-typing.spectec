@@ -203,6 +203,7 @@ rule Instr_ok/call:
 
 rule Instr_ok/call_indirect:
   C |- CALL_INDIRECT x : t_1* I32 -> t_2?
+  -- if C.TABLES[0] = tt
   -- if C.TYPES[x] = t_1* -> t_2?
 
 rule Instr_ok/return:
@@ -380,7 +381,7 @@ rule Mem_ok:
 ;; TODO: check bounds
 rule Elem_ok:
   C |- ELEM expr x* : OK
-  -- if C.TABLES[0] = lim
+  -- if C.TABLES[0] = tt
   -- Expr_ok_const: C |- expr : I32 CONST
   -- if (C.FUNCS[x] = ft)*
 
