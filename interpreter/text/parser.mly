@@ -76,11 +76,6 @@ let vec_lane_lit shape l at =
   | V128.F32x4 () -> NumPat (F32 (F32.of_string l) @@@ at)
   | V128.F64x2 () -> NumPat (F64 (F64.of_string l) @@@ at)
 
-let shuffle_lit ss loc =
-  if not (List.length ss = 16) then
-    error (at loc) "invalid lane length";
-  List.map (fun s -> nat8 s.it loc) ss
-
 let nanop f nan =
   let open Source in
   let open Value in
@@ -651,7 +646,10 @@ plaininstr :
   | VEC_TEST { fun c -> $1 }
   | VEC_SHIFT { fun c -> $1 }
   | VEC_BITMASK { fun c -> $1 }
-  | VEC_SHUFFLE list(num) { fun c -> i8x16_shuffle (shuffle_lit $2 $sloc) }
+  | VEC_SHUFFLE list(laneidx)
+    { if List.length $2 <> 16 then
+        error (at $sloc) "wrong number of lane indices";
+      fun c -> i8x16_shuffle $2 }
   | VEC_SPLAT { fun c -> $1 }
   | VEC_EXTRACT laneidx { fun c -> $1 $2 }
   | VEC_REPLACE laneidx { fun c -> $1 $2 }
