@@ -1,7 +1,7 @@
 # JIT interface
 
 This proposal adds safe, programmably-constrained dynamic code generation to WebAssembly.
-We propose a new `func.new` instruction and a new kind of section called a "scope", which declares the elements of the surrounding module that new code may legally access.
+We propose a new `func.new` instruction and a new kind of section called an "environment", which declares the elements of the surrounding module that new code may legally access.
 
 # Problem
 
@@ -38,42 +38,42 @@ To address this problem, we propose to add a new mechanism to core Wasm. Doing s
 The main component of this idea is a new core Wasm bytecode, `func.new`, which creates a new function at runtime from bytecode stored in Wasm memory.
 
 ```
-  func.new $mt $ft $scope: [at at] -> [(ref $ft)]
+  func.new $mt $ft $env: [at at] -> [(ref $ft)]
   where:
   - $mt = memory at limits
   - $ft = func [t1*] -> [t2*]
-  - $scope = export*
+  - $env = export*
 
 ```
 
 This bytecode has immediates:
   - a memory index, indicating the memory which contains the code for the new function
   - a function type, indicating the signature of the new function
-  - a scope, indicating a list of functions, tables, globals, tags, and memories that new code may legally access
+  - an environment, indicating a list of functions, tables, globals, tags, and memories that new code may legally access
 
 At runtime, this instruction takes operands:
   - start, an integer indicating the start offset within the memory of the code
   - length, an integer indicating the length of the code
 
 The memory index and function type are straightforward.
-The `$scope` immediate is an explicit enumeration of the module contents the new code may reference.
-In particular, `$scope` produces a new index space for types, globals, functions, memories, etc. For compactness of the bytecode, and to reuse the same scope for multiple different `func.new` instructions, `$scope` will be factored out to its own section rather than inline as immediates.
+The `$env` immediate is an explicit enumeration of the module contents the new code may reference.
+In particular, `$env` produces a new index space for types, globals, functions, memories, etc. For compactness of the bytecode, and to reuse the same environment for multiple different `func.new` instructions, `$env` will be factored out to its own section rather than inline as immediates.
 
-To execute the instruction, the engine first copies the bytes of code from the Wasm memory, then validates the bytecode under a module context corresponding to `$scope` and a function context corresponding to the expected function signature `$ft`.
+To execute the instruction, the engine first copies the bytes of code from the Wasm memory, then validates the bytecode under a module context corresponding to `$env` and a function context corresponding to the expected function signature `$ft`.
 Upon out of bounds memory access or validation error, the instruction traps.
 If validation of the code is successful, the engine creates an internal representation of a new function and pushes a non-null reference to it onto the operand stack.
 The function's *store* is derived from the store under which the instruction was executed; i.e. the new function's instance is (a subset of) the caller's instance.
 
-## A new section: JIT scope
+## A new section: JIT environment
 
-A scope defines what declarations are accessible to new code passed to a `func.new` instruction.
-We introduce a new "scope" section to factor out the list of accessible declarations so that `func.new` may refer to a scope by index rather than listing declarations individually. A scope section allows declaring multiple scopes to allow different `func.new` instructions different accessibility.
-A scope consists of a list of declarations (similar to export declarations, but without names).
-The order of declarations in a scope creates new index spaces, i.e. it *renumbers* the declarations from the surrounding module, starting each respective index space over from 0.
+An environment defines what declarations are accessible to new code passed to a `func.new` instruction.
+We introduce a new "environment" section to factor out the list of accessible declarations so that `func.new` may refer to an environment by index rather than listing declarations individually. An environment section allows declaring multiple environments to allow different `func.new` instructions different accessibility.
+An environment consists of a list of declarations (similar to export declarations, but without names).
+The order of declarations in an environment creates new index spaces, i.e. it *renumbers* the declarations from the surrounding module, starting each respective index space over from 0.
 
 ## An example
 
-Putting the pieces together, we can write an example that uses a memory and a scope and creates new functions at runtime.
+Putting the pieces together, we can write an example that uses a memory and an environment and creates new functions at runtime.
 
 ```
 (module
@@ -84,7 +84,7 @@ Putting the pieces together, we can write an example that uses a memory and a sc
    (memory $m1 1 1)  ;; the memory used to temporarily store code for func.new
    (memory $m2 1 1)       ;; a memory accessible to new code
 
-   (scope $s1             ;; the scope a new function may use
+   (env $e1               ;; the environment a new function may use
      (func $f1 $f2)       ;; expose $f1 and $f2 to new code
      (memory $m2))        ;; expose only $m2 to new code
 
@@ -92,7 +92,7 @@ Putting the pieces together, we can write an example that uses a memory and a sc
      (local $n (ref $t1)) ;; a variable to hold the new funcref
      ...
      (local.set $n 
-       (func.new $m1 $t1 $s1                ;; code lives in $m1, result sig is $t1, scope is $s1
+       (func.new $m1 $t1 $e1                ;; code lives in $m1, result sig is $t1, environment is $e1
           (i32.const 1024) (i32.const 10))) ;; code is stored at address 1024 and is 10 bytes long
      ...
      (call_ref $t1 (local.get $n))     ;; call the new function!!
@@ -104,15 +104,15 @@ Putting the pieces together, we can write an example that uses a memory and a sc
 
 Sound static analysis of Wasm code is vital for offline transformations such as `wasm-opt`.
 This proposal preserves reasoning about a module's internals and transformations of them by making its interactions with runtime-generated code explicit.
-Since runtime generated code can only access the declarations explicitly provided by its scope, analysis can soundly treat declarations mentioned in scopes similarly to exported functions.
-However, unlike exported functions, scopes cannot be accessed outside a module.
+Since runtime generated code can only access the declarations explicitly provided by its environment, analysis can soundly treat declarations mentioned in environments similarly to exported functions.
+However, unlike exported functions, environments cannot be accessed outside a module.
 Thus a module's public interface is not polluted with its internal use of dynamically-generated code.
 
 ### Toolchain transformations
 
-Sound static analysis implies that toolchains making closed-world assumptions for optimization (e.g. dead-code elimination) can account for all potential future uses by dynamically-generated code by simply considering scopes.
-Reorganization of modules resulting from DCE is sound, as scopes can be rewritten for updated indices.
-Since dynamically-generated code must use scoped indices, it is not affected by the renumbering of the containing module.
+Sound static analysis implies that toolchains making closed-world assumptions for optimization (e.g. dead-code elimination) can account for all potential future uses by dynamically-generated code by simply considering environments.
+Reorganization of modules resulting from DCE is sound, as environments can be rewritten for updated indices.
+Since dynamically-generated code must use environment indices, it is not affected by the renumbering of the containing module.
 Thus DCE and other aggressive transformations can be made sound and not affect dynamically-generated code.
 
 ### Engine optimizations
@@ -120,7 +120,7 @@ Thus DCE and other aggressive transformations can be made sound and not affect d
 The possibility of dynamically-generated code implies that an engine has runtime capability to parse function bodies and perform code validation. However, the `func.new` bytecode doesn't require parsing and validating sections, so the runtime system doesn't need a fully-featured Wasm module parser.
 
 New code implies the need for at least one execution tier, such as interpreter or compiler.
-This implies AOT scenarios need to either disable the feature, e.g. reject code memories, trap on `func.new`, or integrate a new tier. Note that since a scope defines a module context, the execution tier only needs to support runtime features that could be legally used under that context--basically, no memories implies no load/store instructions, no GC types implies no GC instructions.
+This implies AOT scenarios need to either disable the feature, e.g. reject code memories, trap on `func.new`, or integrate a new tier. Note that since an environment defines a module context, the execution tier only needs to support runtime features that could be legally used under that context--basically, no memories implies no load/store instructions, no GC types implies no GC instructions.
 
 In the future, we could consider additional restrictions, such as an explicit list of allowable bytecodes for new functions. That could allow a module to limit language features for new functions and greatly reduce the runtime system requirement. Since this is a restriction a module imposes on itself, it need not be standardized. As an example of the usefulness of this, a module could limit its `func.new` capabilities to only allow `i32` arithmetic and control flow. An AOT implementation could then provide a runtime execution tier that *only* supported that restricted set, keeping it both simple and optimized for the use case.
 
@@ -132,12 +132,28 @@ The `func.new` instruction is encoded as follows:
 
 ```
 instr ::= ...
-  | 0xFB 39:u32 0:byte x:memoryidx y:typeidx z:scopeidx =>
+  | 0xFB 39:u32 0:byte x:memoryidx y:typeidx z:envidx =>
       func_new x y z
 ```
 
 The byte following the opcode is reserved to be `0`, to account for future extensibility, such as encoding asynchrony, TBD.
 
-### Scope section
+### Environment section
 
-TBD.
+The environment section enumerates the declarations from the enclosing module that are accessible to newly generated code using it.
+It begins with a new section code byte `14`, followed by a reserved zero byte (for future extensibility), then a count of imports.
+Each import has an import kind, followed by an index into the appropriate space in the outer module.
+Note that environments add a new kind of import, a type import, which remaps a type index from the outer module to the inner environment.
+
+```
+env :=
+  | 0x0E 0:byte count:u32 envimport*
+
+envimport :=
+  | 0x00 funcidx:u32
+  | 0x01 tableidx:u32
+  | 0x02 memidx:u32
+  | 0x03 globalidx:u32
+  | 0x04 tagidx:u32
+  | 0x05 typeidx:u32
+```
