@@ -9,7 +9,7 @@
 .. |WasmIssues| replace:: |issuelink|
 .. _WasmIssues: |issuelink|
 
-.. |IEEE754| replace:: IEEE 754-2019
+.. |IEEE754| replace:: IEEE 754
 .. _IEEE754: https://ieeexplore.ieee.org/document/8766229
 
 .. |Unicode| replace:: Unicode
