@@ -108,8 +108,6 @@ urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: df
     text: func_alloc; url: appendix/embedding.html#embed-func-alloc
     text: func_type; url: appendix/embedding.html#embed-func-type
     text: func_invoke; url: appendix/embedding.html#embed-func-invoke
-    text: evaluation_suspend; url: appendix/embedding.html#embed-evaluation-suspend
-    text: evaluation_resume; url: appendix/embedding.html#embed-evaluation-resume
     text: table_alloc; url: appendix/embedding.html#embed-table-alloc
     text: table_type; url: appendix/embedding.html#embed-table-type
     text: table_read; url: appendix/embedding.html#embed-table-read
