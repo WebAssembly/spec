@@ -1437,7 +1437,7 @@ interface Suspending {
     1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
     1. If |result| is [=error=], throw a WebAssembly {{RuntimeError}} exception, unless otherwise indicated by <a href="#errors">the WebAssembly error mapping</a>.
     1. Otherwise, if |result| is of the form [=throw=] exnaddr,
-        1. [=Reject=] |promise| with |result|.
+        1. [=Reject=] |promise| with |result|.\[[Value]].
     1. Otherwise,
         1. Assert: |result| is a [=list=] of WebAssembly values.
         1. Let |outArity| be the [=list/size=] of |result|.
