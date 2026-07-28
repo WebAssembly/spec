@@ -1200,7 +1200,7 @@ Note: Exported Functions do not have a \[[Construct]] method and thus it is not 
 </div>
 
 <div algorithm>
-  To <dfn>coerce a JavaScript return</dfn> from a JavaScript |ret| and a list of |results| types, perform the following steps:
+  To <dfn>coerce a JavaScript return</dfn> from a list of |results| types and a JavaScript |ret|, perform the following steps:
     1. Let |resultsSize| be |results|'s [=list/size=].
     1. If |resultsSize| is 0, return « ».
     1. Otherwise, if |resultsSize| is 1, return « [=?=] [=ToWebAssemblyValue=](|ret|, |results|[0]) ».
@@ -1245,7 +1245,7 @@ Note: Exported Functions do not have a \[[Construct]] method and thus it is not 
         1. Assert: |result|.\[[Type]] is <emu-const>throw</emu-const> or <emu-const>normal</emu-const>.
         1. Let |store| be the [=surrounding agent=]'s [=associated store=].
         1. If |result|.\[[Type]] is <emu-const>normal</emu-const>, then:
-            1. Return the result of performing [=coerce a JavaScript return=] on |resultTypes| and |ret|.
+            1. Return the result of performing [=coerce a JavaScript return=] on |resultTypes| and |result|.
         1. If |result|.\[[Type]] is <emu-const>throw</emu-const>, then:
             1. Perform [=throw a JavaScript exception|throw the JavaScript exception=] on |result|.\[[Value]].
     1. Let (|store|, |funcaddr|) be [=func_alloc=](|store|, |functype|, |hostfunc|).
