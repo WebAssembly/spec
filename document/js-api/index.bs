@@ -1430,7 +1430,7 @@ interface Suspending {
     1. Let |functype| be [=func_type=](|store|, |funcaddr|).
     1. Let |args| be the result of [=coerce JavaScript arguments|coercing arguments=] (|functype|,|arguments|).
     1. Let |map| be the [=surrounding agent=]'s associated [=Execution Context Status map=].
-    1. Let |ec| be the currently executing [=execution context=], i.e., the [=execution context=] that is at the top of the [=surrounding agent=]'s current [=execution context stack=].
+    1. Let |ec| be the currently executing [=execution context=], i.e., the [=execution context=] that is at the top of the [=surrounding agent=]'s current [=Execution Context Stack|execution context stack=].
     1. Assert: |map| does not contain any entry for |ec|.
     1. Add an entry mapping |ec| to [=active=] in |map|.
     1. Let (|store|, |result|) be the result of [=func_invoke=](|store|, |funcaddr|, |args|).
