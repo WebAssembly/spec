@@ -1192,7 +1192,7 @@ Note: Exported Functions do not have a \[[Construct]] method and thus it is not 
 
 <div algorithm>
   To <dfn>coerce WebAssembly arguments</dfn> from a [=list=] of |parameterTypes| and a [=list=] of JavaScript arguments |arguments|, perform the following steps
-    1. If |parameterTypes| contain [=v128=], throw a {{TypeError}}.
+    1. If |parameterTypes| contain [=v128=] or [=exnref=], throw a {{TypeError}}.
     1. Let |jsArguments| be « ».
     1. [=list/iterate|For each=] |arg| of |arguments|,
         1. [=list/Append=] [=!=] [=ToJSValue=](|arg|) to |jsArguments|.
