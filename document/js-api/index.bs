@@ -1488,7 +1488,6 @@ To <dfn>create a suspending function</dfn> from a JavaScript function |func|, wi
             1. Let |promise| be |ret|.\[[Value]][0].
             1. Set the entry for |async_context| in |map| to [=paused=].
             1. Let |awaitResult| be the result of performing [$Completion$]([$Await$](|promise|)).
-            1. Note: We only invoke [$Await$] if the call to |func| has returned a Promise object.
             1. Note: This will suspend both this algorithm, and the WebAssembly function being invoked by the [=evaluate a Promising function=] algorithm. On return, |ret| will be either a normal completion or a throw completion.
             1. If the entry for |async_context| in |map| is not [=paused=] then:
                 1. Perform [=throw a JavaScript exception=] with a {{SuspendError}}.
