@@ -1484,8 +1484,8 @@ To <dfn>create a suspending function</dfn> from a JavaScript function |func|, wi
         1. If |ret|.\[[Type]] is <emu-const>throw</emu-const>, then:
             1. Let |type|, |payload| and |opaqueData| be the result of [=coerce a JavaScript exception|coercing the JavaScript exception=] |ret|.\[[Value]].
             1. [=WebAssembly/Throw=] with |type|, |payload| and |opaqueData|.
-        1. Otherwise, if [=list/size=] of |ret| is 1 and [$IsPromise$](|ret|.\[[Value]][0]):
-            1. Let |promise| be |ret|.\[[Value]][0].
+       1. Otherwise,
+            1. Let |promise| be |prRet|.\[[Value]].
             1. Set the entry for |async_context| in |map| to [=paused=].
             1. Let |awaitResult| be the result of performing [$Completion$]([$Await$](|promise|)).
             1. Note: This will suspend both this algorithm, and the WebAssembly function being invoked by the [=evaluate a Promising function=] algorithm. On return, |ret| will be either a normal completion or a throw completion.
@@ -1493,10 +1493,9 @@ To <dfn>create a suspending function</dfn> from a JavaScript function |func|, wi
                 1. Perform [=throw a JavaScript exception=] with a {{SuspendError}}.
             1. Otherwise, set the entry to [=active=].
             1. If |awaitResult|.\[[Type]] is <emu-const>throw</emu-const>, then:
-               1. Let |type|, |payload| and |opaqueData| be the result of [=coerce a JavaScript exception|coercing the JavaScript exception=] |ret|.\[[Value]].
-               1. [=WebAssembly/Throw=] with |type|, |payload| and |opaqueData|.
+                1. Let |type|, |payload| and |opaqueData| be the result of [=coerce a JavaScript exception|coercing the JavaScript exception=] |ret|.\[[Value]].
+                1. [=WebAssembly/Throw=] with |type|, |payload| and |opaqueData|.
             1. Otherwise, return the result of performing [=coerce a JavaScript return=] on |resultTypes| and |awaitResult|.
-        1. Otherwise, return the result of performing [=coerce a JavaScript return=] on |resultTypes| and |ret|.
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
     1. Let (|store|, |funcaddr|) be [=func_alloc=](|store|, |functype|, |hostfunc|).
     1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
