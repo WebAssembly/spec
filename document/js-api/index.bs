@@ -399,7 +399,7 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
         1. Let |o| be [=?=] [$Get$](|importObject|, |moduleName|).
         1. If [=Type=](|o|) is not Object, throw a {{TypeError}} exception.
         1. Let |v| be [=?=] [$Get$](|o|, |componentName|).
-        1. If |externtype| is of the form [=func=] |functype|,
+        1. If |externtype| is of the form [=external-type/func=] |functype|,
             1. If [$IsCallable$](|v|) is true,
                 1. If |v| has a \[[FunctionAddress]] internal slot, and therefore is an [=Exported Function=],
                     1. Let |funcaddr| be the value of |v|'s \[[FunctionAddress]] internal slot.
@@ -1388,7 +1388,7 @@ If present, a status can be one of two <dfn>stack status</dfn> values:
    * <dfn>active</dfn>. This signals that the associated execution context is actively executing and has the potential to be [=paused=].
    * <dfn>paused</dfn>. This signals that the associated execution is not currently involved in computation and has been paused.
 
-If an execution context is not present in the status mapping, then it may not be [=Pause|paused=] or [=Enter|reentered=].
+If an execution context is not present in the status mapping, then it may not be [=Pause|paused=] or [=Active|active=].
 
 When a new agent is created, its status mapping is set to the empty map.
 
@@ -1409,7 +1409,7 @@ interface Suspending {
     1. If [$IsCallable$](|wasmFunc|) is false, throw a {{TypeError}}.
     1. If |wasmFunc| does not have a \[[FunctionAddress]] internal slot, throw a {{TypeError}}.
     1. Let |builder| be a new [=AbstractClosure=] with no parameters that captures |wasmFunc| and performs [=run a Promising function=] when called.
-    1. Returns the result of [=CreateBuiltinFunction=](|builder|,1,"", « »).
+    1. Return the result of [=CreateBuiltinFunction=](|builder|,1,"", « »).
 </div>
 
 <div algorithm>
