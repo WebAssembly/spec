@@ -177,23 +177,64 @@ struct
   let index_of x = index_where ((=) x)
 end
 
-module Array32 =
+module List64 =
+struct
+  let rec init n f = init' n f []
+  and init' n f xs =
+    if n = 0L then xs else init' (Int64.sub n 1L) f (f (Int64.sub n 1L) :: xs)
+
+  let rec make n x = make' n x []
+  and make' n x xs =
+    if n = 0L then xs else make' (Int64.sub n 1L) x (x::xs)
+
+  let rec length xs = length' xs 0L
+  and length' xs n =
+    match xs with
+    | [] -> n
+    | _::xs' when n < Int64.max_int -> length' xs' (Int64.add n 1L)
+    | _ -> failwith "length"
+
+  let rec nth xs n =
+    match n, xs with
+    | 0L, x::_ -> x
+    | n, _::xs' when n > 0L -> nth xs' (Int64.sub n 1L)
+    | _ -> failwith "nth"
+
+  let rec take n xs =
+    match n, xs with
+    | 0L, _ -> []
+    | n, x::xs' when n > 0L -> x :: take (Int64.sub n 1L) xs'
+    | _ -> failwith "take"
+
+  let rec drop n xs =
+    match n, xs with
+    | 0L, _ -> xs
+    | n, _::xs' when n > 0L -> drop (Int64.sub n 1L) xs'
+    | _ -> failwith "drop"
+
+  let rec mapi f xs = mapi' f 0L xs
+  and mapi' f i = function
+    | [] -> []
+    | x::xs -> f i x :: mapi' f (Int64.add i 1L) xs
+end
+
+module Array64 =
 struct
   let make n x =
-    if n < 0l || Int64.of_int32 n > Int64.of_int max_int then
-      invalid_arg "Array32.make";
-    Array.make (Int32.to_int n) x
+    if n < 0L || n > Int64.of_int max_int then
+      invalid_arg "Array64.make";
+    Array.make (Int64.to_int n) x
 
-  let length a = Int32.of_int (Array.length a)
+  let length a = Int64.of_int (Array.length a)
 
-  let index_of_int32 i =
-    if i < 0l || Int64.of_int32 i > Int64.of_int max_int then -1 else
-    Int32.to_int i
+  let index_of_int64 i =
+    if i < 0L || i > Int64.of_int max_int then -1 else
+    Int64.to_int i
 
-  let get a i = Array.get a (index_of_int32 i)
-  let set a i x = Array.set a (index_of_int32 i) x
+  let get a i = Array.get a (index_of_int64 i)
+  let set a i x = Array.set a (index_of_int64 i) x
   let blit a1 i1 a2 i2 n =
-    Array.blit a1 (index_of_int32 i1) a2 (index_of_int32 i2) (index_of_int32 n)
+    Array.blit a1 (index_of_int64 i1) a2 (index_of_int64 i2) (index_of_int64 n)
 end
 
 module Bigarray =

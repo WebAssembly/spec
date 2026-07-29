@@ -1,18 +1,11 @@
-[![Build Status](https://travis-ci.org/WebAssembly/js-promise-integration.svg?branch=main)](https://travis-ci.org/WebAssembly/js-promise-integration)
 
-# JavaScript-Promise Integration Proposal for WebAssembly
+![Spectec Status](https://github.com/WebAssembly/spec/actions/workflows/ci-spectec.yml/badge.svg)
+![Interpreter Status](https://github.com/WebAssembly/spec/actions/workflows/ci-interpreter.yml/badge.svg)
+![Spec doc Status](https://github.com/WebAssembly/spec/actions/workflows/ci-spec.yml/badge.svg)
 
-This repository is a clone of [github.com/WebAssembly/spec/](https://github.com/WebAssembly/spec/).
-It is meant for discussion, prototype specification and implementation of a proposal to
-add support for different patterns of non-local control flow to WebAssembly.
+[![CI for specs](https://github.com/WebAssembly/spec/actions/workflows/ci-spec.yml/badge.svg)](https://github.com/WebAssembly/spec/actions/workflows/ci-spec.yml)
+[![CI for interpreter & tests](https://github.com/WebAssembly/spec/actions/workflows/ci-interpreter.yml/badge.svg)](https://github.com/WebAssembly/spec/actions/workflows/ci-interpreter.yml)
 
-* See the [overview](proposals/js-promise-integration/Overview.md) for a summary of the proposal.
-
-* See the [modified spec](https://webassembly.github.io/js-promise-integration/) for details.
-
-* See the [Design Portfolio](https://docs.google.com/document/d/16Us-pyte2-9DECJDfGm5tnUpfngJJOc8jbj54HMqE9Y/edit#heading=h.n1atlriavj6v) for detailed design from a V8 perspective.
-
-Original `README` from upstream repository follows…
 
 # spec
 

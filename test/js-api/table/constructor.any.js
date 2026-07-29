@@ -71,6 +71,7 @@ for (const value of outOfRangeValues) {
   }, `Out-of-range maximum value in descriptor: ${format_value(value)}`);
 }
 
+
 test(() => {
   assert_throws_js(RangeError, () => new WebAssembly.Table({ "element": "anyfunc", "initial": 10, "maximum": 9 }));
 }, "Initial value exceeds maximum");
@@ -157,11 +158,23 @@ test(() => {
         },
       };
     },
+
+    get address() {
+      order.push("address");
+      return {
+        toString() {
+          order.push("address toString");
+          return "i32";
+        },
+      };
+    },
   });
 
   assert_array_equals(order, [
     "element",
     "element toString",
+    "address",
+    "address toString",
     "initial",
     "initial valueOf",
     "maximum",
@@ -206,3 +219,62 @@ test(() => {
   assert_throws_js(TypeError, () => new WebAssembly.Table(argument, "cannot be used as a wasm function"));
   assert_throws_js(TypeError, () => new WebAssembly.Table(argument, 37));
 }, "initialize anyfunc table with a bad default value");
+
+test(() => {
+  const argument = { "element": "anyfunc", "initial": 3, "address": "i32" };
+  const table = new WebAssembly.Table(argument);
+  // Once this is merged with the type reflection proposal we should check the
+  // address type of `table`.
+  assert_equals(table.length, 3);
+}, "Table with i32 address constructor");
+
+test(() => {
+  const argument = { "element": "anyfunc", "initial": "3", "address": "i32" };
+  const table = new WebAssembly.Table(argument);
+  assert_equals(table.length, 3);
+}, "Table with string value for initial");
+
+test(() => {
+  const argument = { "element": "anyfunc", "initial": true, "address": "i32" };
+  const table = new WebAssembly.Table(argument);
+  assert_equals(table.length, 1);
+}, "Table with boolean value for initial");
+
+test(() => {
+  const argument = { "element": "anyfunc", "initial": 0, "maximum": "3", "address": "i32" };
+  const table = new WebAssembly.Table(argument);
+  table.grow(3);
+  assert_equals(table.length, 3);
+}, "Table with string value for maximum");
+
+test(() => {
+  const argument = { "element": "anyfunc", "initial": 0, "maximum": true, "address": "i32" };
+  const table = new WebAssembly.Table(argument);
+  table.grow(1);
+  assert_equals(table.length, 1);
+}, "Table with boolean value for maximum");
+
+test(() => {
+  const argument = { "element": "anyfunc", "initial": 3, "address": "unknown" };
+  assert_throws_js(TypeError, () => new WebAssembly.Table(argument));
+}, "Unknown table address");
+
+test(() => {
+  const argument = { "element": "i32", "initial": 3n };
+  assert_throws_js(TypeError, () => new WebAssembly.Table(argument));
+}, "initialize table with a wrong initial type");
+
+test(() => {
+  const argument = { "element": "i32", "initial": 3, "maximum": 10n };
+  assert_throws_js(TypeError, () => new WebAssembly.Table(argument));
+}, "initialize table with a wrong maximum type");
+
+test(() => {
+  const argument = { "element": "i32", "initial": 3 };
+  assert_throws_js(TypeError, () => new WebAssembly.Table(argument));
+}, "initialize table with a wrong initial type (i64)");
+
+test(() => {
+  const argument = { "element": "i32", "initial": 3n, "maximum": 10 };
+  assert_throws_js(TypeError, () => new WebAssembly.Table(argument));
+}, "initialize table with a wrong maximum type (i64)");

@@ -1,0 +1,26 @@
+;;
+;; Relaxed Numeric Behaviour
+;;
+
+syntax relaxed2 = 0 | 1
+syntax relaxed4 = 0 | 1 | 2 | 3
+
+def $relaxed2(relaxed2, syntax X, X, X) : X       hint(show $relaxed(%1)#`[%3,%4])
+def $relaxed4(relaxed4, syntax X, X, X, X, X) : X hint(show $relaxed(%1)#`[%3,%4,%5,%6])
+
+def $relaxed2(i, syntax X, X_1, X_2) = (X_1 X_2)[i]  -- if $ND
+def $relaxed2(i, syntax X, X_1, X_2) = (X_1 X_2)[0]  -- otherwise
+
+def $relaxed4(i, syntax X, X_1, X_2, X_3, X_4) = (X_1 X_2 X_3 X_4)[i]  -- if $ND
+def $relaxed4(i, syntax X, X_1, X_2, X_3, X_4) = (X_1 X_2 X_3 X_4)[0]  -- otherwise
+
+
+def $R_fmadd : relaxed2      hint(builtin)
+def $R_fmin : relaxed4       hint(builtin)
+def $R_fmax : relaxed4       hint(builtin)
+def $R_idot : relaxed2       hint(builtin)
+def $R_iq15mulr : relaxed2   hint(builtin)
+def $R_trunc_u : relaxed4    hint(builtin)
+def $R_trunc_s : relaxed2    hint(builtin)
+def $R_swizzle : relaxed2    hint(builtin)
+def $R_laneselect : relaxed2 hint(builtin)

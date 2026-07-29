@@ -1,6 +1,6 @@
 open Types
 
-type tag = {ty : tag_type}
+type tag = {ty : tagtype}
 type t = tag
 
 let alloc ty =

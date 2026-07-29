@@ -7,6 +7,44 @@ Change History
 Since the original release 1.0 of the WebAssembly specification, a number of proposals for extensions have been integrated.
 The following sections provide an overview of what has changed.
 
+All present and future versions of WebAssembly are intended to be *backwards-compatible* with all previous versions.
+Concretely:
+
+1. All syntactically well-formed (in :ref:`binary <binary>` or :ref:`text <text>` format) and :ref:`valid <valid>` modules remain well-formed and valid with an equivalent :ref:`module type <syntax-moduletype>` (or a subtype).
+
+  .. note::
+     This allows previously malformed or invalid modules to become legal,
+     e.g., by adding new features or by relaxing typing rules.
+
+     It also allows reclassifying previously malformed modules as well-formed but invalid,
+     or vice versa.
+
+     And it allows refining the typing of :ref:`imports <syntax-import>` and :ref:`exports <syntax-export>`,
+     such that previously unlinkable modules become linkable.
+
+     Historically, minor breaking changes to the *text format* have been allowed
+     that turned previously possible valid modules invalid,
+     as long as they were unlikely to occur in practice.
+
+2. All non-:ref:`trapping <trap>` :ref:`executions <exec>` of a valid program retain their behaviour with an equivalent set of possible :ref:`results <syntax-result>` (or a non-empty subset).
+
+  .. note::
+    This allows previously malformed or invalid programs to become executable.
+
+    It also allows program executions that previously trapped to execute successfully,
+    although the intention is to only exercise this where the possibility of such an extension has been previously noted.
+
+    And it allows reducing the set of observable behaviours of a program execution,
+    e.g., by reducing non-determinism.
+
+    In a program linking prior modules with modules using new features,
+    a prior module may encounter new behaviours,
+    e.g., new forms of control flow or side effects when calling into a latter module.
+
+In addition, future versions of WebAssembly will not allocate the :ref:`opcode <binary-instr>` :math:`\hex{FF}` to represent an instruction or instruction prefix.
+
+
+
 Release 2.0
 ~~~~~~~~~~~
 
@@ -137,7 +175,7 @@ Added instructions that modify ranges of memory or table entries. [#proposal-ref
 
 * New :ref:`passive <syntax-elemmode>` form of :ref:`element segment <syntax-elem>`
 
-* New :ref:`data count section <binary-datacountsec>` in binary format
+* New :ref:`data count section <binary-datacntsec>` in binary format
 
 * Active data and element segments boundaries are no longer checked at compile time but may trap instead
 
@@ -300,7 +338,7 @@ Extended Constant Expressions
 
 Allowed basic numeric computations in constant expressions. [#proposal-extconst]_
 
-* Extended set of :ref:`constant instructions <valid-const>` with:
+* Extended set of :ref:`constant instructions <valid-constant>` with:
 
   - :math:`\K{i}\X{nn}\K{.add}`
   - :math:`\K{i}\X{nn}\K{.sub}`
@@ -308,7 +346,7 @@ Allowed basic numeric computations in constant expressions. [#proposal-extconst]
   - |GLOBALGET| for any previously declared immutable :ref:`global <syntax-global>`
 
 .. note::
-   The :ref:`garbage collection <extension-gc>` added further constant instructions.
+   The :ref:`garbage collection <extension-gc>` extension added further constant instructions.
 
 
 .. index:: instruction, function, call
@@ -329,7 +367,7 @@ Added instructions to perform tail calls. [#proposal-tailcall]_
 Exception Handling
 ..................
 
-Added tag definitions, imports, and exports, and instructions to throw and catch exceptions [#proposal-exn]_
+Added tag definitions, imports, and exports, and instructions to throw and catch exceptions. [#proposal-exn]_
 
 * :ref:`Modules <syntax-module>` may
 
@@ -389,6 +427,44 @@ Added the ability to use multiple memories per module. [#proposal-multimem]_
 * :ref:`Data segments <syntax-elem>` take a :ref:`memory index <syntax-memidx>`
 
 
+.. index:: address type, number type, table, memory, instruction
+
+64-bit Address Space
+....................
+
+Added the ability to declare an :math:`\I64` :ref:`address type <syntax-addrtype>` for :ref:`tables <syntax-tabletype>` and :ref:`memories <syntax-memtype>`. [#proposal-addr64]_
+
+* :ref:`Address types <syntax-addrtype>` denote a subset of the integral :ref:`number types <syntax-numtype>`
+
+* :ref:`Table types <syntax-tabletype>` include an :ref:`address type <syntax-addrtype>`
+
+* :ref:`Memory types <syntax-memtype>` include an :ref:`address type <syntax-addrtype>`
+
+* Operand types of :ref:`table <syntax-instr-table>` and :ref:`memory <syntax-instr-memory>` instructions now depend on the subject's declared address type:
+
+  - |TABLEGET|
+  - |TABLESET|
+  - |TABLESIZE|
+  - |TABLEGROW|
+  - |TABLEFILL|
+  - |TABLECOPY|
+  - |TABLEINIT|
+  - |MEMORYSIZE|
+  - |MEMORYGROW|
+  - |MEMORYFILL|
+  - |MEMORYCOPY|
+  - |MEMORYINIT|
+  - :math:`t\K{.load}`
+  - :math:`t\K{.store}`
+  - :math:`t\K{.load}\!N\!\K{\_}\sx`
+  - :math:`t\K{.store}\!N`
+  - :math:`\K{v128.load}\!N\!\K{x}\!M\!\K{\_}\sx`
+  - :math:`\K{v128.load}\!N\!\K{\_zero}`
+  - :math:`\K{v128.load}\!N\!\K{\_splat}`
+  - :math:`\K{v128.load}\!N\!\K{\_lane}`
+  - :math:`\K{v128.store}\!N\!\K{\_lane}`
+
+
 .. index:: reference, reference type, heap type, value type, local, local type, instruction, instruction type, table, function, function type, matching, subtyping
 
 Typeful References
@@ -422,7 +498,9 @@ Added more precise types for references. [#proposal-typedref]_
 
   - |REFFUNC| with more precise result type
 
-* Refined typing of :ref:`local instructions <valid-instr-variable>` and :ref:`instruction sequences <valid-instr-seq>` to track the :ref:`initialization status <syntax-init>` of :ref:`locals <syntax-local>` with non-:ref:`defaultable <valid-defaultable>` type
+* Refined typing of :ref:`local instructions <valid-instr-variable>` and :ref:`instruction sequences <valid-instrs>` to track the :ref:`initialization status <syntax-init>` of :ref:`locals <syntax-local>` with non-defaultable type
+
+* Refined decoding of :ref:`active <syntax-elemmode>` :ref:`element segments <binary-elem>` with implicit element type and plain function indices (opcode :math:`0`) to produce :ref:`non-null <syntax-null>` :ref:`reference type <syntax-reftype>`
 
 * Extended :ref:`table definitions <syntax-table>` with optional initializer expression
 
@@ -506,7 +584,7 @@ Added managed reference types. [#proposal-gc]_
   - |ANYCONVERTEXTERN|
   - |EXTERNCONVERTANY|
 
-* Extended set of :ref:`constant instructions <valid-const>` with:
+* Extended set of :ref:`constant instructions <valid-constant>` with:
 
   - |REFI31|
   - |STRUCTNEW|
@@ -526,26 +604,26 @@ Relaxed Vector Instructions
 Added new *relaxed* vector instructions,
 whose behaviour is non-deterministic and implementation-dependent. [#proposal-relaxed]_
 
-* New binary :ref:`vector instruction <syntax-instr-relaxed>`:
+* New binary :ref:`vector instruction <syntax-instr-vec-relaxed>`:
 
   - :math:`\K{f}\!N\!\K{x}\!M\!\K{.relaxed\_min}`
   - :math:`\K{f}\!N\!\K{x}\!M\!\K{.relaxed\_max}`
   - :math:`\K{i16x8.relaxed\_q15mulr\_s}`
   - :math:`\K{i16x8.relaxed\_dot\_i8x16\_i7x16\_s}`
 
-* New ternary :ref:`vector instruction <syntax-instr-relaxed>`:
+* New ternary :ref:`vector instruction <syntax-instr-vec-relaxed>`:
 
   - :math:`\K{f}\!N\!\K{x}\!M\!\K{.relaxed\_madd}`
   - :math:`\K{f}\!N\!\K{x}\!M\!\K{.relaxed\_nmadd}`
   - :math:`\K{i}\!N\!\K{x}\!M\!\K{.relaxed\_laneselect}`
   - :math:`\K{i32x4.relaxed\_dot\_i8x16\_i7x16\_add\_s}`
 
-* New conversion :ref:`vector instructions <syntax-instr-relaxed>`:
+* New conversion :ref:`vector instructions <syntax-instr-vec-relaxed>`:
 
   - :math:`\K{i32x4.relaxed\_trunc\_f32x4\_}\sx`
   - :math:`\K{i32x4.relaxed\_trunc\_f64x2\_}\sx\K{\_zero}`
 
-* New byte reordering :ref:`vector instruction <syntax-instr-relaxed>`:
+* New byte reordering :ref:`vector instruction <syntax-instr-vec-relaxed>`:
 
   - :math:`\K{i8x16.relaxed\_swizzle}`
 
@@ -584,7 +662,7 @@ mirroring the role of custom sections in the binary format. [#proposal-annot]_
 
 
 .. [#proposal-extconst]
-   https://github.com/WebAssembly/spec/blob/main/proposals/extended-const/
+   https://github.com/WebAssembly/spec/tree/main/proposals/extended-const/
 
 .. [#proposal-tailcall]
    https://github.com/WebAssembly/spec/tree/main/proposals/tail-call/
@@ -593,7 +671,10 @@ mirroring the role of custom sections in the binary format. [#proposal-annot]_
    https://github.com/WebAssembly/spec/tree/main/proposals/exception-handling/
 
 .. [#proposal-multimem]
-   https://github.com/WebAssembly/spec/blob/main/proposals/multi-memory/
+   https://github.com/WebAssembly/spec/tree/main/proposals/multi-memory/
+
+.. [#proposal-addr64]
+   https://github.com/WebAssembly/spec/tree/main/proposals/memory64/
 
 .. [#proposal-typedref]
    https://github.com/WebAssembly/spec/tree/main/proposals/function-references/
@@ -605,4 +686,4 @@ mirroring the role of custom sections in the binary format. [#proposal-annot]_
    https://github.com/WebAssembly/spec/tree/main/proposals/relaxed-simd/
 
 .. [#proposal-annot]
-   https://github.com/WebAssembly/annotations/tree/main/proposals/annotations/
+   https://github.com/WebAssembly/spec/tree/main/proposals/annotations/

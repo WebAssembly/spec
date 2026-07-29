@@ -7,11 +7,11 @@ type t = i31
 type ref_ += I31Ref of i31
 
 let of_i32 i = Int32.to_int i land 0x7fff_ffff
-let to_i32 ext i =
+let to_i32 sx i =
   let i' = Int32.of_int i in
-  match ext with
-  | Pack.ZX -> i'
-  | Pack.SX -> Int32.(shift_right (shift_left i' 1) 1)
+  match sx with
+  | Pack.U -> i'
+  | Pack.S -> Int32.(shift_right (shift_left i' 1) 1)
 
 let () =
   let eq_ref' = !Value.eq_ref' in

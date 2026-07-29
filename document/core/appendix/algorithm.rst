@@ -50,8 +50,8 @@ Similarly, :ref:`defined types <syntax-deftype>` :code:`def_type` can be represe
 
 .. code-block:: pseudo
 
-   type packed_type = I8 | I16
-   type field_type = Field(val : val_type | packed_type, mut : bool)
+   type pack_type = I8 | I16
+   type field_type = Field(val : val_type | pack_type, mut : bool)
 
    type struct_type = Struct(fields : list(field_type))
    type array_type = Array(fields : field_type)
@@ -179,8 +179,8 @@ However, these variables are not manipulated directly by the main checking funct
      vals.push(type)
 
    func pop_val() : val_type =
-     if (vals.size() = ctrls[0].height && ctrls[0].unreachable) return Bot
-     error_if(vals.size() = ctrls[0].height)
+     if (vals.size() = ctrls[0].val_height && ctrls[0].unreachable) return Bot
+     error_if(vals.size() = ctrls[0].val_height)
      return vals.pop()
 
    func pop_val(expect : val_type) : val_type =
@@ -268,7 +268,7 @@ The control stack is likewise manipulated through auxiliary functions:
      return (if (frame.opcode = loop) frame.start_types else frame.end_types)
 
    func unreachable() =
-     vals.resize(ctrls[0].height)
+     vals.resize(ctrls[0].val_height)
      ctrls[0].unreachable := true
 
 Pushing a control frame takes the types of the label and result values.
@@ -277,7 +277,7 @@ It allocates a new frame record recording them along with the current height of 
 Popping a frame first checks that the control stack is not empty.
 It then verifies that the operand stack contains the right types of values expected at the end of the exited block and pops them off the operand stack.
 Afterwards, it checks that the stack has shrunk back to its initial height.
-Finally, it undoes all changes to the initialization status of locals that happend inside the block.
+Finally, it undoes all changes to the initialization status of locals that happened inside the block.
 
 The type of the :ref:`label <syntax-label>` associated with a control frame is either that of the stack at the start or the end of the frame, determined by the opcode that it originates from.
 

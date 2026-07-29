@@ -1,0 +1,107 @@
+;;
+;; Auxiliary definitions on Values
+;;
+
+;; Bytes
+
+def $concat_bytes((byte*)*) : byte*  hint(show $concat(%))
+def $concat_bytes(eps) = eps
+def $concat_bytes((b*) (b'*)*) = b* $concat_bytes((b'*)*)
+
+
+;;
+;; Auxiliary Definitions on Types
+;;
+
+;; Size
+
+;; def |I n| = |F n| = |V n| = n        ;; ????
+
+;;def $size(valtype) : nat      hint(partial) hint(show |%|)
+;;def $psize(packtype) : nat    hint(show |%|)
+;;def $lsize(lanetype) : nat    hint(show |%|)
+
+
+
+;; Unpacking
+
+def $unpack(lanetype) : numtype
+def $unpack(numtype) = numtype
+def $unpack(packtype) = I32
+
+
+;; Shapes
+
+;;def $lanetype(shape) : lanetype
+def $lanetype(Lnn X N) = Lnn
+
+;;def $dim(shape) : nat
+def $dim(Lnn X N) = N
+
+;;def $shsize(shape) : nat
+def $shsize(Lnn X N) = $($lsize(Lnn) * N)
+
+def $shunpack(shape) : numtype  hint(show $unpack(%))
+def $shunpack(Lnn X N) = $unpack(Lnn)
+
+
+;; Projections
+
+;; TODO: use built-in notation
+def $funcsxt(externtype*) : functype*      hint(show $funcs(%))
+def $globalsxt(externtype*) : globaltype*  hint(show $globals(%))
+def $tablesxt(externtype*) : tabletype*    hint(show $tables(%))
+def $memsxt(externtype*) : memtype*        hint(show $mems(%))
+
+def $funcsxt(eps) = eps
+def $funcsxt((FUNC ft) xt*) = ft $funcsxt(xt*)
+def $funcsxt(externtype xt*) = $funcsxt(xt*)  -- otherwise
+
+def $globalsxt(eps) = eps
+def $globalsxt((GLOBAL gt) xt*) = gt $globalsxt(xt*)
+def $globalsxt(externtype xt*) = $globalsxt(xt*)  -- otherwise
+
+def $tablesxt(eps) = eps
+def $tablesxt((TABLE tt) xt*) = tt $tablesxt(xt*)
+def $tablesxt(externtype xt*) = $tablesxt(xt*)  -- otherwise
+
+def $memsxt(eps) = eps
+def $memsxt((MEM mt) xt*) = mt $memsxt(xt*)
+def $memsxt(externtype xt*) = $memsxt(xt*)  -- otherwise
+
+
+
+;;
+;; Auxiliary definitions on Indices
+;;
+
+;; Free indices
+
+def $dataidx_instr(instr) : dataidx*  hint(show $dataidx(%))
+def $dataidx_instr(MEMORY.INIT x) = x
+def $dataidx_instr(DATA.DROP x) = x
+def $dataidx_instr(in) = eps
+
+def $dataidx_instrs(instr*) : dataidx*  hint(show $dataidx(%))
+def $dataidx_instrs(eps) = eps
+def $dataidx_instrs(instr instr'*) = $dataidx_instr(instr) $dataidx_instrs(instr'*)
+
+def $dataidx_expr(expr) : dataidx*  hint(show $dataidx(%))
+def $dataidx_expr(in*) = $dataidx_instrs(in*)
+
+def $dataidx_func(func) : dataidx*  hint(show $dataidx(%))
+def $dataidx_func(FUNC x loc* e) = $dataidx_expr(e)
+
+def $dataidx_funcs(func*) : dataidx*  hint(show $dataidx(%))
+def $dataidx_funcs(eps) = eps
+def $dataidx_funcs(func func'*) = $dataidx_func(func) $dataidx_funcs(func'*)
+
+
+;;
+;; Auxiliary definitions on Instructions
+;;
+
+;; Shorthands for Instructions
+
+def $memarg0 : memarg  hint(show )
+def $memarg0 = {ALIGN 0, OFFSET 0}

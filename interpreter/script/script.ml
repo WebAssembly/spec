@@ -3,7 +3,11 @@ type var = string Source.phrase
 type Value.ref_ += HostRef of int32
 type num = Value.num Source.phrase
 type ref_ = Value.ref_ Source.phrase
-type literal = Value.t Source.phrase
+
+type literal = literal' Source.phrase
+and literal' =
+  | ValLit of Value.t
+  | NullLit of Types.heaptype
 
 type definition = definition' Source.phrase
 and definition' =
@@ -29,8 +33,8 @@ type vec_pat =
 
 type ref_pat =
   | RefPat of ref_
-  | RefTypePat of Types.heap_type
-  | NullPat
+  | RefTypePat of Types.heaptype
+  | NullPat of Types.heaptype
 
 type result = result' Source.phrase
 and result' =

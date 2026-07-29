@@ -1,4 +1,4 @@
-;; Auxiliary module to import from
+;; Auxiliary modules to import from
 
 (module
   (func (export "func"))
@@ -11,18 +11,23 @@
   (global (export "global-i32") i32 (i32.const 55))
   (global (export "global-f32") f32 (f32.const 44))
   (global (export "global-mut-i64") (mut i64) (i64.const 66))
-  (table (export "table-10-inf") 10 funcref)
-  (table (export "table-10-20") 10 20 funcref)
-  (memory (export "memory-2-inf") 2)
-  ;; Multiple memories are not yet supported
-  ;; (memory (export "memory-2-4") 2 4)
   (tag (export "tag"))
   (tag $tag-i32 (param i32))
   (export "tag-i32" (tag $tag-i32))
   (tag (export "tag-f32") (param f32))
 )
-
 (register "test")
+
+(module (table (export "table-10-inf") 10 funcref))
+(register "test-table-10-inf")
+(module (table (export "table-10-20") 10 20 funcref))
+(register "test-table-10-20")
+
+(module (memory (export "memory-2-inf") 2))
+(register "test-memory-2-inf")
+(module (memory (export "memory-2-4") 2 4))
+(register "test-memory-2-4")
+
 
 
 ;; Functions
@@ -207,11 +212,11 @@
   "incompatible import type"
 )
 (assert_unlinkable
-  (module (import "test" "table-10-inf" (func)))
+  (module (import "test-table-10-inf" "table-10-inf" (func)))
   "incompatible import type"
 )
 (assert_unlinkable
-  (module (import "test" "memory-2-inf" (func)))
+  (module (import "test-memory-2-inf" "memory-2-inf" (func)))
   "incompatible import type"
 )
 (assert_unlinkable
@@ -350,11 +355,11 @@
   "incompatible import type"
 )
 (assert_unlinkable
-  (module (import "test" "table-10-inf" (global i32)))
+  (module (import "test-table-10-inf" "table-10-inf" (global i32)))
   "incompatible import type"
 )
 (assert_unlinkable
-  (module (import "test" "memory-2-inf" (global i32)))
+  (module (import "test-memory-2-inf" "memory-2-inf" (global i32)))
   "incompatible import type"
 )
 (assert_unlinkable
@@ -390,8 +395,6 @@
 (assert_return (invoke "call" (i32.const 2)) (i32.const 22))
 (assert_trap (invoke "call" (i32.const 3)) "uninitialized element")
 (assert_trap (invoke "call" (i32.const 100)) "undefined element")
-
-
 (module
   (type (func (result i32)))
   (table $tab (import "spectest" "table") 10 20 funcref)
@@ -409,26 +412,22 @@
 (assert_return (invoke "call" (i32.const 2)) (i32.const 22))
 (assert_trap (invoke "call" (i32.const 3)) "uninitialized element")
 (assert_trap (invoke "call" (i32.const 100)) "undefined element")
-
-(module
-  (import "spectest" "table" (table 0 funcref))
-  (import "spectest" "table" (table 0 funcref))
-  (table 10 funcref)
-  (table 10 funcref)
-)
-
-(module (import "test" "table-10-inf" (table 10 funcref)))
-(module (import "test" "table-10-inf" (table 5 funcref)))
-(module (import "test" "table-10-inf" (table 0 funcref)))
-(module (import "test" "table-10-20" (table 10 funcref)))
-(module (import "test" "table-10-20" (table 5 funcref)))
-(module (import "test" "table-10-20" (table 0 funcref)))
-(module (import "test" "table-10-20" (table 10 20 funcref)))
-(module (import "test" "table-10-20" (table 5 20 funcref)))
-(module (import "test" "table-10-20" (table 0 20 funcref)))
-(module (import "test" "table-10-20" (table 10 25 funcref)))
-(module (import "test" "table-10-20" (table 5 25 funcref)))
-(module (import "test" "table-10-20" (table 0 25 funcref)))
+(module (import "spectest" "table" (table 0 funcref)))
+(module (import "spectest" "table" (table 0 funcref)))
+(module (table 10 funcref))
+(module (table 10 funcref))
+(module (import "test-table-10-inf" "table-10-inf" (table 10 funcref)))
+(module (import "test-table-10-inf" "table-10-inf" (table 5 funcref)))
+(module (import "test-table-10-inf" "table-10-inf" (table 0 funcref)))
+(module (import "test-table-10-20" "table-10-20" (table 10 funcref)))
+(module (import "test-table-10-20" "table-10-20" (table 5 funcref)))
+(module (import "test-table-10-20" "table-10-20" (table 0 funcref)))
+(module (import "test-table-10-20" "table-10-20" (table 10 20 funcref)))
+(module (import "test-table-10-20" "table-10-20" (table 5 20 funcref)))
+(module (import "test-table-10-20" "table-10-20" (table 0 20 funcref)))
+(module (import "test-table-10-20" "table-10-20" (table 10 25 funcref)))
+(module (import "test-table-10-20" "table-10-20" (table 5 25 funcref)))
+(module (import "test-table-10-20" "table-10-20" (table 0 25 funcref)))
 (module (import "spectest" "table" (table 10 funcref)))
 (module (import "spectest" "table" (table 5 funcref)))
 (module (import "spectest" "table" (table 0 funcref)))
@@ -448,19 +447,19 @@
 )
 
 (assert_unlinkable
-  (module (import "test" "table-10-inf" (table 12 funcref)))
+  (module (import "test-table-10-inf" "table-10-inf" (table 12 funcref)))
   "incompatible import type"
 )
 (assert_unlinkable
-  (module (import "test" "table-10-inf" (table 10 20 funcref)))
+  (module (import "test-table-10-inf" "table-10-inf" (table 10 20 funcref)))
   "incompatible import type"
 )
 (assert_unlinkable
-  (module (import "test" "table-10-20" (table 12 20 funcref)))
+  (module (import "test-table-10-20" "table-10-20" (table 12 20 funcref)))
   "incompatible import type"
 )
 (assert_unlinkable
-  (module (import "test" "table-10-20" (table 10 18 funcref)))
+  (module (import "test-table-10-20" "table-10-20" (table 10 18 funcref)))
   "incompatible import type"
 )
 (assert_unlinkable
@@ -481,14 +480,13 @@
   "incompatible import type"
 )
 (assert_unlinkable
-  (module (import "test" "memory-2-inf" (table 10 funcref)))
+  (module (import "test-memory-2-inf" "memory-2-inf" (table 10 funcref)))
   "incompatible import type"
 )
 (assert_unlinkable
   (module (import "spectest" "print_i32" (table 10 funcref)))
   "incompatible import type"
 )
-
 
 
 ;; Memories
@@ -505,6 +503,7 @@
 (assert_return (invoke "load" (i32.const 8)) (i32.const 0x100000))
 (assert_trap (invoke "load" (i32.const 1000000)) "out of bounds memory access")
 
+(module (import "test-memory-2-inf" "memory-2-inf" (memory 2)))
 (module
   (memory (import "spectest" "memory") 1 2)
   (data (memory 0) (i32.const 10) "\10")
@@ -516,9 +515,19 @@
 (assert_return (invoke "load" (i32.const 8)) (i32.const 0x100000))
 (assert_trap (invoke "load" (i32.const 1000000)) "out of bounds memory access")
 
-(module (import "test" "memory-2-inf" (memory 2)))
-(module (import "test" "memory-2-inf" (memory 1)))
-(module (import "test" "memory-2-inf" (memory 0)))
+(module (memory (import "test-memory-2-inf" "memory-2-inf") 2))
+
+(module (import "test-memory-2-inf" "memory-2-inf" (memory 2)))
+(module (import "test-memory-2-inf" "memory-2-inf" (memory 1)))
+(module (import "test-memory-2-inf" "memory-2-inf" (memory 0)))
+(module (import "test-memory-2-4" "memory-2-4" (memory 2)))
+(module (import "test-memory-2-4" "memory-2-4" (memory 1)))
+(module (import "test-memory-2-4" "memory-2-4" (memory 0)))
+(module (import "test-memory-2-4" "memory-2-4" (memory 2 4)))
+(module (import "test-memory-2-4" "memory-2-4" (memory 1 4)))
+(module (import "test-memory-2-4" "memory-2-4" (memory 0 4)))
+(module (import "test-memory-2-4" "memory-2-4" (memory 2 5)))
+(module (import "test-memory-2-4" "memory-2-4" (memory 2 6)))
 (module (import "spectest" "memory" (memory 1)))
 (module (import "spectest" "memory" (memory 0)))
 (module (import "spectest" "memory" (memory 1 2)))
@@ -536,11 +545,75 @@
 )
 
 (assert_unlinkable
-  (module (import "test" "memory-2-inf" (memory 3)))
+  (module (import "test-memory-2-inf" "memory-2-inf" (memory 0 1)))
   "incompatible import type"
 )
 (assert_unlinkable
-  (module (import "test" "memory-2-inf" (memory 2 3)))
+  (module (import "test-memory-2-inf" "memory-2-inf" (memory 0 2)))
+  "incompatible import type"
+)
+(assert_unlinkable
+  (module (import "test-memory-2-inf" "memory-2-inf" (memory 0 3)))
+  "incompatible import type"
+)
+(assert_unlinkable
+  (module (import "test-memory-2-inf" "memory-2-inf" (memory 2 3)))
+  "incompatible import type"
+)
+(assert_unlinkable
+  (module (import "test-memory-2-inf" "memory-2-inf" (memory 3)))
+  "incompatible import type"
+)
+(assert_unlinkable
+  (module (import "test-memory-2-4" "memory-2-4" (memory 0 1)))
+  "incompatible import type"
+)
+(assert_unlinkable
+  (module (import "test-memory-2-4" "memory-2-4" (memory 0 2)))
+  "incompatible import type"
+)
+(assert_unlinkable
+  (module (import "test-memory-2-4" "memory-2-4" (memory 0 3)))
+  "incompatible import type"
+)
+(assert_unlinkable
+  (module (import "test-memory-2-4" "memory-2-4" (memory 2 2)))
+  "incompatible import type"
+)
+(assert_unlinkable
+  (module (import "test-memory-2-4" "memory-2-4" (memory 2 3)))
+  "incompatible import type"
+)
+(assert_unlinkable
+  (module (import "test-memory-2-4" "memory-2-4" (memory 3 3)))
+  "incompatible import type"
+)
+(assert_unlinkable
+  (module (import "test-memory-2-4" "memory-2-4" (memory 3 4)))
+  "incompatible import type"
+)
+(assert_unlinkable
+  (module (import "test-memory-2-4" "memory-2-4" (memory 3 5)))
+  "incompatible import type"
+)
+(assert_unlinkable
+  (module (import "test-memory-2-4" "memory-2-4" (memory 4 4)))
+  "incompatible import type"
+)
+(assert_unlinkable
+  (module (import "test-memory-2-4" "memory-2-4" (memory 4 5)))
+  "incompatible import type"
+)
+(assert_unlinkable
+  (module (import "test-memory-2-4" "memory-2-4" (memory 3)))
+  "incompatible import type"
+)
+(assert_unlinkable
+  (module (import "test-memory-2-4" "memory-2-4" (memory 4)))
+  "incompatible import type"
+)
+(assert_unlinkable
+  (module (import "test-memory-2-4" "memory-2-4" (memory 5)))
   "incompatible import type"
 )
 (assert_unlinkable
@@ -561,7 +634,7 @@
   "incompatible import type"
 )
 (assert_unlinkable
-  (module (import "test" "table-10-inf" (memory 1)))
+  (module (import "test-table-10-inf" "table-10-inf" (memory 1)))
   "incompatible import type"
 )
 (assert_unlinkable

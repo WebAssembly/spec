@@ -1,14 +1,14 @@
 open Types
+open Value
 open Bigarray
 open Lib.Bigarray
 
-type size = int32  (* number of pages *)
-type address = int64
-type offset = int32
+type size = int64  (* number of pages *)
+type offset = address
 type count = int32
 
 type memory' = (int, int8_unsigned_elt, c_layout) Array1.t
-type memory = {mutable ty : memory_type; mutable content : memory'}
+type memory = {mutable ty : memorytype; mutable content : memory'}
 type t = memory
 
 exception Type = Value.Type
@@ -22,19 +22,24 @@ let page_size = 0x10000L (* 64 KiB *)
 let valid_limits {min; max} =
   match max with
   | None -> true
-  | Some m -> I32.le_u min m
+  | Some m -> I64.le_u min m
+
+let valid_size at i =
+  match at with
+  | I32AT -> I64.le_u i 0xffffL
+  | I64AT -> true
 
 let create n =
-  if I32.gt_u n 0x10000l then raise SizeOverflow else
   try
-    let size = Int64.(mul (of_int32 n) page_size) in
+    let size = Int64.(mul n page_size) in
     let mem = Array1_64.create Int8_unsigned C_layout size in
     Array1.fill mem 0;
     mem
   with Out_of_memory -> raise OutOfMemory
 
-let alloc (MemoryT lim as ty) =
-  assert Free.((memory_type ty).types = Set.empty);
+let alloc (MemoryT (at, lim) as ty) =
+  assert Free.((memorytype ty).types = Set.empty);
+  if not (valid_size at lim.min) then raise SizeOverflow;
   if not (valid_limits lim) then raise Type;
   {ty; content = create lim.min}
 
@@ -42,23 +47,27 @@ let bound mem =
   Array1_64.dim mem.content
 
 let size mem =
-  Int64.(to_int32 (div (bound mem) page_size))
+  Int64.(div (bound mem) page_size)
 
 let type_of mem =
   mem.ty
 
+let addrtype_of mem =
+  let MemoryT (at, _) = type_of mem in at
+
 let grow mem delta =
-  let MemoryT lim = mem.ty in
+  let MemoryT (at, lim) = mem.ty in
   assert (lim.min = size mem);
   let old_size = lim.min in
-  let new_size = Int32.add old_size delta in
-  if I32.gt_u old_size new_size then raise SizeOverflow else
+  let new_size = Int64.add old_size delta in
+  if I64.gt_u old_size new_size then raise SizeOverflow else
   let lim' = {lim with min = new_size} in
+  if not (valid_size at new_size) then raise SizeOverflow else
   if not (valid_limits lim') then raise SizeLimit else
   let after = create new_size in
   let dim = Array1_64.dim mem.content in
   Array1.blit (Array1_64.sub mem.content 0L dim) (Array1_64.sub after 0L dim);
-  mem.ty <- MemoryT lim';
+  mem.ty <- MemoryT (at, lim');
   mem.content <- after
 
 let load_byte mem a =
@@ -77,6 +86,7 @@ let load_bytes mem a n =
   Buffer.contents buf
 
 let store_bytes mem a bs =
+  if a < 0L then raise Bounds;
   for i = String.length bs - 1 downto 0 do
     store_byte mem Int64.(add a (of_int i)) (Char.code bs.[i])
   done
@@ -85,7 +95,7 @@ let store_bytes mem a bs =
 (* Typed accessors *)
 
 let effective_address a o =
-  let ea = Int64.(add a (of_int32 o)) in
+  let ea = Int64.(add a o) in
   if I64.lt_u ea a then raise Bounds;
   ea
 
@@ -97,9 +107,9 @@ let store_num mem a o n =
   let bs = Value.bits_of_num n in
   store_bytes mem (effective_address a o) bs
 
-let load_num_packed sz ext mem a o nt =
+let load_num_packed sz sx mem a o nt =
   let bs = load_bytes mem (effective_address a o) (Pack.packed_size sz) in
-  Value.num_of_packed_bits nt sz ext bs
+  Value.num_of_packed_bits nt sz sx bs
 
 let store_num_packed sz mem a o n =
   let bs = Value.packed_bits_of_num sz n in
@@ -113,9 +123,9 @@ let store_vec mem a o v =
   let bs = Value.bits_of_vec v in
   store_bytes mem (effective_address a o) bs
 
-let load_vec_packed sz ext mem a o t =
+let load_vec_packed sz vext mem a o t =
   let bs = load_bytes mem (effective_address a o) (Pack.packed_size sz) in
-  Value.vec_of_packed_bits t sz ext bs
+  Value.vec_of_packed_bits t sz vext bs
 
 let load_val mem a o t =
   let bs = load_bytes mem (effective_address a o) (Types.val_size t) in

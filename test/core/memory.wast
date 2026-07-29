@@ -5,6 +5,7 @@
 (module (memory 0 0))
 (module (memory 0 1))
 (module (memory 1 256))
+(module definition (memory 65536))
 (module (memory 0 65536))
 
 (module (memory (data)) (func (export "memsize") (result i32) (memory.size)))
@@ -50,40 +51,53 @@
 )
 (assert_invalid
   (module (memory 65537))
-  "memory size must be at most 65536 pages (4GiB)"
+  "memory size"
 )
 (assert_invalid
   (module (memory 2147483648))
-  "memory size must be at most 65536 pages (4GiB)"
+  "memory size"
 )
 (assert_invalid
   (module (memory 4294967295))
-  "memory size must be at most 65536 pages (4GiB)"
+  "memory size"
 )
 (assert_invalid
   (module (memory 0 65537))
-  "memory size must be at most 65536 pages (4GiB)"
+  "memory size"
 )
 (assert_invalid
   (module (memory 0 2147483648))
-  "memory size must be at most 65536 pages (4GiB)"
+  "memory size"
 )
 (assert_invalid
   (module (memory 0 4294967295))
-  "memory size must be at most 65536 pages (4GiB)"
+  "memory size"
 )
 
-(assert_malformed
-  (module quote "(memory 0x1_0000_0000)")
-  "i32 constant out of range"
+(assert_invalid
+  (module (memory 0x1_0000_0000))
+  "memory size"
 )
-(assert_malformed
-  (module quote "(memory 0x1_0000_0000 0x1_0000_0000)")
-  "i32 constant out of range"
+(assert_invalid
+  (module (memory 0x1_0000_0000 0x1_0000_0000))
+  "memory size"
 )
-(assert_malformed
-  (module quote "(memory 0 0x1_0000_0000)")
-  "i32 constant out of range"
+(assert_invalid
+  (module (memory 0 0x1_0000_0000))
+  "memory size"
+)
+
+(assert_invalid
+  (module (memory (import "M" "m") 0x1_0000_0000))
+  "memory size"
+)
+(assert_invalid
+  (module (memory (import "M" "m") 0x1_0000_0000 0x1_0000_0000))
+  "memory size"
+)
+(assert_invalid
+  (module (memory (import "M" "m") 0 0x1_0000_0000))
+  "memory size"
 )
 
 (module

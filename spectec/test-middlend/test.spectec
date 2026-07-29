@@ -1,0 +1,35 @@
+;;
+;; some tricky definitions to test the transformations
+;;
+
+relation HasSize: nat |- nat
+relation TestNestedIter: nat*** |- nat**
+
+var n : nat
+var m : nat
+
+rule TestNestedIter:
+  n**+ |- m*+
+  -- if (|n*| = m)*+
+
+
+;; Partiality
+
+syntax side = Side nat  -- if nat < 10
+
+def $side(side) : side
+def $side(s) = s
+
+def $sidef(nat) : bool
+def $sidef(n) = true  -- if $side(Side n) = $side(Side n) ;; partial
+def $sidef(n) = false -- otherwise
+
+syntax Bool(bool)
+syntax Bool(true) = nat
+syntax Bool(false) = text
+
+def $testtrue(Bool($sidef(1))) : Bool(true)
+def $testtrue(b) = b
+
+def $testfalse(Bool($sidef(11))) : Bool(false)
+def $testfalse(b) = b

@@ -45,7 +45,7 @@ test(() => {
   const result = table.grow(3);
   assert_equals(result, 5);
   assert_equal_to_array(table, nulls(8), "after");
-}, "Basic");
+}, "Basic i32");
 
 test(() => {
   const argument = { "element": "anyfunc", "initial": 3, "maximum": 5 };
@@ -55,7 +55,7 @@ test(() => {
   const result = table.grow(2);
   assert_equals(result, 3);
   assert_equal_to_array(table, nulls(5), "after");
-}, "Reached maximum");
+}, "Reached maximum (i32)");
 
 test(() => {
   const argument = { "element": "anyfunc", "initial": 2, "maximum": 5 };
@@ -64,7 +64,7 @@ test(() => {
 
   assert_throws_js(RangeError, () => table.grow(4));
   assert_equal_to_array(table, nulls(2), "after");
-}, "Exceeded maximum");
+}, "Exceeded maximum (i32)");
 
 const outOfRangeValues = [
   undefined,

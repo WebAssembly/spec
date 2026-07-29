@@ -14,6 +14,9 @@ LIB =		$(NAME)
 JSLIB =		wast.js
 ZIP =		$(NAME).zip
 
+DEPS =		dune menhir
+JSDEPS =	ocamlfind js_of_ocaml js_of_ocaml-ppx
+
 BUILDDIR =	_build/default
 
 JS =		# set to JS shell command to run JS tests, empty to skip
@@ -26,6 +29,7 @@ JS =		# set to JS shell command to run JS tests, empty to skip
 default:	$(NAME)
 all:		default alltest
 alltest:	unittest partest custompartest
+alldeps:	$(NAME)-deps $(JSLIB)-deps
 ci:		all jslib zip
 
 jslib:		$(JSLIB)
@@ -36,10 +40,16 @@ zip:		$(ZIP)
 
 .PHONY:		$(NAME) $(JSLIB)
 
+deps:
+	opam install --yes $(DEPS)
+
 $(NAME):
 	rm -f $@
 	dune build $@.exe
 	ln $(BUILDDIR)/$@.exe $@
+
+jsdeps:	deps
+	opam install --yes $(JSDEPS)
 
 $(JSLIB):
 	rm -f $@
@@ -129,18 +139,24 @@ customquiettest/%:	$(NAME)
 .PHONY: install
 
 install:
+	rm -f $(NAME).exe
 	dune build -p $(NAME) @install
 	dune install
 
 opam-release/%:
-	git tag opam-$*
-	git push --tags
+	#git tag -f opam-$*
+	#git push -f --tags
 	rm -f opam-$*.zip
-	wget https://github.com/WebAssembly/spec/archive/opam-$*.zip
+	#wget https://github.com/WebAssembly/spec/archive/opam-$*.zip
+	wget 'https://download-directory.github.io?url=https://github.com/WebAssembly/spec/tree/opam-$*/interpreter&filename=opam-$*.zip'
 	cp wasm.opam opam
 	echo "url {" >> opam
-	echo "  src: \"https://github.com/WebAssembly/spec/archive/opam-$*.zip\"" >> opam
-	echo "  checksum: \"md5=`md5 -q opam-$*.zip`\"" >> opam
+	#echo "  src: \"https://github.com/WebAssembly/spec/archive/opam-$*.zip\"" >> opam
+	echo "  src: \"https://download-directory.github.io?url=https://github.com/WebAssembly/spec/tree/opam-$*/interpreter&filename=opam-$*.zip\"" >> opam
+	echo "  checksum: [" >> opam
+	echo "    \"md5=`md5 -q opam-$*.zip`\"" >> opam
+	echo "    \"sha256=`sha256 -q opam-$*.zip`\"" >> opam
+	echo "  ]" >> opam
 	echo "}" >> opam
 	rm opam-$*.zip
 	@echo Created file ./opam, submit to github opam-repository/packages/wasm/wasm.$*/opam

@@ -17,7 +17,9 @@ type ref_ = ..
 type value = Num of num | Vec of vec | Ref of ref_
 type t = value
 
-type ref_ += NullRef of heap_type
+type ref_ += NullRef
+
+type address = I64.t
 
 
 (* Injection & projection *)
@@ -35,7 +37,7 @@ let as_ref = function
   | _ -> failwith "as_ref"
 
 
-exception TypeError of int * num * num_type
+exception TypeError of int * num * numtype
 
 module type NumType =
 sig
@@ -87,7 +89,7 @@ struct
 end
 
 let is_null_ref = function
-  | NullRef _ -> true
+  | NullRef -> true
   | _ -> false
 
 
@@ -107,7 +109,7 @@ let type_of_vec = type_of_vecop
 
 let type_of_ref' = ref (function _ -> assert false)
 let type_of_ref = function
-  | NullRef t -> (Null, Match.bot_of_heap_type [] t)
+  | NullRef -> (Null, BotHT)
   | r -> (NoNull, !type_of_ref' r)
 
 let type_of_value = function
@@ -122,11 +124,7 @@ let eq_num n1 n2 = n1 = n2
 
 let eq_vec v1 v2 = v1 = v2
 
-let eq_ref' = ref (fun r1 r2 ->
-  match r1, r2 with
-  | NullRef _, NullRef _ -> true
-  | _, _ -> r1 == r2
-)
+let eq_ref' = ref (==)
 
 let eq_ref r1 r2 = !eq_ref' r1 r2
 
@@ -150,7 +148,7 @@ let default_vec = function
   | V128T -> Some (Vec (V128 V128.zero))
 
 let default_ref = function
-  | (Null, t) -> Some (Ref (NullRef t))
+  | (Null, _) -> Some (Ref NullRef)
   | (NoNull, _) -> None
 
 let default_value = function
@@ -163,6 +161,10 @@ let default_value = function
 (* Representation *)
 
 exception Type
+
+let packsize_of_packtype = function
+  | I8T -> Pack.Pack8
+  | I16T -> Pack.Pack16
 
 let rec i64_of_bits bs =
   if bs = "" then 0L else
@@ -188,15 +190,14 @@ let val_of_bits t bs =
   | RefT _ -> raise Type
   | BotT -> assert false
 
-let extend n ext x =
-  match ext with
-  | Pack.ZX -> x
-  | Pack.SX -> let sh = 64 - 8 * n in Int64.(shift_right (shift_left x sh) sh)
+let extend n sx x =
+  match sx with
+  | Pack.U -> x
+  | Pack.S -> let sh = 64 - 8 * n in Int64.(shift_right (shift_left x sh) sh)
 
 let num_of_packed_bits t sz ext bs =
-  assert (Pack.packed_size sz <= num_size t);
-  let n = Pack.packed_size sz in
-  let x = extend n ext (i64_of_bits bs) in
+  let w = Pack.packed_size sz in
+  let x = extend w ext (i64_of_bits bs) in
   match t with
   | I32T -> I32 (Int64.to_int32 x)
   | I64T -> I64 x
@@ -205,7 +206,8 @@ let num_of_packed_bits t sz ext bs =
 let val_of_storage_bits st bs =
   match st with
   | ValStorageT t -> val_of_bits t bs
-  | PackStorageT sz -> Num (num_of_packed_bits I32T sz Pack.ZX bs)
+  | PackStorageT pt ->
+    Num (num_of_packed_bits I32T (packsize_of_packtype pt) Pack.U bs)
 
 
 let vec_of_packed_bits t sz ext bs =
@@ -217,12 +219,12 @@ let vec_of_packed_bits t sz ext bs =
   let v = V128.of_bits (Bytes.to_string b) in
   let r =
     match sz, ext with
-    | Pack64, ExtLane (Pack8x8, SX) -> V128.I16x8_convert.extend_low_s v
-    | Pack64, ExtLane (Pack8x8, ZX) -> V128.I16x8_convert.extend_low_u v
-    | Pack64, ExtLane (Pack16x4, SX) -> V128.I32x4_convert.extend_low_s v
-    | Pack64, ExtLane (Pack16x4, ZX) -> V128.I32x4_convert.extend_low_u v
-    | Pack64, ExtLane (Pack32x2, SX) -> V128.I64x2_convert.extend_low_s v
-    | Pack64, ExtLane (Pack32x2, ZX) -> V128.I64x2_convert.extend_low_u v
+    | Pack64, ExtLane (Pack8x8, S) -> V128.I16x8_convert.extend_low_s v
+    | Pack64, ExtLane (Pack8x8, U) -> V128.I16x8_convert.extend_low_u v
+    | Pack64, ExtLane (Pack16x4, S) -> V128.I32x4_convert.extend_low_s v
+    | Pack64, ExtLane (Pack16x4, U) -> V128.I32x4_convert.extend_low_u v
+    | Pack64, ExtLane (Pack32x2, S) -> V128.I64x2_convert.extend_low_s v
+    | Pack64, ExtLane (Pack32x2, U) -> V128.I64x2_convert.extend_low_u v
     | _, ExtLane _ -> assert false
     | Pack8, ExtSplat -> V128.I8x16.splat (I8.of_int_s (Int64.to_int x))
     | Pack16, ExtSplat -> V128.I16x8.splat (I16.of_int_s (Int64.to_int x))
@@ -261,7 +263,6 @@ let wrap n x =
   let sh = 64 - 8 * n in Int64.(shift_right_logical (shift_left x sh) sh)
 
 let packed_bits_of_num sz n =
-  assert (Pack.packed_size sz <= num_size (type_of_num n));
   let w = Pack.packed_size sz in
   match n with
   | I32 x -> bits_of_i64 w (wrap w (Int64.of_int32 x))
@@ -271,15 +272,32 @@ let packed_bits_of_num sz n =
 let storage_bits_of_val st v =
   match st with
   | ValStorageT t -> assert (t = type_of_value v); bits_of_val v
-  | PackStorageT sz ->
+  | PackStorageT pt ->
     match v with
-    | Num n -> packed_bits_of_num sz n
+    | Num n -> packed_bits_of_num (packsize_of_packtype pt) n
     | _ -> raise Type
 
 
 (* Conversion *)
 
 let value_of_bool b = Num (I32 (if b then 1l else 0l))
+
+let num_of_addr at i =
+  match at with
+  | I64AT -> I64 i
+  | I32AT -> I32 (Convert.I32_.wrap_i64 i)
+
+let addr_of_num x =
+  match x with
+  | I32 i -> Convert.I64_.extend_i32_u i
+  | I64 i -> i
+  | _ -> raise Type
+
+let addr_add n i =
+  num_of_addr (addrtype_of_numtype (type_of_num n)) (I64.add (addr_of_num n) i)
+let addr_sub n i =
+  num_of_addr (addrtype_of_numtype (type_of_num n)) (I64.sub (addr_of_num n) i)
+
 
 let string_of_num = function
   | I32 i -> I32.to_string_s i
@@ -301,7 +319,7 @@ let hex_string_of_vec = function
 
 let string_of_ref' = ref (function _ -> "ref")
 let string_of_ref = function
-  | NullRef _ -> "null"
+  | NullRef -> "null"
   | r -> !string_of_ref' r
 
 let string_of_value = function

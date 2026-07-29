@@ -11,7 +11,7 @@ import re
 
 # Transform \xref in math nodes
 
-xref_re = re.compile('\\\\xref\{([^}]*)\}\{([^}]*)\}', re.M)
+xref_re = re.compile('\\\\xref[{]([^}]*)[}][{]([^}]*)[}]', re.M)
 
 def html_hyperlink(file, id):
   return '\\href{../%s.html#%s}' % (file, id.replace('_', '-'))

@@ -6,6 +6,7 @@
 (module (table 0 1 funcref))
 (module (table 1 256 funcref))
 (module (table 0 65536 funcref))
+(module definition (table 0xffff_ffff funcref))
 (module (table 0 0xffff_ffff funcref))
 
 (module (table 1 (ref null func)))
@@ -22,7 +23,6 @@
 (assert_invalid (module (elem (i32.const 0))) "unknown table")
 (assert_invalid (module (elem (i32.const 0) $f) (func $f)) "unknown table")
 
-
 (assert_invalid
   (module (table 1 0 funcref))
   "size minimum must not be greater than maximum"
@@ -32,18 +32,24 @@
   "size minimum must not be greater than maximum"
 )
 
-(assert_malformed
+(assert_invalid
   (module quote "(table 0x1_0000_0000 funcref)")
-  "i32 constant out of range"
+  "table size"
 )
-(assert_malformed
+(assert_invalid
   (module quote "(table 0x1_0000_0000 0x1_0000_0000 funcref)")
-  "i32 constant out of range"
+  "table size"
 )
-(assert_malformed
+(assert_invalid
   (module quote "(table 0 0x1_0000_0000 funcref)")
-  "i32 constant out of range"
+  "table size"
 )
+
+
+;; Elem segments with no table
+
+(assert_invalid (module (elem (i32.const 0))) "unknown table")
+(assert_invalid (module (elem (i32.const 0) $f) (func $f)) "unknown table")
 
 (assert_invalid
   (module (table 1 (ref null func) (i32.const 0)))

@@ -23,9 +23,9 @@ section of format *T*.
      \Bsection_0(\Bcodemetadata(\B{T})) \\
    \production{code metadata} & \Bcodemetadata(\B{T}) &::=&
      n{:}\Bname & (\iff n = \text{metadata.code.T}) \\ &&&
-     \Bvec(\Bcodemetadatafunc(\B{T})) \\
+     \Blist(\Bcodemetadatafunc(\B{T})) \\
    \production{code metadata function} & \Bcodemetadatafunc(\B{T}) &::=&
-     x{:}\Bfuncidx~\Bvec(\Bcodemetadataitem(\B{T})) \\
+     x{:}\Bfuncidx~\Blist(\Bcodemetadataitem(\B{T})) \\
    \production{code metadata item} & \Bcodemetadataitem(\B{T}) &::=&
      \X{off}{:}\Bu32 ~~ \X{size}{:}\Bu32 & (\iff \X{size} = ||\B{T}||) \\ &&&
       \X{data}{:}\B{T} \\

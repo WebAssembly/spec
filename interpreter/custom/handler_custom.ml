@@ -51,8 +51,8 @@ and parse_annot m annot =
   let place, items'' = parse_place_opt items' in
   let content, items''' = parse_content items'' in
   parse_end items''';
-  let Ast.{types; tags; globals; tables; memories; funcs; start;
-    elems; datas; imports; exports} = m.it in
+  let Ast.{types; tags; globals; memories; tables; funcs; start;
+    datas; elems; imports; exports} = m.it in
   let outside x =
     if annot.at.left >= x.at.left && annot.at.right <= x.at.right then
       parse_error annot.at "misplaced @custom annotation"
@@ -60,8 +60,8 @@ and parse_annot m annot =
   List.iter outside types;
   List.iter outside tags;
   List.iter outside globals;
-  List.iter outside tables;
   List.iter outside memories;
+  List.iter outside tables;
   List.iter outside funcs;
   List.iter outside (Option.to_list start);
   List.iter outside elems;
@@ -97,11 +97,11 @@ and parse_direction at = function
 
 and parse_section at = function
   | {it = Atom "type"; _} :: items -> Type, items
-  | {it = Atom "tag"; _} :: items -> Tag, items
   | {it = Atom "import"; _} :: items -> Import, items
   | {it = Atom "func"; _} :: items -> Func, items
   | {it = Atom "table"; _} :: items -> Table, items
   | {it = Atom "memory"; _} :: items -> Memory, items
+  | {it = Atom "tag"; _} :: items -> Tag, items
   | {it = Atom "global"; _} :: items -> Global, items
   | {it = Atom "export"; _} :: items -> Export, items
   | {it = Atom "start"; _} :: items -> Start, items
@@ -146,11 +146,11 @@ and arrange_place = function
 and arrange_sec = function
   | Custom -> assert false
   | Type -> "type"
-  | Tag -> "tag"
   | Import -> "import"
   | Func -> "func"
   | Table -> "table"
   | Memory -> "memory"
+  | Tag -> "tag"
   | Global -> "global"
   | Export -> "export"
   | Start -> "start"

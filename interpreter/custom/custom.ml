@@ -7,6 +7,7 @@ type section_kind =
   | Func
   | Table
   | Memory
+  | Tag
   | Global
   | Export
   | Start
@@ -14,7 +15,6 @@ type section_kind =
   | DataCount
   | Code
   | Data
-  | Tag
 
 type place =
   | Before of section_kind

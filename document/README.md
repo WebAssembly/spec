@@ -42,7 +42,7 @@ pipenv shell
 Install Python dependencies:
 
 ```
-pipenv install Sphinx==4.0.0 six
+pipenv install Sphinx==8.1.3 six
 ```
 
 ### Checking out the repository

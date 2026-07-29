@@ -1,0 +1,14 @@
+(library
+  (name frontend)
+  (libraries util el il xl)
+  (modules lexer id parser parse dim det elab)
+)
+
+(ocamllex
+  (modules lexer)
+)
+
+(menhir
+  (modules parser)
+  (flags --explain)
+)

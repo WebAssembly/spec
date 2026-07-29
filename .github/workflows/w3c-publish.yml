@@ -1,9 +1,10 @@
-name: Publish to W3C TR space
+name: Validate/Publish to W3C TR space
 
 on:
   push:
+    # Disable on forks!
     branches: [ main ]
-    paths: [ .github/**, document/** ]
+    paths: [ .github/**, document/**, specification/** ]
 
   # Allows you to run this workflow manually from the Actions tab, gh CLI tool,
   # or REST API. THe w3c-status options correspond to the valid options for
@@ -13,6 +14,10 @@ on:
   # Candidate Recommendation Snapshot).
   workflow_dispatch:
     inputs:
+      dry-run:
+        required: true
+        type: boolean
+        description: If set, Echidna will validate but not publish.
       w3c-status:
         required: true
         type: choice
@@ -23,30 +28,59 @@ on:
           - CRD
           - CR
 
+env:
+  YARN_ENABLE_IMMUTABLE_INSTALLS: false
+  W3C_STATUS: ${{ github.event_name == 'workflow_dispatch' && inputs.w3c-status || 'CRD' }}
+
 jobs:
   publish-to-w3c-TR:
-    if: github.repository == 'WebAssembly/spec'
+    if: ${{ github.repository == 'WebAssembly/spec' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        spec: [core, js-api, web-api]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           submodules: "recursive"
+      - name: Setup OCaml
+        uses: ocaml/setup-ocaml@v3
+        with:
+          ocaml-compiler: 5.04.x
+      - name: Setup Dune
+        if: ${{ matrix.spec == 'core' }}
+        run: opam install --yes dune menhir mdx zarith && opam exec dune --version
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 16
       - name: Setup Bikeshed
         run: pip install bikeshed && bikeshed update
       - name: Setup TexLive
+        if: ${{ matrix.spec == 'core' }}
         run: sudo apt-get update -y && sudo apt-get install -y latexmk texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended
       - name: Setup Sphinx
-        run: pip install six && pip install sphinx==5.1.0
-      - name: Publish all specs to their https://www.w3.org/TR/ URLs
-        run: cd document && make -e WD-echidna-CI
+        if: ${{ matrix.spec == 'core' }}
+        run: pip install six && pip install sphinx==8.1.3
+      - name: Build SpecTec
+        if: ${{ matrix.spec == 'core' }}
+        run: cd spectec && opam exec make
+      - name: Publish (or validate) ${{ matrix.spec }} spec to its https://www.w3.org/TR/ URL
+        if: env.W3C_ECHIDNA_TOKEN_CORE
+        run: cd document/${{ matrix.spec }} && opam exec make W3C_STATUS=${{ env.W3C_STATUS }} ECHIDNA_DRYRUN=${{ env.ECHIDNA_DRYRUN}} WD-echidna-CI
         env:
-          W3C_STATUS: ${{ github.event_name == 'push' && 'CRD' || inputs.w3c-status }}
           W3C_ECHIDNA_TOKEN_CORE: ${{ secrets.W3C_ECHIDNA_TOKEN_CORE }}
           W3C_ECHIDNA_TOKEN_JSAPI: ${{ secrets.W3C_ECHIDNA_TOKEN_JSAPI }}
           W3C_ECHIDNA_TOKEN_WEBAPI: ${{ secrets.W3C_ECHIDNA_TOKEN_WEBAPI }}
-          YARN_ENABLE_IMMUTABLE_INSTALLS: false
+          # Publish the draft on manual dispatches without dry-run set, or on pushes to the main branch.
+          ECHIDNA_DRYRUN: |-
+            ${{ !((github.event_name == 'workflow_dispatch' && !inputs.dry-run) ||
+                  (github.event_name == 'push' && github.repository == 'WebAssembly/spec' && github.ref == 'refs/heads/main')) }}
+      - name: Validate ${{ matrix.spec }} spec with Echidna using personal credentials
+        if: env.W3C_USERNAME
+        run: cd document/${{ matrix.spec }} && opam exec make W3C_STATUS=${{ env.W3C_STATUS }} WD-echidna
+        env:
+          W3C_USERNAME: ${{ secrets.W3C_USERNAME }}
+          W3C_PASSWORD: ${{ secrets.W3C_PASSWORD }}

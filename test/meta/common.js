@@ -7,23 +7,23 @@ function print_origin(origin) {
     print(";;");
 }
 
-function checkRangeCode() {
+function checkRangeCode(memtype) {
     return `
-  (func (export "checkRange") (param $from i32) (param $to i32) (param $expected i32) (result i32)
+  (func (export "checkRange") (param $from ${memtype}) (param $to ${memtype}) (param $expected i32) (result ${memtype})
     (loop $cont
-      (if (i32.eq (local.get $from) (local.get $to))
+      (if (${memtype}.eq (local.get $from) (local.get $to))
         (then
-          (return (i32.const -1))))
+          (return (${memtype}.const -1))))
       (if (i32.eq (i32.load8_u (local.get $from)) (local.get $expected))
         (then
-          (local.set $from (i32.add (local.get $from) (i32.const 1)))
+          (local.set $from (${memtype}.add (local.get $from) (${memtype}.const 1)))
           (br $cont))))
     (return (local.get $from)))
 `;
 }
 
-function checkRange(from, to, expected) {
+function checkRange(memtype, from, to, expected) {
     print(
-`(assert_return (invoke "checkRange" (i32.const ${from}) (i32.const ${to}) (i32.const ${expected}))
-               (i32.const -1))`);
+`(assert_return (invoke "checkRange" (${memtype}.const ${from}) (${memtype}.const ${to}) (i32.const ${expected}))
+               (${memtype}.const -1))`);
 }
