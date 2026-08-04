@@ -557,11 +557,33 @@
 )
 (assert_invalid
   (module
-    (type $ty (func (result i32 i32)))
+    (type $type-result-more (func (result i32 i32)))
     (import "env" "table" (table $table 0 funcref))
-    (func (param i32) (result i32)
+    (func $type-result-more (param i32) (result i32)
       local.get 0
-      return_call_indirect $table (type $ty)
+      return_call_indirect $table (type $type-result-more)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (type $type-result-fewer (func (result i32)))
+    (import "env" "table" (table $table 0 funcref))
+    (func $type-result-fewer (param i32) (result i32 i32)
+      local.get 0
+      return_call_indirect $table (type $type-result-fewer)
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (type $type-result-i64-vs-i32 (func (result i64)))
+    (import "env" "table" (table $table 0 funcref))
+    (func $type-result-i64-vs-i32 (param i32) (result i32)
+      local.get 0
+      return_call_indirect $table (type $type-result-i64-vs-i32)
     )
   )
   "type mismatch"
