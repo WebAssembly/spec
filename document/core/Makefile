@@ -8,7 +8,7 @@ SPHINXBUILD   = sphinx-build
 PAPER         = a4
 ROOTDIR       = $(shell dirname `ls -d ../core 2>/dev/null || ls -d ../../core`)/..
 SPECTECDIR    = $(ROOTDIR)/spectec
-SPECTECSPEC   = $(ROOTDIR)/specification/wasm-3.0
+SPECTECSPEC   = $(ROOTDIR)/specification/wasm-latest
 SPECTECEXT    = spectec
 SPECTEC       = $(SPECTECDIR)/spectec
 SPLICEDIR     = _spectec
@@ -134,6 +134,7 @@ clean:
 	rm -rf $(SPLICEDIR)
 	rm -rf $(BUILDDIR)
 	rm -rf $(STATICDIR)
+	rm -rf $(SPLICEDIR)
 	rm -f $(GENERATED)
 
 .PHONY: html html-nested
@@ -250,7 +251,7 @@ WD-echidna: WD-tar
 		-F "tar=@$(BUILDDIR)/WD.tar" \
 		-F "decision=$(DECISION_URL)" \
 		-F "dry-run=$(ECHIDNA_DRYRUN)" | tee $(BUILDDIR)/WD-echidna-id.txt
-	python3 ../util/check-echidna-status.py $(BUILDDIR)
+	python3 ../util/check-echidna-status.py --ignore-failure $(BUILDDIR)
 	@echo
 	@echo "Uploaded $(W3C_STATUS). Check its status at https://labs.w3.org/echidna/api/status?id=`cat $(BUILDDIR)/WD-echidna-id.txt`"
 
@@ -266,7 +267,7 @@ WD-echidna-CI: WD-tar
 		-F "token=$(W3C_ECHIDNA_TOKEN_CORE)" \
 		-F "decision=$(DECISION_URL)" \
 		-F "dry-run=$(ECHIDNA_DRYRUN)" | tee $(BUILDDIR)/WD-echidna-id.txt
-	python3 ../util/check-echidna-status.py $(BUILDDIR)
+	python3 ../util/check-echidna-status.py --ignore-failure $(BUILDDIR)
 	@echo
 	@echo "Uploaded $(W3C_STATUS). Check its status at https://labs.w3.org/echidna/api/status?id=`cat $(BUILDDIR)/WD-echidna-id.txt`"
 
@@ -351,7 +352,7 @@ latex:
 latexpdf: $(GENERATED)
 	$(SPHINXBUILD) -b latex $(ALLSPHINXOPTS) $(BUILDDIR)/latex
 	@echo "Running LaTeX files through pdflatex..."
-	$(MAKE) -C $(BUILDDIR)/latex LATEXMKOPTS=" </dev/null" all-pdf >$(BUILDDIR)/latex/LOG 2>&1 || cat $(BUILDDIR)/latex/LOG
+	$(MAKE) -C $(BUILDDIR)/latex LATEXMKOPTS=" -file-line-error -halt-on-error" all-pdf >$(BUILDDIR)/latex/LOG 2>&1 || cat $(BUILDDIR)/latex/LOG
 	@echo "pdflatex finished; the PDF files are in $(BUILDDIR)/latex."
 
 .PHONY: latexpdfja

@@ -76,11 +76,6 @@ let vec_lane_lit shape l at =
   | V128.F32x4 () -> NumPat (F32 (F32.of_string l) @@@ at)
   | V128.F64x2 () -> NumPat (F64 (F64.of_string l) @@@ at)
 
-let shuffle_lit ss loc =
-  if not (List.length ss = 16) then
-    error (at loc) "invalid lane length";
-  List.map (fun s -> nat8 s.it loc) ss
-
 let nanop f nan =
   let open Source in
   let open Value in
@@ -651,7 +646,10 @@ plaininstr :
   | VEC_TEST { fun c -> $1 }
   | VEC_SHIFT { fun c -> $1 }
   | VEC_BITMASK { fun c -> $1 }
-  | VEC_SHUFFLE list(num) { fun c -> i8x16_shuffle (shuffle_lit $2 $sloc) }
+  | VEC_SHUFFLE list(laneidx)
+    { if List.length $2 <> 16 then
+        error (at $sloc) "wrong number of lane indices";
+      fun c -> i8x16_shuffle $2 }
   | VEC_SPLAT { fun c -> $1 }
   | VEC_EXTRACT laneidx { fun c -> $1 $2 }
   | VEC_REPLACE laneidx { fun c -> $1 $2 }
@@ -1500,14 +1498,17 @@ literal_vec :
   | LPAR VEC_CONST VECSHAPE list(num) RPAR { snd (vec $2 $3 $4 $sloc) }
 
 literal_ref :
-  | LPAR REF_NULL heaptype RPAR { Value.NullRef ($3 (empty_context ())) }
   | LPAR REF_HOST NAT RPAR { Script.HostRef (nat32 $3 $loc($3)) }
   | LPAR REF_EXTERN NAT RPAR { Extern.ExternRef (Script.HostRef (nat32 $3 $loc($3))) }
 
+literal_null :
+  | LPAR REF_NULL heaptype RPAR { $3 (empty_context ()) }
+
 literal :
-  | literal_num { Value.Num $1 @@ $sloc }
-  | literal_vec { Value.Vec $1 @@ $sloc }
-  | literal_ref { Value.Ref $1 @@ $sloc }
+  | literal_num { ValLit (Value.Num $1) @@ $sloc }
+  | literal_vec { ValLit (Value.Vec $1) @@ $sloc }
+  | literal_ref { ValLit (Value.Ref $1) @@ $sloc }
+  | literal_null { NullLit $1 @@ $sloc }
 
 numpat :
   | num { fun sh -> vec_lane_lit sh $1.it $1.at }
@@ -1517,6 +1518,8 @@ result :
   | literal_num { NumResult (NumPat ($1 @@ $sloc)) @@ $sloc }
   | LPAR CONST NAN RPAR { NumResult (NanPat (nanop $2 ($3 @@ $loc($3)))) @@ $sloc }
   | literal_ref { RefResult (RefPat ($1 @@ $sloc)) @@ $sloc }
+  | LPAR REF_NULL RPAR { RefResult (RefPat (Value.NullRef @@ $sloc)) @@ $sloc }
+  | LPAR REF_NULL heaptype RPAR { RefResult (NullPat ($3 (empty_context ()))) @@ $sloc }
   | LPAR REF RPAR { RefResult (RefTypePat AnyHT) @@ $sloc }
   | LPAR REF_EQ RPAR { RefResult (RefTypePat EqHT) @@ $sloc }
   | LPAR REF_I31 RPAR { RefResult (RefTypePat I31HT) @@ $sloc }
@@ -1525,7 +1528,6 @@ result :
   | LPAR REF_FUNC RPAR { RefResult (RefTypePat FuncHT) @@ $sloc }
   | LPAR REF_EXN RPAR { RefResult (RefTypePat ExnHT) @@ $sloc }
   | LPAR REF_EXTERN RPAR { RefResult (RefTypePat ExternHT) @@ $sloc }
-  | LPAR REF_NULL RPAR { RefResult NullPat @@ $sloc }
   | LPAR VEC_CONST VECSHAPE list(numpat) RPAR
     { if V128.num_lanes $3 <> List.length $4 then
         error (at $sloc) "wrong number of lane literals";

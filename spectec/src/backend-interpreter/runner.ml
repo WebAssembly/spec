@@ -85,9 +85,12 @@ let print_runner_result name result =
   in
 
   if name = "Total" then
-    Printf.printf "Total [%d/%d] (%.2f%%)\n\n" num_success total percentage
-  else
-    Printf.printf "- %d/%d (%.2f%%)\n\n" num_success total percentage;
+    log "Total [%d/%d] (%.2f%%)\n\n" num_success total percentage
+  else (
+    log "- %d/%d (%.2f%%)\n\n" num_success total percentage;
+    if num_success < total then
+       Printf.printf "Test failed for %s\n" name
+  );
   log "%s took %f ms.\n" name (execution_time *. 1000.)
 
 let get_export name modulename =
@@ -119,13 +122,22 @@ let get_export_addr name modulename =
   try List.hd vl with Failure _ ->
     failwith ("Function export doesn't contain function address")
 
+(* Flags *)
+
+let err_exit = ref true
+
 (** Main functions **)
 
+let value_of_arg = function
+  | ValLit v -> v
+  | NullLit _ -> Value.(Ref NullRef)
+
 let invoke module_name funcname args =
-  log "[Invoking %s %s...]\n" funcname (Value.string_of_values args);
+  let values = List.map value_of_arg args in
+  log "[Invoking %s %s...]\n" funcname (Value.string_of_values values);
 
   let funcaddr = get_export_addr funcname module_name in
-  Interpreter.invoke [funcaddr; al_of_list al_of_value args]
+  Interpreter.invoke [funcaddr; al_of_list al_of_value values]
 
 
 let get_global_value module_name globalname =
@@ -263,11 +275,15 @@ let run_wast name script =
   (* Intialize spectest *)
   Register.add "spectest" (Host.spectest ());
 
-  let result =
-    script
-    |> List.map run_command
-    |> sum_results_with_time
+  let _, results = List.fold_left_map (fun err cmd ->
+    if err && !err_exit then
+      err, (fail, 0.0)
+    else
+      let cmd_result = run_command cmd in
+      (fst cmd_result = fail), cmd_result
+  ) false script
   in
+  let result = sum_results_with_time results in
   print_runner_result name result; result
 
 
@@ -285,10 +301,10 @@ let run_wasm' args module_ =
   (* TODO: Only Int32 arguments/results are acceptable *)
   match args with
   | funcname :: args' ->
-    let make_value s = Value.Num (I32 (Int32.of_string s)) in
+    let make_lit s = ValLit (Value.Num (I32 (Int32.of_string s))) in
 
     (* Invoke *)
-    invoke (Register.get_module_name None) funcname (List.map make_value args')
+    invoke (Register.get_module_name None) funcname (List.map make_lit args')
     (* Print invocation result *)
     |> al_to_list al_to_value
     |> Value.string_of_values
@@ -306,7 +322,6 @@ let run_wat = run_wasm
 (** Parse **)
 
 let parse_file name parser_ file =
-  Printf.printf "===== %s =====\n%!" name;
   log "===========================\n\n%s\n\n" name;
 
   try

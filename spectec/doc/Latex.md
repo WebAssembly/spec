@@ -178,7 +178,7 @@ will render as
                         | reftype
 ```
 
-The description is also used in [prose](Prose.md) geenration.
+The description is also used in [prose](Prose.md) generation.
 
 
 #### Name hints (`name`)

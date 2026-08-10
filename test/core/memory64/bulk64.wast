@@ -39,7 +39,7 @@
 ;; Writing 0 bytes outside of memory limit is NOT allowed.
 (assert_trap
   (invoke "fill" (i64.const 0x10001) (i32.const 0) (i64.const 0))
-  "out of bounds")
+  "out of bounds memory access")
 
 ;; memory.copy
 (module
@@ -88,7 +88,7 @@
 ;; Overlap, source < dest but size is out of bounds
 (assert_trap
   (invoke "copy" (i64.const 13) (i64.const 11) (i64.const -1))
-   "out of bounds")
+   "out of bounds memory access")
 (assert_return (invoke "load8_u" (i64.const 10)) (i32.const 0))
 (assert_return (invoke "load8_u" (i64.const 11)) (i32.const 0xaa))
 (assert_return (invoke "load8_u" (i64.const 12)) (i32.const 0xbb))
@@ -108,10 +108,10 @@
 ;; Copying 0 bytes outside of memory limit is NOT allowed.
 (assert_trap
   (invoke "copy" (i64.const 0x10001) (i64.const 0) (i64.const 0))
-  "out of bounds")
+  "out of bounds memory access")
 (assert_trap
   (invoke "copy" (i64.const 0) (i64.const 0x10001) (i64.const 0))
-  "out of bounds")
+  "out of bounds memory access")
 
 ;; memory.init
 (module
@@ -138,7 +138,7 @@
 
 ;; Out-of-bounds writes trap, and no partial writes has been made.
 (assert_trap (invoke "init" (i64.const 0xfffe) (i32.const 0) (i32.const 3))
-    "out of bounds")
+    "out of bounds memory access")
 (assert_return (invoke "load8_u" (i64.const 0xfffe)) (i32.const 0xcc))
 (assert_return (invoke "load8_u" (i64.const 0xffff)) (i32.const 0xdd))
 
@@ -149,10 +149,10 @@
 ;; Writing 0 bytes outside of memory / segment limit is NOT allowed.
 (assert_trap
   (invoke "init" (i64.const 0x10001) (i32.const 0) (i32.const 0))
-  "out of bounds")
+  "out of bounds memory access")
 (assert_trap
   (invoke "init" (i64.const 0) (i32.const 5) (i32.const 0))
-  "out of bounds")
+  "out of bounds memory access")
 
 ;; OK to access 0 bytes at offset 0 in a dropped segment.
 (invoke "init" (i64.const 0) (i32.const 0) (i32.const 0))

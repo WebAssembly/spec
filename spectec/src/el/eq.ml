@@ -47,7 +47,9 @@ and eq_typ t1 t2 =
   | TupT ts1, TupT ts2 -> eq_list eq_typ ts1 ts2
   | IterT (t11, iter1), IterT (t21, iter2) ->
     eq_typ t11 t21 && eq_iter iter1 iter2
-  | StrT tfs1, StrT tfs2 -> eq_nl_list eq_typfield tfs1 tfs2
+  | StrT (dots11, ts1, tfs1, dots12), StrT (dots21, ts2, tfs2, dots22) ->
+    dots11 = dots21 && eq_nl_list eq_typ ts1 ts2 &&
+    eq_nl_list eq_typfield tfs1 tfs2 && dots12 = dots22
   | CaseT (dots11, ts1, tcs1, dots12), CaseT (dots21, ts2, tcs2, dots22) ->
     dots11 = dots21 && eq_nl_list eq_typ ts1 ts2 &&
     eq_nl_list eq_typcase tcs1 tcs2 && dots12 = dots22
@@ -137,7 +139,8 @@ and eq_path p1 p2 =
 and eq_prem prem1 prem2 =
   match prem1.it, prem2.it with
   | VarPr (id1, t1), VarPr (id2, t2) -> eq_id id1 id2 && eq_typ t1 t2
-  | RulePr (id1, e1), RulePr (id2, e2) -> eq_id id1 id2 && eq_exp e1 e2
+  | RulePr (id1, as1, e1), RulePr (id2, as2, e2) ->
+    eq_id id1 id2 && eq_list eq_arg as1 as2 && eq_exp e1 e2
   | IfPr e1, IfPr e2 -> eq_exp e1 e2
   | IterPr (prem11, iter1), IterPr (prem21, iter2) ->
     eq_prem prem11 prem21 && eq_iter iter1 iter2
@@ -177,7 +180,8 @@ and eq_param p1 p2 =
   match p1.it, p2.it with
   | ExpP (id1, t1), ExpP (id2, t2) -> eq_id id1 id2 && eq_typ t1 t2
   | TypP id1, TypP id2 -> eq_id id1 id2
-  | GramP (id1, t1), GramP (id2, t2) -> eq_id id1 id2 && eq_typ t1 t2
+  | GramP (id1, ps1, t1), GramP (id2, ps2, t2) ->
+    eq_id id1 id2 && eq_list eq_param ps1 ps2 && eq_typ t1 t2
   | DefP (id1, ps1, t1), DefP (id2, ps2, t2) ->
     eq_id id1 id2 && eq_list eq_param ps1 ps2 && eq_typ t1 t2
   | _, _ -> false

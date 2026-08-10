@@ -25,6 +25,7 @@ let positions_to_region position1 position2 =
 
 let at (l, r) = positions_to_region l r
 
+let ($.) it r = it $ r
 let ($) it pos = it $ at pos
 let ($$) it pos = it $$ at pos % Atom.info ""
 
@@ -52,6 +53,19 @@ let as_alt_sym sym =
   | _ -> [Elem sym]
 
 
+let cat_seq_typ typ1 typ2 =
+  (match typ2.it with
+  | SeqT typs -> SeqT (typ1::typs)
+  | _ -> SeqT [typ1; typ2]
+  ) $. over_region [typ1.at; typ2.at]
+
+let cat_seq_exp exp1 exp2 =
+  (match exp2.it with
+  | SeqE exps -> SeqE (exp1::exps)
+  | _ -> SeqE [exp1; exp2]
+  ) $. over_region [exp1.at; exp2.at]
+
+
 (* Identifiers *)
 
 let check_varid_bind id =
@@ -72,6 +86,19 @@ let is_post_exp e =
   | IterE _ | CvtE _ | CallE _
   | HoleE _ -> true
   | _ -> false
+
+let is_atom t =
+  match t.it with
+  | AtomT _ -> true
+  | _ -> false
+
+let is_typfield t =
+  match t.it with
+  | SeqT [t1; _] -> is_atom t1
+  | VarT _ | BoolT | NumT _ | TextT | TupT _ | SeqT _
+  | AtomT _ | InfixT _ | BrackT _
+  | ParenT _ | IterT _ -> false
+  | StrT _ | CaseT _ | ConT _ | RangeT _ -> assert false
 
 let rec is_typcase t =
   match t.it with
@@ -96,24 +123,20 @@ let rec alt_sym = function
   | Nl::alts -> alt_sym alts
   | (Elem g)::alts when List.for_all ((=) Nl) alts -> g
   | alts ->
-    let open Source in
-    AltG alts $ over_region (El.Convert.map_filter_nl_list Source.at alts)
+    AltG alts $. over_region (El.Convert.map_filter_nl_list Source.at alts)
 
 let long_prod (g, e, prems) =
-  let open Source in
   let ats = g.at :: e.at :: El.Convert.map_filter_nl_list Source.at prems in
-  Elem (SynthP (g, e, prems) $ over_region ats)
+  Elem (SynthP (g, e, prems) $. over_region ats)
 
 let equiv_prod (g1, g2, prems) =
-  let open Source in
   let ats = g1.at :: g2.at :: El.Convert.map_filter_nl_list Source.at prems in
-  Elem (EquivP (g1, g2, prems) $ over_region ats)
+  Elem (EquivP (g1, g2, prems) $. over_region ats)
 
 let short_prod (g, prems) =
-  let open Source in
-  let var () = VarE ("<implicit-prod-result>" $ g.at, []) $ g.at in
+  let var () = VarE ("<implicit-prod-result>" $. g.at, []) $. g.at in
   let ats = g.at :: El.Convert.map_filter_nl_list Source.at prems in
-  Elem (SynthP (AttrG (var (), g) $ g.at, var (), prems) $ over_region ats)
+  Elem (SynthP (AttrG (var (), g) $. g.at, var (), prems) $. over_region ats)
 
 let rec long_alt_prod (els, e, prems) = long_alt_prod' (List.rev els, e, prems)
 and long_alt_prod' = function
@@ -123,9 +146,8 @@ and long_alt_prod' = function
   | ((Elem g)::elsr, e, prems) when List.for_all ((=) Nl) elsr ->
     [long_prod (g, e, prems)]
   | (elsr, e, prems) ->
-    let open Source in
     let ats = El.Convert.map_filter_nl_list Source.at elsr in
-    [long_prod (AltG (List.rev elsr) $ over_region ats, e, prems)]
+    [long_prod (AltG (List.rev elsr) $. over_region ats, e, prems)]
 
 let rec long_equiv_prod (alts, g2, prems) = long_equiv_prod' (List.rev alts, g2, prems)
 and long_equiv_prod' = function
@@ -135,9 +157,8 @@ and long_equiv_prod' = function
   | ((Elem g1)::elsr, g2, prems) when List.for_all ((=) Nl) elsr ->
     [equiv_prod (g1, g2, prems)]
   | (elsr, g2, prems) ->
-    let open Source in
     let ats = El.Convert.map_filter_nl_list Source.at elsr in
-    [equiv_prod (AltG (List.rev elsr) $ over_region ats, g2, prems)]
+    [equiv_prod (AltG (List.rev elsr) $. over_region ats, g2, prems)]
 
 let rec short_alt_prod (els, prems) = short_alt_prod' (List.rev els, prems)
 and short_alt_prod' = function
@@ -153,13 +174,13 @@ and short_alt_prod' = function
 
 %token LPAREN RPAREN LBRACK RBRACK LBRACE RBRACE
 %token COLON SEMICOLON COMMA DOT DOTDOT DOTDOTDOT BAR BARBAR DASH COLONSUB
-%token BIGAND BIGOR BIGADD BIGMUL BIGCAT
+%token BIGAND BIGOR BIGFORALL BIGEXISTS BIGADD BIGMUL BIGCAT
 %token COMMA_NL NL_BAR NL_NL NL_NL_NL
 %token EQ NE LT GT LE GE APPROX EQUIV ASSIGN SUB SUP EQCAT EQSUB EQUIVSUB APPROXSUB
-%token NOT AND OR
+%token NOT AND OR IMPL DIMPL
 %token QUEST PLUS MINUS STAR SLASH BACKSLASH UP CAT PLUSMINUS MINUSPLUS
-%token ARROW ARROW2 ARROWSUB ARROW2SUB DARROW2 SQARROW SQARROWSUB SQARROWSTAR SQARROWSTARSUB
-%token MEM PREC SUCC TURNSTILE TILESTURN TURNSTILESUB TILESTURNSUB
+%token ARROW ARROW2 ARROWSUB ARROW2SUB SQARROW SQARROWSUB SQARROWSTAR SQARROWSTARSUB
+%token MEM NOTMEM PREC SUCC PRECSUB SUCCSUB TURNSTILE TILESTURN TURNSTILESUB TILESTURNSUB
 %token DOLLAR TICK
 %token BOT TOP
 %token HOLE MULTIHOLE NOTHING FUSE FUSEFUSE LATEX
@@ -171,18 +192,18 @@ and short_alt_prod' = function
 %token<bool> BOOLLIT
 %token<Z.t> NATLIT HEXLIT CHARLIT
 %token<string> TEXTLIT
-%token<string> UPID LOID DOTID UPID_LPAREN LOID_LPAREN
+%token<string> UPID LOID DOTID UPID_SUB LOID_SUB DOTID_SUB UPID_LPAREN LOID_LPAREN
 %token EOF
 
-%right ARROW2 DARROW2 ARROW2SUB
+%right ARROW2 ARROW2SUB IMPL DIMPL
 %left OR
 %left AND
 %nonassoc TURNSTILE TURNSTILESUB
 %nonassoc TILESTURN TILESTURNSUB
-%right SQARROW SQARROWSUB SQARROWSTAR SQARROWSTARSUB PREC SUCC BIGAND BIGOR BIGADD BIGMUL BIGCAT
+%right SQARROW SQARROWSUB SQARROWSTAR SQARROWSTARSUB PREC SUCC PRECSUB SUCCSUB BIGAND BIGOR BIGFORALL BIGEXISTS BIGADD BIGMUL BIGCAT
 %left COLON SUB SUP ASSIGN EQUIV APPROX COLONSUB EQUIVSUB APPROXSUB
 %left COMMA COMMA_NL
-%right EQ NE LT GT LE GE MEM EQSUB
+%right EQ NE LT GT LE GE MEM NOTMEM EQSUB
 %right ARROW ARROWSUB
 %left SEMICOLON
 %left DOT DOTDOT DOTDOTDOT
@@ -231,35 +252,46 @@ nl_dash_list1(X) :
   | DASH DASH nl_dash_list(X) { Nl::$3 }
   | DASH X nl_dash_list(X) { (Elem $2)::$3 }
 
-%inline dots :
+%inline bar_dots :
   | DOTDOTDOT {}
-  | bar(dots) DOTDOTDOT {}
+  | bar(bar_dots) DOTDOTDOT {}
 
-dots_list(X) :
-  | dots_list1(X) { let x, y = $1 in (NoDots, x, y) }
-  | bar(X) dots_list1(X) { let x, y = $2 in (NoDots, x, y) }
-  | dots bar(X) dots_list1(X) { let x, y = $3 in (Dots, $2 @ x, y) }
+dots_bar_list(X) :
+  | dots_bar_list1(X) { let x, y = $1 in (NoDots, x, y) }
+  | bar(X) dots_bar_list1(X) { let x, y = $2 in (NoDots, x, y) }
+  | bar_dots bar(X) dots_bar_list1(X) { let x, y = $3 in (Dots, $2 @ x, y) }
 
-dots_list1(X) :
+dots_bar_list1(X) :
   | (* empty *) { [], NoDots }
   | DOTDOTDOT { [], Dots }
   | X { (Elem $1)::[], NoDots }
-  | X bar(X) dots_list1(X) { let x, y = $3 in (Elem $1)::$2 @ x, y }
+  | X bar(X) dots_bar_list1(X) { let x, y = $3 in (Elem $1)::$2 @ x, y }
+
+dots_comma_list(X) :
+  | dots_comma_list1(X) { let x, y = $1 in (NoDots, x, y) }
+  | DOTDOTDOT comma(X) dots_comma_list1(X) { let x, y = $3 in (Dots, $2 @ x, y) }
+
+dots_comma_list1(X) :
+  | (* empty *) { [], NoDots }
+  | DOTDOTDOT { [], Dots }
+  | X { (Elem $1)::[], NoDots }
+  | X comma(X) dots_comma_list1(X) { let x, y = $3 in (Elem $1)::$2 @ x, y }
 
 
 (* Identifiers *)
 
-id : UPID { $1 } | LOID { $1 }
+id : UPID { $1 } | UPID_SUB { $1 } | LOID { $1 } | LOID_SUB { $1 }
 id_lparen : UPID_LPAREN { $1 } | LOID_LPAREN { $1 }
 
 atomid_ : UPID { $1 }
-varid : LOID { $1 $ $sloc }
+atomidsub_ : UPID_SUB { $1 }
+varid : LOID { $1 $ $sloc } | LOID_SUB { $1 $ $sloc }
 defid : id { $1 $ $sloc } | IF { "if" $ $sloc }
 relid : id { $1 $ $sloc }
 gramid : id { $1 $ $sloc }
 hintid : id { $1 }
 fieldid : atomid_ { Atom.Atom $1 $$ $sloc } | atom_escape { $1 $$ $sloc }
-dotid : DOTID { Atom.Atom $1 $$ $sloc }
+dotid : DOTID { Atom.Atom $1 $$ $sloc } | DOTID_SUB { Atom.Atom $1 $$ $sloc }
 
 atomid_lparen : UPID_LPAREN { $1 }
 varid_lparen : LOID_LPAREN { $1 $ $sloc }
@@ -273,6 +305,12 @@ ruleid_ :
   | BOOLLIT { Bool.to_string $1 }
   | INFINITY { "infinity" }
   | EPS { "eps" }
+  | BOOL { "bool" }
+  | NAT { "nat" }
+  | INT { "int" }
+  | RAT { "rat" }
+  | REAL { "real" }
+  | TEXT { "text" }
   | IF { "if" }
   | VAR { "var" }
   | DEF { "def" }
@@ -282,6 +320,7 @@ ruleid_ :
   | GRAMMAR { "grammar" }
   | ruleid_ DOTID { $1 ^ "." ^ $2 }
 atomid : atomid_ { $1 } | atomid DOTID { $1 ^ "." ^ $2 }
+atomidsub : atomidsub_ { $1 } | atomid DOTID_SUB { $1 ^ "." ^ $2 }
 
 atom :
   | atom_ { $1 $$ $sloc }
@@ -296,22 +335,42 @@ atom_escape :
   | TICK LE { Atom.LessEqual }
   | TICK GE { Atom.GreaterEqual }
   | TICK MEM { Atom.Mem }
-  | TICK QUEST { Atom.Quest }
+  | TICK NOTMEM { Atom.NotMem }
+  | TICK UP QUEST { Atom.Quest }
+  | TICK UP STAR { Atom.Star }
+  | TICK UP PLUS { Atom.Iter }
   | TICK PLUS { Atom.Plus }
-  | TICK STAR { Atom.Star }
+  | TICK MINUS { Atom.Minus }
+  | TICK PLUSMINUS { Atom.PlusMinus }
+  | TICK MINUSPLUS { Atom.MinusPlus }
+  | TICK STAR { Atom.Times }
+  | TICK NOT { Atom.Not }
+  | TICK AND { Atom.And }
+  | TICK OR { Atom.Or }
+  | TICK IMPL { Atom.Arrow2 }
+  | TICK DIMPL { Atom.Equiv }
   | TICK BAR { Atom.Bar }
   | TICK CAT { Atom.Cat }
   | TICK COMMA { Atom.Comma }
-  | TICK ARROW2 { Atom.Arrow2 }
   | TICK infixop_ { $2 }
   | TICK relop_ { $2 }
   | BOT { Atom.Bot }
   | TOP { Atom.Top }
   | INFINITY { Atom.Infinity }
 
+atomsub :
+  | atomsub_ { $1 $$ $sloc }
+atomsub_ :
+  | atomidsub { Atom.Atom $1 }
+  | atomsub_escape { $1 }
+atomsub_escape :
+  | TICK infixopsub_ { $2 }
+  | TICK relopsub_ { $2 }
+
 varid_bind_with_suffix :
   | varid { $1 }
   | atomid_ { Id.make_var $1; $1 $ $sloc }
+  | atomidsub_ { Id.make_var $1; $1 $ $sloc }
 varid_bind :
   | varid_bind_with_suffix { check_varid_bind $1 }
 varid_bind_lparen :
@@ -325,6 +384,7 @@ exit_scope :
 
 check_atom :
   | UPID EOF { Id.is_var (El.Convert.strip_var_suffix ($1 $ $sloc)).it }
+  | UPID_SUB EOF { Id.is_var (El.Convert.strip_var_suffix ($1 $ $sloc)).it }
 
 
 (* Operators *)
@@ -354,8 +414,8 @@ check_atom :
 %inline boolop :
   | AND { `AndOp }
   | OR { `OrOp }
-  | ARROW2 { `ImplOp }
-  | DARROW2 { `EquivOp }
+  | IMPL { `ImplOp }
+  | DIMPL { `EquivOp }
 
 %inline infixop :
   | infixop_ { $1 $$ $sloc }
@@ -364,38 +424,52 @@ check_atom :
   | DOTDOT { Atom.Dot2 }
   | DOTDOTDOT { Atom.Dot3 }
   | SEMICOLON { Atom.Semicolon }
+  | SLASH { Atom.Slash }
   | BACKSLASH { Atom.Backslash }
   | ARROW { Atom.Arrow }
-  | ARROWSUB { Atom.ArrowSub }
-  | ARROW2SUB { Atom.Arrow2Sub }
+  | ARROW2 { Atom.Arrow2 }
   | BIGAND { Atom.BigAnd }
   | BIGOR { Atom.BigOr }
+  | BIGFORALL { Atom.BigForall }
+  | BIGEXISTS { Atom.BigExists }
   | BIGADD { Atom.BigAdd }
   | BIGMUL { Atom.BigMul }
   | BIGCAT { Atom.BigCat }
 
+%inline infixopsub :
+  | infixopsub_ { $1 $$ $sloc }
+%inline infixopsub_ :
+  | ARROWSUB { Atom.ArrowSub }
+  | ARROW2SUB { Atom.Arrow2Sub }
+
 %inline relop :
   | relop_ { $1 $$ $sloc }
 %inline relop_ :
-  | EQSUB { Atom.EqualSub }
   | COLON { Atom.Colon }
-  | COLONSUB { Atom.ColonSub }
   | SUB { Atom.Sub }
   | SUP { Atom.Sup }
   | ASSIGN { Atom.Assign }
   | EQUIV { Atom.Equiv }
-  | EQUIVSUB { Atom.EquivSub }
   | APPROX { Atom.Approx }
-  | APPROXSUB { Atom.ApproxSub }
   | SQARROW { Atom.SqArrow }
-  | SQARROWSUB { Atom.SqArrowSub }
   | SQARROWSTAR { Atom.SqArrowStar }
-  | SQARROWSTARSUB { Atom.SqArrowStarSub }
   | PREC { Atom.Prec }
   | SUCC { Atom.Succ }
   | TILESTURN { Atom.Tilesturn }
-  | TILESTURNSUB { Atom.TilesturnSub }
   | TURNSTILE { Atom.Turnstile }
+
+%inline relopsub :
+  | relopsub_ { $1 $$ $sloc }
+%inline relopsub_ :
+  | EQSUB { Atom.EqualSub }
+  | COLONSUB { Atom.ColonSub }
+  | EQUIVSUB { Atom.EquivSub }
+  | APPROXSUB { Atom.ApproxSub }
+  | SQARROWSUB { Atom.SqArrowSub }
+  | SQARROWSTARSUB { Atom.SqArrowStarSub }
+  | PRECSUB { Atom.PrecSub }
+  | SUCCSUB { Atom.SuccSub }
+  | TILESTURNSUB { Atom.TilesturnSub }
   | TURNSTILESUB { Atom.TurnstileSub }
 
 
@@ -443,8 +517,37 @@ typ : typ_post { $1 }
 
 deftyp : deftyp_ { $1 $ $sloc }
 deftyp_ :
-  | LBRACE comma_nl_list(fieldtyp) RBRACE { StrT $2 }
-  | dots_list(casetyp)
+  | LBRACE dots_comma_list(fieldtyp) RBRACE
+    { let dots1, tfs, dots2 = $2 in
+      match dots1, El.Convert.filter_nl tfs, dots2 with
+      | NoDots, [(t, prems, hints)], NoDots when not (is_typfield t) ->
+        if prems <> [] then
+          error t.at "misplaced premise"
+        else if hints <> [] then
+          error (List.hd hints).hintid.at "misplaced hint"
+        else
+          t.it
+      | _ ->
+        let y1, y2, _ =
+          List.fold_right
+            (fun elem (y1, y2, at) ->
+              (* at is the position of leftmost id element so far *)
+              match elem with
+              | Nl -> if at = None then y1, Nl::y2, at else Nl::y1, y2, at
+              | Elem (t, prems, hints) ->
+                match t.it with
+                | SeqT [{it = AtomT atom; _}; t2] when at = None ->
+                  y1, (Elem (atom, (t2, prems), hints))::y2, None
+                | AtomT _ | InfixT _ | BrackT _ | SeqT _ ->
+                  error t.at "malformed field type"
+                | _ when prems = [] && hints = [] ->
+                  (Elem t)::y1, y2, Some t.at
+                | _ ->
+                  let at = Option.value at ~default: t.at in
+                  error at "misplaced type"
+            ) tfs ([], [], None)
+        in StrT (dots1, y1, y2, dots2) }
+  | dots_bar_list(casetyp)
     { let dots1, tcs, dots2 = $1 in
       match dots1, El.Convert.filter_nl tcs, dots2 with
       | NoDots, [(t, prems, hints)], NoDots when not (is_typcase t) ->
@@ -457,10 +560,10 @@ deftyp_ :
       | _ ->
         let y1, y2, _ =
           List.fold_right
-            (fun elem (y1, y2, at) ->
-              (* at is the position of leftmost id element so far *)
+            (fun elem (y1, y2, b) ->
+              (* b is true when the last type to the right was a constructor *)
               match elem with
-              | Nl -> if at = None then y1, Nl::y2, at else Nl::y1, y2, at
+              | Nl -> if b then y1, Nl::y2, b else Nl::y1, y2, b
               | Elem (t, prems, hints) ->
                 match t.it with
                 | AtomT atom
@@ -468,19 +571,18 @@ deftyp_ :
                 | BrackT (atom, _, _)
                 | SeqT ({it = AtomT atom; _}::_)
                 | SeqT ({it = InfixT (_, atom, _); _}::_)
-                | SeqT ({it = BrackT (atom, _, _); _}::_) when at = None ->
-                  y1, (Elem (atom, (t, prems), hints))::y2, at
+                | SeqT ({it = BrackT (atom, _, _); _}::_) ->
+                  y1, (Elem (atom, (t, prems), hints))::y2, true
                 | _ when prems = [] && hints = [] ->
-                  (Elem t)::y1, y2, Some t.at
+                  (Elem t)::y1, y2, false
                 | _ ->
-                  let at = Option.value at ~default:t.at in
-                  error at "misplaced type";
-            ) tcs ([], [], None)
+                  error t.at "misplaced type"
+            ) tcs ([], [], true)
         in CaseT (dots1, y1, y2, dots2) }
   | nl_bar_list1(enumtyp(enum1), enumtyp(arith)) { RangeT $1 }
 
 
-(*nottyp_prim : nottyp_prim_ { $1 $ $sloc }*)
+nottyp_prim : nottyp_prim_ { $1 $ $sloc }
 nottyp_prim_ :
   | typ_prim_ { $1 }
   | atom { AtomT $1 }
@@ -495,6 +597,12 @@ nottyp_prim_ :
     { BrackT (Atom.LBrack $$ $loc($2), $3, Atom.RBrack $$ $loc($4)) }
   | TICK LBRACE nottyp RBRACE
     { BrackT (Atom.LBrace $$ $loc($2), $3, Atom.RBrace $$ $loc($4)) }
+  | TICK LPAREN RPAREN
+    { BrackT (Atom.LParen $$ $loc($2), SeqT [] $ $loc($3), Atom.RParen $$ $loc($3)) }
+  | TICK LBRACK RBRACK
+    { BrackT (Atom.LBrack $$ $loc($2), SeqT [] $ $loc($3), Atom.RBrack $$ $loc($3)) }
+  | TICK LBRACE RBRACE
+    { BrackT (Atom.LBrace $$ $loc($2), SeqT [] $ $loc($3), Atom.RBrace $$ $loc($3)) }
   | LPAREN comma_list(typ) RPAREN
     { match $2 with
       | [] -> ParenT (SeqT [] $ $sloc)
@@ -510,27 +618,37 @@ nottyp_seq : nottyp_seq_ { $1 $ $sloc }
 nottyp_seq_ :
   | nottyp_post_ { $1 }
   | nottyp_post nottyp_seq { SeqT ($1 :: as_seq_typ $2) }
+  | atomsub nottyp_prim nottyp_seq
+    { SeqT ((AtomT $1 $. $1.at) :: $2 :: as_seq_typ $3) }
 
 nottyp_un : nottyp_un_ { $1 $ $sloc }
 nottyp_un_ :
   | nottyp_seq_ { $1 }
   | infixop nottyp_un { InfixT (SeqT [] $ $loc($1), $1, $2) }
+  | infixopsub nottyp_prim nottyp_un
+    { InfixT (SeqT [] $ $loc($1), $1, cat_seq_typ $2 $3) }
 
 nottyp_bin : nottyp_bin_ { $1 $ $sloc }
 nottyp_bin_ :
   | nottyp_un_ { $1 }
   | nottyp_bin infixop nottyp_bin { InfixT ($1, $2, $3) }
+  | nottyp_bin infixopsub nottyp_prim nottyp_bin
+    { InfixT ($1, $2, cat_seq_typ $3 $4) }
 
 nottyp_rel : nottyp_rel_ { $1 $ $sloc }
 nottyp_rel_ :
   | nottyp_bin_ { $1 }
   | relop nottyp_rel { InfixT (SeqT [] $ $loc($1), $1, $2) }
+  | relopsub nottyp_prim nottyp_rel
+    { InfixT (SeqT [] $ $loc($1), $1, cat_seq_typ $2 $3) }
   | nottyp_rel relop nottyp_rel { InfixT ($1, $2, $3) }
+  | nottyp_rel relopsub nottyp_prim nottyp_rel
+    { InfixT ($1, $2, cat_seq_typ $3 $4) }
 
 nottyp : nottyp_rel { $1 }
 
 fieldtyp :
-  | fieldid typ_post hint* prem_bin_list { ($1, ($2, $4), $3) }
+  | nottyp hint* prem_bin_list { $1, $3, $2 }
 
 casetyp :
   | nottyp hint* prem_list { $1, $3, $2 }
@@ -588,7 +706,7 @@ exp_prim_ :
   | exp_hole_ { $1 }
   | EPS { EpsE }
   | LBRACE comma_nl_list(fieldexp) RBRACE { StrE $2 }
-  | LPAREN comma_list(exp_bin) RPAREN
+  | LPAREN comma_list(exp_rel) RPAREN
     { match $2 with
       | [] -> ParenE (SeqE [] $ $sloc)
       | [e] -> ParenE e
@@ -599,6 +717,12 @@ exp_prim_ :
     { BrackE (Atom.LBrack $$ $loc($2), $3, Atom.RBrack $$ $loc($4)) }
   | TICK LBRACE exp RBRACE
     { BrackE (Atom.LBrace $$ $loc($2), $3, Atom.RBrace $$ $loc($4)) }
+  | TICK LPAREN RPAREN
+    { BrackE (Atom.LParen $$ $loc($2), SeqE [] $ $loc($3), Atom.RParen $$ $loc($3)) }
+  | TICK LBRACK RBRACK
+    { BrackE (Atom.LBrack $$ $loc($2), SeqE [] $ $loc($3), Atom.RBrack $$ $loc($3)) }
+  | TICK LBRACE RBRACE
+    { BrackE (Atom.LBrace $$ $loc($2), SeqE [] $ $loc($3), Atom.RBrace $$ $loc($3)) }
   | DOLLAR LPAREN arith RPAREN { $3.it }
   | DOLLAR numtyp DOLLAR LPAREN arith RPAREN { CvtE ($5, $2) }
   | FUSEFUSE exp_prim { UnparenE $2 }
@@ -623,6 +747,10 @@ exp_atom_ :
         ParenE $2 $ $loc($2)
       ] }
 
+exp_atomsub : exp_atomsub_ { $1 $ $sloc }
+exp_atomsub_ :
+  | atomsub { AtomE $1 }
+
 exp_list : exp_list_ { $1 $ $sloc }
 exp_list_ :
   | LBRACK RBRACK { ListE [] }
@@ -634,7 +762,17 @@ exp_seq_ :
   | exp_atom_ { $1 }
   | exp_list_ { $1 }
   | exp_seq exp_atom { SeqE (as_seq_exp $1 @ [$2]) }
+  | exp_seqsub exp_atom { SeqE (as_seq_exp $1 @ [$2]) }
   | exp_seq FUSE exp_atom { FuseE ($1, $3) }
+  | exp_seqsub FUSE exp_atom { FuseE ($1, $3) }
+
+exp_seqsub : exp_seqsub_ { $1 $ $sloc }
+exp_seqsub_ :
+  | exp_atomsub_ { $1 }
+  | exp_seq exp_atomsub { SeqE (as_seq_exp $1 @ [$2]) }
+  | exp_seqsub exp_atomsub { SeqE (as_seq_exp $1 @ [$2]) }
+  | exp_seq FUSE exp_atomsub { FuseE ($1, $3) }
+  | exp_seqsub FUSE exp_atomsub { FuseE ($1, $3) }
 
 exp_un : exp_un_ { $1 $ $sloc }
 exp_un_ :
@@ -643,25 +781,41 @@ exp_un_ :
   | BARBAR gramid BARBAR { SizeE $2 }
   | unop exp_un { UnE ($1, $2) }
   | infixop exp_un { InfixE (SeqE [] $ $loc($1), $1, $2) }
+  | infixopsub exp_prim exp_un
+    { InfixE (SeqE [] $ $loc($1), $1, cat_seq_exp $2 $3) }
 
 exp_bin : exp_bin_ { $1 $ $sloc }
 exp_bin_ :
   | exp_un_ { $1 }
   | exp_bin infixop exp_bin { InfixE ($1, $2, $3) }
+  | exp_bin infixopsub exp_prim exp_bin { InfixE ($1, $2, cat_seq_exp $3 $4) }
   | exp_bin cmpop exp_bin { CmpE ($1, $2, $3) }
   | exp_bin boolop exp_bin { BinE ($1, $2, $3) }
   | exp_bin CAT exp_bin { CatE ($1, $3) }
   | exp_bin MEM exp_bin { MemE ($1, $3) }
+  | exp_bin NOTMEM exp_bin { UnE (`NotOp, MemE ($1, $3) $ $sloc) }
 
 exp_rel : exp_rel_ { $1 $ $sloc }
 exp_rel_ :
   | exp_bin_ { $1 }
-  | comma(exp) exp_rel { CommaE (SeqE [] $ $loc($1), $2) }
   | relop exp_rel { InfixE (SeqE [] $ $loc($1), $1, $2) }
-  | exp_rel comma(exp) exp_rel { CommaE ($1, $3) }
+  | relopsub exp_prim exp_rel
+    { InfixE (SeqE [] $ $loc($1), $1, cat_seq_exp $2 $3) }
   | exp_rel relop exp_rel { InfixE ($1, $2, $3) }
+  | exp_rel relopsub exp_prim exp_rel { InfixE ($1, $2, cat_seq_exp $3 $4) }
 
-exp : exp_rel { $1 }
+exp_comma : exp_comma_ { $1 $ $sloc }
+exp_comma_ :
+  | exp_bin_ { $1 }
+  | comma(exp) exp_comma { CommaE (SeqE [] $ $loc($1), $2) }
+  | relop exp_comma { InfixE (SeqE [] $ $loc($1), $1, $2) }
+  | relopsub exp_prim exp_comma
+    { InfixE (SeqE [] $ $loc($1), $1, cat_seq_exp $2 $3) }
+  | exp_comma comma(exp) exp_comma { CommaE ($1, $3) }
+  | exp_comma relop exp_comma { InfixE ($1, $2, $3) }
+  | exp_comma relopsub exp_prim exp_comma { InfixE ($1, $2, cat_seq_exp $3 $4) }
+
+exp : exp_comma { $1 }
 
 fieldexp :
   | fieldid exp_atom+
@@ -720,6 +874,7 @@ arith_bin_ :
   | arith_bin boolop arith_bin { BinE ($1, $2, $3) }
   | arith_bin CAT arith_bin { CatE ($1, $3) }
   | arith_bin MEM arith_bin { MemE ($1, $3) }
+  | arith_bin NOTMEM arith_bin { UnE (`NotOp, MemE ($1, $3) $ $sloc) }
 
 arith : arith_bin { $1 }
 
@@ -755,23 +910,25 @@ prem_post_ :
 prem_bin : prem_bin_ { $1 $ $sloc }
 prem_bin_ :
   | prem_post_ { $1 }
-  | relid COLON exp_bin { RulePr ($1, $3) }
+  | relid COLON exp_bin { RulePr ($1, [], $3) }
+  | relid LPAREN comma_list(arg) RPAREN COLON exp_bin { RulePr ($1, $3, $6) }
   | IF exp_bin
     { let rec iters e =
         match e.it with
-        | IterE (e1, iter) -> IterPr (Source.(iters e1 $ e1.at), iter)
+        | IterE (e1, iter) -> IterPr (iters e1 $. e1.at, iter)
         | _ -> IfPr e
       in iters $2 }
 
 prem : prem_ { $1 $ $sloc }
 prem_ :
   | prem_post_ { $1 }
-  | relid COLON exp { RulePr ($1, $3) }
+  | relid COLON exp { RulePr ($1, [], $3) }
+  | relid LPAREN comma_list(arg) RPAREN COLON exp_bin { RulePr ($1, $3, $6) }
   | VAR varid_bind_with_suffix COLON typ { VarPr ($2, $4) }
   | IF exp
     { let rec iters e =
         match e.it with
-        | IterE (e1, iter) -> IterPr (Source.(iters e1 $ e1.at), iter)
+        | IterE (e1, iter) -> IterPr (iters e1 $. e1.at, iter)
         | _ -> IfPr e
       in iters $2 }
 
@@ -832,7 +989,7 @@ prod_ :
   | sym EQUIV sym prem_list { EquivP ($1, $3, $4) }
 
 gram :
-  | dots_list(prod) { $1 $ $sloc }
+  | dots_bar_list(prod) { $1 $ $sloc }
 
 
 prod_short : prod_short_ { $1 $ $sloc }
@@ -843,18 +1000,18 @@ prod_short_ :
     }
 
 gram_short :
-  | dots_list(prod_short) { $1 $ $sloc }
+  | dots_bar_list(prod_short) { $1 $ $sloc }
 *)
 
 
 gram : gram_ { $1 $ $sloc }
-gram_ :  (* dots * prod nl_list * dots *)
-  (* Inline and transform dots_list to avoid conflicts *)
+gram_ :  (* bar_dots * prod nl_list * bar_dots *)
+  (* Inline and transform dots_bar_list to avoid conflicts *)
   | gram_long_or_short { let x, y = $1 [] in (NoDots, x, y) }
   | bar(sym) gram_long_or_short { let x, y = $2 [] in (NoDots, x, y) }
-  | dots bar(gram) gram_long_or_short { let x, y = $3 [] in (Dots, $2 @ x, y) }
+  | bar_dots bar(gram) gram_long_or_short { let x, y = $3 [] in (Dots, $2 @ x, y) }
 
-gram_long_or_short :  (* prod nl_list * dots *)
+gram_long_or_short :  (* prod nl_list * bar_dots *)
   | gram_empty { fun alts -> short_alt_prod (alts, []), $1 }
   | gram_long1 { $1 }
   | gram_short1 { $1 }
@@ -922,12 +1079,12 @@ long_range_cont_or_gram_long :  (* sym -> exp -> prod nl_list -> prod nl_list * 
     { fun g1 e1 nl -> let x, y = $2 in $1 g1 e1 :: nl @ x, y }
   | gram_long
     { fun g1 e1 nl -> let x, y = $1 in
-      Elem Source.(SynthP (g1, e1, []) $ over_region [g1.at; e1.at]) :: nl @ x, y }
+      Elem (SynthP (g1, e1, []) $. over_region [g1.at; e1.at]) :: nl @ x, y }
 
 long_range_cont :  (* sym -> exp -> prod nl_elem *)
   | DOTDOTDOT bar(gram) sym_seq ARROW2 exp
     { fun g1 e1 ->
-      Elem Source.(RangeP (g1, e1, $3, $5) $ over_region [g1.at; $5.at]) }
+      Elem (RangeP (g1, e1, $3, $5) $. over_region [g1.at; $5.at]) }
 
 short_range_cont_or_gram_long_or_short :  (* sym nl_list -> sym -> sym nl_list -> prod nl_list * dots *)
   | short_range_cont ARROW2 exp prem_list gram_cont(gram_long)
@@ -949,7 +1106,7 @@ short_range_cont_or_gram_long_or_short :  (* sym nl_list -> sym -> sym nl_list -
 
 short_range_cont :  (* sym -> sym *)
   | DOTDOTDOT bar(sym) sym_seq
-    { fun g1 -> Source.(RangeG (g1, $3) $ over_region [g1.at; $3.at]) }
+    { fun g1 -> RangeG (g1, $3) $. over_region [g1.at; $3.at] }
 
 
 
@@ -970,10 +1127,12 @@ param_ :
   | varid_bind_with_suffix COLON typ { ExpP ($1, $3) }
   | typ
     { let id =
-        try El.Convert.varid_of_typ $1 with Error.Error _ -> "" $ $sloc
+        try El.Convert.varid_of_typ $1 with Error.Error _ -> "_" $ $sloc
       in ExpP (id, $1) }
   | SYNTAX varid_bind { TypP $2 }
-  | GRAMMAR gramid COLON typ { GramP ($2, $4) }
+  | GRAMMAR gramid COLON typ { GramP ($2, [], $4) }
+  | GRAMMAR gramid_lparen enter_scope comma_list(param) RPAREN COLON typ exit_scope
+    { GramP ($2, $4, $7) }
   | DEF DOLLAR defid COLON typ
     { DefP ($3, [], $5) }
   | DEF DOLLAR defid_lparen enter_scope comma_list(param) RPAREN COLON typ exit_scope
@@ -1004,10 +1163,15 @@ def_ :
     { let id = if $6 = "" then "" else String.sub $6 1 (String.length $6 - 1) in
       GramD ($2, id $ $loc($6), $4, TupT [] $ $loc($1), $9, $7) }
   | RELATION relid COLON nottyp hint*
-    { RelD ($2, $4, $5) }
-  | RULE relid ruleid_list COLON exp prem_list
+    { RelD ($2, [], $4, $5) }
+  | RELATION relid LPAREN comma_list(param) RPAREN COLON nottyp hint*
+    { RelD ($2, $4, $7, $8) }
+  | RULE relid ruleid_list COLON exp prem_list hint*
     { let id = if $3 = "" then "" else String.sub $3 1 (String.length $3 - 1) in
-      RuleD ($2, id $ $loc($3), $5, $6) }
+      RuleD ($2, [], id $ $loc($3), $5, $6, $7) }
+  | RULE relid LPAREN comma_list(param) RPAREN ruleid_list COLON exp prem_list hint*
+    { let id = if $6 = "" then "" else String.sub $6 1 (String.length $6 - 1) in
+      RuleD ($2, $4, id $ $loc($6), $8, $9, $10) }
   | VAR varid_bind COLON typ hint*
     { VarD ($2, $4, $5) }
   | DEF DOLLAR defid COLON typ hint*
@@ -1025,6 +1189,8 @@ def_ :
       HintD (TypH ($2, id $ $loc($3), $4) $ $sloc) }
   | SYNTAX varid_bind ruleid_list atom hint*
     { HintD (AtomH ($2, $4, $5) $ $sloc) }
+  | SYNTAX varid_bind ruleid_list atomsub hint*
+    { HintD (AtomH ($2, $4, $5) $ $sloc) }
   | SYNTAX varid_bind ruleid_list TICK LPAREN hint*
     { HintD (AtomH ($2, Atom.LParen $$ $loc($5), $6) $ $sloc) }
   | SYNTAX varid_bind ruleid_list TICK LBRACK hint*
@@ -1036,6 +1202,9 @@ def_ :
       HintD (GramH ($2, id $ $loc($3), $4) $ $sloc) }
   | RELATION relid hint*
     { HintD (RelH ($2, $3) $ $sloc) }
+  | RULE relid ruleid_list hint*
+    { let id = if $3 = "" then "" else String.sub $3 1 (String.length $3 - 1) in
+      HintD (RuleH ($2, id $ $loc($3), $4) $ $sloc) }
   | VAR varid_bind hint*
     { HintD (VarH ($2, $3) $ $sloc) }
   | DEF DOLLAR defid hint*

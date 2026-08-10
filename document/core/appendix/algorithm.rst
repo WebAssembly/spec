@@ -277,7 +277,7 @@ It allocates a new frame record recording them along with the current height of 
 Popping a frame first checks that the control stack is not empty.
 It then verifies that the operand stack contains the right types of values expected at the end of the exited block and pops them off the operand stack.
 Afterwards, it checks that the stack has shrunk back to its initial height.
-Finally, it undoes all changes to the initialization status of locals that happend inside the block.
+Finally, it undoes all changes to the initialization status of locals that happened inside the block.
 
 The type of the :ref:`label <syntax-label>` associated with a control frame is either that of the stack at the start or the end of the frame, determined by the opcode that it originates from.
 

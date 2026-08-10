@@ -73,10 +73,11 @@ let as_paren_exp e =
   | ParenE e1 -> e1
   | _ -> e
 
-let as_tup_exp e =
+let rec as_tup_exp e =
   match e.it with
   | TupE es -> es
   | ParenE e1 -> [e1]
+  | ArithE e1 -> as_tup_exp e1
   | _ -> [e]
 
 let as_seq_exp e =
@@ -89,6 +90,7 @@ let rec fuse_exp e deep =
   | ParenE e1 when deep -> ParenE (fuse_exp e1 false) $ e.at
   | IterE (e1, iter) -> IterE (fuse_exp e1 deep, iter) $ e.at
   | SeqE (e1::es) -> List.fold_left (fun e1 e2 -> FuseE (e1, e2) $ e.at) e1 es
+  | InfixE (e1, atom, e2) -> fuse_exp (SeqE [e1; AtomE atom $ atom.at; e2] $ e.at) deep
   | _ -> e
 
 let as_tup_arg a =
@@ -232,6 +234,8 @@ let env_hintdef env hd =
     env_hints "show" env.show_rel id hints;
     env_hints "name" env.name_rel id hints;
     env_hints "tabular" env.tab_rel id hints
+  | RuleH (_id1, _id2, _hints) ->
+    ()
   | VarH (id, hints) ->
     env_hints "macro" env.macro_var id hints;
     env_hints "show" env.show_var id hints
@@ -288,9 +292,15 @@ let env_typdef env tid t : typ list option =
   | VarT (id, _) ->
     map_append tid.it (Map.find id.it !(env.atoms)) env.atoms;
     Some [t]
-  | StrT tfs ->
+  | StrT (dots1, ts, tfs, _) ->
     iter_nl_list (env_typfield env tid) tfs;
-    Some []
+    iter_nl_list (fun t ->
+      match t.it with
+      | VarT (id, _) ->
+        map_append tid.it (Map.find id.it !(env.atoms)) env.atoms
+      | _ -> ()
+    ) ts;
+    if dots1 = Dots && ts = [] then None else Some (filter_nl ts)
   | CaseT (dots1, ts, tcs, _) ->
     iter_nl_list (env_typcase env tid) tcs;
     iter_nl_list (fun t ->
@@ -329,7 +339,7 @@ let env_def env d : (id * typ list) list =
     env_macro env.macro_gram id1;
     env_hintdef env (GramH (id1, id2, hints) $ d.at);
     []
-  | RelD (id, t, hints) ->
+  | RelD (id, _ps, t, hints) ->
     env_hintdef env (RelH (id, hints) $ d.at);
     env_typcon env id ((t, []), hints);
     []
@@ -1036,8 +1046,16 @@ Printf.eprintf "[render_atom %s @ %s] id=%s def=%s macros: %s (%s)\n%!"
       | Less -> "<"
       | Greater -> ">"
       | Quest -> "{}^?"
-      | Plus -> "{}^+"
       | Star -> "{}^\\ast"
+      | Iter -> "{}^+"
+      | Plus -> "+"
+      | Minus -> "-"
+      | PlusMinus -> "\\pm"
+      | MinusPlus -> "\\mp"
+      | Slash -> "/"
+      | Not -> "\\neg"
+      | And -> "\\land"
+      | Or -> "\\lor"
       | LParen -> "("
       | RParen -> ")"
       | LBrack -> "{}["
@@ -1066,6 +1084,8 @@ Printf.eprintf "[render_atom %s @ %s] id=%s def=%s macros: %s (%s)\n%!"
           | Sup -> "\\geq"
           | SqArrow | SqArrowSub -> "\\hookrightarrow"
           | SqArrowStar | SqArrowStarSub -> "\\hookrightarrow^\\ast"
+          | Prec | PrecSub -> "\\prec"
+          | Succ | SuccSub -> "\\succ"
           | Cat -> "\\oplus"
           | Bar -> "\\mid"
           | BigAnd -> "\\bigwedge"
@@ -1081,7 +1101,7 @@ Printf.eprintf "[render_atom %s @ %s] id=%s def=%s macros: %s (%s)\n%!"
 
 let render_text s =
   let buf = Buffer.create (String.length s + 32) in
-  Buffer.add_string buf "\\mbox{‘}\\mathtt{";
+  Buffer.add_string buf "\\mbox{‘\\texttt{";
   for i = 0 to String.length s - 1 do
     match s.[i] with
     | '\'' -> Buffer.add_string buf "\\kern0.03em{'}\\kern0.03em"  (* TODO: not typeset in TT *)
@@ -1091,18 +1111,23 @@ let render_text s =
     | '%' -> Buffer.add_string buf "\\%"
     | '&' -> Buffer.add_string buf "\\&"
     | '_' -> Buffer.add_string buf "\\_"
-    | '-' -> Buffer.add_string buf "\\mbox{-}"
-    | '{' -> Buffer.add_string buf "\\{"  (* TODO: not typeset in TT *)
-    | '}' -> Buffer.add_string buf "\\}"  (* TODO: not typeset in TT *)
+    | '=' -> Buffer.add_string buf "{=}"
+    | '<' -> Buffer.add_string buf "{<}"
+    | '>' -> Buffer.add_string buf "{>}"
+    | '-' -> Buffer.add_string buf "{-}"
+    | '(' -> Buffer.add_string buf "{(}"
+    | ')' -> Buffer.add_string buf "{)}"
+    | '{' -> Buffer.add_string buf "{\\{}"
+    | '}' -> Buffer.add_string buf "{\\}}"
     | '[' -> Buffer.add_string buf "{[}"
     | ']' -> Buffer.add_string buf "{]}"
-    | '\\' -> Buffer.add_string buf "\\backslash{}"  (* TODO: not typeset in TT *)
-    | '^' ->  Buffer.add_string buf "\\hat{~~}"
-    | '`' ->  Buffer.add_string buf "\\grave{~~}"
-    | '~' ->  Buffer.add_string buf "\\tilde{~~}"
+    | '\\' -> Buffer.add_string buf "\\(\\mathtt{\\backslash}\\)"  (* TODO: not typeset in TT *)
+    | '^' ->  Buffer.add_string buf "\\(\\mathtt{\\hat{~~}}\\)"
+    | '`' ->  Buffer.add_string buf "\\(\\mathtt{\\grave{~~}}\\)"
+    | '~' ->  Buffer.add_string buf "\\(\\mathtt{\\tilde{~~}}\\)"
     | c -> Buffer.add_char buf c
   done;
-  Buffer.add_string buf "}\\mbox{’}";
+  Buffer.add_string buf "}’}";
   Buffer.contents buf
 
 
@@ -1163,11 +1188,21 @@ and render_nottyp env t : table =
     (string_of_region t.at) (El.Print.string_of_typ t);
   *)
   match t.it with
-  | StrT tfs ->
+  | StrT (dots1, ts, tfs, dots2) ->
+    let render env = function
+      | `Dots -> render_dots Dots
+      | `Typ t -> render_nottyp env t
+      | `TypField tf -> render_typfield env tf
+    in
     [Row [Col (
       "\\{ " ^
       render_table env "@{}" ["l"; "l"] 0 0
-        (concat_table "" (render_nl_list env (`H, ", ") render_typfield tfs) [Row [Col " \\}"]])
+        (concat_table "" (render_nl_list env (`H, ", ") render (
+          (match dots1 with Dots -> [Elem `Dots] | NoDots -> []) @
+          map_nl_list (fun t -> `Typ t) ts @
+          map_nl_list (fun tf -> `TypField tf) tfs @
+          (match dots2 with Dots -> [Elem `Dots] | NoDots -> [])
+        )) [Row [Col " \\}"]])
     )]]
   | CaseT (dots1, ts, tcs, dots2) ->
     let render env = function
@@ -1260,6 +1295,8 @@ and render_exp env e =
   | NumE _ -> assert false
   | TextE t -> render_text t
   | CvtE (e1, _) -> render_exp env e1
+  | UnE (`NotOp, {it = MemE (e1, e2); _}) ->
+    render_exp env e1 ^ " \\notin " ^ render_exp env e2
   | UnE (op, e2) -> "{" ^ render_unop op ^ render_exp env e2 ^ "}"
   | BinE (e1, `PowOp, ({it = ParenE e2; _ } | e2)) ->
     "{" ^ render_exp env e1 ^ "^{" ^ render_exp env e2 ^ "}}"
@@ -1314,9 +1351,17 @@ and render_exp env e =
   | MemE (e1, e2) -> render_exp env e1 ^ " \\in " ^ render_exp env e2
   | LenE e1 -> "{|" ^ render_exp env e1 ^ "|}"
   | SizeE id -> "||" ^ render_gramid env id ^ "||"
-  | ParenE ({it = SeqE [{it = AtomE atom; _}; _]; _} as e1)
-    when render_atom env atom = "" ->
-    render_exp env e1
+  | ParenE ({it = SeqE (_::_::_ as es); _} as e1) ->
+    let es', _ = Lib.List.split_last es in
+    if
+      List.for_all (function
+        | {it = AtomE atom; _} -> render_atom env atom = ""
+        | _ -> false
+      ) es'
+    then
+      render_exp env e1
+    else
+      "(" ^ render_exp env e1 ^ ")"
   | ParenE e1 -> "(" ^ render_exp env e1 ^ ")"
   | TupE es -> "(" ^ render_exps ", " env es ^ ")"
   | InfixE (e1, atom, e2) ->
@@ -1425,7 +1470,7 @@ and render_fieldname env atom =
 and render_prem env prem =
   match prem.it with
   | VarPr _ -> assert false
-  | RulePr (_id, e) -> render_exp env e
+  | RulePr (_id, _ps, e) -> render_exp env e
   | IfPr e -> render_exp env e
   | ElsePr -> error prem.at "misplaced `otherwise` premise"
   | IterPr ({it = IterPr _; _} as prem', iter) ->
@@ -1608,7 +1653,7 @@ and render_prod env prod : row list =
     )
 
 and render_gram env gram : table =
-  let (dots1, prods, dots2) = gram.it in
+  let (dots1, prods, _dots2) = gram.it in
   let singleline =
     List.length prods > 1 && gram.at.left.line = gram.at.right.line ||
     List.exists (function (Elem {it = RangeP _; _}) -> true | _ -> false) prods
@@ -1626,7 +1671,7 @@ and render_gram env gram : table =
     render_nl_list env (`H, "~~|~~") render (
       (match dots1 with Dots -> [Elem `Dots] | NoDots -> []) @
       map_nl_list (fun p -> `Prod p) prods @
-      (match dots2 with Dots -> [Elem `Dots] | NoDots -> [])
+      [] (* (match dots2 with Dots -> [Elem `Dots] | NoDots -> []) *)
     )
   in
   if env.config.display then
@@ -1653,7 +1698,7 @@ let render_param env p =
   match p.it with
   | ExpP (id, t) -> if id.it = "_" then render_typ env t else render_varid env id
   | TypP id -> render_typid env id
-  | GramP (id, _t) -> render_gramid env id
+  | GramP (id, _ps, _t) -> render_gramid env id
   | DefP (id, _ps, _t) -> render_defid env id
 
 let _render_params env = function
@@ -1667,6 +1712,8 @@ let () = render_args_fwd := render_args
 
 let merge_typ t1 t2 =
   match t1.it, t2.it with
+  | StrT (dots1, ids1, fields1, _), StrT (_, ids2, fields2, dots2) ->
+    StrT (dots1, ids1 @ strip_nl ids2, fields1 @ strip_nl fields2, dots2) $ t1.at
   | CaseT (dots1, ids1, cases1, _), CaseT (_, ids2, cases2, dots2) ->
     CaseT (dots1, ids1 @ strip_nl ids2, cases1 @ strip_nl cases2, dots2) $ t1.at
   | _, _ -> assert false
@@ -1737,7 +1784,7 @@ let render_gramdef env d : row list =
 
 let render_ruledef_infer env d =
   match d.it with
-  | RuleD (id1, id2, e, prems) ->
+  | RuleD (id1, _ps, id2, e, prems, _hints) ->
     let prems' = filter_nl_list (function {it = VarPr _; _} -> false | _ -> true) prems in
     "\\frac{\n" ^
       (if has_nl prems then "\\begin{array}{@{}c@{}}\n" else "") ^
@@ -1751,7 +1798,7 @@ let render_ruledef_infer env d =
 
 let render_ruledef env d : row list =
   match d.it with
-  | RuleD (id1, id2, e, prems) ->
+  | RuleD (id1, _ps, id2, e, prems, _hints) ->
     let e1, op, e2 =
       match e.it with
       | InfixE (e1, op, ({it = SeqE (e21::es22); _} as e2)) when Atom.is_sub op ->
@@ -1814,10 +1861,10 @@ let rec render_defs env = function
       let sp_deco = if env.deco_gram then sp else "@{}" in
       render_table env sp ["l"; sp_deco ^ "r"; "r"; "l"; "@{}l"; "@{}l"; "@{}l"] 1 3
         (render_sep_defs (render_gramdef env) ds')
-    | RelD (_, t, _) ->
+    | RelD (_, _ps, t, _) ->
       "\\boxed{" ^ render_typ env t ^ "}" ^
       (if ds' = [] then "" else " \\; " ^ render_defs env ds')
-    | RuleD (id1, _, _, _) ->
+    | RuleD (id1, _, _, _, _, _) ->
       if Map.mem id1.it !(env.tab_rel) then
         (* Columns: decorator & lhs & op & rhs & premise *)
         let sp_deco = if env.deco_rule then sp else "@{}" in
@@ -1861,7 +1908,7 @@ let rec split_tabdefs id tabdefs = function
   | [] -> List.rev tabdefs, []
   | d::ds ->
     match d.it with
-    | RuleD (id1, _, _, _) when id1.it = id ->
+    | RuleD (id1, _, _, _, _, _) when id1.it = id ->
       split_tabdefs id (d::tabdefs) ds
     | _ -> List.rev tabdefs, d::ds
 
@@ -1887,7 +1934,7 @@ let rec render_script env = function
     | RelD _ ->
       "$" ^ render_def env d ^ "$\n\n" ^
       render_script env ds
-    | RuleD (id1, _, _, _) ->
+    | RuleD (id1, _, _, _, _, _) ->
       if Map.mem id1.it !(env.tab_rel) then
         let tabdefs, ds' = split_tabdefs id1.it [d] ds in
         "$$\n" ^ render_defs env tabdefs ^ "\n$$\n\n" ^

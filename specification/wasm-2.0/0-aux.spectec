@@ -5,7 +5,6 @@
 ;; General variables
 
 syntax N = nat  ;; hack
-syntax M = nat  ;; hack
 syntax n = nat  ;; hack
 syntax m = nat  ;; hack
 

@@ -46,7 +46,7 @@ and typ' =
   | TupT of typ list             (* `(` list2(typ, `,`) `)` *)
   | IterT of typ * iter          (* typ iter *)
   (* The forms below are only allowed in type definitions *)
-  | StrT of typfield nl_list     (* `{` list(typfield,`,`') `}` *)
+  | StrT of dots * typ nl_list * typfield nl_list * dots (* `{` list(`...`|typ|typfield, `,`) `}` *)
   | CaseT of dots * typ nl_list * typcase nl_list * dots (* `|` list(`...`|typ|typcase, `|`) *)
   | ConT of typcon               (* typ prem* *)
   | RangeT of typenum nl_list    (* exp `|` `...` `|` exp *)
@@ -158,7 +158,7 @@ and param = param' phrase
 and param' =
   | ExpP of id * typ                         (* varid `:` typ *)
   | TypP of id                               (* `syntax` varid *)
-  | GramP of id * typ                        (* `grammar` gramid `:` typ *)
+  | GramP of id * param list * typ           (* `grammar` gramid `:` typ *)
   | DefP of id * param list * typ            (* `def` `$` defid params `:` typ *)
 
 and arg = arg' ref phrase
@@ -173,8 +173,8 @@ and def' =
   | FamD of id * param list * hint list            (* `syntax` typid params hint* *)
   | TypD of id * id * arg list * typ * hint list   (* `syntax` typid args hint* `=` typ *)
   | GramD of id * id * param list * typ * gram * hint list (* `grammar` gramid params hint* `:` type `=` gram *)
-  | RelD of id * typ * hint list                   (* `relation` relid `:` typ hint* *)
-  | RuleD of id * id * exp * prem nl_list          (* `rule` relid ruleid? `:` exp (`--` prem)* *)
+  | RelD of id * param list * typ * hint list              (* `relation` relid params `:` typ hint* *)
+  | RuleD of id * param list * id * exp * prem nl_list * hint list (* `rule` relid params ruleid? `:` exp (`--` prem)* *)
   | VarD of id * typ * hint list                   (* `var` varid `:` typ *)
   | DecD of id * param list * typ * hint list      (* `def` `$` defid params `:` typ hint* *)
   | DefD of id * arg list * exp * prem nl_list     (* `def` `$` defid args `=` exp (`--` prem)* *)
@@ -184,7 +184,7 @@ and def' =
 and prem = prem' phrase
 and prem' =
   | VarPr of id * typ                        (* `var` id `:` typ *)
-  | RulePr of id * exp                       (* ruleid `:` exp *)
+  | RulePr of id * arg list * exp            (* ruleid args `:` exp *)
   | IfPr of exp                              (* `if` exp *)
   | ElsePr                                   (* `otherwise` *)
   | IterPr of prem * iter                    (* prem iter *)
@@ -195,6 +195,7 @@ and hintdef' =
   | TypH of id * id * hint list
   | GramH of id * id * hint list
   | RelH of id * hint list
+  | RuleH of id * id * hint list
   | VarH of id * hint list
   | DecH of id * hint list
 

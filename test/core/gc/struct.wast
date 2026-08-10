@@ -136,7 +136,7 @@
       (struct.set $s 0 (local.get $s) (i64.const 1))
     )
   )
-  "field is immutable"
+  "immutable field"
 )
 
 

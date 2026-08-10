@@ -48,6 +48,19 @@ let is_assign env (tag, prem, _) =
   | Assign frees -> subset (diff (free_prem false prem) {empty with varid = (Set.of_list frees)}) env
   | _ -> false
 
+(* conversion between quantifiers and id lists *)
+let ids_of_quants qs =
+  List.filter_map (fun q ->
+    match q.it with
+    | ExpP (id, _) -> Some id.it
+    | _ -> None
+  ) qs
+
+let quants_of_ids ids =
+  List.map (fun id ->
+    ExpP (id $ no_region, VarT ("?" $ no_region, []) $ no_region) $ no_region
+  ) ids
+
 (* Rewrite iterexp of IterPr *)
 let rewrite (iter, xes) e =
   let rewrite' e' =
@@ -67,16 +80,20 @@ let rewrite_id (_, xes) id =
     | _ -> None
   ) xes
   |> get_or_else id
+let rewrite_quant iterexp q =
+  match q.it with
+  | ExpP (id, t) -> ExpP (rewrite_id iterexp id.it $ id.at, t) $ q.at
+  | _ -> q
 let rec rewrite_iterexp' iterexp pr =
   let transformer =
     { Il_walk.base_transformer with transform_exp = rewrite iterexp } in
   let new_ = Il_walk.transform_exp transformer in
   match pr with
-  | RulePr (id, mixop, e) -> RulePr (id, mixop, new_ e)
+  | RulePr (id, args, mixop, e) -> RulePr (id, args, mixop, new_ e)
   | IfPr e -> IfPr (new_ e)
-  | LetPr (e1, e2, ids) ->
-    let new_ids = List.map (rewrite_id iterexp) ids in
-    LetPr (new_ e1, new_ e2, new_ids)
+  | LetPr (qs, e1, e2) ->
+    let new_qs = List.map (rewrite_quant iterexp) qs in
+    LetPr (new_qs, new_ e1, new_ e2)
   | ElsePr -> ElsePr
   | IterPr (pr, (iter, xes)) -> IterPr (rewrite_iterexp iterexp pr, (iter, xes |> List.map (fun (x, e) -> (x, new_ e))))
 and rewrite_iterexp iterexp pr = Source.map (rewrite_iterexp' iterexp) pr
@@ -97,16 +114,20 @@ let recover_id (_, xes) id =
     | _ -> None
   ) xes
   |> get_or_else id
+let recover_quant iterexp q =
+  match q.it with
+  | ExpP (id, t) -> ExpP (recover_id iterexp id.it $ id.at, t) $ q.at
+  | _ -> q
 let rec recover_iterexp' iterexp pr =
   let transformer =
     { Il_walk.base_transformer with transform_exp = recover iterexp } in
   let new_ = Il_walk.transform_exp transformer in
   match pr with
-  | RulePr (id, mixop, e) -> RulePr (id, mixop, new_ e)
+  | RulePr (id, args, mixop, e) -> RulePr (id, args, mixop, new_ e)
   | IfPr e -> IfPr (new_ e)
-  | LetPr (e1, e2, ids) ->
-    let new_ids = List.map (recover_id iterexp) ids in
-    LetPr (new_ e1, new_ e2, new_ids)
+  | LetPr (qs, e1, e2) ->
+    let new_qs = List.map (recover_quant iterexp) qs in
+    LetPr (new_qs, new_ e1, new_ e2)
   | ElsePr -> ElsePr
   | IterPr (pr, (iter, xes)) -> IterPr (recover_iterexp iterexp pr, (iter, xes |> List.map (fun (x, e) -> (x, new_ e))))
 and recover_iterexp iterexp pr = Source.map (recover_iterexp' iterexp) pr
@@ -114,14 +135,14 @@ and recover_iterexp iterexp pr = Source.map (recover_iterexp' iterexp) pr
 (* is this assign premise a if-let? *)
 let is_cond_assign prem =
   match prem.it with
-  | LetPr ({it = CaseE (_, _); _}, _, _) -> true
+  | LetPr (_, {it = CaseE (_, _, _); _}, _) -> true
   | _ -> false
 
 (* is this assign premise encoded premise for popping one value? *)
 let is_pop env row =
   is_assign env row &&
   match (unwrap row).it with
-  | LetPr (_, {it = CallE (_, {it = ExpA n; _} :: _); note; _}, _) when Il.Print.string_of_typ note = "stackT" ->
+  | LetPr (_, _, {it = CallE (_, {it = ExpA n; _} :: _); note; _}) when Il.Print.string_of_typ note = "stackT" ->
     (match n.it with
     | NumE (`Nat i) -> Z.equal i (Z.one)
     | _ -> false)
@@ -243,7 +264,7 @@ let large_enough_subsets xs =
   let min = if n >= 2 then n-1 else n in
   List.filter ( fun ys -> min <= List.length ys ) yss
 
-let (@@) f g x = f x @ g x
+let (@@@) f g x = f x @ g x
 
 let is_not_lhs e = match e.it with
 | LenE _ | IterE (_, (ListN (_, Some _), _)) | DotE _ -> true
@@ -251,7 +272,15 @@ let is_not_lhs e = match e.it with
 
 (* Hack to handle RETURN_CALL_ADDR, eventually should be removed *)
 let is_atomic_lhs e = match e.it with
-| CaseE ([{it = Atom "FUNC"; _}]::_, { it = CaseE ([[]; [{it = Arrow; _}]; []], { it = TupE [ { it = IterE (_, (ListN _, _)); _} ; { it = IterE (_, (ListN _, _)); _} ] ; _} ); _ }) -> true
+| CaseE (op,
+    { it = CaseE (
+        Xl.Mixop.(Infix (Arg (), {it = Arrow; _}, Arg ())),
+        { it = TupE [ { it = IterE (_, (ListN _, _)); _} ; { it = IterE (_, (ListN _, _)); _} ] ; _},
+        _
+      ); _ },
+    _
+  ) ->
+  Il2al_util.case_head op = "FUNC"
 | _ -> false
 
 (* Hack to handle ARRAY.INIT_DATA, eventually should be removed *)
@@ -261,7 +290,7 @@ let is_call e = match e.it with
 
 let subset_selector e =
   if is_not_lhs e then (fun _ -> [])
-  else if is_call e then singletons @@ group_arg e
+  else if is_call e then singletons @@@ group_arg e
   else if is_atomic_lhs e then wrap
   else large_enough_subsets
 
@@ -271,7 +300,7 @@ let rows_of_eq vars len i l r at =
   |> List.filter_map (fun frees ->
     let covering_vars = List.filter_map (index_of len vars) frees in
     if List.length frees = List.length covering_vars then (
-      Some (Assign frees, LetPr (l, r, frees) $ at, [i] @ covering_vars) )
+      Some (Assign frees, LetPr (quants_of_ids frees, l, r) $ at, [i] @ covering_vars) )
     else
       None
   )
@@ -289,17 +318,29 @@ let rec rows_of_prem vars len i p =
         @ rows_of_eq vars len i l { r with it = TheE r } p.at
       | _ -> [ Condition, p, [i] ]
     )
-  | LetPr (_, _, targets) ->
+  | LetPr (qs, _, _) ->
+    let targets = ids_of_quants qs in
     let covering_vars = List.filter_map (index_of len vars) targets in
     [ Assign targets, p, [i] @ covering_vars ]
-  | RulePr (_, _, { it = TupE args; _ }) ->
-    (* Assumpton: the only possible assigned-value is the last arg (i.e. ... |- lhs ) *)
-    let _, l = Util.Lib.List.split_last args in
-    let frees = (free_exp_list l) in
-    [
-      Condition, p, [i];
-      Assign frees, p, [i] @ List.filter_map (index_of len vars) (free_exp_list l)
-    ]
+  | RulePr (_, _, _, { it = TupE args; _ }) ->
+    (* Assumption:
+     * The only possible set of output variable
+     * is the last arg (i.e. ... |- lhs )
+     * or the last two args (i.e. ... ~>* z; v) *)
+    let assign_last n =
+      if List.length args <= n then [] else
+      let outs, ins = Lib.List.split n (List.rev args) in
+      let free_exps es = es |> List.map (free_exp false) |> List.fold_left union empty in
+      let free_set = free_exps outs in
+      let bound_set = free_exps ins in
+      if not (disjoint free_set bound_set) then [] else
+      let frees = free_set.varid |> Set.elements in
+      [ Assign frees, p, [i] @ List.filter_map (index_of len vars) frees ]
+    in
+
+    [ Condition, p, [i] ]
+      @ assign_last 1
+      @ assign_last 2
   | IterPr (p', iterexp) ->
     let p_r = rewrite_iterexp iterexp p' in
     let to_iter (tag, p, coverings) = tag, IterPr (recover_iterexp iterexp p, iterexp) $ p.at, coverings in
@@ -341,7 +382,7 @@ let animate_prems known_vars prems =
       Error.error (over_region (List.map at unhandled_prems)) "prose translation" "There might be a cyclic binding"
     else
       snd !best'
-  | Some x -> x
+  | Some prems -> prems
 
 (* Animate rule *)
 let animate_rule r = match r.it with
@@ -349,7 +390,7 @@ let animate_rule r = match r.it with
   | RuleD(id, binds, mixop, args, prems) -> (
     match (mixop, args.it) with
     (* lhs ~> rhs *)
-    | ([ [] ; [{it = SqArrow; _}] ; []] , TupE ([_lhs; _rhs])) ->
+    | (Xl.Mixop.(Infix (Arg (), {it = SqArrow; _}, Arg ())) , TupE ([_lhs; _rhs])) ->
       let new_prems = animate_prems {empty with varid = Set.of_list Encode.input_vars} prems in
       RuleD(id, binds, mixop, args, new_prems) $ r.at
     | _ -> r
@@ -363,9 +404,9 @@ let animate_clause c = match c.it with
 
 (* Animate defs *)
 let rec animate_def d = match d.it with
-  | RelD (id, mixop, t, rules) ->
+  | RelD (id, ps, mixop, t, rules) ->
     let rules' = List.map animate_rule rules in
-    RelD (id, mixop, t, rules') $ d.at
+    RelD (id, ps, mixop, t, rules') $ d.at
   | DecD (id, t1, t2, clauses) ->
     let new_clauses = List.map animate_clause clauses in
     DecD (id, t1, t2, new_clauses) $ d.at

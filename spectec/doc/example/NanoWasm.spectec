@@ -59,7 +59,7 @@ rule Instr_ok/global.get:
     -- if C.GLOBALS[x] = MUT? t
 
 rule Instr_ok/global.set:
-    C |- GLOBAL.GET x : t -> eps
+    C |- GLOBAL.SET x : t -> eps
     -- if C.GLOBALS[x] = MUT t
 
 

@@ -56,6 +56,8 @@ An implementation may impose restrictions on the following dimensions of a modul
 * the nesting depth of :ref:`structured control instructions <syntax-instr-control>`
 * the number of :ref:`label indices <syntax-labelidx>` in a |BRTABLE| instruction
 * the number of instructions in a :ref:`constant <valid-constant>` :ref:`expression <syntax-expr>`
+* the number of instructions between a :ref:`branch instruction <syntax-br>` and its target
+* the nesting depth of blocks between a :ref:`branch instruction <syntax-br>` and its target
 * the length of the array in a |ARRAYNEWFIXED| instruction
 * the length of an :ref:`element segment <syntax-elem>`
 * the length of a :ref:`data segment <syntax-data>`
@@ -63,7 +65,7 @@ An implementation may impose restrictions on the following dimensions of a modul
 * the range of :ref:`characters <syntax-char>` in a :ref:`name <syntax-name>`
 
 If the limits of an implementation are exceeded for a given module,
-then the implementation may reject the :ref:`validation <valid>`, compilation, or :ref:`instantiation <exec-instantiation>` of that module with an embedder-specific error.
+then the implementation may reject the :ref:`validation <valid>`, compilation, or :ref:`instantiation <exec-instantiation>` of that module with an implementation-specific error.
 
 .. note::
    The last item allows :ref:`embedders <embedder>` that operate in limited environments without support for
@@ -142,11 +144,14 @@ Restrictions on the following dimensions may be imposed during :ref:`execution <
 * the number of :ref:`frames <syntax-frame>` on the :ref:`stack <stack>`
 * the number of :ref:`labels <syntax-label>` on the :ref:`stack <stack>`
 * the number of :ref:`values <syntax-val>` on the :ref:`stack <stack>`
+* the number of :ref:`handlers <syntax-handler>` on the :ref:`stack <stack>`
+* the number of :ref:`labels <syntax-val>` dropped from the :ref:`stack <stack>` by a :ref:`branch instruction <syntax-br>`
+* the number of :ref:`values <syntax-val>` dropped from the :ref:`stack <stack>` by a :ref:`branch instruction <syntax-br>`
 
 If the runtime limits of an implementation are exceeded during execution of a computation,
-then it may terminate that computation and report an embedder-specific error to the invoking code.
+then it may terminate that computation and report an implementation-specific error to the invoking code.
 
-Some of the above limits may already be verified during instantiation, in which case an implementation may report exceedance in the same manner as for :ref:`syntactic limits <impl-syntax>`.
+Some of the above limits may already be verified during :ref:`validation <valid>` or :ref:`instantiation <exec-instantiation>`, in which case an implementation may report exceedance in the same manner as for :ref:`syntactic limits <impl-syntax>`.
 
 .. note::
    Concrete limits are usually not fixed but may be dependent on specifics, interdependent, vary over time, or depend on other implementation- or embedder-specific situations or events.
