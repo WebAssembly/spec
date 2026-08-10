@@ -16363,16 +16363,6 @@ The instruction :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}}}{\mathsf{\_}}{{\ma
 
 
 
-The instruction :math:`({\mathit{nt}} {.} {\mathit{wideop}}_{\mathit{nt}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{nt}}~{\mathit{nt}}~{\mathit{nt}}~{\mathit{nt}}~\rightarrow~{\mathit{nt}}~{\mathit{nt}}`.
-
-
-
-
-The instruction :math:`({\mathit{nt}} {.} {\mathit{extwideop}}_{\mathit{nt}})` is :ref:`valid <valid-val>` with the instruction type :math:`{\mathit{nt}}~{\mathit{nt}}~\rightarrow~{\mathit{nt}}~{\mathit{nt}}`.
-
-
-
-
 The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` is :ref:`valid <valid-val>` with the instruction type :math:`\epsilon~\rightarrow~\mathsf{v{\scriptstyle 128}}`.
 
 
@@ -19626,56 +19616,6 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Let :math:`c` be an element of :math:`{{\mathit{cvtop}}}{{}_{{\mathit{nt}}_1, {\mathit{nt}}_2}(c_1)}`.
 
 #. Push the value :math:`({\mathit{nt}}_2{.}\mathsf{const}~c)` to the stack.
-
-
-:math:`{\mathit{nt}} {.} {\mathit{wideop}}_{\mathit{nt}}`
-.........................................................
-
-
-1. Assert: Due to validation, a value of number type :math:`{\mathit{nt}}` is on the top of the stack.
-
-#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_4)` from the stack.
-
-#. Assert: Due to validation, a number value is on the top of the stack.
-
-#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_3)` from the stack.
-
-#. Assert: Due to validation, a number value is on the top of the stack.
-
-#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_2)` from the stack.
-
-#. Assert: Due to validation, a number value is on the top of the stack.
-
-#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
-
-#. Assert: Due to validation, :math:`{|{{\mathrm{wideop}}}_{{\mathit{nt}}, {\mathit{wideop}}_{\mathit{nt}}}(c_1, c_2, c_3, c_4)|} > 0`.
-
-#. Let :math:`(c_5, c_6)` be the destructuring of an element of :math:`{{\mathrm{wideop}}}_{{\mathit{nt}}, {\mathit{wideop}}_{\mathit{nt}}}(c_1, c_2, c_3, c_4)`.
-
-#. Push the value :math:`({\mathit{nt}}{.}\mathsf{const}~c_5)` to the stack.
-
-#. Push the value :math:`({\mathit{nt}}{.}\mathsf{const}~c_6)` to the stack.
-
-
-:math:`{\mathit{nt}} {.} {\mathit{extwideop}}_{\mathit{nt}}`
-............................................................
-
-
-1. Assert: Due to validation, a value of number type :math:`{\mathit{nt}}` is on the top of the stack.
-
-#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_2)` from the stack.
-
-#. Assert: Due to validation, a number value is on the top of the stack.
-
-#. Pop the value :math:`({\mathit{numtype}}_0{.}\mathsf{const}~c_1)` from the stack.
-
-#. Assert: Due to validation, :math:`{|{{\mathrm{extwideop}}}_{{\mathit{nt}}, {\mathit{extwideop}}_{\mathit{nt}}}(c_1, c_2)|} > 0`.
-
-#. Let :math:`(c_5, c_6)` be the destructuring of an element of :math:`{{\mathrm{extwideop}}}_{{\mathit{nt}}, {\mathit{extwideop}}_{\mathit{nt}}}(c_1, c_2)`.
-
-#. Push the value :math:`({\mathit{nt}}{.}\mathsf{const}~c_5)` to the stack.
-
-#. Push the value :math:`({\mathit{nt}}{.}\mathsf{const}~c_6)` to the stack.
 
 
 :math:`\mathsf{v{\scriptstyle 128}} {.} {\mathit{vvunop}}`
@@ -25436,47 +25376,6 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`{{\mathrm{reinterpret}}}_{{\mathit{numtype}}, {\mathit{numtype}'}}(i_1)`.
 
 
-:math:`{{\mathrm{iconcat}}}_{{\mathsf{i}}{N}}(N, i_1, i_2)`
-...........................................................
-
-
-1. Return :math:`{{\mathrm{ior}}}_{N}({{{{\mathrm{iextend}}}_{N, N}^{\mathsf{u}}}}{(i_1)}, {{\mathrm{ishl}}}_{N}({{{{\mathrm{iextend}}}_{N, N}^{\mathsf{u}}}}{(i_2)}, N))`.
-
-
-:math:`{{\mathrm{isplit}}}_{{\mathsf{i}}{N}}(N, i_1)`
-.....................................................
-
-
-1. Return :math:`({{\mathrm{wrap}}}_{N, N}(i_1), {{\mathrm{wrap}}}_{N, N}({{\mathrm{ishr}}}{\mathsf{u}}{{}_{N}(i_1, N)}))`.
-
-
-:math:`{{\mathrm{wideop}}}_{{\mathsf{i}}{N}}(N, {\mathit{wideop}}, i_1, i_2)`
-.............................................................................
-
-
-1. If :math:`{\mathit{wideop}} = \mathsf{add{\scriptstyle 128}}`, then:
-
-   a. Return :math:`{{\mathrm{iadd}}}_{N}(i_1, i_2)`.
-
-#. Assert: Due to validation, :math:`{\mathit{wideop}} = \mathsf{sub{\scriptstyle 128}}`.
-
-#. Return :math:`{{\mathrm{isub}}}_{N}(i_1, i_2)`.
-
-
-:math:`{{\mathrm{wideop}}}_{{\mathsf{i}}{N}, {\mathit{wideop}}}(i_1, i_2, i_3, i_4)`
-....................................................................................
-
-
-1. Return :math:`{{\mathrm{isplit}}}_{{\mathsf{i}}{N}}(128, {{\mathrm{wideop}}}_{{\mathsf{i}}{N}}(128, {\mathit{wideop}}, {{\mathrm{iconcat}}}_{{\mathsf{i}}{N}}(128, i_1, i_2), {{\mathrm{iconcat}}}_{{\mathsf{i}}{N}}(128, i_3, i_4)))`.
-
-
-:math:`{{\mathrm{extwideop}}}_{{\mathsf{i}}{N}, {\mathsf{mul\_wide}}{\mathsf{\_}}{{\mathit{sx}}}}(i_1, i_2)`
-............................................................................................................
-
-
-1. Return :math:`{{\mathrm{isplit}}}_{{\mathsf{i}}{N}}(128, {{\mathrm{imul}}}_{128}({{{{\mathrm{iextend}}}_{128, N}^{{\mathit{sx}}}}}{(i_1)}, {{{{\mathrm{iextend}}}_{128, N}^{{\mathit{sx}}}}}{(i_2)}))`.
-
-
 :math:`{\mathrm{zeroop}}({{\mathit{lanetype}'}}{\mathsf{x}}{M_1}, {{\mathit{lanetype}}}{\mathsf{x}}{M_2}, {\mathit{vcvtop}})`
 .............................................................................................................................
 
@@ -29216,12 +29115,6 @@ Instr_ok/relop
 Instr_ok/cvtop
 - the instruction (CVTOP nt_1 nt_2 cvtop) is valid with the instruction type [nt_2] -> [nt_1].
 
-Instr_ok/wideop
-- the instruction (WIDEOP nt wideop_nt) is valid with the instruction type [nt, nt, nt, nt] -> [nt, nt].
-
-Instr_ok/extwideop
-- the instruction (EXTWIDEOP nt extwideop_nt) is valid with the instruction type [nt, nt] -> [nt, nt].
-
 Instr_ok/vconst
 - the instruction (V128.CONST c) is valid with the instruction type [] -> [V128].
 
@@ -30858,30 +30751,6 @@ Step_pure/cvtop nt_2 nt_1 cvtop
   a. Trap.
 4. Let c be an element of $cvtop__(nt_1, nt_2, cvtop, c_1).
 5. Push the value (nt_2.CONST c) to the stack.
-
-Step_pure/wideop nt wideop_nt
-1. Assert: Due to validation, a value of value type nt is on the top of the stack.
-2. Pop the value (numtype_0.CONST c_4) from the stack.
-3. Assert: Due to validation, a value of value type num is on the top of the stack.
-4. Pop the value (numtype_0.CONST c_3) from the stack.
-5. Assert: Due to validation, a value of value type num is on the top of the stack.
-6. Pop the value (numtype_0.CONST c_2) from the stack.
-7. Assert: Due to validation, a value of value type num is on the top of the stack.
-8. Pop the value (numtype_0.CONST c_1) from the stack.
-9. Assert: Due to validation, (|[$wideop__(nt, wideop_nt, c_1, c_2, c_3, c_4)]| > 0).
-10. Let (c_5, c_6) be an element of [$wideop__(nt, wideop_nt, c_1, c_2, c_3, c_4)].
-11. Push the value (nt.CONST c_5) to the stack.
-12. Push the value (nt.CONST c_6) to the stack.
-
-Step_pure/extwideop nt extwideop_nt
-1. Assert: Due to validation, a value of value type nt is on the top of the stack.
-2. Pop the value (numtype_0.CONST c_2) from the stack.
-3. Assert: Due to validation, a value of value type num is on the top of the stack.
-4. Pop the value (numtype_0.CONST c_1) from the stack.
-5. Assert: Due to validation, (|[$extwideop__(nt, extwideop_nt, c_1, c_2)]| > 0).
-6. Let (c_5, c_6) be an element of [$extwideop__(nt, extwideop_nt, c_1, c_2)].
-7. Push the value (nt.CONST c_5) to the stack.
-8. Push the value (nt.CONST c_6) to the stack.
 
 Step_pure/vvunop V128 vvunop
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
@@ -33594,24 +33463,6 @@ cvtop__ numtype numtype' cvtop__ i_1
 8. Assert: Due to validation, (cvtop__ = REINTERPRET).
 9. Assert: Due to validation, ($size(numtype) = $size(numtype')).
 10. Return [$reinterpret__(numtype, numtype', i_1)].
-
-iconcat_ Inn N i_1 i_2
-1. Return $ior_(N, $iextend_(N, $sizenn(Inn), U, i_1), $ishl_(N, $iextend_(N, $sizenn(Inn), U, i_2), $sizenn(Inn))).
-
-isplit_ Inn N i_1
-1. Return ($wrap__(N, $sizenn(Inn), i_1), $wrap__(N, $sizenn(Inn), $ishr_(N, U, i_1, $sizenn(Inn)))).
-
-wideop_ Inn N wideop_ i_1 i_2
-1. If (wideop_ = ADD128), then:
-  a. Return $iadd_(N, i_1, i_2).
-2. Assert: Due to validation, (wideop_ = SUB128).
-3. Return $isub_(N, i_1, i_2).
-
-wideop__ Inn wideop i_1 i_2 i_3 i_4
-1. Return $isplit_(Inn, 128, $wideop_(Inn, 128, wideop, $iconcat_(Inn, 128, i_1, i_2), $iconcat_(Inn, 128, i_3, i_4))).
-
-extwideop__ Inn (MUL_WIDE sx) i_1 i_2
-1. Return $isplit_(Inn, 128, $imul_(128, $iextend_(128, $sizenn(Inn), sx, i_1), $iextend_(128, $sizenn(Inn), sx, i_2))).
 
 zeroop lanetype' X M_1 lanetype X M_2 vcvtop__
 1. If lanetype' is Jnn, then:
