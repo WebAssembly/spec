@@ -89,7 +89,7 @@ let character =
     [^'"''\\''\x00'-'\x1f''\x7f'-'\xff']
   | utf8enc
   | '\\'escape
-  | '\\'hexdigit hexdigit
+  | '\\'hexdigit hexdigit 
   | "\\u{" hexnum '}'
 
 let nat = num | "0x" hexnum

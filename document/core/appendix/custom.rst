@@ -178,7 +178,7 @@ It consists of an :ref:`indirect name map <binary-indirectnamemap>` assigning fi
 .. math::
    \begin{array}{llclll}
    \production{field name subsection} & \Bfieldnamesubsec &::=&
-     \Bnamesubsection_10(\Bindirectnamemap) \\
+     \Bnamesubsection_{10}(\Bindirectnamemap) \\
    \end{array}
 
 
@@ -194,7 +194,7 @@ It consists of a :ref:`name map <binary-namemap>` assigning tag names to :ref:`t
 .. math::
    \begin{array}{llclll}
    \production{tag name subsection} & \Btagnamesubsec &::=&
-     \Bnamesubsection_1(\Bnamemap) \\
+     \Bnamesubsection_{11}(\Bnamemap) \\
    \end{array}
 
 

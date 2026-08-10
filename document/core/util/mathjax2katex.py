@@ -61,16 +61,19 @@ def HasBalancedTags(s):
 
 def ReplaceMath(cache, data):
   old = data
-  data = re.sub('[\\\\]\\[([0-9]|-)', '\\\\DOUBLESLASH\\[\\1', data)  # Messed up by Bikeshed
+  data = re.sub('[\\\\]\\[([0-9]|-)', '\\\\DOUBLESLASH[\\1', data)  # Messed up by Bikeshed ("\\[" becomes "\[")
   data = data.replace('\\\\', '\\DOUBLESLASH')
-  data = data.replace('\\(', '')
-  data = data.replace('\\)', '')
+  #data = data.replace('\\(', '')
+  #data = data.replace('\\)', '')
+  data = re.sub('^\\\\\\(', '', data)
+  data = re.sub('\\\\\\)$', '', data)
   data = data.replace('\\[', '')
   data = data.replace('\\]', '')
   data = data.replace('\\DOUBLESLASH', '\\\\')
   data = data.replace('\u2019', '\'')       # "Right Single Quotation Mark" messed up by Bikeshed
   data = data.replace('\\hfill', ' ')
   data = data.replace('\\mbox', '\\text')
+  data = data.replace('\\texttt{', '{\\tt ')
   data = data.replace('\\begin{split}', '\\begin{aligned}')
   data = data.replace('\\end{split}', '\\end{aligned}')
   data = re.sub('\\\\multicolumn\\{[2-9]\\}\\{@\\{\\}l@\\{\\}\\}', '', data)   # Katex can't handle it

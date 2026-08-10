@@ -38,7 +38,7 @@ let string_of_region r =
 
 (* Phrases *)
 
-type ('a, 'b) note_phrase = {at : region; it : 'a; note : 'b}
+type ('a, 'b) note_phrase = {at : region; it : 'a; mutable note : 'b}
 type 'a phrase = ('a, unit) note_phrase
 
 let ($) it at = {it; at; note = ()}

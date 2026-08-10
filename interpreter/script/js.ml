@@ -161,6 +161,8 @@ function assert_return(action, loc, ...expected) {
     throw new Error(expected.length + " value(s) expected, got " + actual.length);
   }
   for (let i = 0; i < actual.length; ++i) {
+    let actual_i;
+    try { actual_i = "" + actual[i] } catch { actual_i = typeof actual[i] }
     switch (expected[i]) {
       case "nan:canonical":
       case "nan:arithmetic":
@@ -168,12 +170,12 @@ function assert_return(action, loc, ...expected) {
         // Note that JS can't reliably distinguish different NaN values,
         // so there's no good way to test that it's a canonical NaN.
         if (!Number.isNaN(actual[i])) {
-          throw new Error("Wasm NaN return value expected, got " + actual[i]);
+          throw new Error("Wasm NaN return value expected, got " + actual_i);
         };
         return;
       case "ref.i31":
         if (typeof actual[i] !== "number" || (actual[i] & 0x7fffffff) !== actual[i]) {
-          throw new Error("Wasm i31 return value expected, got " + actual[i]);
+          throw new Error("Wasm i31 return value expected, got " + actual_i);
         };
         return;
       case "ref.any":
@@ -183,27 +185,27 @@ function assert_return(action, loc, ...expected) {
         // For now, JS can't distinguish exported Wasm GC values,
         // so we only test for object.
         if (typeof actual[i] !== "object") {
-          throw new Error("Wasm object return value expected, got " + actual[i]);
+          throw new Error("Wasm object return value expected, got " + actual_i);
         };
         return;
       case "ref.func":
         if (typeof actual[i] !== "function") {
-          throw new Error("Wasm function return value expected, got " + actual[i]);
+          throw new Error("Wasm function return value expected, got " + actual_i);
         };
         return;
       case "ref.extern":
         if (actual[i] === null) {
-          throw new Error("Wasm reference return value expected, got " + actual[i]);
+          throw new Error("Wasm reference return value expected, got " + actual_i);
         };
         return;
       case "ref.null":
         if (actual[i] !== null) {
-          throw new Error("Wasm null return value expected, got " + actual[i]);
+          throw new Error("Wasm null return value expected, got " + actual_i);
         };
         return;
       default:
         if (!Object.is(actual[i], expected[i])) {
-          throw new Error("Wasm return value " + expected[i] + " expected, got " + actual[i]);
+          throw new Error("Wasm return value " + expected[i] + " expected, got " + actual_i);
         };
     }
   }
@@ -388,29 +390,33 @@ let abs_mask_of = function
   | I32T | F32T -> I32 Int32.max_int
   | I64T | F64T -> I64 Int64.max_int
 
-let value v =
-  match v.it with
-  | Num n -> [Const (n @@ v.at) @@ v.at]
-  | Vec s -> [VecConst (s @@ v.at) @@ v.at]
-  | Ref (NullRef ht) -> [RefNull (Match.bot_of_heaptype [] ht) @@ v.at]
+let value v at =
+  match v with
+  | Num n -> [Const (n @@ at) @@ at]
+  | Vec s -> [VecConst (s @@ at) @@ at]
   | Ref (HostRef n) ->
-    [ Const (I32 n @@ v.at) @@ v.at;
-      Call (hostref_idx @@ v.at) @@ v.at;
+    [ Const (I32 n @@ at) @@ at;
+      Call (hostref_idx @@ at) @@ at;
     ]
   | Ref (Extern.ExternRef (HostRef n)) ->
-    [ Const (I32 n @@ v.at) @@ v.at;
-      Call (hostref_idx @@ v.at) @@ v.at;
-      ExternConvert Externalize @@ v.at;
+    [ Const (I32 n @@ at) @@ at;
+      Call (hostref_idx @@ at) @@ at;
+      ExternConvert Externalize @@ at;
     ]
   | Ref _ -> assert false
 
-let invoke dt vs at =
+let literal lit =
+  match lit.it with
+  | ValLit v -> value v lit.at
+  | NullLit ht -> [RefNull (Match.bot_of_heaptype [] ht) @@ lit.at]
+
+let invoke dt lits at =
   let dummy = RecT [SubT (Final, [], FuncT ([], []))] in
   let rts0 = Lib.List32.init subject_type_idx (fun i -> dummy, (dummy, i)) in
   let rts, i = statify_deftype rts0 dt in
   List.map (fun (_, (rt, _)) -> rt @@ at) (Lib.List32.drop subject_type_idx rts),
   ExternFuncT (Idx i),
-  List.concat (List.map value vs) @ [Call (subject_idx @@ at) @@ at]
+  List.concat (List.map literal lits) @ [Call (subject_idx @@ at) @@ at]
 
 let get t at =
   [], ExternGlobalT t, [GlobalGet (subject_idx @@ at) @@ at]
@@ -432,7 +438,7 @@ let type_of_vec_pat = function
 let type_of_ref_pat = function
   | RefPat ref -> type_of_ref ref.it
   | RefTypePat ht -> (NoNull, ht)
-  | NullPat -> (Null, BotHT)
+  | NullPat ht -> (Null, ht)
 
 let rec type_of_result res =
   match res.it with
@@ -527,7 +533,7 @@ let assert_return ress ts at =
         VecTest (V128 (V128.I8x16 V128Op.AllTrue)) @@ at;
         Test (I32 I32Op.Eqz) @@ at;
         BrIf (0l @@ at) @@ at ]
-    | RefResult (RefPat {it = NullRef _; _}) ->
+    | RefResult (RefPat {it = NullRef; _}) ->
       [ RefIsNull @@ at;
         Test (Value.I32 I32Op.Eqz) @@ at;
         BrIf (0l @@ at) @@ at ]
@@ -552,7 +558,7 @@ let assert_return ress ts at =
       [ RefTest (NoNull, t) @@ at;
         Test (I32 I32Op.Eqz) @@ at;
         BrIf (0l @@ at) @@ at ]
-    | RefResult NullPat ->
+    | RefResult (NullPat _) ->
       [ RefIsNull @@ at;
         Test (I32 I32Op.Eqz) @@ at;
         BrIf (0l @@ at) @@ at ]
@@ -629,7 +635,7 @@ let is_js_vectype = function
   | _ -> false
 
 let is_js_reftype = function
-  | (_, ExnHT) -> false
+  | (_, (ExnHT | NoExnHT)) -> false
   | _ -> true
 
 let is_js_valtype = function
@@ -672,8 +678,11 @@ let of_bytes = of_string_with String.iter add_hex_char
 let of_string = of_string_with String.iter add_char
 let of_name = of_string_with List.iter add_unicode_char
 
+let of_loc_unquoted at =
+  Filename.basename at.left.file ^ ":" ^ string_of_int at.left.line
+
 let of_loc at =
-  of_string (Filename.basename at.left.file ^ ":" ^ string_of_int at.left.line)
+  of_string (of_loc_unquoted at)
 
 let of_float z =
   match string_of_float z with
@@ -699,15 +708,20 @@ let of_vec v =
 let of_ref r =
   let open Value in
   match r with
-  | NullRef _ -> "null"
+  | NullRef -> "null"
   | HostRef n | Extern.ExternRef (HostRef n) -> "hostref(" ^ Int32.to_string n ^ ")"
   | _ -> assert false
 
-let of_value v =
-  match v.it with
+let of_val v =
+  match v with
   | Num n -> of_num n
   | Vec v -> of_vec v
   | Ref r -> of_ref r
+
+let of_lit lit =
+  match lit.it with
+  | ValLit v -> of_val v
+  | NullLit _ -> "null"
 
 let of_nan = function
   | CanonicalNan -> "\"nan:canonical\""
@@ -727,7 +741,7 @@ let of_vec_pat = function
 let of_ref_pat = function
   | RefPat r -> of_ref r.it
   | RefTypePat t -> "\"ref." ^ string_of_heaptype t ^ "\""
-  | NullPat -> "\"ref.null\""
+  | NullPat t -> "\"ref.null\""
 
 let rec of_result res =
   match res.it with
@@ -753,16 +767,16 @@ let of_wrapper env x_opt name wrap_action wrap_assertion at =
 
 let of_action env act =
   match act.it with
-  | Invoke (x_opt, name, vs) ->
+  | Invoke (x_opt, name, lits) ->
     "call(" ^ of_inst_opt env x_opt ^ ", " ^ of_name name ^ ", " ^
-      "[" ^ String.concat ", " (List.map of_value vs) ^ "])",
+      "[" ^ String.concat ", " (List.map of_lit lits) ^ "])",
     (match lookup_export env x_opt name act.at with
     | ExternFuncT (Def dt) ->
-      let (_, out) as ft = functype_of_comptype (expand_deftype dt) in
+      let (_, ts) as ft = functype_of_comptype (expand_deftype dt) in
       if is_js_functype ft then
         None
       else
-        Some (of_wrapper env x_opt name (invoke dt vs), out)
+        Some (of_wrapper env x_opt name (invoke dt lits), ts)
     | _ -> None
     )
   | Get (x_opt, name) ->
@@ -776,7 +790,7 @@ let of_action env act =
 
 let of_assertion' env act loc name args wrapper_opt =
   let act_js, act_wrapper_opt = of_action env act in
-  let js = name ^ "(() => " ^ act_js ^ loc ^ String.concat ", " ("" :: args) ^ ")" in
+  let js = name ^ "(() => " ^ act_js ^ ", " ^ loc ^ String.concat ", " ("" :: args) ^ ")" in
   match act_wrapper_opt with
   | None -> js ^ ";"
   | Some (act_wrapper, out) ->
@@ -784,7 +798,7 @@ let of_assertion' env act loc name args wrapper_opt =
       match wrapper_opt with
       | None -> name, run
       | Some wrapper -> "run", wrapper
-    in run_name ^ "(() => " ^ act_wrapper (wrapper out) act.at ^ loc ^ ");  // " ^ js
+    in run_name ^ "(() => " ^ act_wrapper (wrapper out) act.at ^ ", " ^ loc ^ ");  // " ^ js
 
 let of_assertion env ass =
   let loc = of_loc ass.at in
@@ -812,8 +826,8 @@ let of_assertion env ass =
     of_assertion' env act loc "assert_exception" [] None
 
 let of_command env cmd =
+  "\n// " ^ of_loc_unquoted cmd.at ^ "\n" ^
   let loc = of_loc cmd.at in
-  "\n// " ^ loc ^ "\n" ^
   match cmd.it with
   | Module (x_opt, def) ->
     let rec unquote def =

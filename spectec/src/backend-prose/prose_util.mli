@@ -12,7 +12,7 @@ val alternate : 'a list -> 'a list -> 'a list
 val apply_prose_hint : string -> string list -> string
 val string_of_stack_prefix : Al.Ast.expr -> string
 val find_case_typ : string -> Xl.Atom.atom -> El.Ast.typ
-val extract_case_hint : Il.Ast.typ -> Xl.Mixop.mixop -> El.Ast.exp option
+val extract_case_hint : Il.Ast.typ -> 'a Xl.Mixop.mixop -> El.Ast.exp option
 val extract_call_hint : string -> El.Ast.exp option
 val is_allocxs : string -> bool
 val fill_hole : El.Ast.exp list -> El.Ast.exp -> El.Ast.exp

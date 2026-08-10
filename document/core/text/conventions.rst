@@ -42,8 +42,8 @@ In order to distinguish symbols of the textual syntax from symbols of the abstra
 * ${grammar-case: $(T)*} is a possibly empty sequence of iterations of ${:T}.
   (This is a shorthand for ${grammar-case: $(T)^n} used where ${:n} is not relevant.)
 
-* ${grammar-case: $(T)+} is a possibly empty sequence of iterations of ${:T}.
-  (This is a shorthand for ${grammar-case: $(T)^n} used where ${:n} is not relevant.)
+* ${grammar-case: $(T)+} is a non-empty sequence of iterations of ${:T}.
+  (This is a shorthand for ${grammar-case: $(T)^n} where ${:n >= 1}.)
 
 * ${grammar-case: $(T)?} is an optional occurrence of ${:T}.
   (This is a shorthand for ${grammar-case: $(T)^n} where ${:n<=1}.)
@@ -111,6 +111,10 @@ For each index space, such a context contains the list of :ref:`names <syntax-na
 which were denoted by the corresponding :ref:`identifiers <text-id>`.
 Unnamed indices are associated with empty (${:eps}) entries in these lists.
 Fields have *dependent* name spaces, and hence a separate list of field identifiers per type.
+
+In addition, the field ${:TYPEDEFS} records the :ref:`defined type <syntax-deftype>` associated with each :ref:`type index <syntax-typeidx>`.
+They are needed to look up the number of parameters of :ref:`function types <syntax-functype>` when used in a :ref:`function definition <text-func>`,
+in order to produce the correct indices for :ref:`locals <syntax-local>`.
 
 An identifier context is *well-formed* if no index space contains duplicate identifiers.
 For fields, names need only be unique within a single type.

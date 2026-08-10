@@ -431,14 +431,14 @@ script: <cmd>*
 
 cmd:
   <module>                                   ;; define, validate, and possibly instantiate module
-  <instance>
+  <instance>                                 ;; instantiate module
   ( register <string> <name>? )              ;; register module instance for imports
   <action>                                   ;; perform action and print results
   <assertion>                                ;; assert result of an action
   <meta>                                     ;; meta command
 
 module:
-  ...
+  ...                                        ;; ordinary module syntax (see above)
   ( module <name>? binary <string>* )        ;; module in binary format (may be malformed)
   ( module <name>? quote <string>* )         ;; module quoted in text (may be malformed)
   ( module definition <name>? binary ... )   ;; uninstantiated module
@@ -453,7 +453,7 @@ action:
 const:
   ( <num_type>.const <num> )                 ;; number value
   ( <vec_type> <vec_shape> <num>+ )          ;; vector value
-  ( ref.null <ref_kind> )                    ;; null reference
+  ( ref.null <heap_type> )                   ;; null reference
   ( ref.host <nat> )                         ;; host reference
   ( ref.extern <nat> )                       ;; external host reference
 
@@ -485,7 +485,7 @@ num_pat:
 meta:
   ( script <name>? <script> )                ;; name a subscript
   ( input <name>? <string> )                 ;; read script or module from file
-  ( output <name>? <string>? )               ;; output module to stout or file
+  ( output <name>? <string>? )               ;; output module to stdout or file
 ```
 Commands are executed in sequence. Commands taking an optional module name refer to the most recently defined module if no name is given. They are only possible after a module has been defined.
 
@@ -501,10 +501,10 @@ A module of the form `(module quote <string>*)` is given in textual form and wil
 Usually, a module declaration implicitly instantiates the module,
 that is, it defines both a module and an instance (of the same name).
 Instantiation can be suppressed by adding the keyword `definition`.
-A module declared as a definition only can then be instantiated explicitly, and multiple times, using the separate form `(module instance <inst_var> <module_name>)`.
+A module declared as a definition only can then be instantiated explicitly, and multiple times, using the separate form `(module instance <instance_name> <module_name>)` (if only one name is given, it is the module name).
 
 There are also a number of meta commands.
-The `script` command is a simple mechanism to name sub-scripts themselves. This is mainly useful for converting scripts with the `output` command. Commands inside a `script` will be executed normally, but nested meta are expanded in place (`input`, recursively) or elided (`output`) in the named script.
+The `script` command is a simple mechanism to name sub-scripts themselves. This is mainly useful for converting scripts with the `output` command. Commands inside a `script` will be executed normally, but nested meta commands are expanded in place (`input`, recursively) or elided (`output`) in the named script.
 
 The `input` and `output` meta commands determine the requested file format from the file name extension. They can handle both `.wasm`, `.wat`, and `.wast` files. In the case of input, a `.wast` script will be recursively executed. Output additionally handles `.js` as a target, which will convert the referenced script to an equivalent, self-contained JavaScript runner. It also recognises `.bin.wast` specially, which creates a _binary script_ where module definitions are in binary, as defined below.
 
@@ -550,6 +550,7 @@ binscript: <cmd>*
 
 cmd:
   <module>                                   ;; define, validate, and initialize module
+  <instance>                                 ;; instantiate module
   ( register <string> <name>? )              ;; register module for imports
   <action>                                   ;; perform action and print results
   <assertion>                                ;; assert result of an action

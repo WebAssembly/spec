@@ -8,9 +8,9 @@ LOG = _log
 OWNDIR = $(PWD)
 SPECDIR = ../../specification
 SPECCLONE = ../_specification
-SPECS = $(shell ls $(SPECDIR))
+SPECS = $(shell ls -d $(SPECDIR)/wasm-*)
 TESTS = $(SPECS:%=test-%)
-SPECFILES = $(shell ls $(SPECS:%=$(SPECDIR)/%/*.$(EXT)))
+SPECFILES = $(shell ls $(SPECS:%=%/*.$(EXT)))
 
 
 # Main targets

@@ -15,11 +15,6 @@ open Source
 open Il.Ast
 open Il.Free
 
-(* Errors *)
-
-let error at msg = Error.error at "side condition" msg
-
-module Env = Map.Make(String)
 
 (* Smart constructor for LenE that optimizes |x^n| into n *)
 let lenE e = match e.it with
@@ -32,24 +27,24 @@ let iterPr (pr, (iter, vars)) =
   let vars' = List.filter (fun (id, _) ->
     Set.mem id.it frees.varid
   ) vars in
-  (* Must keep at least one variable to keep the iteration well-formed *)
-  let vars'' = if vars' <> [] then vars' else [List.hd vars] in
-  IterPr (pr, (iter, vars''))
+  IterPr (pr, (iter, vars'))
 
 let is_null e = CmpE (`EqOp, `BoolT, e, OptE None $$ e.at % e.note) $$ e.at % (BoolT $ e.at)
-let iffE e1 e2 = IfPr (BinE (`EquivOp, `BoolT, e1, e2) $$ e1.at % (BoolT $ e1.at)) $ e1.at
+let is_non_empty e = IfPr (CmpE (`NeOp, `BoolT, e, ListE [] $$ e.at % e.note) $$ e.at % (BoolT $ e.at)) $ e.at
+let equiv e1 e2 = IfPr (BinE (`EquivOp, `BoolT, e1, e2) $$ e1.at % (BoolT $ e1.at)) $ e1.at
 let same_len e1 e2 = IfPr (CmpE (`EqOp, `BoolT, lenE e1, lenE e2) $$ e1.at % (BoolT $ e1.at)) $ e1.at
 (* let has_len ne e = IfPr (CmpE (`EqOp, None, lenE e, ne) $$ e.at % (BoolT $ e.at)) $ e.at *)
 
 (* updates the types in the environment as we go under iteras *)
 let env_under_iter env ((_, vs) : iterexp) =
-  List.fold_left (fun env (v, e) -> Env.add v.it e.note env) env vs
+  List.fold_left (fun env (v, e) -> Il.Env.bind_var env v e.note) env vs
 
 let iter_side_conditions _env ((iter, vs) : iterexp) : prem list =
   (* let iter' = if iter = Opt then Opt else List in *)
   match iter, List.map snd vs with
-  | Opt, (e::es) -> List.map (fun e' -> iffE (is_null e) (is_null e')) es
-  | (List|List1), (e::es) -> List.map (same_len e) es
+  | Opt, e::es -> List.map (fun e' -> equiv (is_null e) (is_null e')) es
+  | List, e::es -> List.map (same_len e) es
+  | List1, e::es -> List.map (same_len e) es @ [is_non_empty e]
   (* | ListN (ne, None), es -> List.map (has_len ne) es *)
   | ListN _, _ -> []
   | _ -> []
@@ -74,14 +69,11 @@ let rec t_exp env e : prem list =
   | VarE _ | BoolE _ | NumE _ | TextE _ | OptE None
   -> []
   | UnE (_, _, exp)
-  | DotE (exp, _)
   | LenE exp
   | ProjE (exp, _)
-  | UncaseE (exp, _)
   | OptE (Some exp)
   | TheE exp
   | LiftE exp
-  | CaseE (_, exp)
   | CvtE (exp, _, _)
   | SubE (exp, _, _)
   -> t_exp env exp
@@ -99,8 +91,12 @@ let rec t_exp env e : prem list =
   -> t_exp env exp1 @ t_path env path @ t_exp env exp2
   | CallE (_, args)
   -> List.concat_map (t_arg env) args
-  | StrE fields
-  -> List.concat_map (fun (_, e) -> t_exp env e) fields
+  | CaseE (_, exp, _)
+  | UncaseE (exp, _)
+  | DotE (exp, _)
+  -> t_exp env exp
+  | StrE (fields, _)
+  -> List.concat_map (fun (_, exp) -> t_exp env exp) fields
   | TupE es | ListE es
   -> List.concat_map (t_exp env) es
   | IterE (e1, iterexp)
@@ -130,9 +126,11 @@ and t_arg env arg = match arg.it with
 
 let rec t_prem env prem =
   (match prem.it with
-  | RulePr (_, _, exp) -> t_exp env exp
+  | RulePr (_, args, _, exp) -> List.concat_map (t_arg env) args @ t_exp env exp
   | IfPr e -> t_exp env e
-  | LetPr (e1, e2, _) -> t_exp env e1 @ t_exp env e2
+  | LetPr (qs, e1, e2) ->
+    let env' = Il.Env.env_of_params env qs in
+    t_exp env' e1 @ t_exp env' e2
   | ElsePr -> []
   | IterPr (prem, iterexp)
   -> iter_side_conditions env iterexp @
@@ -143,53 +141,61 @@ let rec t_prem env prem =
 
 let t_prems env = List.concat_map (t_prem env)
 
-let is_identity e =
-  try
-    let e' = (Il.Eval.reduce_exp Il.Env.empty e) in
-    match e'.it with
-    | BoolE b -> b
-    | _ -> false
-  with _ -> false
+let is_true_exp env e =
+  match Il.Eval.reduce_exp env e with
+  | Ok {it = BoolE b; _} -> b
+  | _ -> false
 
 (* Is prem always true? *)
-let is_true prem = match prem.it with
-  | IfPr e -> is_identity e
+let is_true_prem env prem =
+  match prem.it with
+  | IfPr e -> is_true_exp env e
   | _ -> false
 
 (* Does prem1 obviously imply prem2? *)
-let rec implies prem1 prem2 = Il.Eq.eq_prem prem1 prem2 ||
+let rec implies prem1 prem2 =
+  Il.Eq.eq_prem prem1 prem2 ||
   match prem2.it with
   | IterPr (prem2', _) -> implies prem1 prem2'
   | _ -> false
 
-let reduce_prems prems = prems
-  |> Util.Lib.List.filter_not is_true
+(* Remove empty premise iterators *)
+let rec flatten_empty_iter prem =
+  match prem.it with
+  | IterPr (prem', iterexp) ->
+    let prem'' = flatten_empty_iter prem' in
+    (match iterexp with
+    | ((Opt | List | List1), []) -> prem''
+    | _ -> IterPr (prem'', iterexp) $ prem.at)
+  | _ -> prem
+
+let reduce_prems env prems = prems
+  |> List.map flatten_empty_iter
+  |> Util.Lib.List.filter_not (is_true_prem env)
   |> Util.Lib.List.nub implies
 
-let t_rule' = function
-  | RuleD (id, binds, mixop, exp, prems) ->
-    let env = List.fold_left (fun env bind ->
-      match bind.it with
-      | ExpB (v, t) -> Env.add v.it t env
-      | TypB _ | DefB _ | GramB _ -> error bind.at "unexpected type argument in rule") Env.empty binds
-    in
-    let prems' = t_prems env prems in
-    let extra_prems = t_exp env exp in
-    let reduced_prems = reduce_prems (extra_prems @ prems') in
-    RuleD (id, binds, mixop, exp, reduced_prems)
+let t_rule' env = function
+  | RuleD (id, params, mixop, exp, prems) ->
+    let env' = Il.Env.env_of_params env params in
+    let prems' = t_prems env' prems in
+    let extra_prems = t_exp env' exp in
+    let reduced_prems = reduce_prems env (extra_prems @ prems') in
+    RuleD (id, params, mixop, exp, reduced_prems)
 
-let t_rule x = { x with it = t_rule' x.it }
+let t_rule env x = { x with it = t_rule' env x.it }
 
-let t_rules = List.map t_rule
+let t_rules env = List.map (t_rule env)
 
-let rec t_def' = function
-  | RecD defs -> RecD (List.map t_def defs)
-  | RelD (id, mixop, typ, rules) ->
-    RelD (id, mixop, typ, t_rules rules)
+let rec t_def' env = function
+  | RecD defs -> RecD (List.map (t_def env) defs)
+  | RelD (id, params, mixop, typ, rules) ->
+    let env' = Il.Env.env_of_params env params in
+    RelD (id, params, mixop, typ, t_rules env' rules)
   | def -> def
 
-and t_def x = { x with it = t_def' x.it }
+and t_def env x = { x with it = t_def' env x.it }
 
 let transform (defs : script) =
-  List.map t_def defs
+  let env = Il.Env.env_of_script defs in
+  List.map (t_def env) defs
 

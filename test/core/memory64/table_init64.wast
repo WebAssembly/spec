@@ -21,7 +21,7 @@
   (import "a" "ef4" (func (result i32)))    ;; index 4
   (table $t0 30 30 funcref)
   (table $t1 30 30 funcref)
-  
+
   (elem (table $t0) (i32.const 2) func 3 1 4 1)
   (elem funcref
     (ref.func 2) (ref.func 7) (ref.func 1) (ref.func 8))
@@ -80,7 +80,7 @@
   (import "a" "ef4" (func (result i32)))    ;; index 4
   (table $t0 30 30 funcref)
   (table $t1 30 30 funcref)
-  
+
   (elem (table $t0) (i32.const 2) func 3 1 4 1)
   (elem funcref
     (ref.func 2) (ref.func 7) (ref.func 1) (ref.func 8))
@@ -139,7 +139,7 @@
   (import "a" "ef4" (func (result i32)))    ;; index 4
   (table $t0 30 30 funcref)
   (table $t1 30 30 funcref)
-  
+
   (elem (table $t0) (i32.const 2) func 3 1 4 1)
   (elem funcref
     (ref.func 2) (ref.func 7) (ref.func 1) (ref.func 8))
@@ -206,7 +206,7 @@
   (import "a" "ef4" (func (result i32)))    ;; index 4
   (table $t0 30 30 funcref)
   (table $t1 30 30 funcref)
-  
+
   (elem (table $t1) (i32.const 2) func 3 1 4 1)
   (elem funcref
     (ref.func 2) (ref.func 7) (ref.func 1) (ref.func 8))
@@ -265,7 +265,7 @@
   (import "a" "ef4" (func (result i32)))    ;; index 4
   (table $t0 30 30 funcref)
   (table $t1 30 30 funcref)
-  
+
   (elem (table $t1) (i32.const 2) func 3 1 4 1)
   (elem funcref
     (ref.func 2) (ref.func 7) (ref.func 1) (ref.func 8))
@@ -324,7 +324,7 @@
   (import "a" "ef4" (func (result i32)))    ;; index 4
   (table $t0 30 30 funcref)
   (table $t1 30 30 funcref)
-  
+
   (elem (table $t1) (i32.const 2) func 3 1 4 1)
   (elem funcref
     (ref.func 2) (ref.func 7) (ref.func 1) (ref.func 8))
@@ -711,8 +711,128 @@
   (func (result i32) (i32.const 8))
   (func (result i32) (i32.const 9))
   (func (export "test")
+    (table.init 1 (i32.const 12) (i32.const 1) (i32.const 1))
+    ))
+(invoke "test")
+
+(module
+  (table $t0 30 30 funcref)
+  (table $t1 28 28 funcref)
+  (elem (table $t0) (i32.const 2) func 3 1 4 1)
+  (elem funcref
+    (ref.func 2) (ref.func 7) (ref.func 1) (ref.func 8))
+  (elem (table $t0) (i32.const 12) func 7 5 2 3 6)
+  (elem funcref
+    (ref.func 5) (ref.func 9) (ref.func 2) (ref.func 7) (ref.func 6))
+  (func (result i32) (i32.const 0))
+  (func (result i32) (i32.const 1))
+  (func (result i32) (i32.const 2))
+  (func (result i32) (i32.const 3))
+  (func (result i32) (i32.const 4))
+  (func (result i32) (i32.const 5))
+  (func (result i32) (i32.const 6))
+  (func (result i32) (i32.const 7))
+  (func (result i32) (i32.const 8))
+  (func (result i32) (i32.const 9))
+  (func (export "test")
     (elem.drop 1)
     (table.init 1 (i32.const 12) (i32.const 1) (i32.const 1))))
+(assert_trap (invoke "test") "out of bounds table access")
+
+(module
+  (table $t0 30 30 funcref)
+  (table $t1 28 28 funcref)
+  (elem (table $t0) (i32.const 2) func 3 1 4 1)
+  (elem funcref
+    (ref.func 2) (ref.func 7) (ref.func 1) (ref.func 8))
+  (elem (table $t0) (i32.const 12) func 7 5 2 3 6)
+  (elem funcref
+    (ref.func 5) (ref.func 9) (ref.func 2) (ref.func 7) (ref.func 6))
+  (func (result i32) (i32.const 0))
+  (func (result i32) (i32.const 1))
+  (func (result i32) (i32.const 2))
+  (func (result i32) (i32.const 3))
+  (func (result i32) (i32.const 4))
+  (func (result i32) (i32.const 5))
+  (func (result i32) (i32.const 6))
+  (func (result i32) (i32.const 7))
+  (func (result i32) (i32.const 8))
+  (func (result i32) (i32.const 9))
+  (func (export "test")
+    (elem.drop 1)
+    (table.init 1 (i32.const 12) (i32.const 0) (i32.const 0))))
+(invoke "test")
+
+(module
+  (table $t0 30 30 funcref)
+  (table $t1 28 28 funcref)
+  (elem (table $t0) (i32.const 2) func 3 1 4 1)
+  (elem funcref
+    (ref.func 2) (ref.func 7) (ref.func 1) (ref.func 8))
+  (elem (table $t0) (i32.const 12) func 7 5 2 3 6)
+  (elem funcref
+    (ref.func 5) (ref.func 9) (ref.func 2) (ref.func 7) (ref.func 6))
+  (func (result i32) (i32.const 0))
+  (func (result i32) (i32.const 1))
+  (func (result i32) (i32.const 2))
+  (func (result i32) (i32.const 3))
+  (func (result i32) (i32.const 4))
+  (func (result i32) (i32.const 5))
+  (func (result i32) (i32.const 6))
+  (func (result i32) (i32.const 7))
+  (func (result i32) (i32.const 8))
+  (func (result i32) (i32.const 9))
+  (func (export "test")
+    (elem.drop 1)
+    (table.init 1 (i32.const 12) (i32.const 1) (i32.const 0))))
+(assert_trap (invoke "test") "out of bounds table access")
+
+(module
+  (table $t0 30 30 funcref)
+  (table $t1 28 28 funcref)
+  (elem (table $t0) (i32.const 2) func 3 1 4 1)
+  (elem funcref
+    (ref.func 2) (ref.func 7) (ref.func 1) (ref.func 8))
+  (elem (table $t0) (i32.const 12) func 7 5 2 3 6)
+  (elem funcref
+    (ref.func 5) (ref.func 9) (ref.func 2) (ref.func 7) (ref.func 6))
+  (func (result i32) (i32.const 0))
+  (func (result i32) (i32.const 1))
+  (func (result i32) (i32.const 2))
+  (func (result i32) (i32.const 3))
+  (func (result i32) (i32.const 4))
+  (func (result i32) (i32.const 5))
+  (func (result i32) (i32.const 6))
+  (func (result i32) (i32.const 7))
+  (func (result i32) (i32.const 8))
+  (func (result i32) (i32.const 9))
+  (func (export "test")
+    (elem.drop 1)
+    (table.init 1 (i32.const 30) (i32.const 0) (i32.const 0))))
+(invoke "test")
+
+(module
+  (table $t0 30 30 funcref)
+  (table $t1 28 28 funcref)
+  (elem (table $t0) (i32.const 2) func 3 1 4 1)
+  (elem funcref
+    (ref.func 2) (ref.func 7) (ref.func 1) (ref.func 8))
+  (elem (table $t0) (i32.const 12) func 7 5 2 3 6)
+  (elem funcref
+    (ref.func 5) (ref.func 9) (ref.func 2) (ref.func 7) (ref.func 6))
+  (func (result i32) (i32.const 0))
+  (func (result i32) (i32.const 1))
+  (func (result i32) (i32.const 2))
+  (func (result i32) (i32.const 3))
+  (func (result i32) (i32.const 4))
+  (func (result i32) (i32.const 5))
+  (func (result i32) (i32.const 6))
+  (func (result i32) (i32.const 7))
+  (func (result i32) (i32.const 8))
+  (func (result i32) (i32.const 9))
+  (func (export "test")
+    (elem.drop 1)
+    (table.init 1 (i32.const 31) (i32.const 0) (i32.const 0))))
 (assert_trap (invoke "test") "out of bounds table access")
 
 (module
@@ -2332,3 +2452,20 @@
   (elem funcref) (elem funcref) (elem funcref) (elem funcref)
   (elem funcref)
   (func (table.init 64 (i32.const 0) (i32.const 0) (i32.const 0))))
+
+;; Test that element segments are not re-evaluated on every `table.init`.
+(module
+  (type $arr (array (mut arrayref)))
+
+  (table $table i64 2 arrayref)
+  (elem $elem arrayref (item (array.new_default $arr (i32.const 0))))
+
+  (func (export "run") (result i32)
+    (table.init $table $elem (i64.const 0) (i32.const 0) (i32.const 1))
+    (table.init $table $elem (i64.const 1) (i32.const 0) (i32.const 1))
+    (ref.eq (table.get $table (i64.const 0))
+            (table.get $table (i64.const 1)))
+  )
+)
+
+(assert_return (invoke "run") (i32.const 1))

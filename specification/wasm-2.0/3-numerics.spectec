@@ -52,14 +52,14 @@ def $relop_(numtype, relop_(numtype), num_(numtype), num_(numtype)) : num_(I32)
 def $cvtop__(numtype_1, numtype_2, cvtop, num_(numtype_1)) : num_(numtype_2)*
     hint(show %3#$__(%1,%2)#((%4)))
 
-def $wrap__(M, N, iN(M)) : iN(N)
-def $extend__(M, N, sx, iN(M)) : iN(N)               hint(show $extend__(%,%)^(%)#((%)))
-def $trunc__(M, N, sx, fN(M)) : iN(N)?               hint(show $trunc__(%,%)^(%)#((%)))
-def $trunc_sat__(M, N, sx, fN(M)) : iN(N)?           hint(show $trunc__sat__(%,%)^(%)#((%)))
-def $demote__(M, N, fN(M)) : fN(N)*
-def $promote__(M, N, fN(M)) : fN(N)*
-def $convert__(M, N, sx, iN(M)) : fN(N)              hint(show $convert__(%,%)^(%)#((%)))
-def $narrow__(M, N, sx, iN(M)) : iN(N)               hint(show $narrow__(%,%)^(%)#(%))
+def $wrap__(N, N', iN(N)) : iN(N')
+def $extend__(N, N', sx, iN(N)) : iN(N')               hint(show $extend__(%,%)^(%)#((%)))
+def $trunc__(N, N', sx, fN(N)) : iN(N')?               hint(show $trunc__(%,%)^(%)#((%)))
+def $trunc_sat__(N, N', sx, fN(N)) : iN(N')?           hint(show $trunc__sat__(%,%)^(%)#((%)))
+def $demote__(N, N', fN(N)) : fN(N')*
+def $promote__(N, N', fN(N)) : fN(N')*
+def $convert__(N, N', sx, iN(N)) : fN(N')              hint(show $convert__(%,%)^(%)#((%)))
+def $narrow__(N, N', sx, iN(N)) : iN(N')               hint(show $narrow__(%,%)^(%)#(%))
 def $reinterpret__(numtype_1, numtype_2, num_(numtype_1)) : num_(numtype_2)
 
 ;; TODO(3, rossberg): implement all numerics internally
@@ -275,7 +275,7 @@ def $binop_(Inn, ROTR, iN_1, iN_2) = $irotr_($sizenn(Inn), iN_1, iN_2)
 def $unop_(Inn, CLZ, iN) = $iclz_($sizenn(Inn), iN)
 def $unop_(Inn, CTZ, iN) = $ictz_($sizenn(Inn), iN)
 def $unop_(Inn, POPCNT, iN) = $ipopcnt_($sizenn(Inn), iN)
-def $unop_(Inn, EXTEND M, iN) = $extend__(M, $sizenn(Inn), S, $wrap__($sizenn(Inn), M, iN))
+def $unop_(Inn, EXTEND N', iN) = $extend__(N', $sizenn(Inn), S, $wrap__($sizenn(Inn), N', iN))
 def $testop_(Inn, EQZ, iN) = $ieqz_($sizenn(Inn), iN)
 def $relop_(Inn, EQ, iN_1, iN_2) = $ieq_($sizenn(Inn), iN_1, iN_2)
 def $relop_(Inn, NE, iN_1, iN_2) = $ine_($sizenn(Inn), iN_1, iN_2)

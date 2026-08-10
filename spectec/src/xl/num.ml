@@ -70,9 +70,9 @@ let typ_unop op t1 t2 : bool =
 let typ_binop op t1 t2 t3 : bool =
 	match op with
   | `AddOp | `MulOp -> t1 = t2 && t1 = t3
-  | `SubOp -> t1 = t2 && sub `IntT t1
-  | `DivOp -> t1 = t2 && sub `RatT t1
-  | `ModOp -> t1 = t2 && sub t1 `IntT
+  | `SubOp -> t1 = t2 && sub `IntT t3
+  | `DivOp -> t1 = t2 && sub `RatT t3
+  | `ModOp -> t1 = t2 && t1 = t3 && sub t1 `IntT
   | `PowOp -> t1 = t3 && (t2 = `NatT || t2 = `IntT && sub `RatT t1)
 
 
@@ -229,11 +229,11 @@ let right_uniting op num =
   | _ -> false
 *)
 
-let bin_partial (op : binop) arg1 arg2 of_ to_ : 'a option =
+let bin_partial (op : binop) arg1 arg2 of_ to_ : 'a option option =
 	match op, of_ arg1, of_ arg2 with
 	| op, Some num1, Some num2 ->
 	  (match bin op num1 num2 with
-	  | Some num -> Some (to_ num)
+	  | Some num -> Some (Some (to_ num))
 	  | None -> None
 	  )
 
@@ -254,19 +254,23 @@ let bin_partial (op : binop) arg1 arg2 of_ to_ : 'a option =
 *)
 
   (* neutral elements *)
-  | `AddOp, Some num1, _ when is_zero num1 -> Some arg2
-  | `MulOp, Some num1, _ when is_one num1 -> Some arg2
-  | (`AddOp | `SubOp), _, Some num2 when is_zero num2 -> Some arg1
-  | (`MulOp | `DivOp | `PowOp), _, Some num2 when is_one num2 -> Some arg1
+  | `AddOp, Some num1, _ when is_zero num1 -> Some (Some arg2)
+  | `MulOp, Some num1, _ when is_one num1 -> Some (Some arg2)
+  | (`AddOp | `SubOp), _, Some num2 when is_zero num2 -> Some (Some arg1)
+  | (`MulOp | `DivOp | `PowOp), _, Some num2 when is_one num2 -> Some (Some arg1)
 
   (* absorbing elements *)
-  | (`MulOp | `DivOp | `ModOp | `PowOp), Some num1, _ when is_zero num1 -> Some arg1
-  | `PowOp, Some num1, _ when is_one num1 -> Some arg1
-  | `MulOp, _, Some num2 when is_zero num2 -> Some arg2
+  | (`MulOp | `DivOp | `ModOp | `PowOp), Some num1, _ when is_zero num1 -> Some (Some arg1)
+  | `PowOp, Some (`Nat _ as num1), _ when is_one num1 -> Some (Some arg1)
+  | `MulOp, _, Some num2 when is_zero num2 -> Some (Some arg2)
 
   (* collapsing elements *)
-  | `ModOp, _, Some num2 when is_one num2 -> Some (to_ (zero (to_typ num2)))
-  | `PowOp, _, Some num2 when is_zero num2 -> Some (to_ (one (to_typ num2)))
+  | `ModOp, _, Some num2 when is_one num2 -> Some (Some (to_ (zero (to_typ num2))))
+  | `PowOp, _, Some num2 when is_zero num2 -> Some (Some (to_ (one (to_typ num2))))
+
+  (* failing elements *)
+  | `DivOp, _, Some num2 when is_zero num2 -> Some None
+  | `PowOp, _, Some (`Int _ as num2) when is_neg num2 -> Some None
 
   | _, _, _ -> None
 

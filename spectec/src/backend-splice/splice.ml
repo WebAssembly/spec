@@ -41,7 +41,7 @@ let try_with_error src i f x =
       { file = src.file; line = line + pos.line - 1;
         column = if line = 1 then column + pos.column - 1 else column} in
     let at' = {left = shift at.left; right = shift at.right} in
-Printexc.print_backtrace stdout;
+    Printexc.print_backtrace stdout;
     raise (Error.Error (at', msg))
 
 
@@ -85,9 +85,9 @@ let env_def env def =
     let grammar = Map.find id1.it env.gram in
     let gfragments = grammar.gfragments @ [(id2.it, def, ref 0)] in
     env.gram <- Map.add id1.it {grammar with gfragments} env.gram
-  | RelD (id, _, _) ->
+  | RelD (id, _, _, _) ->
     env.rel <- Map.add id.it {rdef = def; rules = []} env.rel
-  | RuleD (id1, id2, _, _) ->
+  | RuleD (id1, _, id2, _, _, _) ->
     let relation = Map.find id1.it env.rel in
     let rules = relation.rules @ [(id2.it, def, ref 0)] in
     env.rel <- Map.add id1.it {relation with rules} env.rel

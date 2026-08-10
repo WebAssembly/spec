@@ -77,7 +77,7 @@ def $truncz(rat) : int
 def $truncz hint(builtin)
 ;;def $truncz(+-q) = +-n  -- if n <- nat /\ $(q - 1) < n <= q
 
-def $ceilz(rat) : int
+def $ceilz(rat) : int hint(show $ceil(%)) hint(macro none)
 def $ceilz hint(builtin)
 ;;def $ceilz(+-q) = +-n  -- if n <- nat /\ q <= n < $(q + 1)
 
@@ -102,7 +102,7 @@ def $iabs_(N, iN(N)) : iN(N)
 def $iclz_(N, iN(N)) : iN(N)
 def $ictz_(N, iN(N)) : iN(N)
 def $ipopcnt_(N, iN(N)) : iN(N)
-def $iextend_(N, M, sx, iN(N)) : iN(N)          hint(show $iextend_((%,%))^(%)#((%)))
+def $iextend_(N, K, sx, iN(N)) : iN(N)          hint(show $iextend_((%,%))^(%)#((%)))
 
 def $iadd_(N, iN(N), iN(N)) : iN(N)
 def $isub_(N, iN(N), iN(N)) : iN(N)
@@ -158,8 +158,8 @@ def $ictz_ hint(builtin)
 def $ipopcnt_ hint(builtin)
 ;;def $ipopcnt_(N, i_1) = k            -- if $ibits_(N, i_1) = (0* 1)^k 0*
 
-def $iextend_(N, M, U, i) = $(i \ 2^M)
-def $iextend_(N, M, S, i) = $inv_signed_(N, $signed_(M, $(i \ 2^M)))
+def $iextend_(N, K, U, i) = $(i \ 2^K)
+def $iextend_(N, K, S, i) = $inv_signed_(N, $signed_(K, $(i \ 2^K)))
 
 
 def $iadd_(N, i_1, i_2) = $((i_1 + i_2) \ 2^N)
@@ -305,15 +305,15 @@ def $frelaxed_nmadd_ hint(builtin)
 
 ;; Conversions
 
-def $wrap__(M, N, iN(M)) : iN(N)
-def $extend__(M, N, sx, iN(M)) : iN(N)               hint(show $extend_((%,%))^(%)#((%)))
-def $trunc__(M, N, sx, fN(M)) : iN(N)?               hint(show $trunc_((%,%))^(%)#((%)))
-def $trunc_sat__(M, N, sx, fN(M)) : iN(N)?           hint(show $trunc__sat_((%,%))^(%)#((%)))
-def $relaxed_trunc__(M, N, sx, fN(M)) : iN(N)?       hint(show $relaxed__trunc_((%,%))^(%)#((%)))
-def $demote__(M, N, fN(M)) : fN(N)*
-def $promote__(M, N, fN(M)) : fN(N)*
-def $convert__(M, N, sx, iN(M)) : fN(N)              hint(show $convert_((%,%))^(%)#((%)))
-def $narrow__(M, N, sx, iN(M)) : iN(N)               hint(show $narrow_((%,%))^(%)#(%))
+def $wrap__(N, N', iN(N)) : iN(N')
+def $extend__(N, N', sx, iN(N)) : iN(N')               hint(show $extend_((%,%))^(%)#((%)))
+def $trunc__(N, N', sx, fN(N)) : iN(N')?               hint(show $trunc_((%,%))^(%)#((%)))
+def $trunc_sat__(N, N', sx, fN(N)) : iN(N')?           hint(show $trunc__sat_((%,%))^(%)#((%)))
+def $relaxed_trunc__(N, N', sx, fN(N)) : iN(N')?       hint(show $relaxed__trunc_((%,%))^(%)#((%)))
+def $demote__(N, N', fN(N)) : fN(N')*
+def $promote__(N, N', fN(N)) : fN(N')*
+def $convert__(N, N', sx, iN(N)) : fN(N')              hint(show $convert_((%,%))^(%)#((%)))
+def $narrow__(N, N', sx, iN(N)) : iN(N')               hint(show $narrow_((%,%))^(%)#(%))
 
 def $reinterpret__(numtype_1, numtype_2, num_(numtype_1)) : num_(numtype_2)
 
@@ -375,7 +375,7 @@ def $cvtop__(numtype_1, numtype_2, cvtop__(numtype_1, numtype_2), num_(numtype_1
 def $unop_(Inn, CLZ, i) = $iclz_($sizenn(Inn), i)
 def $unop_(Inn, CTZ, i) = $ictz_($sizenn(Inn), i)
 def $unop_(Inn, POPCNT, i) = $ipopcnt_($sizenn(Inn), i)
-def $unop_(Inn, EXTEND M, i) = $iextend_($sizenn(Inn), M, S, i)
+def $unop_(Inn, EXTEND N', i) = $iextend_($sizenn(Inn), N', S, i)
 
 def $unop_(Fnn, ABS, f) = $fabs_($sizenn(Fnn), f)
 def $unop_(Fnn, NEG, f) = $fneg_($sizenn(Fnn), f)
@@ -440,49 +440,3 @@ def $cvtop__(Inn_1, Fnn_2, REINTERPRET, i_1) =
   $reinterpret__(Inn_1, Fnn_2, i_1) -- if $size(Inn_1) = $size(Fnn_2)  ;; TODO(3, rossberg): make implicit
 def $cvtop__(Fnn_1, Inn_2, REINTERPRET, f_1) =
   $reinterpret__(Fnn_1, Inn_2, f_1) -- if $size(Fnn_1) = $size(Inn_2)  ;; TODO(3, rossberg): make implicit
-
-;; wide-arithmetic helpers and implementation
-
-def $iconcat_(numtype, N, num_(numtype), num_(numtype)) : iN(N)
-def $iconcat_(Inn, N, i_1, i_2) =
-  $ior_(
-    N,
-    $iextend_(N, $sizenn(Inn), U, i_1),
-    $ishl_(N, $iextend_(N, $sizenn(Inn), U, i_2), $sizenn(Inn)),
-  )
-
-def $isplit_(numtype, N, iN(N)) : (num_(numtype), num_(numtype))
-def $isplit_(Inn, N, i_1) = (
-  $wrap__(N, $sizenn(Inn), i_1),
-  $wrap__(N, $sizenn(Inn), $ishr_(N, U, i_1, $sizenn(Inn))),
-)
-
-def $wideop_(numtype, N, wideop_(numtype), iN(N), iN(N)) : iN(N)
-def $wideop_(Inn, N, ADD128, i_1, i_2) = $iadd_(N, i_1, i_2)
-def $wideop_(Inn, N, SUB128, i_1, i_2) = $isub_(N, i_1, i_2)
-
-def $wideop__(numtype, wideop_(numtype), num_(numtype), num_(numtype), num_(numtype), num_(numtype)) : (num_(numtype), num_(numtype))
-def $wideop__(Inn, wideop, i_1, i_2, i_3, i_4) =
-  $isplit_(
-    Inn,
-    128,
-    $wideop_(
-      Inn,
-      128,
-      wideop,
-      $iconcat_(Inn, 128, i_1, i_2),
-      $iconcat_(Inn, 128, i_3, i_4),
-    )
-  )
-
-def $extwideop__(numtype, extwideop_(numtype), num_(numtype), num_(numtype)) : (num_(numtype), num_(numtype))
-def $extwideop__(Inn, MUL_WIDE sx, i_1, i_2) =
-  $isplit_(
-    Inn,
-    128,
-    $imul_(
-      128,
-      $iextend_(128, $sizenn(Inn), sx, i_1),
-      $iextend_(128, $sizenn(Inn), sx, i_2),
-    )
-  )

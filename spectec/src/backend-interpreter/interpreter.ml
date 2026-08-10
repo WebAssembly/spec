@@ -165,10 +165,12 @@ and check_type ty v expr =
   ] in
   match v with
   (* addrref *)
-  | CaseV (ar, _) when List.mem ar addr_refs->
-    boolV (ty = "addrref" ||ty = "ref" || ty = "val")
+  | CaseV (ar, _) when List.mem ar addr_refs ->
+    boolV (ty = "addrref" || ty = "ref" || ty = "val")
   (* nul *)
-  | CaseV ("REF.NULL", _) ->
+  | CaseV ("REF.NULL_ADDR", _) ->
+    boolV (ty = "nul" || ty = "ref" || ty = "val")
+  | CaseV ("REF.NULL", _) when !Construct.version <= 2 ->
     boolV (ty = "nul" || ty = "ref" || ty = "val")
   (* values *)
   | CaseV ("CONST", CaseV (nt, []) ::_) when List.mem nt inn_types ->
@@ -212,6 +214,8 @@ and eval_expr env expr =
   let rec to_bool source = function
     | BoolV b -> b
     | ListV _ as v -> List.for_all (to_bool source) (unwrap_listv_to_list v)
+    | OptV None -> true
+    | OptV Some v -> to_bool source v
     | _ -> fail_expr source "type mismatch for boolean value"
   in
 
@@ -342,7 +346,7 @@ and eval_expr env expr =
       | [] -> eval_expr env e2 in
     eval_expr env e1 |> replace ps
   | CaseE (op, el) ->
-    (match (get_atom op) with
+    (match Mixop.head op with
     | Some a -> caseV (Print.string_of_atom a, List.map (eval_expr env) el)
     | None -> caseV ("", List.map (eval_expr env) el)
     )
@@ -357,6 +361,7 @@ and eval_expr env expr =
       fail_expr expr (sprintf "cannot choose an element from %s because it's empty" (string_of_expr e))
     else
       Array.get a 0
+  (* HARDCODE: The variable s is always assumed to be the implicit store *)
   | VarE "s" -> Store.get ()
   | VarE name -> lookup_env name env
   (* Optimized getter for simple IterE(VarE, ...) *)
@@ -370,6 +375,12 @@ and eval_expr env expr =
       raise Exception.OutOfMemory
     else
       Array.make i v |> listV
+  (* HARDCODE: The case where itered variable does not appear in xes.
+    --> Insert itered variable. This was instroduced due to the change of IrerE's ListN. *)
+  | IterE (e1, (ListN (e2, Some x), [])) ->
+    let dummy_expr = VarE "_" $$ no_region % (Il.Ast.VarT ("_" $ no_region, []) $ no_region) in
+    let expr' = {expr with it = IterE (e1, (ListN (e2, Some x), [(x, dummy_expr)]))} in
+    eval_expr env expr'
   | IterE (inner_e, (iter, xes)) ->
     let vs =
       env
@@ -480,7 +491,7 @@ and assign lhs rhs env =
     when List.length lhs_s = Array.length !rhs_s ->
     List.fold_right2 assign lhs_s (Array.to_list !rhs_s) env
   | CaseE (op, lhs_s), CaseV (rhs_tag, rhs_s) when List.length lhs_s = List.length rhs_s ->
-    (match get_atom op with
+    (match Mixop.head op with
     | Some lhs_tag when (Print.string_of_atom lhs_tag) = rhs_tag ->
       List.fold_right2 assign lhs_s rhs_s env
     | None when "" = rhs_tag ->
@@ -600,7 +611,7 @@ and step_instr (fname: string) (ctx: AlContext.t) (env: value Env.t) (instr: ins
     )
   | PopI e ->
     (match e.it with
-    | CaseE ([{it = Atom.Atom "FRAME_"; _}] :: _, [_; inner_e]) ->
+    | CaseE (op, [_; inner_e]) when (Option.get (Mixop.head op)).it = Atom.Atom "FRAME_" ->
       (match WasmContext.pop_context () with
       | CaseV ("FRAME_", [_; inner_v]), _, _ ->
         let new_env = assign inner_e inner_v env in
@@ -701,9 +712,10 @@ and try_step_instr fname ctx env instr =
   try_with_error fname instr.at string_of_instr (step_instr fname ctx env) instr
 
 and step_wasm (ctx: AlContext.t) : value -> AlContext.t = function
-  | CaseV ("REF.NULL" as name, ([ CaseV ("_IDX", _) ] as args)) ->
+  | CaseV ("REF.NULL" as name, ([ CaseV ("_IDX", _) ] as args)) when !Construct.version <= 2 ->
     create_context name args :: ctx
-  | CaseV ("REF.NULL", _)
+  | CaseV ("REF.NULL", _) as v when !Construct.version <= 2 ->
+    WasmContext.push_value v; ctx
   | CaseV ("CONST", _)
   | CaseV ("VCONST", _) as v -> WasmContext.push_value v; ctx
   | CaseV (name, []) when Host.is_host name -> Host.call name; ctx
@@ -719,36 +731,42 @@ and step (ctx: AlContext.t) : AlContext.t =
 
   Debugger.run ctx;
 
-  match ctx with
-  | Al (name, args, il, env, n) :: ctx ->
-    (match il with
-    | [] -> ctx
-    | [ instr ]
-    when can_tail_call instr && n = 0 && not !Debugger.debug ->
-      try_step_instr name ctx env instr
-    | h :: t ->
-      let new_ctx = Al (name, args, t, env, n) :: ctx in
-      try_step_instr name new_ctx env h
-    )
-  | Wasm n :: ctx ->
-    if n = 0 then
-      ctx
-    else
-      try_step_wasm (Wasm n :: ctx) (WasmContext.pop_instr ())
-  | Enter (name, il, env) :: ctx ->
-    (match il with
-    | [] ->
-      (match ctx with
-      | Wasm n :: t when not !Debugger.debug -> Wasm (n + 1) :: t
-      | Enter (_, [], _) :: t -> Wasm 2 :: t
-      | ctx -> Wasm 1 :: ctx
+  try
+    match ctx with
+    | Al (name, args, il, env, n) :: ctx ->
+      (match il with
+      | [] -> ctx
+      | [ instr ]
+      when can_tail_call instr && n = 0 && not !Debugger.debug ->
+        try_step_instr name ctx env instr
+      | h :: t ->
+        let new_ctx = Al (name, args, t, env, n) :: ctx in
+        try_step_instr name new_ctx env h
       )
-    | h :: t ->
-      let new_ctx = Enter (name, t, env) :: ctx in
-      try_step_instr name new_ctx env h
-    )
-  | Execute v :: ctx -> try_step_wasm ctx v
-  | _ -> assert false
+    | Wasm n :: ctx ->
+      if n = 0 then
+        ctx
+      else
+        try_step_wasm (Wasm n :: ctx) (WasmContext.pop_instr ())
+    | Enter (name, il, env) :: ctx ->
+      (match il with
+      | [] ->
+        (match ctx with
+        | Wasm n :: t when not !Debugger.debug -> Wasm (n + 1) :: t
+        | Enter (_, [], _) :: t -> Wasm 2 :: t
+        | ctx -> Wasm 1 :: ctx
+        )
+      | h :: t ->
+        let new_ctx = Enter (name, t, env) :: ctx in
+        try_step_instr name new_ctx env h
+      )
+    | Execute v :: ctx -> try_step_wasm ctx v
+    | _ -> assert false
+  with exn when !Debugger.debug ->
+    let bt = Printexc.get_raw_backtrace () in
+    print_endline (Printexc.to_string exn);
+    Debugger.do_debug ctx;
+    Printexc.raise_with_backtrace exn bt
 
 
 (* AL interpreter Entry *)
@@ -781,6 +799,9 @@ and create_context (name: string) (args: value list) : AlContext.mode =
   AlContext.al (name, params, body, env, 0)
 
 and call_func (name: string) (args: value list) : value option =
+   (* HARDCODE: Calling the function named `store` is always implicitly assumed to be the getting the global store, as if the variable named `s`. *)
+   if name = "store" then Some (Store.get ()) else
+
    let builtin_name, is_builtin =
      match find_hint name "builtin" with
      | None -> name, false

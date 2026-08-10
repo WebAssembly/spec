@@ -3,7 +3,7 @@ open Def
 
 type transformer = {
   transform_exp: exp -> exp;
-  transform_bind: bind -> bind;
+  transform_param: param -> param;
   transform_prem: prem -> prem;
   transform_iterexp: iterexp -> iterexp;
   }

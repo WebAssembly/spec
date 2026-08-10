@@ -10,7 +10,7 @@ It is an invariant of the semantics that all types occurring during execution ar
 
 .. note::
    Runtime type checks generally involve types from multiple modules or types not defined by a module at all,
-   such that any module-local :ref:`type indices <syntax-typeidx>` occurring inside them would not geenrally be meaningful.
+   such that any module-local :ref:`type indices <syntax-typeidx>` occurring inside them would not generally be meaningful.
 
 
 
