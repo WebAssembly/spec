@@ -170,7 +170,7 @@ let memory_init x y = MemoryInit (x, y)
 let data_drop x = DataDrop x
 
 let ref_is_null = RefIsNull
-let ref_as_non_null = RefAsNonNull
+let ref_as_non_null = RefAsNonNull  
 let ref_test t = RefTest t
 let ref_cast t = RefCast t
 let ref_eq = RefEq

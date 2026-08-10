@@ -1854,9 +1854,9 @@ Conversions
 :math:`\truncu_{M,N}(z)`
 ........................
 
-* If :math:`z` is a NaN, then the result is undefined.
+* If :math:`z` is a NaN, then the result is undefined. 
 
-* Else if :math:`z` is an infinity, then the result is undefined.
+* Else if :math:`z` is an infinity, then the result is undefined. 
 
 * Else if :math:`z` is a number and :math:`\truncz(z)` is a value within range of the target type, then return that value.
 
@@ -1877,9 +1877,9 @@ Conversions
 :math:`\truncs_{M,N}(z)`
 ........................
 
-* If :math:`z` is a NaN, then the result is undefined.
+* If :math:`z` is a NaN, then the result is undefined. 
 
-* Else if :math:`z` is an infinity, then the result is undefined.
+* Else if :math:`z` is an infinity, then the result is undefined. 
 
 * If :math:`z` is a number and :math:`\truncz(z)` is a value within range of the target type, then return that value.
 
@@ -2223,7 +2223,7 @@ The previous operators are lifted to operators on arguments of vector type by wr
        \land~j^\ast = \ivaddpairwise_{N_2}({i'}^\ast) \\
        \end{array}
    \end{array}
-
+   
 
 .. _op-vextbinop:
 

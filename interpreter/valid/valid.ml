@@ -626,7 +626,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_resulttype) : infer_ins
 
   | TableFill x ->
     let TableT (at, _lim, rt) = table c x in
-    [NumT (numtype_of_addrtype at); RefT rt;
+    [NumT (numtype_of_addrtype at); RefT rt; 
       NumT (numtype_of_addrtype at)] --> [], []
 
   | TableCopy (x, y) ->

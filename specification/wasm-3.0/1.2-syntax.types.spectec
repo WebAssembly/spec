@@ -557,7 +557,7 @@ def $free_tagtype(deftype) = $free_deftype(deftype)
 def $free_globaltype(mut? valtype) = $free_valtype(valtype)
 
 def $free_memtype(addrtype limits PAGE) = $free_addrtype(addrtype)
-
+ 
 def $free_tabletype(addrtype limits reftype) =
   $free_addrtype(addrtype) ++ $free_reftype(reftype)
 

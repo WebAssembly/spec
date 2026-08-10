@@ -753,7 +753,7 @@ $${rule: {Step_read/struct.get-*}}
 $${rule-prose: Step/struct.set}
 
 $${rule: {Step/struct.set-*}}
-
+   
 
 .. _exec-array.new:
 

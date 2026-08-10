@@ -535,12 +535,6 @@ rule Instr_ok/relop:
 rule Instr_ok/cvtop:
   C |- CVTOP nt_1 nt_2 cvtop : nt_2 -> nt_1
 
-rule Instr_ok/wideop:
-  C |- WIDEOP nt wideop_nt : nt nt nt nt -> nt nt
-
-rule Instr_ok/extwideop:
-  C |- EXTWIDEOP nt extwideop_nt : nt nt -> nt nt
-
 
 ;; Vector instructions
 

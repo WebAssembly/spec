@@ -38,6 +38,14 @@ syntax binop_(Inn) =
   | AND | OR | XOR | SHL | SHR sx hint(show SHR#_#%) | ROTL | ROTR
 syntax binop_(Fnn) =
   | ADD | SUB | MUL | DIV | MIN hint(macro "FMIN") | MAX hint(macro "FMAX") | COPYSIGN
+syntax wideop_(numtype)
+syntax wideop_(Inn) =
+  | ADD128    -- if $sizenn(Inn) = 64
+  | SUB128    -- if $sizenn(Inn) = 64
+
+syntax extwideop_(numtype)
+syntax extwideop_(Inn) =
+  | MUL_WIDE sx hint(show MUL_WIDE#_#%)   -- if $sizenn(Inn) = 64
 
 syntax testop_(numtype)
 syntax testop_(Inn) = EQZ
@@ -356,6 +364,8 @@ syntax instr/num hint(desc "numeric instruction") = ...
   | TESTOP numtype testop_(numtype)  hint(show %.##%)
   | RELOP numtype relop_(numtype)    hint(show %.##%)
   | CVTOP numtype_1 numtype_2 cvtop__(numtype_2, numtype_1)  hint(show %1.##%3#_#%2)
+  | WIDEOP numtype wideop_(numtype)         hint(show %.##%)
+  | EXTWIDEOP numtype extwideop_(numtype)   hint(show %.##%)
   | ...
 
 syntax instr/vec hint(desc "vector instruction") = ...
