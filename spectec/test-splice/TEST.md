@@ -1,7 +1,7 @@
 # Preview
 
 ```sh
-$ (../src/exe-spectec/main.exe ../../../../specification/wasm-3.0/*.spectec -l --splice-latex -p spec-latex.in.tex -w)
+$ (../src/exe-spectec/main.exe ../../../../specification/wasm-latest/*.spectec -l --splice-latex -p spec-latex.in.tex -w)
 == Parsing...
 == Elaboration...
 == IL Validation...
@@ -70,6 +70,8 @@ $$
 & & | & {\mathit{numtype}} {.} {{\mathit{testop}}}_{{\mathit{numtype}}} \\
 & & | & {\mathit{numtype}} {.} {{\mathit{relop}}}_{{\mathit{numtype}}} \\
 & & | & {\mathit{numtype}}_1 {.} {{{\mathit{cvtop}}}_{{\mathit{numtype}}_2, {\mathit{numtype}}_1}}{\mathsf{\_}}{{\mathit{numtype}}_2} \\
+& & | & {\mathit{numtype}} {.} {{\mathit{wideop}}}_{{\mathit{numtype}}} \\
+& & | & {\mathit{numtype}} {.} {{\mathit{extwideop}}}_{{\mathit{numtype}}} \\
 & & | & \mathsf{local{.}get}~{\mathit{localidx}} \\
 & & | & \mathsf{local{.}set}~{\mathit{localidx}} \\
 & & | & \mathsf{local{.}tee}~{\mathit{localidx}} \\
@@ -338,6 +340,7 @@ warning: syntax `export` was never spliced
 warning: syntax `exportinst` was never spliced
 warning: syntax `externaddr` was never spliced
 warning: syntax `externidx` was never spliced
+warning: syntax `extwideop_` was never spliced
 warning: syntax `f32` was never spliced
 warning: syntax `f64` was never spliced
 warning: syntax `fN` was never spliced
@@ -512,6 +515,7 @@ warning: syntax `vvbinop` was never spliced
 warning: syntax `vvternop` was never spliced
 warning: syntax `vvtestop` was never spliced
 warning: syntax `vvunop` was never spliced
+warning: syntax `wideop_` was never spliced
 warning: syntax `zero` was never spliced
 warning: grammar `Babsheaptype` was never spliced
 warning: grammar `Bblocktype` was never spliced
@@ -586,6 +590,7 @@ warning: grammar `Binstr/num-un-f64` was never spliced
 warning: grammar `Binstr/num-bin-f64` was never spliced
 warning: grammar `Binstr/num-cvt` was never spliced
 warning: grammar `Binstr/num-cvt-sat` was never spliced
+warning: grammar `Binstr/num-wide` was never spliced
 warning: grammar `Binstr/vec-memory` was never spliced
 warning: grammar `Binstr/vec-const` was never spliced
 warning: grammar `Binstr/vec-shuffle` was never spliced
@@ -847,6 +852,7 @@ warning: grammar `Tplaininstr_/num-cvt-i64` was never spliced
 warning: grammar `Tplaininstr_/num-cvt-f32` was never spliced
 warning: grammar `Tplaininstr_/num-cvt-f64` was never spliced
 warning: grammar `Tplaininstr_/num-cvt-reinterpret` was never spliced
+warning: grammar `Tplaininstr_/num-wide` was never spliced
 warning: grammar `Tplaininstr_/vec-const` was never spliced
 warning: grammar `Tplaininstr_/vec-shuffle` was never spliced
 warning: grammar `Tplaininstr_/vec-splat` was never spliced
@@ -1162,6 +1168,8 @@ warning: rule `Instr_ok/binop` was never spliced
 warning: rule `Instr_ok/testop` was never spliced
 warning: rule `Instr_ok/relop` was never spliced
 warning: rule `Instr_ok/cvtop` was never spliced
+warning: rule `Instr_ok/wideop` was never spliced
+warning: rule `Instr_ok/extwideop` was never spliced
 warning: rule `Instr_ok/vconst` was never spliced
 warning: rule `Instr_ok/vvunop` was never spliced
 warning: rule `Instr_ok/vvbinop` was never spliced
@@ -1340,6 +1348,8 @@ warning: rule `Step_pure/testop` was never spliced
 warning: rule `Step_pure/relop` was never spliced
 warning: rule `Step_pure/cvtop-val` was never spliced
 warning: rule `Step_pure/cvtop-trap` was never spliced
+warning: rule `Step_pure/wideop` was never spliced
+warning: rule `Step_pure/extwideop` was never spliced
 warning: rule `Step_pure/vvunop` was never spliced
 warning: rule `Step_pure/vvbinop` was never spliced
 warning: rule `Step_pure/vvternop` was never spliced
@@ -1601,6 +1611,7 @@ warning: definition `exninst` was never spliced
 warning: definition `expon` was never spliced
 warning: definition `exportsd` was never spliced
 warning: definition `extend__` was never spliced
+warning: definition `extwideop__` was never spliced
 warning: definition `fabs_` was never spliced
 warning: definition `fadd_` was never spliced
 warning: definition `fbits_` was never spliced
@@ -1727,6 +1738,7 @@ warning: definition `ibits_` was never spliced
 warning: definition `ibitselect_` was never spliced
 warning: definition `ibytes_` was never spliced
 warning: definition `iclz_` was never spliced
+warning: definition `iconcat_` was never spliced
 warning: definition `ictz_` was never spliced
 warning: definition `idiv_` was never spliced
 warning: definition `ieee_` was never spliced
@@ -1783,6 +1795,7 @@ warning: definition `is_packtype` was never spliced
 warning: definition `ishl_` was never spliced
 warning: definition `ishr_` was never spliced
 warning: definition `isize` was never spliced
+warning: definition `isplit_` was never spliced
 warning: definition `isub_` was never spliced
 warning: definition `isub_sat_` was never spliced
 warning: definition `iswizzle_lane_` was never spliced
@@ -1947,6 +1960,8 @@ warning: definition `vunpack` was never spliced
 warning: definition `vvbinop_` was never spliced
 warning: definition `vvternop_` was never spliced
 warning: definition `vvunop_` was never spliced
+warning: definition `wideop_` was never spliced
+warning: definition `wideop__` was never spliced
 warning: definition `with_array` was never spliced
 warning: definition `with_data` was never spliced
 warning: definition `with_elem` was never spliced
@@ -2121,6 +2136,7 @@ warning: rule prose `Instr_ok/data.drop` was never spliced
 warning: rule prose `Instr_ok/drop` was never spliced
 warning: rule prose `Instr_ok/elem.drop` was never spliced
 warning: rule prose `Instr_ok/extern.convert_any` was never spliced
+warning: rule prose `Instr_ok/extwideop` was never spliced
 warning: rule prose `Instr_ok/global.get` was never spliced
 warning: rule prose `Instr_ok/global.set` was never spliced
 warning: rule prose `Instr_ok/i31.get` was never spliced
@@ -2204,6 +2220,7 @@ warning: rule prose `Instr_ok/vvbinop` was never spliced
 warning: rule prose `Instr_ok/vvternop` was never spliced
 warning: rule prose `Instr_ok/vvtestop` was never spliced
 warning: rule prose `Instr_ok/vvunop` was never spliced
+warning: rule prose `Instr_ok/wideop` was never spliced
 warning: rule prose `Instr_ok2` was never spliced
 warning: rule prose `Instr_ok2/call_ref` was never spliced
 warning: rule prose `Instr_ok2/frame` was never spliced
@@ -2312,6 +2329,7 @@ warning: rule prose `Step_pure/call_indirect` was never spliced
 warning: rule prose `Step_pure/cvtop` was never spliced
 warning: rule prose `Step_pure/drop` was never spliced
 warning: rule prose `Step_pure/extern.convert_any` was never spliced
+warning: rule prose `Step_pure/extwideop` was never spliced
 warning: rule prose `Step_pure/frame` was never spliced
 warning: rule prose `Step_pure/handler` was never spliced
 warning: rule prose `Step_pure/i31.get` was never spliced
@@ -2351,6 +2369,7 @@ warning: rule prose `Step_pure/vvbinop` was never spliced
 warning: rule prose `Step_pure/vvternop` was never spliced
 warning: rule prose `Step_pure/vvtestop` was never spliced
 warning: rule prose `Step_pure/vvunop` was never spliced
+warning: rule prose `Step_pure/wideop` was never spliced
 warning: rule prose `Step_read/array.copy` was never spliced
 warning: rule prose `Step_read/array.fill` was never spliced
 warning: rule prose `Step_read/array.get` was never spliced
@@ -2525,6 +2544,7 @@ warning: definition prose `evalglobals` was never spliced
 warning: definition prose `exninst` was never spliced
 warning: definition prose `expon` was never spliced
 warning: definition prose `exportsd` was never spliced
+warning: definition prose `extwideop__` was never spliced
 warning: definition prose `fnat` was never spliced
 warning: definition prose `fof` was never spliced
 warning: definition prose `fone` was never spliced
@@ -2617,6 +2637,7 @@ warning: definition prose `halfop` was never spliced
 warning: definition prose `iabs_` was never spliced
 warning: definition prose `iadd_` was never spliced
 warning: definition prose `iadd_sat_` was never spliced
+warning: definition prose `iconcat_` was never spliced
 warning: definition prose `idiv_` was never spliced
 warning: definition prose `ieq_` was never spliced
 warning: definition prose `ieqz_` was never spliced
@@ -2648,6 +2669,7 @@ warning: definition prose `irelaxed_swizzle_lane_` was never spliced
 warning: definition prose `irem_` was never spliced
 warning: definition prose `is_packtype` was never spliced
 warning: definition prose `isize` was never spliced
+warning: definition prose `isplit_` was never spliced
 warning: definition prose `isub_` was never spliced
 warning: definition prose `isub_sat_` was never spliced
 warning: definition prose `iswizzle_lane_` was never spliced
@@ -2801,6 +2823,8 @@ warning: definition prose `vunpack` was never spliced
 warning: definition prose `vvbinop_` was never spliced
 warning: definition prose `vvternop_` was never spliced
 warning: definition prose `vvunop_` was never spliced
+warning: definition prose `wideop_` was never spliced
+warning: definition prose `wideop__` was never spliced
 warning: definition prose `with_array` was never spliced
 warning: definition prose `with_data` was never spliced
 warning: definition prose `with_elem` was never spliced

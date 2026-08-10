@@ -37,7 +37,7 @@ spectec 0.5 generator
 == Interpreting...
 - print_i32: 10
 == Complete.
-$ for v in 1 2; do ( \
+$ for v in 1 2 3; do ( \
 >   echo "Running test for Wasm $v.0..." && \
 >   ../src/exe-spectec/main.exe ../../../_specification/wasm-$v.0/*.spectec -v -l --test-version $v --interpreter ../test-interpreter/spec-test-$v \
 > ) done 2>&1
@@ -105,9 +105,7 @@ spectec 0.5 generator
 - print_i32: 2
 - print: ()
 == Complete.
-$ echo "Running test for Wasm latest..." && \
->   ../src/exe-spectec/main.exe ../../../_specification/wasm-latest/*.spectec -v -l --test-version 3 --interpreter ../test-interpreter/spec-test-3 2>&1
-Running test for Wasm latest...
+Running test for Wasm 3.0...
 spectec 0.5 generator
 == Parsing...
 == Elaboration...
@@ -136,5 +134,8 @@ spectec 0.5 generator
 - print_i32: 1
 - print_i32: 2
 - print: ()
+../test-interpreter/spec-test-3/wide-arithmetic.wast:25.1-28.44
+- Test failed at ../test-interpreter/spec-test-3/wide-arithmetic.wast:25.1-28.44 (Algorithm not found: WIDEOP (interpreting CaseV(WIDEOP, [CaseV(I64, []), CaseV(ADD128, [])]) at ))
+Test failed for ../test-interpreter/spec-test-3/wide-arithmetic.wast
 == Complete.
 ```
