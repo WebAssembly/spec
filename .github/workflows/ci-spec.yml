@@ -14,12 +14,12 @@ on:
 
 jobs:
   ensure-wasm-latest:
-    if: ${{ github.repository == 'WebAssembly/spec' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
       - name: Diff wasm-latest
+        if: ${{ github.repository == 'WebAssembly/spec' }}
         run: cd specification && bash diff-wasm-latest.sh
 
   build-core-spec:
