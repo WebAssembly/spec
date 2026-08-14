@@ -14239,9 +14239,7 @@ $$
 \frac{
 s \vdash f : {C'}
  \qquad
-{C'}{.}\mathsf{return} = {t^{n}}
- \qquad
-s ; {C'} \vdash {{\mathit{instr}}^\ast} : {t^{n}}
+s ; \{ \mathsf{return}~{t^{n}} \} \oplus {C'} \vdash {{\mathit{instr}}^\ast} : {t^{n}}
  \qquad
 \{  \} \vdash {t^{n}} : \mathsf{ok}
 }{
