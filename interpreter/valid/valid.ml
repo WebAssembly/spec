@@ -159,6 +159,7 @@ let check_comptype (c : context) (ct : comptype) at =
 
 let check_subtype (c : context) (sut : subtype) at =
   let SubT (_fin, uts, ct) = sut in
+  require (List.length uts <= 1) at "multiple supertypes";
   List.iter (fun ut -> check_typeuse c ut at) uts;
   check_comptype c ct at
 
