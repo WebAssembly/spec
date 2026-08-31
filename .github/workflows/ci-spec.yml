@@ -12,6 +12,9 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   ensure-wasm-latest:
     runs-on: ubuntu-latest
@@ -153,6 +156,8 @@ jobs:
 
   publish-spec:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     needs:
       - ensure-wasm-latest
       - build-core-spec
