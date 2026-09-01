@@ -107,9 +107,11 @@ def $growtable(ti, n) = ti'
   -- if i' = $(|a*| + n)
   -- if ti' = { TYPE `[i' .. j?], REFS a* eps^n }
   -- (if i' <= j)?
+  -- if i' < $(2^32)
 
 def $growmemory(mi, n) = mi'
   -- if mi = { TYPE `[i .. j?], BYTES b* }
   -- if i' = $(|b*| / (64 * $Ki) + n)
   -- if mi' = { TYPE `[i' .. j?], BYTES b* 0^(n * $($(64 * $Ki))) }
   -- (if i' <= j)?
+  -- if i' <= $(2^16)
