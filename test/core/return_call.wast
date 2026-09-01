@@ -221,9 +221,27 @@
 )
 (assert_invalid
   (module
-    (func $f (result i32 i32) unreachable)
+    (func $type-result-more (result i32 i32) unreachable)
     (func (result i32)
-      return_call $f
+      return_call $type-result-more
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-result-fewer (result i32) unreachable)
+    (func (result i32 i32)
+      return_call $type-result-fewer
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (func $type-result-i64-vs-i32 (result i64) unreachable)
+    (func (result i32)
+      return_call $type-result-i64-vs-i32
     )
   )
   "type mismatch"
