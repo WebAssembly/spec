@@ -1714,13 +1714,13 @@ However, some operators consider multiple lanes at once.</p>
 <li><p>For each <span class="math notranslate nohighlight">\(i_{1k}\)</span> in <span class="math notranslate nohighlight">\(i_1^{2m}\)</span> and corresponding <span class="math notranslate nohighlight">\(i_{2k}\)</span> in <span class="math notranslate nohighlight">\(i_2^{2m}\)</span>, let <span class="math notranslate nohighlight">\(j_k\)</span> be <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#op-imul}{\mathrm{imul}}_N(i_{1k}, i_{2k})\)</span>.</p></li>
 <li><p>Let <span class="math notranslate nohighlight">\(j^{2m}\)</span> be the concatenation of all <span class="math notranslate nohighlight">\(j_k\)</span>.</p></li>
 <li><p>Let <span class="math notranslate nohighlight">\((j_1~j_2)^m\)</span> be <span class="math notranslate nohighlight">\(j^{2m}\)</span>, decomposed into pairwise elements.</p></li>
-<li><p>For each <span class="math notranslate nohighlight">\(i_{1k}\)</span> in <span class="math notranslate nohighlight">\(i_1^m\)</span> and corresponding <span class="math notranslate nohighlight">\(i_{2k}\)</span> in <span class="math notranslate nohighlight">\(i_2^m\)</span>, let <span class="math notranslate nohighlight">\(r_k\)</span> be <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#op-iadd-sat}{\mathrm{iadd\_sat}}_N(i_{1k}, i_{2k})\)</span>.</p></li>
+<li><p>For each <span class="math notranslate nohighlight">\(i_{1k}\)</span> in <span class="math notranslate nohighlight">\(i_1^m\)</span> and corresponding <span class="math notranslate nohighlight">\(i_{2k}\)</span> in <span class="math notranslate nohighlight">\(i_2^m\)</span>, let <span class="math notranslate nohighlight">\(r_k\)</span> be <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#op-iadd-sat}{\mathrm{iadd\_sat\_s}}_N(i_{1k}, i_{2k})\)</span>.</p></li>
 <li><p>Let <span class="math notranslate nohighlight">\(r^m\)</span> be the concatenation of all <span class="math notranslate nohighlight">\(r_k\)</span>.</p></li>
 <li><p>Return <span class="math notranslate nohighlight">\(r^m\)</span>.</p></li>
 </ol>
 <div class="math notranslate nohighlight">
 \[\begin{array}{&#64;{}lcll}
-\href{../exec/numerics.html#op-ivdot-sat}{\mathrm{ivdotsat}}_N(i_1^{2m}, i_2^{2m}) &amp;=&amp; (\href{../exec/numerics.html#op-iadd-sat}{\mathrm{iadd\_sat}}_N(j_1, j_2))^m
+\href{../exec/numerics.html#op-ivdot-sat}{\mathrm{ivdotsat}}_N(i_1^{2m}, i_2^{2m}) &amp;=&amp; (\href{../exec/numerics.html#op-iadd-sat}{\mathrm{iadd\_sat\_s}}_N(j_1, j_2))^m
   &amp; (\mathrel{\mbox{if}} (\href{../exec/numerics.html#op-imul}{\mathrm{imul}}_N(i_1, i_2))^{2m} = (j_1~j_2)^m)
 \end{array}\]</div>
 <p>The previous operators are lifted to operators on arguments of vector type by wrapping them in corresponding lane projections and injections and intermediate extension operations:</p>
@@ -1747,8 +1747,8 @@ However, some operators consider multiple lanes at once.</p>
     \begin{array}[t]{&#64;{}l}
     \mathrel{\mbox{if}} i_1^\ast = \href{../exec/numerics.html#aux-lanes}{\mathrm{lanes}}_{\mathsf{i}N_1\mathsf{x}M_1}(c_1)[h \href{../syntax/conventions.html#notation-slice}{\mathrel{\mathbf{:}}} k] \\
     \land~i_2^\ast = \href{../exec/numerics.html#aux-lanes}{\mathrm{lanes}}_{\mathsf{i}N_1\mathsf{x}M_1}(c_2)[h \href{../syntax/conventions.html#notation-slice}{\mathrel{\mathbf{:}}} k] \\
-    \land~{i'_1}^\ast = \href{../exec/numerics.html#op-extend}{\mathrm{extend}}^{\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}}_{N_1, N_2}(i_1)^\ast \\
-    \land~{i'_2}^\ast = \href{../exec/numerics.html#op-extend}{\mathrm{extend}}^{\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}}_{N_1, N_2}(i_2)^\ast \\
+    \land~{i'_1}^\ast = \href{../exec/numerics.html#op-extend}{\mathrm{extend}}^{\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}_1}_{N_1, N_2}(i_1)^\ast \\
+    \land~{i'_2}^\ast = \href{../exec/numerics.html#op-extend}{\mathrm{extend}}^{\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}_2}_{N_1, N_2}(i_2)^\ast \\
     \land~j^\ast = f_{N_2}({i'_1}^\ast, {i'_2}^\ast) \\
     \end{array}
 \end{array}\end{split}\]</div>
