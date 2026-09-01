@@ -193,3 +193,27 @@ test(() => {
   let global = new WebAssembly.Global({value: "externref"});
   assert_Global(global, undefined);
 }, "externref global with default value");
+
+test(() => {
+  let global = new WebAssembly.Global({value: "funcref"});
+  assert_Global(global, null);
+}, "funcref global with default value");
+
+test(() => {
+  let global = new WebAssembly.Global({value: "anyfunc"});
+  assert_Global(global, null);
+}, "anyfunc remains an alias of funcref");
+
+test(() => {
+  let global = new WebAssembly.Global({value: "anyref"});
+  assert_Global(global, null);
+}, "anyref global with default value");
+
+test(() => {
+  let global = new WebAssembly.Global({value: "anyref"}, null);
+  assert_Global(global, null);
+}, "anyref global with null");
+
+test(() => {
+  assert_throws_js(TypeError, () => new WebAssembly.Global({value: "anyref"}, {}));
+}, "anyref global rejects a plain object");
