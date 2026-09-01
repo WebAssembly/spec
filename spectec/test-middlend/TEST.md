@@ -7006,7 +7006,7 @@ relation Step: `%~>%`(config, config)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:192.1-198.49
   rule `call_ref-hostfunc-div`{s : store, f : frame, n : n, `val*` : val*, a : addr, yy : typeuse, fi : funcinst, `t_1*` : valtype*, m : m, `t_2*` : valtype*, hf : text}:
-    `%~>%`(`%;%`_config(`%;%`_state(s, f), (val : val <: instr)^n{val <- `val*`} ++ [`REF.FUNC_ADDR`_instr(a) CALL_REF_instr(yy)]), `%;%`_config(`%;%`_state(s, f), [`REF.FUNC_ADDR`_instr(a) CALL_REF_instr(yy)]))
+    `%~>%`(`%;%`_config(`%;%`_state(s, f), (val : val <: instr)^n{val <- `val*`} ++ [`REF.FUNC_ADDR`_instr(a) CALL_REF_instr(yy)]), `%;%`_config(`%;%`_state(s, f), (val : val <: instr)^n{val <- `val*`} ++ [`REF.FUNC_ADDR`_instr(a) CALL_REF_instr(yy)]))
     -- if ($funcinst(`%;%`_state(s, f))[a] = fi)
     -- Expand: `%~~%`(fi.TYPE_funcinst, `FUNC%->%`_comptype(`%`_resulttype(t_1^n{t_1 <- `t_1*`},), `%`_resulttype(t_2^m{t_2 <- `t_2*`},)))
     -- if (fi.CODE_funcinst = _HOSTFUNC_funccode(hf))
@@ -18917,7 +18917,7 @@ relation Step: `%~>%`(config, config)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:192.1-198.49
   rule `call_ref-hostfunc-div`{s : store, f : frame, n : n, `val*` : val*, a : addr, yy : typeuse, fi : funcinst, `t_1*` : valtype*, m : m, `t_2*` : valtype*, hf : text}:
-    `%~>%`(`%;%`_config(`%;%`_state(s, f), (val : val <: instr)^n{val <- `val*`} ++ [`REF.FUNC_ADDR`_instr(a) CALL_REF_instr(yy)]), `%;%`_config(`%;%`_state(s, f), [`REF.FUNC_ADDR`_instr(a) CALL_REF_instr(yy)]))
+    `%~>%`(`%;%`_config(`%;%`_state(s, f), (val : val <: instr)^n{val <- `val*`} ++ [`REF.FUNC_ADDR`_instr(a) CALL_REF_instr(yy)]), `%;%`_config(`%;%`_state(s, f), (val : val <: instr)^n{val <- `val*`} ++ [`REF.FUNC_ADDR`_instr(a) CALL_REF_instr(yy)]))
     -- if ($funcinst(`%;%`_state(s, f))[a] = fi)
     -- Expand: `%~~%`(fi.TYPE_funcinst, `FUNC%->%`_comptype(`%`_resulttype(t_1^n{t_1 <- `t_1*`},), `%`_resulttype(t_2^m{t_2 <- `t_2*`},)))
     -- if (fi.CODE_funcinst = _HOSTFUNC_funccode(hf))
@@ -31006,7 +31006,7 @@ relation Step: `%~>%`(config, config)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:192.1-198.49
   rule `call_ref-hostfunc-div`{s : store, f : frame, n : n, `val*` : val*, a : addr, yy : typeuse, fi : funcinst, `t_1*` : valtype*, m : m, `t_2*` : valtype*, hf : text}:
-    `%~>%`(`%;%`_config(`%;%`_state(s, f), (val : val <: instr)^n{val <- `val*`} ++ [`REF.FUNC_ADDR`_instr(a) CALL_REF_instr(yy)]), `%;%`_config(`%;%`_state(s, f), [`REF.FUNC_ADDR`_instr(a) CALL_REF_instr(yy)]))
+    `%~>%`(`%;%`_config(`%;%`_state(s, f), (val : val <: instr)^n{val <- `val*`} ++ [`REF.FUNC_ADDR`_instr(a) CALL_REF_instr(yy)]), `%;%`_config(`%;%`_state(s, f), (val : val <: instr)^n{val <- `val*`} ++ [`REF.FUNC_ADDR`_instr(a) CALL_REF_instr(yy)]))
     -- if (a < |$funcinst(`%;%`_state(s, f))|)
     -- if ($funcinst(`%;%`_state(s, f))[a] = fi)
     -- Expand: `%~~%`(fi.TYPE_funcinst, `FUNC%->%`_comptype(`%`_resulttype(t_1^n{t_1 <- `t_1*`},), `%`_resulttype(t_2^m{t_2 <- `t_2*`},)))

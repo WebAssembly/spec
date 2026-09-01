@@ -420,20 +420,20 @@ struct
     let rec dot xs ys =
       match xs, ys with
       | x1::x2::xss, y1::y2::yss ->
-        Int32.(add (mul x1 y1) (mul x2 y2)) :: dot xss yss
+        Int32.(I32.add_sat_s (mul x1 y1) (mul x2 y2)) :: dot xss yss
       | [], [] -> []
       | _, _ -> assert false
     in I32x4.of_lanes (dot xs ys)
 
   let dot_add_s x y z =
-    let xs = List.map Convert.I32_.extend_i8_s (I8x16.to_lanes x) in
-    let ys = List.map Convert.I32_.extend_i8_s (I8x16.to_lanes y) in
+    let xs = List.map Convert.I16_.extend_i8_s (I8x16.to_lanes x) in
+    let ys = List.map Convert.I16_.extend_i8_s (I8x16.to_lanes y) in
     let rec dot xs ys =
       match xs, ys with
       | x1::x2::x3::x4::xs', y1::y2::y3::y4::ys' ->
         Int32.(add
-          (add (mul x1 y1) (mul x2 y2))
-          (add (mul x3 y3) (mul x4 y4))
+          (Convert.I32_.extend_i16_s (I16.(add_sat_s (mul x1 y1) (mul x2 y2))))
+          (Convert.I32_.extend_i16_s (I16.(add_sat_s (mul x3 y3) (mul x4 y4))))
         ) :: dot xs' ys'
       | [], [] -> []
       | _, _ -> assert false

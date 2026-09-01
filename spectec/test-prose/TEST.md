@@ -18941,7 +18941,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. If :math:`\mathsf{bot}` is contained in :math:`{{\mathit{hf}}}{(s, {{\mathit{val}}^{n}})}`, then:
 
-   a. Push the value :math:`(\mathsf{ref{.}func}~a)` to the stack.
+   a. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
+
+   #. Push the value :math:`(\mathsf{ref{.}func}~a)` to the stack.
 
    #. Execute the instruction :math:`(\mathsf{call\_ref}~y)`.
 
@@ -21481,7 +21483,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
          #) If :math:`\mathsf{bot}` is contained in :math:`{{\mathit{hf}}}{(s, {{\mathit{val}}^{n}})}`, then:
 
-            1. Push the value :math:`(\mathsf{ref{.}func}~a)` to the stack.
+            1. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
+
+            #. Push the value :math:`(\mathsf{ref{.}func}~a)` to the stack.
 
             #. Execute the instruction :math:`(\mathsf{call\_ref}~y)`.
 
@@ -30386,8 +30390,9 @@ Step/call_ref-hostfunc-* yy
   a. Let (RES s' result) be an element of $hostcall((_HOSTFUNC hf), s, val^n).
   b. Execute the sequence $lift_result(result).
 14. If BOT is contained in $hostcall((_HOSTFUNC hf), s, val^n), then:
-  a. Push the value (REF.FUNC_ADDR a) to the stack.
-  b. Execute the instruction (CALL_REF yy).
+  a. Push the values val^n to the stack.
+  b. Push the value (REF.FUNC_ADDR a) to the stack.
+  c. Execute the instruction (CALL_REF yy).
 
 Step/store-num-* nt ?() x ao
 1. Let z be the current state.
@@ -31593,8 +31598,9 @@ Step/call_ref yy
         1. Let (RES s' result) be an element of $hostcall((_HOSTFUNC hf), s, val^n).
         2. Execute the sequence $lift_result(result).
       b) If BOT is contained in $hostcall((_HOSTFUNC hf), s, val^n), then:
-        1. Push the value (REF.FUNC_ADDR a) to the stack.
-        2. Execute the instruction (CALL_REF yy).
+        1. Push the values val^n to the stack.
+        2. Push the value (REF.FUNC_ADDR a) to the stack.
+        3. Execute the instruction (CALL_REF yy).
 
 Step/throw x
 1. Let z be the current state.

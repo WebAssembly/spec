@@ -9954,7 +9954,7 @@ $$
 {\land}~ ({s'}, {\mathit{result}}) \in {{\mathit{hf}}}{(s, {{\mathit{val}}^{n}})} \\
 \end{array}
 } \\
-{[\textsc{\scriptsize E{-}call\_ref{-}hostfunc{-}div}]} \quad & s ; f ; {{\mathit{val}}^{n}}~(\mathsf{ref{.}func}~a)~(\mathsf{call\_ref}~y) & \hookrightarrow & s ; f ; (\mathsf{ref{.}func}~a)~(\mathsf{call\_ref}~y) &  \\
+{[\textsc{\scriptsize E{-}call\_ref{-}hostfunc{-}div}]} \quad & s ; f ; {{\mathit{val}}^{n}}~(\mathsf{ref{.}func}~a)~(\mathsf{call\_ref}~y) & \hookrightarrow & s ; f ; {{\mathit{val}}^{n}}~(\mathsf{ref{.}func}~a)~(\mathsf{call\_ref}~y) &  \\
 &&& \multicolumn{2}{@{}l@{}}{\quad
 \quad
 \begin{array}[t]{@{}l@{}}

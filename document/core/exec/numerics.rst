@@ -2162,7 +2162,7 @@ where:
 
 3. Let :math:`(j_1~j_2)^m` be :math:`j^{2m}`, decomposed into pairwise elements.
 
-4. For each :math:`i_{1k}` in :math:`i_1^m` and corresponding :math:`i_{2k}` in :math:`i_2^m`, let :math:`r_k` be :math:`\iaddsat_N(i_{1k}, i_{2k})`.
+4. For each :math:`i_{1k}` in :math:`i_1^m` and corresponding :math:`i_{2k}` in :math:`i_2^m`, let :math:`r_k` be :math:`\iaddsats_N(i_{1k}, i_{2k})`.
 
 5. Let :math:`r^m` be the concatenation of all :math:`r_k`.
 
@@ -2170,7 +2170,7 @@ where:
 
 .. math::
    \begin{array}{@{}lcll}
-   \ivdotsat_N(i_1^{2m}, i_2^{2m}) &=& (\iaddsat_N(j_1, j_2))^m
+   \ivdotsat_N(i_1^{2m}, i_2^{2m}) &=& (\iaddsats_N(j_1, j_2))^m
      & (\iff (\imul_N(i_1, i_2))^{2m} = (j_1~j_2)^m)
    \end{array}
 
@@ -2206,8 +2206,8 @@ The previous operators are lifted to operators on arguments of vector type by wr
        \begin{array}[t]{@{}l}
        \iff i_1^\ast = \lanes_{\K{i}N_1\K{x}M_1}(c_1)[h \slice k] \\
        \land~i_2^\ast = \lanes_{\K{i}N_1\K{x}M_1}(c_2)[h \slice k] \\
-       \land~{i'_1}^\ast = \extend^{\sx}_{N_1, N_2}(i_1)^\ast \\
-       \land~{i'_2}^\ast = \extend^{\sx}_{N_1, N_2}(i_2)^\ast \\
+       \land~{i'_1}^\ast = \extend^{\sx_1}_{N_1, N_2}(i_1)^\ast \\
+       \land~{i'_2}^\ast = \extend^{\sx_2}_{N_1, N_2}(i_2)^\ast \\
        \land~j^\ast = f_{N_2}({i'_1}^\ast, {i'_2}^\ast) \\
        \end{array}
    \end{array}
@@ -2220,8 +2220,8 @@ where :math:`f`, :math:`\sx_1`, :math:`\sx_2`, :math:`h`, and :math:`k` are inst
    \hline
    \VEXTMUL{\K\_}\LOW{\K\_}\sx & \ivmul & \sx & \sx & 0 & M_2 \\
    \VEXTMUL{\K\_}\HIGH{\K\_}\sx & \ivmul & \sx & \sx & M_2 & M_2 \\
-   \VDOT{\K\_}\S & \ivdot & \S & \S & 0 & M_1 \\
-   \VRELAXEDDOT{\K\_}\S & \ivdotsat & \S & \relaxed(R_{\F{idot}})[ \S, \U ] & 0 & M_1 \\
+   \VDOT{\K\_}\S & \ivdots & \S & \S & 0 & M_1 \\
+   \VRELAXEDDOT{\K\_}\S & \ivdotsats & \S & \relaxed(R_{\F{idot}})[ \S, \U ] & 0 & M_1 \\
    \end{array}
 
 .. note::
