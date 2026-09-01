@@ -949,6 +949,15 @@
   "sub type"
 )
 
+;; Testing the number of allowed supertypes
+
+(assert_invalid
+  (module
+    (type $parent1 (sub (struct)))
+    (type $parent2 (sub (struct)))
+    (type $child (sub $parent1 $parent2 (struct))))
+  "multiple supertypes"
+)
 
 ;; Testing exported functions with non-flat types
 (module
