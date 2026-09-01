@@ -565,3 +565,17 @@
   )
   "type mismatch"
 )
+
+;; Offset must fit the address type of the selected memory
+
+(assert_invalid
+  (module
+    (memory i64 0)
+    (memory 0)
+    (func
+      i32.const 0
+      i32.load 1 offset=4294967296
+      drop)
+  )
+  "offset out of range"
+)
