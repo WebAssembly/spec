@@ -2220,8 +2220,8 @@ where :math:`f`, :math:`\sx_1`, :math:`\sx_2`, :math:`h`, and :math:`k` are inst
    \hline
    \VEXTMUL{\K\_}\LOW{\K\_}\sx & \ivmul & \sx & \sx & 0 & M_2 \\
    \VEXTMUL{\K\_}\HIGH{\K\_}\sx & \ivmul & \sx & \sx & M_2 & M_2 \\
-   \VDOT{\K\_}\S & \ivdots & \S & \S & 0 & M_1 \\
-   \VRELAXEDDOT{\K\_}\S & \ivdotsats & \S & \relaxed(R_{\F{idot}})[ \S, \U ] & 0 & M_1 \\
+   \VDOT{\K\_}\S & \ivdot & \S & \S & 0 & M_1 \\
+   \VRELAXEDDOT{\K\_}\S & \ivdotsat & \S & \relaxed(R_{\F{idot}})[ \S, \U ] & 0 & M_1 \\
    \end{array}
 
 .. note::
