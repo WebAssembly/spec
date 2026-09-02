@@ -388,6 +388,7 @@ let swap_if instr =
   | IfI (c, [], il) -> ifI (neg c, il, []) ~at:at
   | IfI (_, _, il2) when (match il2 with | [{it = IfI _; _}] -> true | _ -> false) -> instr
   | IfI ({it = BinE (`EqOp, _, {it = NumE _; _}); _}, _, _) -> instr
+  | IfI (_, _, [{ it = ThrowI _; _ }]) -> instr (* keep the uncaught-exception fallthrough as the final else *)
   | IfI (c, il1, il2) when count_instrs il1 > count_instrs il2 -> ifI (neg c, il2, il1) ~at:at
   | _ -> instr
 

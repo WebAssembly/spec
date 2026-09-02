@@ -20175,11 +20175,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       #) Execute the instruction :math:`(\mathsf{throw\_addr}~a)`.
 
-   #. Else if the first non-value entry of the stack is not a :math:`\mathsf{handler}`, then:
-
-      1) Throw the exception :math:`(\mathsf{throw\_addr}~a)` as a result.
-
-   #. Else:
+   #. Else if the first non-value entry of the stack is a :math:`\mathsf{handler}`, then:
 
       1) Let :math:`H` be the topmost :math:`\mathsf{handler}`.
 
@@ -20306,6 +20302,10 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
                #. Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
                #. Execute the instruction :math:`(\mathsf{br}~l)`.
+
+   #. Else:
+
+      1) Throw the exception :math:`(\mathsf{throw\_addr}~a)` as a result.
 
 
 :math:`\mathsf{try\_table}~{\mathit{bt}}~{{\mathit{catch}}^\ast}~{{\mathit{instr}}^\ast}`
@@ -30835,9 +30835,7 @@ Step_read/throw_addr a
 5. Else if the first non-value entry of the stack is a FRAME_, then:
   a. Pop the frame (FRAME_ _ { _ }) from the stack.
   b. Execute the instruction (THROW_ADDR a).
-6. Else if the first non-value entry of the stack is not a HANDLER_, then:
-  a. Throw the exception (THROW_ADDR a) as a result.
-7. Else:
+6. Else if the first non-value entry of the stack is a HANDLER_, then:
   a. Let (HANDLER_ n { catch''* }) be the topmost HANDLER_.
   b. If (catch''* = []), then:
     1) Pop the handler (HANDLER_ _ { _ }) from the stack.
@@ -30894,6 +30892,8 @@ Step_read/throw_addr a
       b) Pop the handler (HANDLER_ _ { _ }) from the stack.
       c) Push the value (REF.EXN_ADDR a) to the stack.
       d) Execute the instruction (BR l).
+7. Else:
+  a. Throw the exception (THROW_ADDR a) as a result.
 
 Step_read/try_table bt catch* instr*
 1. Let z be the current state.
