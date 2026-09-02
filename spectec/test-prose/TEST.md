@@ -18584,17 +18584,6 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ..............................
 
 
-1. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
-
-#. Assert: Due to validation, :math:`{{\mathit{val}}^\ast} \neq \epsilon`.
-
-#. Execute the instruction :math:`(\mathsf{throw\_addr}~a)`.
-
-
-:math:`\mathsf{throw\_addr}~a`
-..............................
-
-
 1. Let :math:`z` be the current state.
 
 #. Assert: Due to validation, the first non-value entry of the stack is a :math:`\mathsf{handler}`.
@@ -20153,13 +20142,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`z` be the current state.
 
-#. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
-
-#. If :math:`{{\mathit{val}}^\ast} \neq \epsilon`, then:
-
-   a. Execute the instruction :math:`(\mathsf{throw\_addr}~a)`.
-
-#. Else if the first non-value entry of the stack is a :math:`\mathsf{label}`, then:
+#. If the first non-value entry of the stack is a :math:`\mathsf{label}`, then:
 
    a. Pop the :math:`\mathsf{label}` from the stack.
 
@@ -30085,11 +30068,6 @@ Step_pure/br-label-* l
   c. Push the values val* to the stack.
   d. Execute the instruction (BR (l - 1)).
 
-Step_read/throw_addr-instrs-* a
-1. Pop all values val* from the top of the stack.
-2. Assert: Due to validation, (val* =/= []).
-3. Execute the instruction (THROW_ADDR a).
-
 Step_read/throw_addr-handler-* a
 1. Let z be the current state.
 2. Assert: Due to validation, the first non-value entry of the stack is a HANDLER_.
@@ -30820,16 +30798,13 @@ Step_read/throw_ref
 
 Step_read/throw_addr a
 1. Let z be the current state.
-2. Pop all values val* from the top of the stack.
-3. If (val* =/= []), then:
-  a. Execute the instruction (THROW_ADDR a).
-4. Else if the first non-value entry of the stack is a LABEL_, then:
+2. If the first non-value entry of the stack is a LABEL_, then:
   a. Pop the label (LABEL_ _ { _ }) from the stack.
   b. Execute the instruction (THROW_ADDR a).
-5. Else if the first non-value entry of the stack is a FRAME_, then:
+3. Else if the first non-value entry of the stack is a FRAME_, then:
   a. Pop the frame (FRAME_ _ { _ }) from the stack.
   b. Execute the instruction (THROW_ADDR a).
-6. Else if the first non-value entry of the stack is a HANDLER_, then:
+4. Else if the first non-value entry of the stack is a HANDLER_, then:
   a. Let (HANDLER_ n { catch''* }) be the topmost HANDLER_.
   b. If (catch''* = []), then:
     1) Pop the handler (HANDLER_ _ { _ }) from the stack.
@@ -30886,7 +30861,7 @@ Step_read/throw_addr a
       b) Pop the handler (HANDLER_ _ { _ }) from the stack.
       c) Push the value (REF.EXN_ADDR a) to the stack.
       d) Execute the instruction (BR l).
-7. Else:
+5. Else:
   a. Throw the exception (THROW_ADDR a) as a result.
 
 Step_read/try_table bt catch* instr*

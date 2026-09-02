@@ -2394,7 +2394,6 @@ warning: rule prose `Step_read/table.init-oob-*` was never spliced
 warning: rule prose `Step_read/table.size` was never spliced
 warning: rule prose `Step_read/throw_addr` was never spliced
 warning: rule prose `Step_read/throw_addr-handler-*` was never spliced
-warning: rule prose `Step_read/throw_addr-instrs-*` was never spliced
 warning: rule prose `Step_read/throw_ref` was never spliced
 warning: rule prose `Step_read/try_table` was never spliced
 warning: rule prose `Step_read/vload` was never spliced
