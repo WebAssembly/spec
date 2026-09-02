@@ -180,3 +180,57 @@ let match_externtype c xt1 xt2 =
   | ExternTableT tt1, ExternTableT tt2 -> match_tabletype c tt1 tt2
   | ExternFuncT (Def dt1), ExternFuncT (Def dt2) -> match_deftype c dt1 dt2
   | _, _ -> false
+
+
+(* Greatest lower bound *)
+
+let both_null _c nul1 nul2 =
+  match nul1, nul2 with
+  | Null, Null -> Null
+  | _, _ -> NoNull
+
+let both_numtype _c t1 t2 =
+  if t1 = t2 then Some t1 else None
+
+let both_vectype _c t1 t2 =
+  if t1 = t2 then Some t1 else None
+
+let rec both_heaptype c t1 t2 =
+  if match_heaptype c t1 t2 then t1 else
+  if match_heaptype c t2 t1 then t2 else
+  match t1, t2 with
+  | (StructHT | ArrayHT | I31HT), (StructHT | ArrayHT | I31HT) -> NoneHT
+  | UseHT (Idx x1), _ -> both_heaptype c (UseHT (Def (lookup c x1))) t2
+  | _, UseHT (Idx x2) -> both_heaptype c t1 (UseHT (Def (lookup c x2)))
+  | UseHT (Def dt1), UseHT (Def dt2) ->
+    (match expand_deftype dt1, expand_deftype dt2 with
+    | (StructT _ | ArrayT _), (StructT _ | ArrayT _) -> NoneHT
+    | FuncT _, FuncT _ -> NoFuncHT
+    | _, _ -> BotHT
+    )
+  | UseHT (Def dt), t | t, UseHT (Def dt) ->
+    (match expand_deftype dt, t with
+    | (StructT _ | ArrayT _), (I31HT | StructHT | ArrayHT) -> NoneHT
+    | _, _ -> BotHT
+    )
+  | _, _ -> BotHT
+
+and both_reftype c t1 t2 =
+  match t1, t2 with
+  | (nul1, t1'), (nul2, t2') ->
+    (both_null c nul1 nul2, both_heaptype c t1' t2')
+
+and both_valtype c t1 t2 =
+  match t1, t2 with
+  | NumT t1', NumT t2' ->
+    (match both_numtype c t1' t2' with
+    | Some t' -> NumT t'
+    | None -> BotT
+    )
+  | VecT t1', VecT t2' ->
+    (match both_vectype c t1' t2' with
+    | Some t' -> VecT t'
+    | None -> BotT
+    )
+  | RefT t1', RefT t2' -> RefT (both_reftype c t1' t2')
+  | _, _ -> BotT
