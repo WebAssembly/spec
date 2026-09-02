@@ -18695,35 +18695,33 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
          #) Execute the instruction :math:`(\mathsf{br}~l)`.
 
+   #. Else if :math:`{\mathit{catch}}_0` is some :math:`\mathsf{catch\_all}~{\mathit{labelidx}}`, then:
+
+      1) Let :math:`(\mathsf{catch\_all}~l)` be the destructuring of :math:`{\mathit{catch}}_0`.
+
+      #) Pop the :math:`\mathsf{handler}` from the stack.
+
+      #) Execute the instruction :math:`(\mathsf{br}~l)`.
+
+   #. Else if :math:`{\mathit{catch}}_0` is not some :math:`\mathsf{catch\_all\_ref}~{\mathit{labelidx}}`, then:
+
+      1) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}''}^\ast}`.
+
+      #) Pop the :math:`\mathsf{handler}` from the stack.
+
+      #) Let :math:`H` be the :math:`\mathsf{handler}` whose arity is :math:`n` and whose catch handler is :math:`{{\mathit{catch}'}^\ast}`.
+
+      #) Enter the block :math:`(\mathsf{throw\_addr}~a)~\mathsf{handler}` with the :math:`\mathsf{handler}` :math:`H`.
+
    #. Else:
 
-      1) If :math:`{\mathit{catch}}_0` is some :math:`\mathsf{catch\_all}~{\mathit{labelidx}}`, then:
+      1) Let :math:`(\mathsf{catch\_all\_ref}~l)` be the destructuring of :math:`{\mathit{catch}}_0`.
 
-         a) Let :math:`(\mathsf{catch\_all}~l)` be the destructuring of :math:`{\mathit{catch}}_0`.
+      #) Pop the :math:`\mathsf{handler}` from the stack.
 
-         #) Pop the :math:`\mathsf{handler}` from the stack.
+      #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
-         #) Execute the instruction :math:`(\mathsf{br}~l)`.
-
-      #) Else if :math:`{\mathit{catch}}_0` is not some :math:`\mathsf{catch\_all\_ref}~{\mathit{labelidx}}`, then:
-
-         a) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}''}^\ast}`.
-
-         #) Pop the :math:`\mathsf{handler}` from the stack.
-
-         #) Let :math:`H` be the :math:`\mathsf{handler}` whose arity is :math:`n` and whose catch handler is :math:`{{\mathit{catch}'}^\ast}`.
-
-         #) Enter the block :math:`(\mathsf{throw\_addr}~a)~\mathsf{handler}` with the :math:`\mathsf{handler}` :math:`H`.
-
-      #) Else:
-
-         a) Let :math:`(\mathsf{catch\_all\_ref}~l)` be the destructuring of :math:`{\mathit{catch}}_0`.
-
-         #) Pop the :math:`\mathsf{handler}` from the stack.
-
-         #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
-
-         #) Execute the instruction :math:`(\mathsf{br}~l)`.
+      #) Execute the instruction :math:`(\mathsf{br}~l)`.
 
 
 :math:`\mathsf{table{.}copy}~x_1~x_2`
@@ -20167,41 +20165,91 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Execute the instruction :math:`(\mathsf{throw\_addr}~a)`.
 
-#. Else:
+#. Else if the first non-value entry of the stack is a :math:`\mathsf{frame}`, then:
 
-   a. If the first non-value entry of the stack is a :math:`\mathsf{frame}`, then:
+   a. Pop the :math:`\mathsf{frame}` from the stack.
 
-      1) Pop the :math:`\mathsf{frame}` from the stack.
+   #. Execute the instruction :math:`(\mathsf{throw\_addr}~a)`.
+
+#. Else if the first non-value entry of the stack is a :math:`\mathsf{handler}`, then:
+
+   a. Let :math:`H` be the topmost :math:`\mathsf{handler}`.
+
+   #. Let :math:`n` be the arity of :math:`H`
+
+   #. Let :math:`{{\mathit{catch}''}^\ast}` be the catch handler of :math:`H`
+
+   #. If :math:`{{\mathit{catch}''}^\ast} = \epsilon`, then:
+
+      1) Pop the :math:`\mathsf{handler}` from the stack.
 
       #) Execute the instruction :math:`(\mathsf{throw\_addr}~a)`.
 
-   #. Else if the first non-value entry of the stack is a :math:`\mathsf{handler}`, then:
+   #. Else if :math:`a \geq {|z{.}\mathsf{exns}|}`, then:
 
-      1) Let :math:`H` be the topmost :math:`\mathsf{handler}`.
+      1) Let :math:`{\mathit{catch}}_0~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}''}^\ast}`.
 
-      #) Let :math:`n` be the arity of :math:`H`
+      #) If :math:`{\mathit{catch}}_0` is some :math:`\mathsf{catch\_all}~{\mathit{labelidx}}`, then:
 
-      #) Let :math:`{{\mathit{catch}''}^\ast}` be the catch handler of :math:`H`
+         a) Let :math:`(\mathsf{catch\_all}~l)` be the destructuring of :math:`{\mathit{catch}}_0`.
 
-      #) If :math:`{{\mathit{catch}''}^\ast} = \epsilon`, then:
+         #) Pop the :math:`\mathsf{handler}` from the stack.
 
-         a) Pop the :math:`\mathsf{handler}` from the stack.
+         #) Execute the instruction :math:`(\mathsf{br}~l)`.
 
-         #) Execute the instruction :math:`(\mathsf{throw\_addr}~a)`.
+      #) Else if :math:`{\mathit{catch}}_0` is not some :math:`\mathsf{catch\_all\_ref}~{\mathit{labelidx}}`, then:
 
-      #) Else if :math:`a \geq {|z{.}\mathsf{exns}|}`, then:
+         a) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}''}^\ast}`.
 
-         a) Let :math:`{\mathit{catch}}_0~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}''}^\ast}`.
+         #) Pop the :math:`\mathsf{handler}` from the stack.
 
-         #) If :math:`{\mathit{catch}}_0` is some :math:`\mathsf{catch\_all}~{\mathit{labelidx}}`, then:
+         #) Let :math:`H` be the :math:`\mathsf{handler}` whose arity is :math:`n` and whose catch handler is :math:`{{\mathit{catch}'}^\ast}`.
 
-            1. Let :math:`(\mathsf{catch\_all}~l)` be the destructuring of :math:`{\mathit{catch}}_0`.
+         #) Enter the block :math:`(\mathsf{throw\_addr}~a)~\mathsf{handler}` with the :math:`\mathsf{handler}` :math:`H`.
 
-            #. Pop the :math:`\mathsf{handler}` from the stack.
+      #) Else:
+
+         a) Let :math:`(\mathsf{catch\_all\_ref}~l)` be the destructuring of :math:`{\mathit{catch}}_0`.
+
+         #) Pop the :math:`\mathsf{handler}` from the stack.
+
+         #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+
+         #) Execute the instruction :math:`(\mathsf{br}~l)`.
+
+   #. Else:
+
+      1) Let :math:`{{\mathit{val}}^\ast}` be :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{fields}`.
+
+      #) Let :math:`{\mathit{catch}}_0~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}''}^\ast}`.
+
+      #) If :math:`{\mathit{catch}}_0` is some :math:`\mathsf{catch}~{\mathit{tagidx}}~{\mathit{labelidx}}`, then:
+
+         a) Let :math:`(\mathsf{catch}~x~l)` be the destructuring of :math:`{\mathit{catch}}_0`.
+
+         #) If :math:`x < {|z{.}\mathsf{module}{.}\mathsf{tags}|}` and :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{tag} = z{.}\mathsf{module}{.}\mathsf{tags}{}[x]`, then:
+
+            1. Pop the :math:`\mathsf{handler}` from the stack.
+
+            #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
             #. Execute the instruction :math:`(\mathsf{br}~l)`.
 
-         #) Else if :math:`{\mathit{catch}}_0` is not some :math:`\mathsf{catch\_all\_ref}~{\mathit{labelidx}}`, then:
+         #) Else:
+
+            1. Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}''}^\ast}`.
+
+            #. Pop the :math:`\mathsf{handler}` from the stack.
+
+            #. Let :math:`H` be the :math:`\mathsf{handler}` whose arity is :math:`n` and whose catch handler is :math:`{{\mathit{catch}'}^\ast}`.
+
+            #. Enter the block :math:`(\mathsf{throw\_addr}~a)~\mathsf{handler}` with the :math:`\mathsf{handler}` :math:`H`.
+
+      #) Else if :math:`{\mathit{catch}}_0` is some :math:`\mathsf{catch\_ref}~{\mathit{tagidx}}~{\mathit{labelidx}}`, then:
+
+         a) Let :math:`(\mathsf{catch\_ref}~x~l)` be the destructuring of :math:`{\mathit{catch}}_0`.
+
+         #) If :math:`x \geq {|z{.}\mathsf{module}{.}\mathsf{tags}|}` or :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{tag} \neq z{.}\mathsf{module}{.}\mathsf{tags}{}[x]`, then:
 
             1. Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}''}^\ast}`.
 
@@ -20213,99 +20261,45 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
          #) Else:
 
-            1. Let :math:`(\mathsf{catch\_all\_ref}~l)` be the destructuring of :math:`{\mathit{catch}}_0`.
+            1. Pop the :math:`\mathsf{handler}` from the stack.
 
-            #. Pop the :math:`\mathsf{handler}` from the stack.
+            #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
             #. Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
             #. Execute the instruction :math:`(\mathsf{br}~l)`.
 
+      #) Else if :math:`{\mathit{catch}}_0` is some :math:`\mathsf{catch\_all}~{\mathit{labelidx}}`, then:
+
+         a) Let :math:`(\mathsf{catch\_all}~l)` be the destructuring of :math:`{\mathit{catch}}_0`.
+
+         #) Pop the :math:`\mathsf{handler}` from the stack.
+
+         #) Execute the instruction :math:`(\mathsf{br}~l)`.
+
+      #) Else if :math:`{\mathit{catch}}_0` is not some :math:`\mathsf{catch\_all\_ref}~{\mathit{labelidx}}`, then:
+
+         a) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}''}^\ast}`.
+
+         #) Pop the :math:`\mathsf{handler}` from the stack.
+
+         #) Let :math:`H` be the :math:`\mathsf{handler}` whose arity is :math:`n` and whose catch handler is :math:`{{\mathit{catch}'}^\ast}`.
+
+         #) Enter the block :math:`(\mathsf{throw\_addr}~a)~\mathsf{handler}` with the :math:`\mathsf{handler}` :math:`H`.
+
       #) Else:
 
-         a) Let :math:`{{\mathit{val}}^\ast}` be :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{fields}`.
+         a) Let :math:`(\mathsf{catch\_all\_ref}~l)` be the destructuring of :math:`{\mathit{catch}}_0`.
 
-         #) Let :math:`{\mathit{catch}}_0~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}''}^\ast}`.
+         #) Pop the :math:`\mathsf{handler}` from the stack.
 
-         #) If :math:`{\mathit{catch}}_0` is some :math:`\mathsf{catch}~{\mathit{tagidx}}~{\mathit{labelidx}}`, then:
+         #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
-            1. Let :math:`(\mathsf{catch}~x~l)` be the destructuring of :math:`{\mathit{catch}}_0`.
+         #) Execute the instruction :math:`(\mathsf{br}~l)`.
 
-            #. If :math:`x < {|z{.}\mathsf{module}{.}\mathsf{tags}|}` and :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{tag} = z{.}\mathsf{module}{.}\mathsf{tags}{}[x]`, then:
+#. Else:
 
-               a. Pop the :math:`\mathsf{handler}` from the stack.
-
-               #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
-
-               #. Execute the instruction :math:`(\mathsf{br}~l)`.
-
-            #. Else:
-
-               a. Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}''}^\ast}`.
-
-               #. Pop the :math:`\mathsf{handler}` from the stack.
-
-               #. Let :math:`H` be the :math:`\mathsf{handler}` whose arity is :math:`n` and whose catch handler is :math:`{{\mathit{catch}'}^\ast}`.
-
-               #. Enter the block :math:`(\mathsf{throw\_addr}~a)~\mathsf{handler}` with the :math:`\mathsf{handler}` :math:`H`.
-
-         #) Else if :math:`{\mathit{catch}}_0` is some :math:`\mathsf{catch\_ref}~{\mathit{tagidx}}~{\mathit{labelidx}}`, then:
-
-            1. Let :math:`(\mathsf{catch\_ref}~x~l)` be the destructuring of :math:`{\mathit{catch}}_0`.
-
-            #. If :math:`x \geq {|z{.}\mathsf{module}{.}\mathsf{tags}|}` or :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{tag} \neq z{.}\mathsf{module}{.}\mathsf{tags}{}[x]`, then:
-
-               a. Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}''}^\ast}`.
-
-               #. Pop the :math:`\mathsf{handler}` from the stack.
-
-               #. Let :math:`H` be the :math:`\mathsf{handler}` whose arity is :math:`n` and whose catch handler is :math:`{{\mathit{catch}'}^\ast}`.
-
-               #. Enter the block :math:`(\mathsf{throw\_addr}~a)~\mathsf{handler}` with the :math:`\mathsf{handler}` :math:`H`.
-
-            #. Else:
-
-               a. Pop the :math:`\mathsf{handler}` from the stack.
-
-               #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
-
-               #. Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
-
-               #. Execute the instruction :math:`(\mathsf{br}~l)`.
-
-         #) Else:
-
-            1. If :math:`{\mathit{catch}}_0` is some :math:`\mathsf{catch\_all}~{\mathit{labelidx}}`, then:
-
-               a. Let :math:`(\mathsf{catch\_all}~l)` be the destructuring of :math:`{\mathit{catch}}_0`.
-
-               #. Pop the :math:`\mathsf{handler}` from the stack.
-
-               #. Execute the instruction :math:`(\mathsf{br}~l)`.
-
-            #. Else if :math:`{\mathit{catch}}_0` is not some :math:`\mathsf{catch\_all\_ref}~{\mathit{labelidx}}`, then:
-
-               a. Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}''}^\ast}`.
-
-               #. Pop the :math:`\mathsf{handler}` from the stack.
-
-               #. Let :math:`H` be the :math:`\mathsf{handler}` whose arity is :math:`n` and whose catch handler is :math:`{{\mathit{catch}'}^\ast}`.
-
-               #. Enter the block :math:`(\mathsf{throw\_addr}~a)~\mathsf{handler}` with the :math:`\mathsf{handler}` :math:`H`.
-
-            #. Else:
-
-               a. Let :math:`(\mathsf{catch\_all\_ref}~l)` be the destructuring of :math:`{\mathit{catch}}_0`.
-
-               #. Pop the :math:`\mathsf{handler}` from the stack.
-
-               #. Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
-
-               #. Execute the instruction :math:`(\mathsf{br}~l)`.
-
-   #. Else:
-
-      1) Throw the exception :math:`(\mathsf{throw\_addr}~a)` as a result.
+   a. Throw the exception :math:`(\mathsf{throw\_addr}~a)` as a result.
 
 
 :math:`\mathsf{try\_table}~{\mathit{bt}}~{{\mathit{catch}}^\ast}~{{\mathit{instr}}^\ast}`
