@@ -1117,9 +1117,9 @@ memory :
 
 memory_fields :
   | memorytype
-    { fun c -> fun x loc -> [Memory ($1 c) @@ loc], [], [], [] }
+    { fun c x loc -> [Memory ($1 c) @@ loc], [], [], [] }
   | inline_import memorytype  /* Sugar */
-    { fun c -> fun x loc ->
+    { fun c x loc ->
       [], [],
       [Import (fst $1, snd $1, ExternMemoryT ($2 c)) @@ loc], [] }
   | inline_export memory_fields  /* Sugar */
@@ -1193,12 +1193,12 @@ table :
 
 table_fields :
   | tabletype constexpr1
-    { fun c -> fun x loc -> [Table ($1 c, $2 c) @@ loc], [], [], [] }
+    { fun c x loc -> [Table ($1 c, $2 c) @@ loc], [], [], [] }
   | tabletype  /* Sugar */
-    { fun c -> fun x loc -> let TableT (_, _, (_, ht)) as tt = $1 c in
+    { fun c x loc -> let TableT (_, _, (_, ht)) as tt = $1 c in
       [Table (tt, [RefNull ht @@ loc] @@ loc) @@ loc], [], [], [] }
   | inline_import tabletype  /* Sugar */
-    { fun c -> fun x loc ->
+    { fun c x loc ->
       [], [],
       [Import (fst $1, snd $1, ExternTableT ($2 c)) @@ loc], [] }
   | inline_export table_fields  /* Sugar */
