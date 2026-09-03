@@ -1112,7 +1112,8 @@ memoryuse :
 memory :
   | LPAR MEMORY bindidx_opt memory_fields RPAR
     { fun c -> let x = $3 c anon_memory bind_memory @@ $sloc in
-      fun () -> $4 c x $sloc }
+      let mff = $4 c in
+      fun () -> mff x $sloc }
 
 memory_fields :
   | memorytype
@@ -1122,10 +1123,12 @@ memory_fields :
       [], [],
       [Import (fst $1, snd $1, ExternMemoryT ($2 c)) @@ loc], [] }
   | inline_export memory_fields  /* Sugar */
-    { fun c x loc -> let mems, data, ims, exs = $2 c x loc in
+    { fun c -> let mff = $2 c in
+      fun x loc -> let mems, data, ims, exs = mff x loc in
       mems, data, ims, $1 (MemoryX x) c :: exs }
   | addrtype LPAR DATA string_list RPAR  /* Sugar */
-    { fun c x loc ->
+    { fun c -> ignore (anon_data c $sloc);
+      fun x loc ->
       let size = Int64.(div (add (of_int (String.length $4)) 65535L) 65536L) in
       let offset = [at_const $1 (0L @@ loc) @@ loc] @@ loc in
       [Memory (MemoryT ($1, {min = size; max = Some size})) @@ loc],
@@ -1185,7 +1188,8 @@ tableuse :
 table :
   | LPAR TABLE bindidx_opt table_fields RPAR
     { fun c -> let x = $3 c anon_table bind_table @@ $sloc in
-      fun () -> $4 c x $sloc }
+      let tff = $4 c in
+      fun () -> tff x $sloc }
 
 table_fields :
   | tabletype constexpr1
@@ -1198,10 +1202,12 @@ table_fields :
       [], [],
       [Import (fst $1, snd $1, ExternTableT ($2 c)) @@ loc], [] }
   | inline_export table_fields  /* Sugar */
-    { fun c x loc -> let tabs, elems, ims, exs = $2 c x loc in
+    { fun c -> let tff = $2 c in
+      fun x loc -> let tabs, elems, ims, exs = tff x loc in
       tabs, elems, ims, $1 (TableX x) c :: exs }
   | addrtype reftype LPAR ELEM elemexpr elemexpr_list RPAR  /* Sugar */
-    { fun c x loc ->
+    { fun c -> ignore (anon_elem c $sloc);
+      fun x loc ->
       let offset = [at_const $1 (0L @@ loc) @@ loc] @@ loc in
       let einit = $5 c :: $6 c in
       let size = Lib.List64.length einit in
@@ -1211,7 +1217,8 @@ table_fields :
       [Elem (rt, einit, Active (x, offset) @@ loc) @@ loc],
       [], [] }
   | addrtype reftype LPAR ELEM elemidx_list RPAR  /* Sugar */
-    { fun c x loc ->
+    { fun c -> ignore (anon_elem c $sloc);
+      fun x loc ->
       let (_, ht) as rt = $2 c in
       let tinit = [RefNull ht @@ loc] @@ loc in
       let offset = [at_const $1 (0L @@ loc) @@ loc] @@ loc in
