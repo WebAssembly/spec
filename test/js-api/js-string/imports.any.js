@@ -7,7 +7,7 @@ test(() => {
   // Import a string constant
   builder.addImportedGlobal("constants", "constant", kWasmExternRef, false);
 
-  // Import a builtin function
+  // Import the legacy builtin function
   builder.addImport(
     "wasm:js-string",
     "test",
@@ -23,4 +23,34 @@ test(() => {
   // All imports that refer to a builtin module are suppressed from import
   // reflection.
   assert_equals(imports.length, 0);
+});
+
+test(() => {
+  let builder = new WasmModuleBuilder();
+
+  // Import a string constant
+  builder.addImportedGlobal("constants", "constant", kWasmExternRef, false);
+
+  // Import the modern builtin function
+  builder.addImport(
+    "wasm:js/string",
+    "test",
+    {params: [kWasmExternRef], results: [kWasmI32]});
+
+  // Import the non-enabled builtin function
+  builder.addImport(
+    "wasm:js-string",
+    "test",
+    {params: [kWasmExternRef], results: [kWasmI32]});
+
+  let buffer = builder.toBuffer();
+  let module = new WebAssembly.Module(buffer, {
+    builtins: ["js/string"],
+    importedStringConstants: "constants"
+  });
+  let imports = WebAssembly.Module.imports(module);
+
+  // All imports that refer to a builtin module are suppressed from import
+  // reflection.
+  assert_equals(imports.length, 1);
 });

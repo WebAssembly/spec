@@ -96,12 +96,16 @@ setup(() => {
   // Add an import for each builtin
   for (let builtin of builtins) {
     builtin.importFuncIndex = builder.addImport(
+      "wasm:js/string",
+      builtin.name,
+      builtin.type);
+    builtin.importFuncIndexLegacy = builder.addImport(
       "wasm:js-string",
       builtin.name,
       builtin.type);
   }
 
-  // Generate an exported function to call the builtin
+  // Generate an exported function to call the modern builtin
   for (let builtin of builtins) {
     let func = builder.addFunction(builtin.name + "Imp", builtin.type);
     func.addLocals(builtin.params.length);
@@ -116,11 +120,26 @@ setup(() => {
     func.exportAs(builtin.name);
   }
 
+  // Generate an exported function to call the legacy builtin
+  for (let builtin of builtins) {
+    let func = builder.addFunction(builtin.name + "ImpLegacy", builtin.type);
+    func.addLocals(builtin.params.length);
+    let body = [];
+    for (let i = 0; i < builtin.params.length; i++) {
+      body.push(kExprLocalGet);
+      body.push(...wasmSignedLeb(i));
+    }
+    body.push(kExprCallFunction);
+    body.push(...wasmSignedLeb(builtin.importFuncIndexLegacy));
+    func.addBody(body);
+    func.exportAs(builtin.name + "Legacy");
+  }
+
   const buffer = builder.toBuffer();
 
   // Instantiate this module using the builtins from the host
   const builtinModule = new WebAssembly.Module(buffer, {
-    builtins: ["js-string"]
+    builtins: ["js-string", "js/string"]
   });
   const builtinInstance = new WebAssembly.Instance(builtinModule, {});
   builtinExports = builtinInstance.exports;
@@ -128,21 +147,17 @@ setup(() => {
   // Instantiate this module using the polyfill module
   const polyfillModule = new WebAssembly.Module(buffer);
   const polyfillInstance = new WebAssembly.Instance(polyfillModule, {
-    "wasm:js-string": polyfillImports
+    "wasm:js-string": polyfillImports,
+    "wasm:js/string": polyfillImports
   });
   polyfillExports = polyfillInstance.exports;
 });
 
 // A helper function to assert that the behavior of two functions are the
-// same.
+// same. `funcA` may be a single function or an array of functions; each is
+// compared against `funcB`.
 function assert_same_behavior(funcA, funcB, ...params) {
-  let resultA;
-  let errA = null;
-  try {
-    resultA = funcA(...params);
-  } catch (err) {
-    errA = err;
-  }
+  const funcsA = Array.isArray(funcA) ? funcA : [funcA];
 
   let resultB;
   let errB = null;
@@ -152,16 +167,33 @@ function assert_same_behavior(funcA, funcB, ...params) {
     errB = err;
   }
 
-  if (errA || errB) {
-    assert_equals(errA === null, errB === null, errA ? errA.message : errB.message);
-    assert_equals(Object.getPrototypeOf(errA), Object.getPrototypeOf(errB));
-  }
-  assert_equals(resultA, resultB);
+  let firstResultA;
+  let firstErrA = null;
+  for (let i = 0; i < funcsA.length; i++) {
+    let resultA;
+    let errA = null;
+    try {
+      resultA = funcsA[i](...params);
+    } catch (err) {
+      errA = err;
+    }
 
-  if (errA) {
-    throw errA;
+    if (errA || errB) {
+      assert_equals(errA === null, errB === null, errA ? errA.message : errB.message);
+      assert_equals(Object.getPrototypeOf(errA), Object.getPrototypeOf(errB));
+    }
+    assert_equals(resultA, resultB);
+
+    if (i === 0) {
+      firstResultA = resultA;
+      firstErrA = errA;
+    }
   }
-  return resultA;
+
+  if (firstErrA) {
+    throw firstErrA;
+  }
+  return firstResultA;
 }
 
 function assert_throws_if(func, shouldThrow, constructor) {
@@ -226,62 +258,62 @@ const testExternRefValues = [
 test(() => {
   for (let a of testExternRefValues) {
     let isString = assert_same_behavior(
-      builtinExports['test'],
+      [builtinExports['test'], builtinExports['testLegacy']],
       polyfillExports['test'],
       a
     );
 
     assert_throws_if(() => assert_same_behavior(
-        builtinExports['cast'],
+        [builtinExports['cast'], builtinExports['castLegacy']],
         polyfillExports['cast'],
         a
       ), !isString, WebAssembly.RuntimeError);
 
     let arrayMutI16 = helperExports.createArrayMutI16(10);
     assert_throws_if(() => assert_same_behavior(
-        builtinExports['intoCharCodeArray'],
+        [builtinExports['intoCharCodeArray'], builtinExports['intoCharCodeArrayLegacy']],
         polyfillExports['intoCharCodeArray'],
         a, arrayMutI16, 0
       ), !isString, WebAssembly.RuntimeError);
 
     assert_throws_if(() => assert_same_behavior(
-        builtinExports['charCodeAt'],
+        [builtinExports['charCodeAt'], builtinExports['charCodeAtLegacy']],
         polyfillExports['charCodeAt'],
         a, 0
       ), !isString, WebAssembly.RuntimeError);
 
     assert_throws_if(() => assert_same_behavior(
-        builtinExports['codePointAt'],
+        [builtinExports['codePointAt'], builtinExports['codePointAtLegacy']],
         polyfillExports['codePointAt'],
         a, 0
       ), !isString, WebAssembly.RuntimeError);
 
     assert_throws_if(() => assert_same_behavior(
-        builtinExports['length'],
+        [builtinExports['length'], builtinExports['lengthLegacy']],
         polyfillExports['length'],
         a
       ), !isString, WebAssembly.RuntimeError);
 
     assert_throws_if(() => assert_same_behavior(
-        builtinExports['concat'],
+        [builtinExports['concat'], builtinExports['concatLegacy']],
         polyfillExports['concat'],
         a, a
       ), !isString, WebAssembly.RuntimeError);
 
     assert_throws_if(() => assert_same_behavior(
-        builtinExports['substring'],
+        [builtinExports['substring'], builtinExports['substringLegacy']],
         polyfillExports['substring'],
         a, 0, 0
       ), !isString, WebAssembly.RuntimeError);
 
     assert_throws_if(() => assert_same_behavior(
-        builtinExports['equals'],
+        [builtinExports['equals'], builtinExports['equalsLegacy']],
         polyfillExports['equals'],
         a, a
       ), a !== null && !isString, WebAssembly.RuntimeError);
 
     assert_throws_if(() => assert_same_behavior(
-        builtinExports['compare'],
+        [builtinExports['compare'], builtinExports['compareLegacy']],
         polyfillExports['compare'],
         a, a
       ), !isString, WebAssembly.RuntimeError);
@@ -292,7 +324,7 @@ test(() => {
 test(() => {
   for (let a of testCharCodes) {
     assert_same_behavior(
-      builtinExports['fromCharCode'],
+      [builtinExports['fromCharCode'], builtinExports['fromCharCodeLegacy']],
       polyfillExports['fromCharCode'],
       a
     );
@@ -303,7 +335,7 @@ test(() => {
 test(() => {
   for (let a of testCodePoints) {
     assert_same_behavior(
-      builtinExports['fromCodePoint'],
+      [builtinExports['fromCodePoint'], builtinExports['fromCodePointLegacy']],
       polyfillExports['fromCodePoint'],
       a
     );
@@ -314,14 +346,14 @@ test(() => {
 test(() => {
   for (let a of testStrings) {
     let length = assert_same_behavior(
-      builtinExports['length'],
+      [builtinExports['length'], builtinExports['lengthLegacy']],
       polyfillExports['length'],
       a
     );
 
     for (let i = 0; i < length; i++) {
       let charCode = assert_same_behavior(
-        builtinExports['charCodeAt'],
+        [builtinExports['charCodeAt'], builtinExports['charCodeAtLegacy']],
         polyfillExports['charCodeAt'],
         a, i
       );
@@ -329,7 +361,7 @@ test(() => {
 
     for (let i = 0; i < length; i++) {
       let charCode = assert_same_behavior(
-        builtinExports['codePointAt'],
+        [builtinExports['codePointAt'], builtinExports['codePointAtLegacy']],
         polyfillExports['codePointAt'],
         a, i
       );
@@ -337,13 +369,13 @@ test(() => {
 
     let arrayMutI16 = helperExports.createArrayMutI16(length);
     assert_same_behavior(
-      builtinExports['intoCharCodeArray'],
+      [builtinExports['intoCharCodeArray'], builtinExports['intoCharCodeArrayLegacy']],
       polyfillExports['intoCharCodeArray'],
       a, arrayMutI16, 0
     );
 
     assert_same_behavior(
-      builtinExports['fromCharCodeArray'],
+      [builtinExports['fromCharCodeArray'], builtinExports['fromCharCodeArrayLegacy']],
       polyfillExports['fromCharCodeArray'],
       arrayMutI16, 0, length
     );
@@ -351,7 +383,7 @@ test(() => {
     for (let i = 0; i < length; i++) {
       for (let j = 0; j < length; j++) {
         assert_same_behavior(
-          builtinExports['substring'],
+          [builtinExports['substring'], builtinExports['substringLegacy']],
           polyfillExports['substring'],
           a, i, j
         );
@@ -365,19 +397,19 @@ test(() => {
   for (let a of testStrings) {
     for (let b of testStrings) {
       assert_same_behavior(
-        builtinExports['concat'],
+        [builtinExports['concat'], builtinExports['concatLegacy']],
         polyfillExports['concat'],
         a, b
       );
 
       assert_same_behavior(
-        builtinExports['equals'],
+        [builtinExports['equals'], builtinExports['equalsLegacy']],
         polyfillExports['equals'],
         a, b
       );
 
       assert_same_behavior(
-        builtinExports['compare'],
+        [builtinExports['compare'], builtinExports['compareLegacy']],
         polyfillExports['compare'],
         a, b
       );
