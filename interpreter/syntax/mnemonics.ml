@@ -585,3 +585,8 @@ let f64x2_relaxed_min = VecBinary (V128 (F64x2 V128Op.RelaxedMin))
 let f64x2_relaxed_max = VecBinary (V128 (F64x2 V128Op.RelaxedMax))
 let i16x8_relaxed_dot_i8x16_i7x16_s = VecBinary (V128 (I16x8 V128Op.RelaxedDot))
 let i32x4_relaxed_dot_i8x16_i7x16_add_s = VecTernary (V128 (I32x4 V128Op.RelaxedDotAddS))
+
+let i64_add128 = Wide (I64 I64Op.Add128)
+let i64_sub128 = Wide (I64 I64Op.Sub128)
+let i64_mul_wide_s = Extwide (I64 (I64Op.MulWide S))
+let i64_mul_wide_u = Extwide (I64 (I64Op.MulWide U))

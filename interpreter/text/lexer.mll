@@ -742,6 +742,11 @@ rule token = parse
       | "f32x4.replace_lane" -> VEC_REPLACE f32x4_replace_lane
       | "f64x2.replace_lane" -> VEC_REPLACE f64x2_replace_lane
 
+      | "i64.add128" -> BINARY i64_add128
+      | "i64.sub128" -> BINARY i64_sub128
+      | "i64.mul_wide_s" -> BINARY i64_mul_wide_s
+      | "i64.mul_wide_u" -> BINARY i64_mul_wide_u
+
       | "i8x16.relaxed_swizzle" -> VEC_BINARY i8x16_relaxed_swizzle
       | "i32x4.relaxed_trunc_f32x4_u" -> VEC_UNARY i32x4_relaxed_trunc_f32x4_u
       | "i32x4.relaxed_trunc_f32x4_s" -> VEC_UNARY i32x4_relaxed_trunc_f32x4_s

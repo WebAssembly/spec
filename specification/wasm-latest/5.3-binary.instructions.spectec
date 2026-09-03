@@ -386,6 +386,13 @@ grammar Binstr/num-cvt-sat : instr = ...
   | 0xFC 7:Bu32 => CVTOP I64 F64 TRUNC_SAT U
   | ...
 
+grammar Binstr/num-wide : instr = ...
+  | 0xFC 13:Bu32 => WIDEOP I64 ADD128
+  | 0xFC 14:Bu32 => WIDEOP I64 SUB128
+  | 0xFC 15:Bu32 => EXTWIDEOP I64 MUL_WIDE S
+  | 0xFC 16:Bu32 => EXTWIDEOP I64 MUL_WIDE U
+  | ...
+
 
 ;; Vector instructions
 

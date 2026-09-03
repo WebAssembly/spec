@@ -25,6 +25,8 @@ jobs:
         uses: ocaml/setup-ocaml@v3
         with:
           ocaml-compiler: 5.04.x
+      - name: Setup OCaml tools
+        run: opam install --yes stdint.0.7.2
       - name: Build interpreter
         run: cd interpreter && opam exec make jsdeps wasm
       # Neither V8 nor SpiderMonkey can currently handle all 3.0 tests, so we disable checking JS translation for now.

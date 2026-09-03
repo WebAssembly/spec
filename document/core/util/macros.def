@@ -616,6 +616,10 @@
 .. |DEMOTE| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{demote}}
 .. |REINTERPRET| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{reinterpret}}
 
+.. |ADD128| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{add128}}
+.. |SUB128| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{sub128}}
+.. |MULWIDE| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{mul\_wide}}
+
 .. |VCONST| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{const}}
 .. |VSHUFFLE| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{shuffle}}
 .. |VSWIZZLE| mathdef:: \xref{syntax/instructions}{syntax-instr-vec}{\K{swizzle}}
@@ -694,6 +698,8 @@
 .. |testop| mathdef:: \xref{syntax/instructions}{syntax-testop}{\X{testop}}
 .. |relop| mathdef:: \xref{syntax/instructions}{syntax-relop}{\X{relop}}
 .. |cvtop| mathdef:: \xref{syntax/instructions}{syntax-cvtop}{\X{cvtop}}
+.. |wideop| mathdef:: \xref{syntax/instructions}{syntax-wideop}{\X{wideop}}
+.. |extwideop| mathdef:: \xref{syntax/instructions}{syntax-extwideop}{\X{extwideop}}
 
 .. |unopF| mathdef:: \xref{exec/instructions}{exec-instr-numeric}{\X{unop}}
 .. |binopF| mathdef:: \xref{exec/instructions}{exec-instr-numeric}{\X{binop}}
@@ -1637,6 +1643,8 @@
 .. |iavgru| mathdef:: \xref{exec/numerics}{op-iavgr}{\F{iavgr\_u}}
 .. |iq15mulrsat| mathdef:: \xref{exec/numerics}{op-iq15mulrsat}{\F{iq15mulrsat}}
 .. |iq15mulrsats| mathdef:: \xref{exec/numerics}{op-iq15mulrsat}{\F{iq15mulrsat\_s}}
+.. |isplit| mathdef:: \xref{exec/numerics}{op-isplit}{\F{isplit}}
+.. |iconcat| mathdef:: \xref{exec/numerics}{op-iconcat}{\F{iconcat}}
 
 .. |fadd| mathdef:: \xref{exec/numerics}{op-fadd}{\F{fadd}}
 .. |fsub| mathdef:: \xref{exec/numerics}{op-fsub}{\F{fsub}}

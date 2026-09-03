@@ -677,6 +677,10 @@ let rec instr s =
     | 0x0fl -> let x = at idx s in table_grow x
     | 0x10l -> let x = at idx s in table_size x
     | 0x11l -> let x = at idx s in table_fill x
+    | 0x13l -> i64_add128
+    | 0x14l -> i64_sub128
+    | 0x15l -> i64_mul_wide_s
+    | 0x16l -> i64_mul_wide_u
 
     | n -> illegal2 s pos b n
     )

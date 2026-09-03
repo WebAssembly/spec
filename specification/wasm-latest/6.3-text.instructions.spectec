@@ -551,6 +551,13 @@ grammar Tplaininstr_(I)/num-cvt-reinterpret : instr = ...
   | "f64.reinterpret_i64" => CVTOP F64 I64 REINTERPRET
   | ...
 
+grammar Tplaininstr_(I)/num-wide : instr = ...
+  | "i64.add128" => WIDEOP I64 ADD128
+  | "i64.sub128" => WIDEOP I64 SUB128
+  | "i64.mul_wide_s" => EXTWIDEOP I64 MUL_WIDE S
+  | "i64.mul_wide_u" => EXTWIDEOP I64 MUL_WIDE U
+  | ...
+
 
 ;; Vector instructions
 

@@ -988,6 +988,15 @@ rule Step_pure/cvtop-trap:
   -- if $cvtop__(nt_1, nt_2, cvtop, c_1) = eps
 
 
+rule Step_pure/wideop:
+  (CONST nt c_1) (CONST nt c_2) (CONST nt c_3) (CONST nt c_4) (WIDEOP nt wideop_nt)  ~>  (CONST nt c_5) (CONST nt c_6)
+  -- if (c_5, c_6) <- $wideop__(nt, wideop_nt, c_1, c_2, c_3, c_4)
+
+rule Step_pure/extwideop:
+  (CONST nt c_1) (CONST nt c_2) (EXTWIDEOP nt extwideop_nt)  ~>  (CONST nt c_5) (CONST nt c_6)
+  -- if (c_5, c_6) <- $extwideop__(nt, extwideop_nt, c_1, c_2)
+
+
 ;; Vector instructions
 
 rule Step_pure/vvunop:

@@ -52,10 +52,20 @@ struct
   type cvtop = ConvertI32 of sx | ConvertI64 of sx
              | PromoteF32 | DemoteF64
              | ReinterpretInt
+  type wideop = |
+  type extwideop = |
 end
 
-module I32Op = IntOp
-module I64Op = IntOp
+module I32Op = struct
+  include IntOp
+  type wideop = |
+  type extwideop = |
+end
+module I64Op = struct
+  include IntOp
+  type wideop = Add128 | Sub128
+  type extwideop = MulWide of sx
+end
 module F32Op = FloatOp
 module F64Op = FloatOp
 
@@ -114,6 +124,8 @@ type unop = (I32Op.unop, I64Op.unop, F32Op.unop, F64Op.unop) Value.op
 type binop = (I32Op.binop, I64Op.binop, F32Op.binop, F64Op.binop) Value.op
 type relop = (I32Op.relop, I64Op.relop, F32Op.relop, F64Op.relop) Value.op
 type cvtop = (I32Op.cvtop, I64Op.cvtop, F32Op.cvtop, F64Op.cvtop) Value.op
+type wideop = (I32Op.wideop, I64Op.wideop, F32Op.wideop, F64Op.wideop) Value.op
+type extwideop = (I32Op.extwideop, I64Op.extwideop, F32Op.extwideop, F64Op.extwideop) Value.op
 
 type vtestop = (V128Op.testop) Value.vecop
 type vrelop = (V128Op.relop) Value.vecop
@@ -245,6 +257,8 @@ and instr' =
   | Compare of relop                     (* numeric comparison *)
   | Unary of unop                        (* unary numeric operator *)
   | Binary of binop                      (* binary numeric operator *)
+  | Wide of wideop                       (* binop producing wide result *)
+  | Extwide of extwideop                 (* binop producing wide result, extending args *)
   | Convert of cvtop                     (* conversion *)
   | VecConst of vec                      (* constant *)
   | VecTest of vtestop                   (* vector test *)

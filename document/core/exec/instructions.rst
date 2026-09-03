@@ -941,6 +941,20 @@ $${rule-prose: Step_pure/cvtop}
 $${rule: {Step_pure/cvtop-*}}
 
 
+.. _exec-wideop:
+
+$${rule-prose: Step_pure/wideop}
+
+$${rule: {Step_pure/wideop}}
+
+
+.. _exec-extwideop:
+
+$${rule-prose: Step_pure/extwideop}
+
+$${rule: {Step_pure/extwideop}}
+
+
 .. index:: vector instruction
    pair: execution; instruction
    single: abstract syntax; instruction

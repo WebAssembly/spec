@@ -1111,6 +1111,26 @@ $${rule-prose: Instr_ok/cvtop}
 $${rule: Instr_ok/cvtop}
 
 
+.. _valid-wideop:
+
+:math:`t_1\K{.}\wideop`
+..........................................
+
+$${rule-prose: Instr_ok/wideop}
+
+$${rule: Instr_ok/wideop}
+
+
+.. _valid-extwideop:
+
+:math:`t_1\K{.}\extwideop`
+..........................................
+
+$${rule-prose: Instr_ok/extwideop}
+
+$${rule: Instr_ok/extwideop}
+
+
 .. index:: vector instruction
    pair: validation; instruction
    single: abstract syntax; instruction

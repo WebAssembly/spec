@@ -3,6 +3,7 @@
 (library
   (public_name wasm)
   (modules :standard \ main wasm wast smallint)
+  (libraries stdint)
 )
 
 (executable

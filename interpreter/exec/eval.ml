@@ -1024,6 +1024,14 @@ let rec step (c : config) : config =
         (try Vec (Eval_vec.eval_vreplaceop replaceop v r) :: vs', []
         with exn -> vs', [Trapping (numeric_error e.at exn) @@ e.at])
 
+      | Wide op, Num rhs_hi :: Num rhs_lo :: Num lhs_hi :: Num lhs_lo :: vs' ->
+        let (lo, hi) = Eval_num.eval_wideop op lhs_lo lhs_hi rhs_lo rhs_hi
+        in Num hi :: Num lo :: vs', []
+
+      | Extwide op, Num rhs :: Num lhs :: vs' ->
+        let (lo, hi) = Eval_num.eval_extwideop op lhs rhs
+        in Num hi :: Num lo :: vs', []
+
       | _ ->
         let s1 = string_of_values (List.rev vs) in
         let s2 = string_of_resulttype (List.map type_of_value (List.rev vs)) in

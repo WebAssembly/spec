@@ -955,6 +955,15 @@ let rec check_instr (c : context) (e : instr) (s : infer_resulttype) : infer_ins
       "invalid lane index";
     [t1; t2] --> [t1], []
 
+  | Wide op ->
+    let t = NumT (type_num op) in
+    [t; t; t; t] --> [t; t], []
+
+  | Extwide op ->
+    let t = NumT (type_num op) in
+    [t; t] --> [t; t], []
+
+
 and check_instrs (c : context) (s : infer_resulttype) (es : instr list)
   : infer_resulttype * idx list =
   match es with
