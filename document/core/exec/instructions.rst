@@ -320,7 +320,7 @@ and returning from it.
 
 $${rule-prose: Step/call_addr}
 
-$${rule: {Step/call_addr}}
+$${rule: {Step/call_addr-func}}
 
 .. note::
    For non-defaultable types, the respective local is left uninitialized by these rules.
@@ -367,7 +367,7 @@ A host function may also modify the :ref:`store <syntax-store>`.
 However, all store modifications must result in an :ref:`extension <extend-store>` of the original store, i.e., they must only modify mutable contents and must not have instances removed.
 Furthermore, the resulting store must be :ref:`valid <valid-store>`, i.e., all data and code in it is well-typed.
 
-$${rule: {Step/call_host-*}}
+$${rule: {Step/call_addr-hostfunc-*}}
 
 Here, ${:$hostcall(_HOSTFUNC hf, s, val^n)} denotes the implementation-defined execution of host function ${:hf} in current store ${:s} with arguments ${:val^n}.
 It yields a set of possible outcomes, where each element is either a pair of a modified store ${:s'} and a :ref:`result <syntax-result>`

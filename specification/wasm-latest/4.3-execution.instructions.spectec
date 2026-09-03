@@ -176,7 +176,7 @@ rule Step_read/call_ref-null:
 rule Step_read/call_ref-func:
   z; (REF.FUNC_ADDR a) (CALL_REF x)  ~>  (CALL_ADDR a)
 
-rule Step/call_addr:
+rule Step/call_addr-func:
   z; val^n (CALL_ADDR a)  ~>  z; (FRAME_ m `{f} (LABEL_ m `{eps} instr*))
   ----
   -- if $funcinst(z)[a] = fi
@@ -184,7 +184,7 @@ rule Step/call_addr:
   -- if fi.CODE = FUNC x (LOCAL t)* (instr*)
   -- if f = {LOCALS val^n ($default_(t))*, MODULE fi.MODULE}
 
-rule Step/call_host-res:
+rule Step/call_addr-hostfunc-res:
   s; f; val^n (CALL_ADDR a)  ~>  s'; f; $lift_result(result)
   ----
   -- if s.FUNCS[a] = fi
@@ -192,7 +192,7 @@ rule Step/call_host-res:
   -- if fi.CODE = _HOSTFUNC hf
   -- if RES s' result <- $hostcall(_HOSTFUNC hf, s, val^n)
 
-rule Step/call_host-div:
+rule Step/call_addr-hostfunc-div:
   s; f; val^n (CALL_ADDR a)  ~>  s; f; val^n (CALL_ADDR a)
   ----
   -- if s.FUNCS[a] = fi
