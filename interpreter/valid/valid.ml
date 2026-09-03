@@ -159,6 +159,7 @@ let check_comptype (c : context) (ct : comptype) at =
 
 let check_subtype (c : context) (sut : subtype) at =
   let SubT (_fin, uts, ct) = sut in
+  require (List.length uts <= 1) at "multiple supertypes";
   List.iter (fun ut -> check_typeuse c ut at) uts;
   check_comptype c ct at
 
@@ -377,7 +378,7 @@ let check_vec_binop binop at =
       error at "invalid lane index"
   | _ -> ()
 
-let check_memop (c : context) (memop : ('t, 's) memop) ty_size get_sz at =
+let check_memop (c : context) (memop : ('t, 's) memop) x ty_size get_sz at =
   let size =
     match get_sz memop.pack with
     | None -> ty_size memop.ty
@@ -387,7 +388,7 @@ let check_memop (c : context) (memop : ('t, 's) memop) ty_size get_sz at =
   in
   require (1 lsl memop.align >= 1 && 1 lsl memop.align <= size) at
     "alignment must not be larger than natural";
-  let MemoryT (at_, _lim) = memory c (0l @@ at) in
+  let MemoryT (at_, _lim) = memory c x in
   if at_ = I32AT then
     require (I64.lt_u memop.offset 0x1_0000_0000L) at
       "offset out of range";
@@ -626,7 +627,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_resulttype) : infer_ins
 
   | TableFill x ->
     let TableT (at, _lim, rt) = table c x in
-    [NumT (numtype_of_addrtype at); RefT rt; 
+    [NumT (numtype_of_addrtype at); RefT rt;
       NumT (numtype_of_addrtype at)] --> [], []
 
   | TableCopy (x, y) ->
@@ -652,34 +653,34 @@ let rec check_instr (c : context) (e : instr) (s : infer_resulttype) : infer_ins
 
   | Load (x, memop) ->
     let MemoryT (at, _lim) = memory c x in
-    let t = check_memop c memop num_size (Lib.Option.map fst) e.at in
+    let t = check_memop c memop x num_size (Lib.Option.map fst) e.at in
     [NumT (numtype_of_addrtype at)] --> [NumT t], []
 
   | Store (x, memop) ->
     let MemoryT (at, _lim) = memory c x in
-    let t = check_memop c memop num_size (fun sz -> sz) e.at in
+    let t = check_memop c memop x num_size (fun sz -> sz) e.at in
     [NumT (numtype_of_addrtype at); NumT t] --> [], []
 
   | VecLoad (x, memop) ->
     let MemoryT (at, _lim) = memory c x in
-    let t = check_memop c memop vec_size (Lib.Option.map fst) e.at in
+    let t = check_memop c memop x vec_size (Lib.Option.map fst) e.at in
     [NumT (numtype_of_addrtype at)] --> [VecT t], []
 
   | VecStore (x, memop) ->
     let MemoryT (at, _lim) = memory c x in
-    let t = check_memop c memop vec_size (fun _ -> None) e.at in
+    let t = check_memop c memop x vec_size (fun _ -> None) e.at in
     [NumT (numtype_of_addrtype at); VecT t] --> [], []
 
   | VecLoadLane (x, memop, i) ->
     let MemoryT (at, _lim) = memory c x in
-    let t = check_memop c memop vec_size (fun sz -> Some sz) e.at in
+    let t = check_memop c memop x vec_size (fun sz -> Some sz) e.at in
     require (I8.to_int_u i < vec_size t / Pack.packed_size memop.pack) e.at
       "invalid lane index";
     [NumT (numtype_of_addrtype at); VecT t] -->  [VecT t], []
 
   | VecStoreLane (x, memop, i) ->
     let MemoryT (at, _lim) = memory c x in
-    let t = check_memop c memop vec_size (fun sz -> Some sz) e.at in
+    let t = check_memop c memop x vec_size (fun sz -> Some sz) e.at in
     require (I8.to_int_u i < vec_size t / Pack.packed_size memop.pack) e.at
       "invalid lane index";
     [NumT (numtype_of_addrtype at); VecT t] -->  [], []

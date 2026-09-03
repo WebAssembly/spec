@@ -8963,7 +8963,7 @@ $$
 
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}}
-\mbox{(host function)} & {\mathit{hostfunc}} & ::= & \ldots \\
+\mbox{(host function)} & {\mathit{hostfunc}} & ::= & \mathbb{T} \\
 & {\mathit{code}} & ::= & {\mathit{func}} ~~|~~ {\mathit{hostfunc}} \\
 \mbox{(tag instance)} & {\mathit{taginst}} & ::= & \{ \begin{array}[t]{@{}l@{}l@{}}
 \mathsf{type}~{\mathit{tagtype}} \} \\
@@ -9404,6 +9404,23 @@ $$
 {\land}~ ({i'} \leq j)^? \\
 {\land}~ {i'} \leq {2^{{|{\mathit{at}}|} - 16}} \\
 \end{array} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}[t]{@{}lrrl@{}l@{}}
+& {\mathit{hostcallresult}} & ::= & ({\mathit{store}}, {\mathit{result}}) \\
+& & | & \mathsf{bot} \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+{{\mathit{val}}^\ast} & = & {{\mathit{val}}^\ast} \\
+\mathsf{throw\_addr}~a & = & \mathsf{throw\_addr}~a \\
+\mathsf{trap} & = & \mathsf{trap} \\
 \end{array}
 $$
 
@@ -9916,7 +9933,12 @@ $$
 {[\textsc{\scriptsize E{-}call}]} \quad & z ; (\mathsf{call}~x) & \hookrightarrow & (\mathsf{call\_addr}~a) & \quad \mbox{if}~ z{.}\mathsf{module}{.}\mathsf{funcs}{}[x] = a \\
 {[\textsc{\scriptsize E{-}call\_ref{-}null}]} \quad & z ; (\mathsf{ref{.}null})~(\mathsf{call\_ref}~x) & \hookrightarrow & \mathsf{trap} \\
 {[\textsc{\scriptsize E{-}call\_ref{-}func}]} \quad & z ; (\mathsf{ref{.}func}~a)~(\mathsf{call\_ref}~x) & \hookrightarrow & (\mathsf{call\_addr}~a) \\
-{[\textsc{\scriptsize E{-}call\_addr}]} \quad & z ; {{\mathit{val}}^{n}}~(\mathsf{call\_addr}~a) & \hookrightarrow & ({{\mathsf{frame}}_{m}}{\{ f \}}~({{\mathsf{label}}_{m}}{\{ \epsilon \}}~{{\mathit{instr}}^\ast})) &  \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lrcl@{}l@{}}
+{[\textsc{\scriptsize E{-}call\_addr{-}func}]} \quad & z ; {{\mathit{val}}^{n}}~(\mathsf{call\_addr}~a) & \hookrightarrow & z ; ({{\mathsf{frame}}_{m}}{\{ f \}}~({{\mathsf{label}}_{m}}{\{ \epsilon \}}~{{\mathit{instr}}^\ast})) &  \\
 &&& \multicolumn{2}{@{}l@{}}{\quad
 \quad
 \begin{array}[t]{@{}l@{}}
@@ -9926,10 +9948,28 @@ $$
 {\land}~ f = \{ \mathsf{locals}~{{\mathit{val}}^{n}}~{({{\mathrm{default}}}_{t})^\ast},\;\allowbreak \mathsf{module}~{\mathit{fi}}{.}\mathsf{module} \} \\
 \end{array}
 } \\
+{[\textsc{\scriptsize E{-}call\_addr{-}hostfunc{-}res}]} \quad & s ; f ; {{\mathit{val}}^{n}}~(\mathsf{call\_addr}~a) & \hookrightarrow & {s'} ; f ; {\mathit{result}} &  \\
+&&& \multicolumn{2}{@{}l@{}}{\quad
+\quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ s{.}\mathsf{funcs}{}[a] = {\mathit{fi}} \\
+{\land}~ {\mathit{fi}}{.}\mathsf{type} \approx \mathsf{func}~{t_1^{n}} \rightarrow {t_2^{m}} \\
+{\land}~ {\mathit{fi}}{.}\mathsf{code} = {\mathit{hf}} \\
+{\land}~ ({s'}, {\mathit{result}}) \in {{\mathit{hf}}}{(s, {{\mathit{val}}^{n}})} \\
+\end{array}
+} \\
+{[\textsc{\scriptsize E{-}call\_addr{-}hostfunc{-}div}]} \quad & s ; f ; {{\mathit{val}}^{n}}~(\mathsf{call\_addr}~a) & \hookrightarrow & s ; f ; {{\mathit{val}}^{n}}~(\mathsf{call\_addr}~a) &  \\
+&&& \multicolumn{2}{@{}l@{}}{\quad
+\quad
+\begin{array}[t]{@{}l@{}}
+\mbox{if}~ s{.}\mathsf{funcs}{}[a] = {\mathit{fi}} \\
+{\land}~ {\mathit{fi}}{.}\mathsf{type} \approx \mathsf{func}~{t_1^{n}} \rightarrow {t_2^{m}} \\
+{\land}~ {\mathit{fi}}{.}\mathsf{code} = {\mathit{hf}} \\
+{\land}~ \mathsf{bot} \in {{\mathit{hf}}}{(s, {{\mathit{val}}^{n}})} \\
+\end{array}
+} \\
 \end{array}
 $$
-
-\vspace{1ex}
 
 $$
 \begin{array}[t]{@{}lrcl@{}l@{}}
@@ -14165,6 +14205,8 @@ $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
 s \vdash f : {C'}
+ \qquad
+{C'}{.}\mathsf{return} = {t^{n}}
  \qquad
 s ; {C'} \vdash {{\mathit{instr}}^\ast} : {t^{n}}
  \qquad

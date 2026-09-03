@@ -927,7 +927,7 @@ and match_exp' static env s e1 e2 : subst option result =
     match_exp' static env s' (ListE es12 $> e1) e22
   | ListE es1, CatE (e21, ({it = ListE es22; _} as e22))
     when List.length es22 <= List.length es1 ->
-    let es11, es12 = Lib.List.split (List.length es22) es1 in
+    let es11, es12 = Lib.List.split (List.(length es1 - length es22)) es1 in
     let*** s' = match_exp' static env s (ListE es11 $> e1) e21 in
     match_exp' static env s' (ListE es12 $> e1) e22
 (*

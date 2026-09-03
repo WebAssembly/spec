@@ -120,10 +120,12 @@ def $growtable(ti, n, r) = ti'
   -- if ti = { TYPE (`[i .. j?] rt), REFS r'* }
   -- if i' = $(|r'*| + n)
   -- (if i' <= j)?
+  -- if i' < $(2^32)
   -- if ti' = { TYPE (`[i' .. j?] rt), REFS r'* r^n }
 
 def $growmemory(mi, n) = mi'
   -- if mi = { TYPE (`[i .. j?] PAGE), BYTES b* }
   -- if i' = $(|b*| / (64 * $Ki) + n)
   -- (if i' <= j)?
+  -- if i' <= $(2^16)
   -- if mi' = { TYPE (`[i' .. j?] PAGE), BYTES b* 0^(n * $($(64 * $Ki))) }

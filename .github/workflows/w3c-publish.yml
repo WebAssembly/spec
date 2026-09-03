@@ -32,6 +32,9 @@ env:
   YARN_ENABLE_IMMUTABLE_INSTALLS: false
   W3C_STATUS: ${{ github.event_name == 'workflow_dispatch' && inputs.w3c-status || 'CRD' }}
 
+permissions:
+  contents: read
+
 jobs:
   publish-to-w3c-TR:
     if: ${{ github.repository == 'WebAssembly/spec' }}

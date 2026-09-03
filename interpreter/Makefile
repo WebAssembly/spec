@@ -131,7 +131,7 @@ customquiettest/%:	$(NAME)
 		  $(TESTDIR)/run.py 2>$(@F).out --wasm `pwd`/$(NAME) --opts '$(CUSTOMOPTS)' $(if $(JS),--js '$(JS)',) $(CUSTOMTESTDIR)/$*.wast && \
 		  rm $(@F).out \
 		) || \
-		cat $(@F).out || rm $(@F).out || exit 1
+		(cat $(@F).out && rm $(@F).out && exit 1)
 
 
 # Packaging

@@ -168,6 +168,11 @@ let rec is_wasm_value e =
 let is_wasm_instr e =
   (* TODO: use hint? *)
   Valid.sub_typ e.note instrT || Valid.sub_typ e.note admininstrT
+let is_wasm_instr_seq e =
+  (* e.g. `$lift_result(result)` on the rhs of a reduction *)
+  match e.note.it with
+  | Il.IterT (typ', _) -> Valid.sub_typ typ' instrT || Valid.sub_typ typ' admininstrT
+  | _ -> false
 
 (** Translation *)
 
@@ -480,6 +485,8 @@ let rec translate_rhs exp =
   | _ when is_wasm_value exp -> [ pushI (translate_exp exp |> subst_instr_typ) ]
   (* Instr *)
   | _ when is_wasm_instr exp -> [ executeI (translate_exp exp) ]
+  (* Instr sequence, e.g. a function call returning `instr*` *)
+  | _ when is_wasm_instr_seq exp -> [ executeSeqI (translate_exp exp) ]
   | _ -> error_exp exp "expression on rhs of reduction"
 
 and translate_context_instrs e' =

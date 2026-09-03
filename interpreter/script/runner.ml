@@ -518,6 +518,8 @@ let run_assertion ass =
   | AssertMalformedCustom (def, re) ->
     trace "Asserting malformed custom...";
     (match ignore (run_definition def) with
+    | exception Custom.Code (_, msg) ->
+      assert_message ass.at "custom section decoding" msg re
     | exception Custom.Syntax (_, msg) ->
       assert_message ass.at "annotation parsing" msg re
     | _ -> Assert.error ass.at "expected custom decoding/parsing error"

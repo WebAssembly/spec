@@ -26,6 +26,7 @@ struct
   let validate_with_custom (m, cs) =
     try Ok (Valid.check_module_with_custom (m, cs)) with
     | Valid.Invalid (at, msg) -> Error (at, msg)
+    | Custom.Invalid (at, msg) -> Error (at, msg)
 
   let instantiate m ims =
     try Ok (result Eval.init m ims) with

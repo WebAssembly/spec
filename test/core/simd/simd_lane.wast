@@ -514,14 +514,14 @@
 ;; i8x16.shuffle: the 1st argument must be 16-byte literals in 0..32
 (assert_malformed (module quote "(func (param v128) (result v128)"
   "(i8x16.shuffle 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 (local.get 0) (local.get 0)))")
-  "invalid lane length")
+  "wrong number of lane indices")
 (assert_malformed (module quote "(func (param v128) (result v128)"
   "(i8x16.shuffle 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 (local.get 0) (local.get 0)))")
-  "invalid lane length")
+  "wrong number of lane indices")
 (assert_malformed (module quote "(func (result v128)"
   "(i8x16.shuffle 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 -1"
   "(v128.const i8x16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0)"
-  "(v128.const i8x16 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15)))") "i8 constant out of range")
+  "(v128.const i8x16 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15)))") "unexpected token")
 (assert_malformed (module quote "(func (result v128)"
   "(i8x16.shuffle 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 256"
   "(v128.const i8x16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0)"
@@ -600,27 +600,27 @@
 (assert_malformed (module quote "(func (result v128) "
   "(i8x16.shuffle (v128.const i8x16 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31) "
   "(v128.const i8x16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0) "
-  "(v128.const i8x16 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15)))") "invalid lane length")
+  "(v128.const i8x16 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15)))") "wrong number of lane indices")
 (assert_malformed (module quote "(func (result v128) "
   "(i8x16.shuffle 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15.0 "
   "(v128.const i8x16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0) "
-  "(v128.const i8x16 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15)))") "i8 constant out of range")
+  "(v128.const i8x16 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15)))") "unexpected token")
 (assert_malformed (module quote "(func (result v128) "
   "(i8x16.shuffle 0.5 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 "
   "(v128.const i8x16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0) "
-  "(v128.const i8x16 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15)))") "i8 constant out of range")
+  "(v128.const i8x16 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15)))") "unexpected token")
 (assert_malformed (module quote "(func (result v128) "
   "(i8x16.shuffle -inf 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 "
   "(v128.const i8x16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0) "
-  "(v128.const i8x16 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15)))") "i8 constant out of range")
+  "(v128.const i8x16 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15)))") "unexpected token")
 (assert_malformed (module quote "(func (result v128) "
   "(i8x16.shuffle 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 inf "
   "(v128.const i8x16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0) "
-  "(v128.const i8x16 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15)))") "i8 constant out of range")
+  "(v128.const i8x16 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15)))") "unexpected token")
 (assert_malformed (module quote "(func (result v128) "
   "(i8x16.shuffle nan 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 "
   "(v128.const i8x16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 0) "
-  "(v128.const i8x16 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15)))") "i8 constant out of range")
+  "(v128.const i8x16 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15)))") "unexpected token")
 
 
 ;; Combination with each other
@@ -1243,7 +1243,7 @@
     "  )"
     ")"
   )
-  "invalid lane length"
+  "wrong number of lane indices"
 )
 (assert_invalid
   (module
@@ -1261,5 +1261,5 @@
     "  (i8x16.shuffle)"
     ")"
   )
-  "invalid lane length"
+  "wrong number of lane indices"
 )

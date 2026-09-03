@@ -12,23 +12,104 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
+permissions:
+  contents: read
+
+# Path within the published site recording the commit the baseline was rendered
+# from, both as provenance and so a run can tell the copy is still current.
+env:
+  BASELINE_STAMP: upstream/baseline-sha
+
 jobs:
   ensure-wasm-latest:
-    if: ${{ github.repository == 'WebAssembly/spec' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
       - name: Diff wasm-latest
+        if: ${{ github.repository == 'WebAssembly/spec' }}
         run: cd specification && bash diff-wasm-latest.sh
+
+  # Forks (i.e. proposal repos) also render the spec at the commit where they
+  # last diverged from their parent repo, so the proposal can be compared
+  # against an unmodified baseline. That baseline is published under /upstream.
+  resolve-baseline:
+    runs-on: ubuntu-latest
+    outputs:
+      variants: ${{ steps.resolve.outputs.variants }}
+      # The commit the baseline is rendered from, empty when there is none. A
+      # baseline absent from variants is one already published under /upstream.
+      base-sha: ${{ steps.resolve.outputs.base-sha }}
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          # merge-base needs the full history
+          fetch-depth: 0
+      - name: Resolve upstream baseline
+        id: resolve
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          # Written once on whichever path exits below, so these defaults stand
+          # unless the checks further down replace them.
+          variants='["head"]'
+          base=''
+          write_outputs() {
+              echo "variants=$variants" >> "$GITHUB_OUTPUT"
+              echo "base-sha=$base" >> "$GITHUB_OUTPUT"
+          }
+          trap write_outputs EXIT
+          if [ "$REPOSITORY" = "WebAssembly/spec" ]; then
+            echo "Canonical repo, no upstream baseline."
+            exit 0
+          fi
+          # A copy already on the site is left in place unless a newer baseline
+          # is rendered below.
+          published=''
+          if encoded=$(gh api "repos/$REPOSITORY/contents/$BASELINE_STAMP?ref=gh-pages" --jq .content 2>/dev/null); then
+            published=$(printf '%s' "$encoded" | base64 -d | tr -d '[:space:]')
+          fi
+          parent=$(gh api "repos/$REPOSITORY" --jq '.parent.full_name // ""' 2>/dev/null) || parent=''
+          if [ -z "$parent" ]; then
+            echo "::warning::Could not determine the parent repo, not rendering an upstream copy."
+            exit 0
+          fi
+          if ! git fetch --no-tags --quiet "https://github.com/$parent.git" main; then
+            echo "::warning::Could not fetch $parent, not rendering an upstream copy."
+            exit 0
+          fi
+          if ! merge_base=$(git merge-base HEAD FETCH_HEAD); then
+            echo "::warning::No common ancestor with $parent, no upstream copy."
+            exit 0
+          fi
+          if [ "$merge_base" = "$(git rev-parse HEAD)" ]; then
+            echo "::notice::No divergence from $parent, no upstream copy."
+            exit 0
+          fi
+          base=$merge_base
+          if [ "$base" = "$published" ]; then
+            echo "::notice::Baseline $base is already published, keeping that copy."
+            exit 0
+          fi
+          echo "Upstream baseline: $base (from $parent)"
+          variants='["head","upstream"]'
 
   build-core-spec:
     runs-on: ubuntu-latest
+    needs: resolve-baseline
+    strategy:
+      fail-fast: false
+      matrix:
+        variant: ${{ fromJSON(needs.resolve-baseline.outputs.variants) }}
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
         with:
           submodules: "recursive"
+          ref: ${{ matrix.variant == 'upstream' && needs.resolve-baseline.outputs.base-sha || '' }}
       - name: Setup OCaml
         uses: ocaml/setup-ocaml@v3
         with:
@@ -51,110 +132,167 @@ jobs:
         run: cd document/core && opam exec make main
       - name: Run Bikeshed
         run: cd document/core && opam exec make bikeshed
+      - name: Stage artifact at its path on the site
+        run: mkdir -p _site && mv document/core/_build/html _site/core
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: core-rendered
-          path: document/core/_build/html
+          name: core-rendered-${{ matrix.variant }}
+          path: _site
 
   build-js-api-spec:
     runs-on: ubuntu-latest
+    needs: resolve-baseline
+    strategy:
+      fail-fast: false
+      matrix:
+        variant: ${{ fromJSON(needs.resolve-baseline.outputs.variants) }}
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+        with:
+          ref: ${{ matrix.variant == 'upstream' && needs.resolve-baseline.outputs.base-sha || '' }}
       - name: Setup Bikeshed
         run: pip install bikeshed && bikeshed update
       - name: Run Bikeshed
         run: bikeshed spec "document/js-api/index.bs" "document/js-api/index.html"
+      - name: Stage artifact at its path on the site
+        run: mkdir -p _site/js-api && mv document/js-api/index.html _site/js-api/
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: js-api-rendered
-          path: document/js-api/index.html
+          name: js-api-rendered-${{ matrix.variant }}
+          path: _site
 
   build-web-api-spec:
     runs-on: ubuntu-latest
+    needs: resolve-baseline
+    strategy:
+      fail-fast: false
+      matrix:
+        variant: ${{ fromJSON(needs.resolve-baseline.outputs.variants) }}
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+        with:
+          ref: ${{ matrix.variant == 'upstream' && needs.resolve-baseline.outputs.base-sha || '' }}
       - name: Setup Bikeshed
         run: pip install bikeshed && bikeshed update
       - name: Run Bikeshed
         run: bikeshed spec "document/web-api/index.bs" "document/web-api/index.html"
+      - name: Stage artifact at its path on the site
+        run: mkdir -p _site/web-api && mv document/web-api/index.html _site/web-api/
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: web-api-rendered
-          path: document/web-api/index.html
+          name: web-api-rendered-${{ matrix.variant }}
+          path: _site
 
   build-code-metadata-spec:
     runs-on: ubuntu-latest
+    needs: resolve-baseline
+    strategy:
+      fail-fast: false
+      matrix:
+        variant: ${{ fromJSON(needs.resolve-baseline.outputs.variants) }}
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
         with:
           submodules: "recursive"
+          ref: ${{ matrix.variant == 'upstream' && needs.resolve-baseline.outputs.base-sha || '' }}
       - name: Setup TexLive
         run: sudo apt-get update -y && sudo apt-get install -y latexmk texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended
       - name: Setup Sphinx
         run: pip install six && pip install sphinx==8.1.3
       - name: Build main spec
         run: cd document/metadata/code && make main
+      - name: Stage artifact at its path on the site
+        run: mkdir -p _site/metadata && mv document/metadata/code/_build/html _site/metadata/code
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: code-metadata-rendered
-          path: document/metadata/code/_build/html
+          name: code-metadata-rendered-${{ matrix.variant }}
+          path: _site
 
   build-legacy-exceptions-core-spec:
     runs-on: ubuntu-latest
+    needs: resolve-baseline
+    strategy:
+      fail-fast: false
+      matrix:
+        variant: ${{ fromJSON(needs.resolve-baseline.outputs.variants) }}
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
         with:
           submodules: "recursive"
+          ref: ${{ matrix.variant == 'upstream' && needs.resolve-baseline.outputs.base-sha || '' }}
       - name: Setup TexLive
         run: sudo apt-get update -y && sudo apt-get install -y latexmk texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended
       - name: Setup Sphinx
         run: pip install six && pip install sphinx==8.1.3
       - name: Build main spec
         run: cd document/legacy/exceptions/core && make main
+      - name: Stage artifact at its path on the site
+        run: mkdir -p _site/legacy/exceptions && mv document/legacy/exceptions/core/_build/html _site/legacy/exceptions/core
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: legacy-exceptions-core-rendered
-          path: document/legacy/exceptions/core/_build/html
+          name: legacy-exceptions-core-rendered-${{ matrix.variant }}
+          path: _site
 
   build-legacy-exceptions-js-api-spec:
     runs-on: ubuntu-latest
+    needs: resolve-baseline
+    strategy:
+      fail-fast: false
+      matrix:
+        variant: ${{ fromJSON(needs.resolve-baseline.outputs.variants) }}
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+        with:
+          ref: ${{ matrix.variant == 'upstream' && needs.resolve-baseline.outputs.base-sha || '' }}
       - name: Setup Bikeshed
         run: pip install bikeshed && bikeshed update
       - name: Run Bikeshed
         run: bikeshed spec "document/legacy/exceptions/js-api/index.bs" "document/legacy/exceptions/js-api/index.html"
+      - name: Stage artifact at its path on the site
+        run: mkdir -p _site/legacy/exceptions/js-api && mv document/legacy/exceptions/js-api/index.html _site/legacy/exceptions/js-api/
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: legacy-exceptions-js-api-rendered
-          path: document/legacy/exceptions/js-api/index.html
+          name: legacy-exceptions-js-api-rendered-${{ matrix.variant }}
+          path: _site
 
   build-spec-versions:
     runs-on: ubuntu-latest
+    needs: resolve-baseline
+    strategy:
+      fail-fast: false
+      matrix:
+        variant: ${{ fromJSON(needs.resolve-baseline.outputs.variants) }}
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+        with:
+          ref: ${{ matrix.variant == 'upstream' && needs.resolve-baseline.outputs.base-sha || '' }}
+      - name: Stage artifact at its path on the site
+        run: mkdir -p _site && mv document/versions _site/versions
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: versions-rendered
-          path: document/versions/
+          name: versions-rendered-${{ matrix.variant }}
+          path: _site
 
   publish-spec:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     needs:
       - ensure-wasm-latest
+      - resolve-baseline
       - build-core-spec
       - build-js-api-spec
       - build-web-api-spec
@@ -165,43 +303,40 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+        with:
+          # The baseline's index.html is read out of the history below
+          fetch-depth: 0
       - name: Create output directory
         run: mkdir _output && cp document/index.html _output/index.html
-      - name: Download core spec artifact
+      - name: Download rendered documents
         uses: actions/download-artifact@v4
         with:
-          name: core-rendered
-          path: _output/core
-      - name: Download JS API spec artifact
+          pattern: '*-rendered-head'
+          merge-multiple: true
+          path: _output
+      - name: Download upstream baseline documents
+        if: contains(fromJSON(needs.resolve-baseline.outputs.variants), 'upstream')
         uses: actions/download-artifact@v4
         with:
-          name: js-api-rendered
-          path: _output/js-api
-      - name: Download Web API spec artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: web-api-rendered
-          path: _output/web-api
-      - name: Download code metadata spec artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: code-metadata-rendered
-          path: _output/metadata/code
-      - name: Download legacy exceptions core spec artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: legacy-exceptions-core-rendered
-          path: _output/legacy/exceptions/core
-      - name: Download legacy exceptions JS API spec artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: legacy-exceptions-js-api-rendered
-          path: _output/legacy/exceptions/js-api
-      - name: Download spec versions artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: versions-rendered
-          path: _output/versions
+          pattern: '*-rendered-upstream'
+          merge-multiple: true
+          path: _output/upstream
+      - name: Record the upstream baseline
+        if: contains(fromJSON(needs.resolve-baseline.outputs.variants), 'upstream')
+        env:
+          BASE_SHA: ${{ needs.resolve-baseline.outputs.base-sha }}
+        run: |
+          set -euo pipefail
+          git show "$BASE_SHA:document/index.html" > _output/upstream/index.html
+          echo "$BASE_SHA" > "_output/$BASELINE_STAMP"
+      - name: Keep the upstream baseline copy already published
+        if: needs.resolve-baseline.outputs.base-sha != '' && !contains(fromJSON(needs.resolve-baseline.outputs.variants), 'upstream')
+        run: |
+          set -euo pipefail
+          # Publishing replaces the whole site, so the copy has to be carried
+          # over explicitly rather than just left in place.
+          git fetch --no-tags --depth 1 origin gh-pages
+          git archive FETCH_HEAD upstream | tar -x -C _output
       - name: Publish to GitHub Pages
         if: github.ref == 'refs/heads/main'
         uses: peaceiris/actions-gh-pages@v4

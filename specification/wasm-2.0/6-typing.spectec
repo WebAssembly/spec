@@ -92,10 +92,15 @@ relation Memtype_sub: |- memtype <: memtype          hint(show "S-mem")
 relation Externtype_sub: |- externtype <: externtype hint(show "S-extern")
 
 
-rule Limits_sub:
-  |- `[n_11 .. n_12] <: `[n_21 .. n_22]
-  -- if n_11 >= n_21
-  -- if n_12 <= n_22
+rule Limits_sub/max:
+  |- `[n_1 .. m_1] <: `[n_2 .. m_2?]
+  -- if n_1 >= n_2
+  -- (if m_1 <= m_2)?
+
+rule Limits_sub/eps:
+  |- `[n_1 .. eps] <: `[n_2 .. eps]
+  -- if n_1 >= n_2
+
 
 rule Functype_sub:
   |- ft <: ft
@@ -666,11 +671,11 @@ rule Externidx_ok/mem:
 
 ;; Modules proper
 
-relation Module_ok: |- module : OK      hint(show "T-module")
+relation Module_ok: |- module : externtype* -> externtype*  hint(show "T-module")
 
 ;; TODO: refs
 rule Module_ok:
-  |- MODULE type* import* func* global* table* mem* elem* data^n start? export* : OK
+  |- MODULE type* import* func* global* table* mem* elem* data^n start? export* : ixt* -> xt*
   -- (Type_ok: |- type : ft')*
   -- (Import_ok: {TYPES ft'*} |- import : ixt)*
   ----
