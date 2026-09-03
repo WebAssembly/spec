@@ -17926,34 +17926,6 @@ The frame :math:`\{ \mathsf{locals}~{({{\mathit{val}}^?})^\ast},\;\allowbreak \m
 
    * Or:
 
-      * The instruction :math:`{\mathit{instr}}` is of the form :math:`(\mathsf{call\_ref}~y)`.
-
-      * The value type sequence :math:`{{\mathit{valtype}}^\ast}` is of the form :math:`{t_1^\ast}~(\mathsf{ref}~\mathsf{null}~y)`.
-
-      * The local index sequence :math:`{{\mathit{localidx}}^\ast}` is empty.
-
-      * The type use :math:`y` is :ref:`valid <valid-val>`.
-
-      * The :ref:`expansion <aux-expand-typeuse>` of :math:`C` is :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{{\mathit{valtype}'}^\ast})`.
-   * Or:
-
-      * The instruction :math:`{\mathit{instr}}` is of the form :math:`(\mathsf{return\_call\_ref}~y)`.
-
-      * The value type sequence :math:`{{\mathit{valtype}}^\ast}` is of the form :math:`{t_3^\ast}~{t_1^\ast}~(\mathsf{ref}~\mathsf{null}~y)`.
-
-      * The local index sequence :math:`{{\mathit{localidx}}^\ast}` is empty.
-
-      * The type use :math:`y` is :ref:`valid <valid-val>`.
-
-      * The :ref:`expansion <aux-expand-typeuse>` of :math:`C` is :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
-
-      * The result type :math:`C{.}\mathsf{return}` is of the form :math:`{{t'}_2^\ast}`.
-
-      * The result type :math:`{t_2^\ast}` :ref:`matches <match>` the result type :math:`{{t'}_2^\ast}`.
-
-      * The instruction type :math:`{t_3^\ast}~\rightarrow~{{\mathit{valtype}'}^\ast}` is :ref:`valid <valid-val>`.
-   * Or:
-
       * The instruction :math:`{\mathit{instr}}` is of the form :math:`{\mathit{ref}}`.
 
       * The value type sequence :math:`{{\mathit{valtype}}^\ast}` is empty.
@@ -18004,6 +17976,41 @@ The frame :math:`\{ \mathsf{locals}~{({{\mathit{val}}^?})^\ast},\;\allowbreak \m
       * :math:`{{\mathit{instr}''}^\ast}` is valid with :math:`\epsilon~{\rightarrow}_{{x^\ast}}\,{{\mathit{valtype}'}^\ast}`.
    * Or:
 
+      * The instruction :math:`{\mathit{instr}}` is of the form :math:`(\mathsf{call\_addr}~a)`.
+
+      * The local index sequence :math:`{{\mathit{localidx}}^\ast}` is empty.
+
+      * The function instance :math:`s{.}\mathsf{funcs}{}[a]` exists.
+
+      * The :ref:`expansion <aux-expand-deftype>` of :math:`s{.}\mathsf{funcs}{}[a]{.}\mathsf{type}` is :math:`(\mathsf{func}~{{\mathit{valtype}}^\ast}~\rightarrow~{{\mathit{valtype}'}^\ast})`.
+   * Or:
+
+      * The instruction :math:`{\mathit{instr}}` is of the form :math:`(\mathsf{return\_call\_addr}~a)`.
+
+      * The value type sequence :math:`{{\mathit{valtype}}^\ast}` is of the form :math:`{t_3^\ast}~{t_1^\ast}`.
+
+      * The local index sequence :math:`{{\mathit{localidx}}^\ast}` is empty.
+
+      * The function instance :math:`s{.}\mathsf{funcs}{}[a]` exists.
+
+      * The :ref:`expansion <aux-expand-deftype>` of :math:`s{.}\mathsf{funcs}{}[a]{.}\mathsf{type}` is :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
+
+      * The result type :math:`C{.}\mathsf{return}` is of the form :math:`{{t'}_2^\ast}`.
+
+      * The result type :math:`{t_2^\ast}` :ref:`matches <match>` the result type :math:`{{t'}_2^\ast}`.
+
+      * The instruction type :math:`{t_3^\ast}~\rightarrow~{{\mathit{valtype}'}^\ast}` is :ref:`valid <valid-val>`.
+   * Or:
+
+      * The instruction :math:`{\mathit{instr}}` is of the form :math:`(\mathsf{throw\_addr}~a)`.
+
+      * The local index sequence :math:`{{\mathit{localidx}}^\ast}` is empty.
+
+      * The exception instance :math:`s{.}\mathsf{exns}{}[a]` exists.
+
+      * The instruction type :math:`{{\mathit{valtype}}^\ast}~\rightarrow~{{\mathit{valtype}'}^\ast}` is :ref:`valid <valid-val>`.
+   * Or:
+
       * The instruction :math:`{\mathit{instr}}` is of the form :math:`\mathsf{trap}`.
 
       * The local index sequence :math:`{{\mathit{localidx}}^\ast}` is empty.
@@ -18017,32 +18024,6 @@ The frame :math:`\{ \mathsf{locals}~{({{\mathit{val}}^?})^\ast},\;\allowbreak \m
 
 
    * The instruction :math:`{\mathit{instr}}` is :ref:`valid <valid-val>` with the instruction type :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}`.
-
-
-
-
-:math:`(\mathsf{call\_ref}~y)` is valid with :math:`{t_1^\ast}~(\mathsf{ref}~\mathsf{null}~y)~\rightarrow~{t_2^\ast}` if:
-
-
-   * The type use :math:`y` is :ref:`valid <valid-val>`.
-
-   * The :ref:`expansion <aux-expand-typeuse>` of :math:`C` is :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
-
-
-
-
-:math:`(\mathsf{return\_call\_ref}~y)` is valid with :math:`{t_3^\ast}~{t_1^\ast}~(\mathsf{ref}~\mathsf{null}~y)~\rightarrow~{t_4^\ast}` if:
-
-
-   * The type use :math:`y` is :ref:`valid <valid-val>`.
-
-   * The :ref:`expansion <aux-expand-typeuse>` of :math:`C` is :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
-
-   * The result type :math:`C{.}\mathsf{return}` is of the form :math:`{{t'}_2^\ast}`.
-
-   * The result type :math:`{t_2^\ast}` :ref:`matches <match>` the result type :math:`{{t'}_2^\ast}`.
-
-   * The instruction type :math:`{t_3^\ast}~\rightarrow~{t_4^\ast}` is :ref:`valid <valid-val>`.
 
 
 
@@ -18087,6 +18068,42 @@ The frame :math:`\{ \mathsf{locals}~{({{\mathit{val}}^?})^\ast},\;\allowbreak \m
       * The catch clause :math:`{\mathit{catch}}` is :ref:`valid <valid-val>`.
 
    * :math:`{{\mathit{instr}}^\ast}` is valid with :math:`\epsilon~{\rightarrow}_{{x^\ast}}\,{t^\ast}`.
+
+
+
+
+:math:`(\mathsf{call\_addr}~a)` is valid with :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
+
+
+   * The function instance :math:`s{.}\mathsf{funcs}{}[a]` exists.
+
+   * The :ref:`expansion <aux-expand-deftype>` of :math:`s{.}\mathsf{funcs}{}[a]{.}\mathsf{type}` is :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
+
+
+
+
+:math:`(\mathsf{return\_call\_addr}~a)` is valid with :math:`{t_3^\ast}~{t_1^\ast}~\rightarrow~{t_4^\ast}` if:
+
+
+   * The function instance :math:`s{.}\mathsf{funcs}{}[a]` exists.
+
+   * The :ref:`expansion <aux-expand-deftype>` of :math:`s{.}\mathsf{funcs}{}[a]{.}\mathsf{type}` is :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
+
+   * The result type :math:`C{.}\mathsf{return}` is of the form :math:`{{t'}_2^\ast}`.
+
+   * The result type :math:`{t_2^\ast}` :ref:`matches <match>` the result type :math:`{{t'}_2^\ast}`.
+
+   * The instruction type :math:`{t_3^\ast}~\rightarrow~{t_4^\ast}` is :ref:`valid <valid-val>`.
+
+
+
+
+:math:`(\mathsf{throw\_addr}~a)` is valid with :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
+
+
+   * The exception instance :math:`s{.}\mathsf{exns}{}[a]` exists.
+
+   * The instruction type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` is :ref:`valid <valid-val>`.
 
 
 
@@ -18475,73 +18492,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
    #. Execute the instruction :math:`(\mathsf{br}~l - 1)`.
 
 
-:math:`\mathsf{return\_call\_ref}~y`
-....................................
+:math:`\mathsf{throw\_addr}~a`
+..............................
 
 
 1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop the value :math:`{\mathit{val}''}` from the stack.
-
-#. Assert: Due to validation, the first non-value entry of the stack is a :math:`\mathsf{frame}`.
-
-#. If :math:`{\mathit{val}''} = \mathsf{ref{.}null}`, then:
-
-   a. Trap.
-
-#. Assert: Due to validation, :math:`{\mathit{val}''}` is some :math:`\mathsf{ref{.}func}~{\mathit{funcaddr}}`.
-
-#. Let :math:`(\mathsf{ref{.}func}~a)` be the destructuring of :math:`{\mathit{val}''}`.
-
-#. Assert: Due to validation, :math:`a < {|z{.}\mathsf{funcs}|}`.
-
-#. Assert: Due to validation, the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{funcs}{}[a]{.}\mathsf{type}` is some :math:`\mathsf{func}~{\mathit{resulttype}} \rightarrow {\mathit{resulttype}}`.
-
-#. Let :math:`(\mathsf{func}~{t_1^{n}}~\rightarrow~{t_2^{m}})` be the destructuring of the :ref:`expansion <aux-expand-deftype>` of :math:`z{.}\mathsf{funcs}{}[a]{.}\mathsf{type}`.
-
-#. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
-
-#. Pop the values :math:`{{\mathit{val}}^{n}}` from the stack.
-
-#. Pop all values :math:`{{\mathit{val}'}^\ast}` from the top of the stack.
-
-#. Pop the :math:`\mathsf{frame}` from the stack.
-
-#. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
-
-#. Push the value :math:`(\mathsf{ref{.}func}~a)` to the stack.
-
-#. Execute the instruction :math:`(\mathsf{call\_ref}~y)`.
-
-
-:math:`\mathsf{throw\_ref}`
-...........................
-
-
-1. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{ref{.}exn}~a)` from the stack.
-
-#. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
-
-#. Assert: Due to validation, :math:`{{\mathit{val}}^\ast} \neq \epsilon`.
-
-#. Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
-
-#. Execute the instruction :math:`\mathsf{throw\_ref}`.
-
-
-:math:`\mathsf{throw\_ref}`
-...........................
-
-
-1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{ref{.}exn}~a)` from the stack.
 
 #. Assert: Due to validation, the first non-value entry of the stack is a :math:`\mathsf{handler}`.
 
@@ -18555,9 +18510,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    a. Pop the :math:`\mathsf{handler}` from the stack.
 
-   #. Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
-
-   #. Execute the instruction :math:`\mathsf{throw\_ref}`.
+   #. Execute the instruction :math:`(\mathsf{throw\_addr}~a)`.
 
 #. Else if :math:`a \geq {|z{.}\mathsf{exns}|}`, then:
 
@@ -18577,13 +18530,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       #) Pop the :math:`\mathsf{handler}` from the stack.
 
-      #) Let :math:`{H'}` be the :math:`\mathsf{handler}` whose arity is :math:`n` and whose catch handler is :math:`{{\mathit{catch}'}^\ast}`.
+      #) Let :math:`H` be the :math:`\mathsf{handler}` whose arity is :math:`n` and whose catch handler is :math:`{{\mathit{catch}'}^\ast}`.
 
-      #) Push the :math:`\mathsf{handler}` :math:`{H'}`.
-
-      #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
-
-      #) Execute the instruction :math:`\mathsf{throw\_ref}`.
+      #) Enter the block :math:`(\mathsf{throw\_addr}~a)~\mathsf{handler}` with the :math:`\mathsf{handler}` :math:`H`.
 
    #. Else:
 
@@ -18619,13 +18568,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
          #) Pop the :math:`\mathsf{handler}` from the stack.
 
-         #) Let :math:`{H'}` be the :math:`\mathsf{handler}` whose arity is :math:`n` and whose catch handler is :math:`{{\mathit{catch}'}^\ast}`.
+         #) Let :math:`H` be the :math:`\mathsf{handler}` whose arity is :math:`n` and whose catch handler is :math:`{{\mathit{catch}'}^\ast}`.
 
-         #) Push the :math:`\mathsf{handler}` :math:`{H'}`.
-
-         #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
-
-         #) Execute the instruction :math:`\mathsf{throw\_ref}`.
+         #) Enter the block :math:`(\mathsf{throw\_addr}~a)~\mathsf{handler}` with the :math:`\mathsf{handler}` :math:`H`.
 
    #. Else if :math:`{\mathit{catch}}_0` is some :math:`\mathsf{catch\_ref}~{\mathit{tagidx}}~{\mathit{labelidx}}`, then:
 
@@ -18637,13 +18582,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
          #) Pop the :math:`\mathsf{handler}` from the stack.
 
-         #) Let :math:`{H'}` be the :math:`\mathsf{handler}` whose arity is :math:`n` and whose catch handler is :math:`{{\mathit{catch}'}^\ast}`.
+         #) Let :math:`H` be the :math:`\mathsf{handler}` whose arity is :math:`n` and whose catch handler is :math:`{{\mathit{catch}'}^\ast}`.
 
-         #) Push the :math:`\mathsf{handler}` :math:`{H'}`.
-
-         #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
-
-         #) Execute the instruction :math:`\mathsf{throw\_ref}`.
+         #) Enter the block :math:`(\mathsf{throw\_addr}~a)~\mathsf{handler}` with the :math:`\mathsf{handler}` :math:`H`.
 
       #) Else:
 
@@ -18655,39 +18596,33 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
          #) Execute the instruction :math:`(\mathsf{br}~l)`.
 
+   #. Else if :math:`{\mathit{catch}}_0` is some :math:`\mathsf{catch\_all}~{\mathit{labelidx}}`, then:
+
+      1) Let :math:`(\mathsf{catch\_all}~l)` be the destructuring of :math:`{\mathit{catch}}_0`.
+
+      #) Pop the :math:`\mathsf{handler}` from the stack.
+
+      #) Execute the instruction :math:`(\mathsf{br}~l)`.
+
+   #. Else if :math:`{\mathit{catch}}_0` is not some :math:`\mathsf{catch\_all\_ref}~{\mathit{labelidx}}`, then:
+
+      1) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}''}^\ast}`.
+
+      #) Pop the :math:`\mathsf{handler}` from the stack.
+
+      #) Let :math:`H` be the :math:`\mathsf{handler}` whose arity is :math:`n` and whose catch handler is :math:`{{\mathit{catch}'}^\ast}`.
+
+      #) Enter the block :math:`(\mathsf{throw\_addr}~a)~\mathsf{handler}` with the :math:`\mathsf{handler}` :math:`H`.
+
    #. Else:
 
-      1) If :math:`{\mathit{catch}}_0` is some :math:`\mathsf{catch\_all}~{\mathit{labelidx}}`, then:
+      1) Let :math:`(\mathsf{catch\_all\_ref}~l)` be the destructuring of :math:`{\mathit{catch}}_0`.
 
-         a) Let :math:`(\mathsf{catch\_all}~l)` be the destructuring of :math:`{\mathit{catch}}_0`.
+      #) Pop the :math:`\mathsf{handler}` from the stack.
 
-         #) Pop the :math:`\mathsf{handler}` from the stack.
+      #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
-         #) Execute the instruction :math:`(\mathsf{br}~l)`.
-
-      #) Else if :math:`{\mathit{catch}}_0` is not some :math:`\mathsf{catch\_all\_ref}~{\mathit{labelidx}}`, then:
-
-         a) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}''}^\ast}`.
-
-         #) Pop the :math:`\mathsf{handler}` from the stack.
-
-         #) Let :math:`H` be the :math:`\mathsf{handler}` whose arity is :math:`n` and whose catch handler is :math:`{{\mathit{catch}'}^\ast}`.
-
-         #) Push the :math:`\mathsf{handler}` :math:`H`.
-
-         #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
-
-         #) Execute the instruction :math:`\mathsf{throw\_ref}`.
-
-      #) Else:
-
-         a) Let :math:`(\mathsf{catch\_all\_ref}~l)` be the destructuring of :math:`{\mathit{catch}}_0`.
-
-         #) Pop the :math:`\mathsf{handler}` from the stack.
-
-         #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
-
-         #) Execute the instruction :math:`(\mathsf{br}~l)`.
+      #) Execute the instruction :math:`(\mathsf{br}~l)`.
 
 
 :math:`\mathsf{table{.}copy}~x_1~x_2`
@@ -18905,19 +18840,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
    a. Trap.
 
 
-:math:`\mathsf{call\_ref}~y`
-............................
+:math:`\mathsf{call\_addr}~a`
+.............................
 
 
-1. Let :math:`f` be the topmost :math:`\mathsf{frame}`.
+1. Assert: Due to validation, :math:`a < {|s{.}\mathsf{funcs}|}`.
 
-#. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop the value :math:`(\mathsf{ref{.}func}~a)` from the stack.
-
-#. Assert: Due to validation, :math:`a < {|(s, f){.}\mathsf{funcs}|}`.
-
-#. Let :math:`{\mathit{fi}}` be the function instance :math:`(s, f){.}\mathsf{funcs}{}[a]`.
+#. Let :math:`{\mathit{fi}}` be the function instance :math:`s{.}\mathsf{funcs}{}[a]`.
 
 #. Assert: Due to validation, :math:`{\mathit{fi}}{.}\mathsf{code}` is some :math:`\mathbb{T}`.
 
@@ -18943,9 +18872,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    a. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
 
-   #. Push the value :math:`(\mathsf{ref{.}func}~a)` to the stack.
-
-   #. Execute the instruction :math:`(\mathsf{call\_ref}~y)`.
+   #. Execute the instruction :math:`(\mathsf{call\_addr}~a)`.
 
 
 :math:`{\mathit{nt}}{.}\mathsf{store}~x~{\mathit{ao}}`
@@ -19993,11 +19920,26 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`a` be the address :math:`z{.}\mathsf{module}{.}\mathsf{funcs}{}[x]`.
 
-#. Assert: Due to validation, :math:`a < {|z{.}\mathsf{funcs}|}`.
+#. Execute the instruction :math:`(\mathsf{call\_addr}~a)`.
 
-#. Push the value :math:`(\mathsf{ref{.}func}~a)` to the stack.
 
-#. Execute the instruction :math:`(\mathsf{call\_ref}~z{.}\mathsf{funcs}{}[a]{.}\mathsf{type})`.
+:math:`\mathsf{call\_ref}~x`
+............................
+
+
+1. Assert: Due to validation, a value is on the top of the stack.
+
+#. Pop the value :math:`{\mathit{val}}` from the stack.
+
+#. If :math:`{\mathit{val}} = \mathsf{ref{.}null}`, then:
+
+   a. Trap.
+
+#. Assert: Due to validation, :math:`{\mathit{val}}` is some :math:`\mathsf{ref{.}func}~{\mathit{funcaddr}}`.
+
+#. Let :math:`(\mathsf{ref{.}func}~a)` be the destructuring of :math:`{\mathit{val}}`.
+
+#. Execute the instruction :math:`(\mathsf{call\_addr}~a)`.
 
 
 :math:`\mathsf{return\_call}~x`
@@ -20010,15 +19952,30 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`a` be the address :math:`z{.}\mathsf{module}{.}\mathsf{funcs}{}[x]`.
 
-#. Assert: Due to validation, :math:`a < {|z{.}\mathsf{funcs}|}`.
-
-#. Push the value :math:`(\mathsf{ref{.}func}~a)` to the stack.
-
-#. Execute the instruction :math:`(\mathsf{return\_call\_ref}~z{.}\mathsf{funcs}{}[a]{.}\mathsf{type})`.
+#. Execute the instruction :math:`(\mathsf{return\_call\_addr}~a)`.
 
 
-:math:`\mathsf{return\_call\_ref}~y`
+:math:`\mathsf{return\_call\_ref}~x`
 ....................................
+
+
+1. Assert: Due to validation, a value is on the top of the stack.
+
+#. Pop the value :math:`{\mathit{val}}` from the stack.
+
+#. If :math:`{\mathit{val}} = \mathsf{ref{.}null}`, then:
+
+   a. Trap.
+
+#. Assert: Due to validation, :math:`{\mathit{val}}` is some :math:`\mathsf{ref{.}func}~{\mathit{funcaddr}}`.
+
+#. Let :math:`(\mathsf{ref{.}func}~a)` be the destructuring of :math:`{\mathit{val}}`.
+
+#. Execute the instruction :math:`(\mathsf{return\_call\_addr}~a)`.
+
+
+:math:`\mathsf{return\_call\_addr}~a`
+.....................................
 
 
 1. Let :math:`z` be the current state.
@@ -20031,7 +19988,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
-   #. Execute the instruction :math:`(\mathsf{return\_call\_ref}~y)`.
+   #. Execute the instruction :math:`(\mathsf{return\_call\_addr}~a)`.
 
 #. Else if the first non-value entry of the stack is a :math:`\mathsf{handler}`, then:
 
@@ -20041,23 +19998,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
-   #. Execute the instruction :math:`(\mathsf{return\_call\_ref}~y)`.
+   #. Execute the instruction :math:`(\mathsf{return\_call\_addr}~a)`.
 
 #. Else:
 
    a. Assert: Due to validation, the first non-value entry of the stack is a :math:`\mathsf{frame}`.
-
-   #. Assert: Due to validation, a value is on the top of the stack.
-
-   #. Pop the value :math:`{\mathit{val}''}` from the stack.
-
-   #. If :math:`{\mathit{val}''} = \mathsf{ref{.}null}`, then:
-
-      1) Trap.
-
-   #. Assert: Due to validation, :math:`{\mathit{val}''}` is some :math:`\mathsf{ref{.}func}~{\mathit{funcaddr}}`.
-
-   #. Let :math:`(\mathsf{ref{.}func}~a)` be the destructuring of :math:`{\mathit{val}''}`.
 
    #. Assert: Due to validation, :math:`a < {|z{.}\mathsf{funcs}|}`.
 
@@ -20075,214 +20020,175 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
 
-   #. Push the value :math:`(\mathsf{ref{.}func}~a)` to the stack.
-
-   #. Execute the instruction :math:`(\mathsf{call\_ref}~y)`.
+   #. Execute the instruction :math:`(\mathsf{call\_addr}~a)`.
 
 
 :math:`\mathsf{throw\_ref}`
 ...........................
 
 
-1. Let :math:`z` be the current state.
+1. Assert: Due to validation, a value is on the top of the stack.
 
-#. Assert: Due to validation, a value is on the top of the stack.
+#. Pop the value :math:`{\mathit{val}}` from the stack.
 
-#. Pop the value :math:`{\mathit{val}'}` from the stack.
-
-#. If :math:`{\mathit{val}'} = \mathsf{ref{.}null}`, then:
+#. If :math:`{\mathit{val}} = \mathsf{ref{.}null}`, then:
 
    a. Trap.
 
-#. If :math:`{\mathit{val}'}` is some :math:`\mathsf{ref{.}exn}~{\mathit{exnaddr}}`, then:
+#. Assert: Due to validation, :math:`{\mathit{val}}` is some :math:`\mathsf{ref{.}exn}~{\mathit{exnaddr}}`.
 
-   a. Let :math:`(\mathsf{ref{.}exn}~a)` be the destructuring of :math:`{\mathit{val}'}`.
+#. Let :math:`(\mathsf{ref{.}exn}~a)` be the destructuring of :math:`{\mathit{val}}`.
 
-   #. Pop all values :math:`{{\mathit{val}}^\ast}` from the top of the stack.
+#. Execute the instruction :math:`(\mathsf{throw\_addr}~a)`.
 
-   #. If :math:`{{\mathit{val}}^\ast} \neq \epsilon`, then:
 
-      1) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+:math:`\mathsf{throw\_addr}~a`
+..............................
 
-      #) Execute the instruction :math:`\mathsf{throw\_ref}`.
 
-   #. Else if the first non-value entry of the stack is a :math:`\mathsf{label}`, then:
+1. Let :math:`z` be the current state.
 
-      1) Pop the :math:`\mathsf{label}` from the stack.
+#. If the first non-value entry of the stack is a :math:`\mathsf{label}`, then:
 
-      #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+   a. Pop the :math:`\mathsf{label}` from the stack.
 
-      #) Execute the instruction :math:`\mathsf{throw\_ref}`.
+   #. Execute the instruction :math:`(\mathsf{throw\_addr}~a)`.
 
-   #. Else:
+#. Else if the first non-value entry of the stack is a :math:`\mathsf{frame}`, then:
 
-      1) If the first non-value entry of the stack is a :math:`\mathsf{frame}`, then:
+   a. Pop the :math:`\mathsf{frame}` from the stack.
 
-         a) Pop the :math:`\mathsf{frame}` from the stack.
+   #. Execute the instruction :math:`(\mathsf{throw\_addr}~a)`.
 
-         #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+#. Else if the first non-value entry of the stack is a :math:`\mathsf{handler}`, then:
 
-         #) Execute the instruction :math:`\mathsf{throw\_ref}`.
+   a. Let :math:`H` be the topmost :math:`\mathsf{handler}`.
 
-      #) Else if the first non-value entry of the stack is not a :math:`\mathsf{handler}`, then:
+   #. Let :math:`n` be the arity of :math:`H`
 
-         a) Throw the exception :math:`{\mathit{val}'}` as a result.
+   #. Let :math:`{{\mathit{catch}''}^\ast}` be the catch handler of :math:`H`
+
+   #. If :math:`{{\mathit{catch}''}^\ast} = \epsilon`, then:
+
+      1) Pop the :math:`\mathsf{handler}` from the stack.
+
+      #) Execute the instruction :math:`(\mathsf{throw\_addr}~a)`.
+
+   #. Else if :math:`a \geq {|z{.}\mathsf{exns}|}`, then:
+
+      1) Let :math:`{\mathit{catch}}_0~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}''}^\ast}`.
+
+      #) If :math:`{\mathit{catch}}_0` is some :math:`\mathsf{catch\_all}~{\mathit{labelidx}}`, then:
+
+         a) Let :math:`(\mathsf{catch\_all}~l)` be the destructuring of :math:`{\mathit{catch}}_0`.
+
+         #) Pop the :math:`\mathsf{handler}` from the stack.
+
+         #) Execute the instruction :math:`(\mathsf{br}~l)`.
+
+      #) Else if :math:`{\mathit{catch}}_0` is not some :math:`\mathsf{catch\_all\_ref}~{\mathit{labelidx}}`, then:
+
+         a) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}''}^\ast}`.
+
+         #) Pop the :math:`\mathsf{handler}` from the stack.
+
+         #) Let :math:`H` be the :math:`\mathsf{handler}` whose arity is :math:`n` and whose catch handler is :math:`{{\mathit{catch}'}^\ast}`.
+
+         #) Enter the block :math:`(\mathsf{throw\_addr}~a)~\mathsf{handler}` with the :math:`\mathsf{handler}` :math:`H`.
 
       #) Else:
 
-         a) Let :math:`H` be the topmost :math:`\mathsf{handler}`.
+         a) Let :math:`(\mathsf{catch\_all\_ref}~l)` be the destructuring of :math:`{\mathit{catch}}_0`.
 
-         #) Let :math:`n` be the arity of :math:`H`
+         #) Pop the :math:`\mathsf{handler}` from the stack.
 
-         #) Let :math:`{{\mathit{catch}''}^\ast}` be the catch handler of :math:`H`
+         #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
-         #) If :math:`{{\mathit{catch}''}^\ast} = \epsilon`, then:
+         #) Execute the instruction :math:`(\mathsf{br}~l)`.
+
+   #. Else:
+
+      1) Let :math:`{{\mathit{val}}^\ast}` be :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{fields}`.
+
+      #) Let :math:`{\mathit{catch}}_0~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}''}^\ast}`.
+
+      #) If :math:`{\mathit{catch}}_0` is some :math:`\mathsf{catch}~{\mathit{tagidx}}~{\mathit{labelidx}}`, then:
+
+         a) Let :math:`(\mathsf{catch}~x~l)` be the destructuring of :math:`{\mathit{catch}}_0`.
+
+         #) If :math:`x < {|z{.}\mathsf{module}{.}\mathsf{tags}|}` and :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{tag} = z{.}\mathsf{module}{.}\mathsf{tags}{}[x]`, then:
 
             1. Pop the :math:`\mathsf{handler}` from the stack.
 
-            #. Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+            #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
-            #. Execute the instruction :math:`\mathsf{throw\_ref}`.
-
-         #) Else if :math:`a \geq {|z{.}\mathsf{exns}|}`, then:
-
-            1. Let :math:`{\mathit{catch}}_0~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}''}^\ast}`.
-
-            #. If :math:`{\mathit{catch}}_0` is some :math:`\mathsf{catch\_all}~{\mathit{labelidx}}`, then:
-
-               a. Let :math:`(\mathsf{catch\_all}~l)` be the destructuring of :math:`{\mathit{catch}}_0`.
-
-               #. Pop the :math:`\mathsf{handler}` from the stack.
-
-               #. Execute the instruction :math:`(\mathsf{br}~l)`.
-
-            #. Else if :math:`{\mathit{catch}}_0` is not some :math:`\mathsf{catch\_all\_ref}~{\mathit{labelidx}}`, then:
-
-               a. Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}''}^\ast}`.
-
-               #. Pop the :math:`\mathsf{handler}` from the stack.
-
-               #. Let :math:`{H'}` be the :math:`\mathsf{handler}` whose arity is :math:`n` and whose catch handler is :math:`{{\mathit{catch}'}^\ast}`.
-
-               #. Push the :math:`\mathsf{handler}` :math:`{H'}`.
-
-               #. Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
-
-               #. Execute the instruction :math:`\mathsf{throw\_ref}`.
-
-            #. Else:
-
-               a. Let :math:`(\mathsf{catch\_all\_ref}~l)` be the destructuring of :math:`{\mathit{catch}}_0`.
-
-               #. Pop the :math:`\mathsf{handler}` from the stack.
-
-               #. Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
-
-               #. Execute the instruction :math:`(\mathsf{br}~l)`.
+            #. Execute the instruction :math:`(\mathsf{br}~l)`.
 
          #) Else:
 
-            1. Let :math:`{{\mathit{val}}^\ast}` be :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{fields}`.
+            1. Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}''}^\ast}`.
 
-            #. Let :math:`{\mathit{catch}}_0~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}''}^\ast}`.
+            #. Pop the :math:`\mathsf{handler}` from the stack.
 
-            #. If :math:`{\mathit{catch}}_0` is some :math:`\mathsf{catch}~{\mathit{tagidx}}~{\mathit{labelidx}}`, then:
+            #. Let :math:`H` be the :math:`\mathsf{handler}` whose arity is :math:`n` and whose catch handler is :math:`{{\mathit{catch}'}^\ast}`.
 
-               a. Let :math:`(\mathsf{catch}~x~l)` be the destructuring of :math:`{\mathit{catch}}_0`.
+            #. Enter the block :math:`(\mathsf{throw\_addr}~a)~\mathsf{handler}` with the :math:`\mathsf{handler}` :math:`H`.
 
-               #. If :math:`x < {|z{.}\mathsf{module}{.}\mathsf{tags}|}` and :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{tag} = z{.}\mathsf{module}{.}\mathsf{tags}{}[x]`, then:
+      #) Else if :math:`{\mathit{catch}}_0` is some :math:`\mathsf{catch\_ref}~{\mathit{tagidx}}~{\mathit{labelidx}}`, then:
 
-                  1) Pop the :math:`\mathsf{handler}` from the stack.
+         a) Let :math:`(\mathsf{catch\_ref}~x~l)` be the destructuring of :math:`{\mathit{catch}}_0`.
 
-                  #) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+         #) If :math:`x \geq {|z{.}\mathsf{module}{.}\mathsf{tags}|}` or :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{tag} \neq z{.}\mathsf{module}{.}\mathsf{tags}{}[x]`, then:
 
-                  #) Execute the instruction :math:`(\mathsf{br}~l)`.
+            1. Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}''}^\ast}`.
 
-               #. Else:
+            #. Pop the :math:`\mathsf{handler}` from the stack.
 
-                  1) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}''}^\ast}`.
+            #. Let :math:`H` be the :math:`\mathsf{handler}` whose arity is :math:`n` and whose catch handler is :math:`{{\mathit{catch}'}^\ast}`.
 
-                  #) Pop the :math:`\mathsf{handler}` from the stack.
+            #. Enter the block :math:`(\mathsf{throw\_addr}~a)~\mathsf{handler}` with the :math:`\mathsf{handler}` :math:`H`.
 
-                  #) Let :math:`{H'}` be the :math:`\mathsf{handler}` whose arity is :math:`n` and whose catch handler is :math:`{{\mathit{catch}'}^\ast}`.
+         #) Else:
 
-                  #) Push the :math:`\mathsf{handler}` :math:`{H'}`.
+            1. Pop the :math:`\mathsf{handler}` from the stack.
 
-                  #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+            #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
-                  #) Execute the instruction :math:`\mathsf{throw\_ref}`.
+            #. Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
-            #. Else if :math:`{\mathit{catch}}_0` is some :math:`\mathsf{catch\_ref}~{\mathit{tagidx}}~{\mathit{labelidx}}`, then:
+            #. Execute the instruction :math:`(\mathsf{br}~l)`.
 
-               a. Let :math:`(\mathsf{catch\_ref}~x~l)` be the destructuring of :math:`{\mathit{catch}}_0`.
+      #) Else if :math:`{\mathit{catch}}_0` is some :math:`\mathsf{catch\_all}~{\mathit{labelidx}}`, then:
 
-               #. If :math:`x \geq {|z{.}\mathsf{module}{.}\mathsf{tags}|}` or :math:`z{.}\mathsf{exns}{}[a]{.}\mathsf{tag} \neq z{.}\mathsf{module}{.}\mathsf{tags}{}[x]`, then:
+         a) Let :math:`(\mathsf{catch\_all}~l)` be the destructuring of :math:`{\mathit{catch}}_0`.
 
-                  1) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}''}^\ast}`.
+         #) Pop the :math:`\mathsf{handler}` from the stack.
 
-                  #) Pop the :math:`\mathsf{handler}` from the stack.
+         #) Execute the instruction :math:`(\mathsf{br}~l)`.
 
-                  #) Let :math:`{H'}` be the :math:`\mathsf{handler}` whose arity is :math:`n` and whose catch handler is :math:`{{\mathit{catch}'}^\ast}`.
+      #) Else if :math:`{\mathit{catch}}_0` is not some :math:`\mathsf{catch\_all\_ref}~{\mathit{labelidx}}`, then:
 
-                  #) Push the :math:`\mathsf{handler}` :math:`{H'}`.
+         a) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}''}^\ast}`.
 
-                  #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+         #) Pop the :math:`\mathsf{handler}` from the stack.
 
-                  #) Execute the instruction :math:`\mathsf{throw\_ref}`.
+         #) Let :math:`H` be the :math:`\mathsf{handler}` whose arity is :math:`n` and whose catch handler is :math:`{{\mathit{catch}'}^\ast}`.
 
-               #. Else:
+         #) Enter the block :math:`(\mathsf{throw\_addr}~a)~\mathsf{handler}` with the :math:`\mathsf{handler}` :math:`H`.
 
-                  1) Pop the :math:`\mathsf{handler}` from the stack.
+      #) Else:
 
-                  #) Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
+         a) Let :math:`(\mathsf{catch\_all\_ref}~l)` be the destructuring of :math:`{\mathit{catch}}_0`.
 
-                  #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
+         #) Pop the :math:`\mathsf{handler}` from the stack.
 
-                  #) Execute the instruction :math:`(\mathsf{br}~l)`.
+         #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
-            #. Else:
-
-               a. If :math:`{\mathit{catch}}_0` is some :math:`\mathsf{catch\_all}~{\mathit{labelidx}}`, then:
-
-                  1) Let :math:`(\mathsf{catch\_all}~l)` be the destructuring of :math:`{\mathit{catch}}_0`.
-
-                  #) Pop the :math:`\mathsf{handler}` from the stack.
-
-                  #) Execute the instruction :math:`(\mathsf{br}~l)`.
-
-               #. Else if :math:`{\mathit{catch}}_0` is not some :math:`\mathsf{catch\_all\_ref}~{\mathit{labelidx}}`, then:
-
-                  1) Let :math:`{\mathit{catch}}~{{\mathit{catch}'}^\ast}` be :math:`{{\mathit{catch}''}^\ast}`.
-
-                  #) Pop the :math:`\mathsf{handler}` from the stack.
-
-                  #) Let :math:`H` be the :math:`\mathsf{handler}` whose arity is :math:`n` and whose catch handler is :math:`{{\mathit{catch}'}^\ast}`.
-
-                  #) Push the :math:`\mathsf{handler}` :math:`H`.
-
-                  #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
-
-                  #) Execute the instruction :math:`\mathsf{throw\_ref}`.
-
-               #. Else:
-
-                  1) Let :math:`(\mathsf{catch\_all\_ref}~l)` be the destructuring of :math:`{\mathit{catch}}_0`.
-
-                  #) Pop the :math:`\mathsf{handler}` from the stack.
-
-                  #) Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
-
-                  #) Execute the instruction :math:`(\mathsf{br}~l)`.
+         #) Execute the instruction :math:`(\mathsf{br}~l)`.
 
 #. Else:
 
-   a. Assert: Due to validation, the first non-value entry of the stack is not a :math:`\mathsf{label}`.
-
-   #. Assert: Due to validation, the first non-value entry of the stack is not a :math:`\mathsf{frame}`.
-
-   #. Assert: Due to validation, the first non-value entry of the stack is not a :math:`\mathsf{handler}`.
-
-   #. Throw the exception :math:`{\mathit{val}'}` as a result.
+   a. Throw the exception :math:`(\mathsf{throw\_addr}~a)` as a result.
 
 
 :math:`\mathsf{try\_table}~{\mathit{bt}}~{{\mathit{catch}}^\ast}~{{\mathit{instr}}^\ast}`
@@ -21405,23 +21311,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
    a. Do nothing.
 
 
-:math:`\mathsf{call\_ref}~y`
-............................
+:math:`\mathsf{call\_addr}~a`
+.............................
 
 
 1. Let :math:`z` be the current state.
-
-#. Assert: Due to validation, a value is on the top of the stack.
-
-#. Pop the value :math:`{\mathit{val}'}` from the stack.
-
-#. If :math:`{\mathit{val}'} = \mathsf{ref{.}null}`, then:
-
-   a. Trap.
-
-#. Assert: Due to validation, :math:`{\mathit{val}'}` is some :math:`\mathsf{ref{.}func}~{\mathit{funcaddr}}`.
-
-#. Let :math:`(\mathsf{ref{.}func}~a)` be the destructuring of :math:`{\mathit{val}'}`.
 
 #. If :math:`a < {|z{.}\mathsf{funcs}|}`, then:
 
@@ -21457,9 +21351,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       #) Enter the block :math:`{{\mathit{instr}}^\ast}` with the :math:`\mathsf{label}` :math:`L`.
 
-#. If :math:`a < {|(s, f){.}\mathsf{funcs}|}`, then:
+#. If :math:`a < {|s{.}\mathsf{funcs}|}`, then:
 
-   a. Let :math:`{\mathit{fi}}` be the function instance :math:`(s, f){.}\mathsf{funcs}{}[a]`.
+   a. Let :math:`{\mathit{fi}}` be the function instance :math:`s{.}\mathsf{funcs}{}[a]`.
 
    #. If :math:`{\mathit{fi}}{.}\mathsf{code}` is some :math:`\mathbb{T}`, then:
 
@@ -21485,9 +21379,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
             1. Push the values :math:`{{\mathit{val}}^{n}}` to the stack.
 
-            #. Push the value :math:`(\mathsf{ref{.}func}~a)` to the stack.
-
-            #. Execute the instruction :math:`(\mathsf{call\_ref}~y)`.
+            #. Execute the instruction :math:`(\mathsf{call\_addr}~a)`.
 
 
 :math:`\mathsf{throw}~x`
@@ -21514,9 +21406,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Append :math:`{\mathit{exn}}` to :math:`z{.}\mathsf{exns}`.
 
-#. Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
-
-#. Execute the instruction :math:`\mathsf{throw\_ref}`.
+#. Execute the instruction :math:`(\mathsf{throw\_addr}~a)`.
 
 
 :math:`\mathsf{local{.}set}~x`
@@ -23758,17 +23648,17 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Return :math:`{\mathrm{free}}_{\mathit{funcidx}}({\mathit{funcidx}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{call\_ref}~{\mathit{typeuse}}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{call\_ref}~{\mathit{typeidx}}`, then:
 
-   a. Let :math:`(\mathsf{call\_ref}~{\mathit{typeuse}})` be the destructuring of :math:`{\mathit{instr}'}`.
+   a. Let :math:`(\mathsf{call\_ref}~{\mathit{typeidx}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{typeuse}}({\mathit{typeuse}})`.
+   #. Return :math:`{\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{call\_indirect}~{\mathit{tableidx}}~{\mathit{typeuse}}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{call\_indirect}~{\mathit{tableidx}}~{\mathit{typeidx}}`, then:
 
-   a. Let :math:`(\mathsf{call\_indirect}~{\mathit{tableidx}}~{\mathit{typeuse}})` be the destructuring of :math:`{\mathit{instr}'}`.
+   a. Let :math:`(\mathsf{call\_indirect}~{\mathit{tableidx}}~{\mathit{typeidx}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
-   #. Return `$free_tableidx(tableidx) ++ $free_typeuse(typeuse)`.
+   #. Return `$free_tableidx(tableidx) ++ $free_typeidx(typeidx)`.
 
 #. If :math:`{\mathit{instr}'} = \mathsf{return}`, then:
 
@@ -23780,17 +23670,17 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Return :math:`{\mathrm{free}}_{\mathit{funcidx}}({\mathit{funcidx}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{return\_call\_ref}~{\mathit{typeuse}}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{return\_call\_ref}~{\mathit{typeidx}}`, then:
 
-   a. Let :math:`(\mathsf{return\_call\_ref}~{\mathit{typeuse}})` be the destructuring of :math:`{\mathit{instr}'}`.
+   a. Let :math:`(\mathsf{return\_call\_ref}~{\mathit{typeidx}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
-   #. Return :math:`{\mathrm{free}}_{\mathit{typeuse}}({\mathit{typeuse}})`.
+   #. Return :math:`{\mathrm{free}}_{\mathit{typeidx}}({\mathit{typeidx}})`.
 
-#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{return\_call\_indirect}~{\mathit{tableidx}}~{\mathit{typeuse}}`, then:
+#. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{return\_call\_indirect}~{\mathit{tableidx}}~{\mathit{typeidx}}`, then:
 
-   a. Let :math:`(\mathsf{return\_call\_indirect}~{\mathit{tableidx}}~{\mathit{typeuse}})` be the destructuring of :math:`{\mathit{instr}'}`.
+   a. Let :math:`(\mathsf{return\_call\_indirect}~{\mathit{tableidx}}~{\mathit{typeidx}})` be the destructuring of :math:`{\mathit{instr}'}`.
 
-   #. Return `$free_tableidx(tableidx) ++ $free_typeuse(typeuse)`.
+   #. Return `$free_tableidx(tableidx) ++ $free_typeidx(typeidx)`.
 
 #. If :math:`{\mathit{instr}'}` is some :math:`\mathsf{throw}~{\mathit{tagidx}}`, then:
 
@@ -26700,11 +26590,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Return :math:`{{\mathit{val}}^\ast}`.
 
-#. If :math:`{\mathit{result}}` is some :math:`( \mathsf{ref{.}exn\_addr}~{\mathit{exnaddr}} )~\mathsf{throw\_ref}`, then:
+#. If :math:`{\mathit{result}}` is some :math:`\mathsf{throw\_addr}~{\mathit{exnaddr}}`, then:
 
-   a. Let :math:`(a)` be the destructuring of :math:`{\mathit{result}}`.
+   a. Let :math:`(\mathsf{throw\_addr}~a)` be the destructuring of :math:`{\mathit{result}}`.
 
-   #. Return :math:`(\mathsf{ref{.}exn}~a)~\mathsf{throw\_ref}`.
+   #. Return :math:`(\mathsf{throw\_addr}~a)`.
 
 #. Assert: Due to validation, :math:`{\mathit{result}} = \mathsf{trap}`.
 
@@ -27461,9 +27351,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Push the values :math:`{{\mathit{val}}^\ast}` to the stack.
 
-#. Push the value :math:`(\mathsf{ref{.}func}~{\mathit{funcaddr}})` to the stack.
-
-#. Execute the instruction :math:`(\mathsf{call\_ref}~s{.}\mathsf{funcs}{}[{\mathit{funcaddr}}]{.}\mathsf{type})`.
+#. Execute the instruction :math:`(\mathsf{call\_addr}~{\mathit{funcaddr}})`.
 
 #. Pop the values :math:`{{\mathit{val}'}^{k}}` from the stack.
 
@@ -28621,12 +28509,12 @@ Instr_ok/call
   - The :ref:`expansion <aux-expand-deftype>` of C.FUNCS[x] is (FUNC t_1* -> t_2*).
 
 Instr_ok/call_ref
-- the instruction (CALL_REF (_IDX x)) is valid with the instruction type t_1* :: [(REF ?(NULL) (_IDX x))] -> t_2* if:
+- the instruction (CALL_REF x) is valid with the instruction type t_1* :: [(REF ?(NULL) (_IDX x))] -> t_2* if:
   - the type C.TYPES[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is (FUNC t_1* -> t_2*).
 
 Instr_ok/call_indirect
-- the instruction (CALL_INDIRECT x (_IDX y)) is valid with the instruction type t_1* :: [at] -> t_2* if:
+- the instruction (CALL_INDIRECT x y) is valid with the instruction type t_1* :: [at] -> t_2* if:
   - the table C.TABLES[x] exists.
   - C.TABLES[x] is (at lim rt).
   - the reference type rt matches the reference type (REF ?(NULL) FUNC).
@@ -28647,7 +28535,7 @@ Instr_ok/return_call
   - the instruction type t_3* -> t_4* is valid.
 
 Instr_ok/return_call_ref
-- the instruction (RETURN_CALL_REF (_IDX x)) is valid with the instruction type t_3* :: t_1* :: [(REF ?(NULL) (_IDX x))] -> t_4* if:
+- the instruction (RETURN_CALL_REF x) is valid with the instruction type t_3* :: t_1* :: [(REF ?(NULL) (_IDX x))] -> t_4* if:
   - the type C.TYPES[x] exists.
   - The :ref:`expansion <aux-expand-deftype>` of C.TYPES[x] is (FUNC t_1* -> t_2*).
   - the result type C.RETURN is ?(t'_2*).
@@ -28655,7 +28543,7 @@ Instr_ok/return_call_ref
   - the instruction type t_3* -> t_4* is valid.
 
 Instr_ok/return_call_indirect
-- the instruction (RETURN_CALL_INDIRECT x (_IDX y)) is valid with the instruction type t_3* :: t_1* :: [at] -> t_4* if:
+- the instruction (RETURN_CALL_INDIRECT x y) is valid with the instruction type t_3* :: t_1* :: [at] -> t_4* if:
   - the table C.TABLES[x] exists.
   - C.TABLES[x] is (at lim rt).
   - the reference type rt matches the reference type (REF ?(NULL) FUNC).
@@ -29892,24 +29780,9 @@ Instr_ok2
   - Either:
     - the instruction instr is valid with the instruction type valtype* ->_ localidx* valtype'*.
   - Or:
-    - instr is (CALL_REF yy).
-    - the value type sequence valtype* is t_1* :: [(REF ?(NULL) yy)].
-    - the local index sequence localidx* is [].
-    - the type use yy is valid.
-    - The :ref:`expansion <aux-expand-typeuse>` of C is (FUNC t_1* -> valtype'*).
-  - Or:
-    - instr is (RETURN_CALL_REF yy).
-    - valtype* is t_3* :: t_1* :: [(REF ?(NULL) yy)].
-    - localidx* is [].
-    - yy is valid.
-    - The :ref:`expansion <aux-expand-typeuse>` of C is (FUNC t_1* -> t_2*).
-    - the result type C.RETURN is ?(t'_2*).
-    - the result type t_2* matches the result type t'_2*.
-    - the instruction type t_3* -> valtype'* is valid.
-  - Or:
     - instr is ref.
-    - valtype* is [].
-    - localidx* is [].
+    - the value type sequence valtype* is [].
+    - the local index sequence localidx* is [].
     - the value type sequence valtype'* is [rt].
     - the reference value ref is valid with the reference type rt.
   - Or:
@@ -29934,26 +29807,32 @@ Instr_ok2
       - the catch clause catch is valid.
     - instr''* is valid with [] ->_ x* valtype'*.
   - Or:
+    - instr is (CALL_ADDR a).
+    - localidx* is [].
+    - the function instance s.FUNCS[a] exists.
+    - The :ref:`expansion <aux-expand-deftype>` of s.FUNCS[a].TYPE is (FUNC valtype* -> valtype'*).
+  - Or:
+    - instr is (RETURN_CALL_ADDR a).
+    - valtype* is t_3* :: t_1*.
+    - localidx* is [].
+    - s.FUNCS[a] exists.
+    - The :ref:`expansion <aux-expand-deftype>` of s.FUNCS[a].TYPE is (FUNC t_1* -> t_2*).
+    - the result type C.RETURN is ?(t'_2*).
+    - the result type t_2* matches the result type t'_2*.
+    - the instruction type t_3* -> valtype'* is valid.
+  - Or:
+    - instr is (THROW_ADDR a).
+    - localidx* is [].
+    - the exception instance s.EXNS[a] exists.
+    - the instruction type valtype* -> valtype'* is valid.
+  - Or:
     - instr is TRAP.
     - localidx* is [].
-    - the instruction type valtype* -> valtype'* is valid.
+    - valtype* -> valtype'* is valid.
 
 Instr_ok2/plain
 - instr is valid with t_1* ->_ x* t_2* if:
   - the instruction instr is valid with the instruction type t_1* ->_ x* t_2*.
-
-Instr_ok2/call_ref
-- (CALL_REF yy) is valid with t_1* :: [(REF ?(NULL) yy)] -> t_2* if:
-  - the type use yy is valid.
-  - The :ref:`expansion <aux-expand-typeuse>` of C is (FUNC t_1* -> t_2*).
-
-Instr_ok2/return_call_ref
-- (RETURN_CALL_REF yy) is valid with t_3* :: t_1* :: [(REF ?(NULL) yy)] -> t_4* if:
-  - the type use yy is valid.
-  - The :ref:`expansion <aux-expand-typeuse>` of C is (FUNC t_1* -> t_2*).
-  - the result type C.RETURN is ?(t'_2*).
-  - the result type t_2* matches the result type t'_2*.
-  - the instruction type t_3* -> t_4* is valid.
 
 Instr_ok2/ref
 - ref is valid with [] -> [rt] if:
@@ -29976,6 +29855,24 @@ Instr_ok2/handler
   - For all catch in catch*:
     - the catch clause catch is valid.
   - instr* is valid with [] ->_ x* t*.
+
+Instr_ok2/call_addr
+- (CALL_ADDR a) is valid with t_1* -> t_2* if:
+  - the function instance s.FUNCS[a] exists.
+  - The :ref:`expansion <aux-expand-deftype>` of s.FUNCS[a].TYPE is (FUNC t_1* -> t_2*).
+
+Instr_ok2/return_call_addr
+- (RETURN_CALL_ADDR a) is valid with t_3* :: t_1* -> t_4* if:
+  - the function instance s.FUNCS[a] exists.
+  - The :ref:`expansion <aux-expand-deftype>` of s.FUNCS[a].TYPE is (FUNC t_1* -> t_2*).
+  - the result type C.RETURN is ?(t'_2*).
+  - the result type t_2* matches the result type t'_2*.
+  - the instruction type t_3* -> t_4* is valid.
+
+Instr_ok2/throw_addr
+- (THROW_ADDR a) is valid with t_1* -> t_2* if:
+  - the exception instance s.EXNS[a] exists.
+  - the instruction type t_1* -> t_2* is valid.
 
 Instr_ok2/trap
 - TRAP is valid with t_1* -> t_2* if:
@@ -30171,45 +30068,14 @@ Step_pure/br-label-* l
   c. Push the values val* to the stack.
   d. Execute the instruction (BR (l - 1)).
 
-Step_read/return_call_ref-frame-* yy
+Step_read/throw_addr-handler-* a
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
-3. Pop the value val'' from the stack.
-4. Assert: Due to validation, the first non-value entry of the stack is a FRAME_.
-5. If (val'' = REF.NULL_ADDR), then:
-  a. Trap.
-6. Assert: Due to validation, val'' is some REF.FUNC_ADDR.
-7. Let (REF.FUNC_ADDR a) be val''.
-8. Assert: Due to validation, (a < |$funcinst(z)|).
-9. Assert: Due to validation, $Expand($funcinst(z)[a].TYPE) is some ->.
-10. Let (FUNC t_1^n -> t_2^m) be $Expand($funcinst(z)[a].TYPE).
-11. Assert: Due to validation, there are at least n values on the top of the stack.
-12. Pop the values val^n from the stack.
-13. Pop all values val'* from the top of the stack.
-14. Pop the frame (FRAME_ _ { _ }) from the stack.
-15. Push the values val^n to the stack.
-16. Push the value (REF.FUNC_ADDR a) to the stack.
-17. Execute the instruction (CALL_REF yy).
-
-Step_read/throw_ref-instrs-*
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop the value (REF.EXN_ADDR a) from the stack.
-3. Pop all values val* from the top of the stack.
-4. Assert: Due to validation, (val* =/= []).
-5. Push the value (REF.EXN_ADDR a) to the stack.
-6. Execute the instruction THROW_REF.
-
-Step_read/throw_ref-handler-*
-1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
-3. Pop the value (REF.EXN_ADDR a) from the stack.
-4. Assert: Due to validation, the first non-value entry of the stack is a HANDLER_.
-5. Let (HANDLER_ n { catch''* }) be the topmost HANDLER_.
-6. If (catch''* = []), then:
+2. Assert: Due to validation, the first non-value entry of the stack is a HANDLER_.
+3. Let (HANDLER_ n { catch''* }) be the topmost HANDLER_.
+4. If (catch''* = []), then:
   a. Pop the handler (HANDLER_ _ { _ }) from the stack.
-  b. Push the value (REF.EXN_ADDR a) to the stack.
-  c. Execute the instruction THROW_REF.
-7. Else if (a >= |$exninst(z)|), then:
+  b. Execute the instruction (THROW_ADDR a).
+5. Else if (a >= |$exninst(z)|), then:
   a. Let [catch_0] :: catch'* be catch''*.
   b. If catch_0 is some CATCH_ALL, then:
     1) Let (CATCH_ALL l) be catch_0.
@@ -30218,15 +30084,13 @@ Step_read/throw_ref-handler-*
   c. Else if catch_0 is not CATCH_ALL_REF, then:
     1) Let [catch] :: catch'* be catch''*.
     2) Pop the handler (HANDLER_ _ { _ }) from the stack.
-    3) Push the handler (HANDLER_ n { catch'* }) to the stack.
-    4) Push the value (REF.EXN_ADDR a) to the stack.
-    5) Execute the instruction THROW_REF.
+    3) Enter [(THROW_ADDR a)] :: [HANDLER_] with label (HANDLER_ n { catch'* }).
   d. Else:
     1) Let (CATCH_ALL_REF l) be catch_0.
     2) Pop the handler (HANDLER_ _ { _ }) from the stack.
     3) Push the value (REF.EXN_ADDR a) to the stack.
     4) Execute the instruction (BR l).
-8. Else:
+6. Else:
   a. Let val* be $exninst(z)[a].FIELDS.
   b. Let [catch_0] :: catch'* be catch''*.
   c. If catch_0 is some CATCH, then:
@@ -30238,17 +30102,13 @@ Step_read/throw_ref-handler-*
     3) Else:
       a) Let [catch] :: catch'* be catch''*.
       b) Pop the handler (HANDLER_ _ { _ }) from the stack.
-      c) Push the handler (HANDLER_ n { catch'* }) to the stack.
-      d) Push the value (REF.EXN_ADDR a) to the stack.
-      e) Execute the instruction THROW_REF.
+      c) Enter [(THROW_ADDR a)] :: [HANDLER_] with label (HANDLER_ n { catch'* }).
   d. Else if catch_0 is some CATCH_REF, then:
     1) Let (CATCH_REF x l) be catch_0.
     2) If ((x >= |$tagaddr(z)|) \/ ($exninst(z)[a].TAG =/= $tagaddr(z)[x])), then:
       a) Let [catch] :: catch'* be catch''*.
       b) Pop the handler (HANDLER_ _ { _ }) from the stack.
-      c) Push the handler (HANDLER_ n { catch'* }) to the stack.
-      d) Push the value (REF.EXN_ADDR a) to the stack.
-      e) Execute the instruction THROW_REF.
+      c) Enter [(THROW_ADDR a)] :: [HANDLER_] with label (HANDLER_ n { catch'* }).
     3) Else:
       a) Pop the handler (HANDLER_ _ { _ }) from the stack.
       b) Push the values val* to the stack.
@@ -30261,9 +30121,7 @@ Step_read/throw_ref-handler-*
   f. Else if catch_0 is not CATCH_ALL_REF, then:
     1) Let [catch] :: catch'* be catch''*.
     2) Pop the handler (HANDLER_ _ { _ }) from the stack.
-    3) Push the handler (HANDLER_ n { catch'* }) to the stack.
-    4) Push the value (REF.EXN_ADDR a) to the stack.
-    5) Execute the instruction THROW_REF.
+    3) Enter [(THROW_ADDR a)] :: [HANDLER_] with label (HANDLER_ n { catch'* }).
   g. Else:
     1) Let (CATCH_ALL_REF l) be catch_0.
     2) Pop the handler (HANDLER_ _ { _ }) from the stack.
@@ -30373,26 +30231,22 @@ Step_read/memory.init-oob-* x y
 9. If ((j + n) > |$data(z, y).BYTES|), then:
   a. Trap.
 
-Step/call_ref-hostfunc-* yy
-1. Let (FRAME_ _ { f }) be the topmost FRAME_.
-2. Assert: Due to validation, a value is on the top of the stack.
-3. Pop the value (REF.FUNC_ADDR a) from the stack.
-4. Assert: Due to validation, (a < |$funcinst((s, f))|).
-5. Let fi be $funcinst((s, f))[a].
-6. Assert: Due to validation, fi.CODE is some _HOSTFUNC.
-7. Let (_HOSTFUNC hf) be fi.CODE.
-8. Assert: Due to validation, $Expand(fi.TYPE) is some ->.
-9. Let (FUNC t_1^n -> t_2^m) be $Expand(fi.TYPE).
-10. Assert: Due to validation, there are at least n values on the top of the stack.
-11. Pop the values val^n from the stack.
-12. Assert: Due to validation, (|$hostcall((_HOSTFUNC hf), s, val^n)| > 0).
-13. If an element of $hostcall((_HOSTFUNC hf), s, val^n) is some RES, then:
+Step/call_addr-hostfunc-* a
+1. Assert: Due to validation, (a < |s.FUNCS|).
+2. Let fi be s.FUNCS[a].
+3. Assert: Due to validation, fi.CODE is some _HOSTFUNC.
+4. Let (_HOSTFUNC hf) be fi.CODE.
+5. Assert: Due to validation, $Expand(fi.TYPE) is some ->.
+6. Let (FUNC t_1^n -> t_2^m) be $Expand(fi.TYPE).
+7. Assert: Due to validation, there are at least n values on the top of the stack.
+8. Pop the values val^n from the stack.
+9. Assert: Due to validation, (|$hostcall((_HOSTFUNC hf), s, val^n)| > 0).
+10. If an element of $hostcall((_HOSTFUNC hf), s, val^n) is some RES, then:
   a. Let (RES s' result) be an element of $hostcall((_HOSTFUNC hf), s, val^n).
   b. Execute the sequence $lift_result(result).
-14. If BOT is contained in $hostcall((_HOSTFUNC hf), s, val^n), then:
+11. If BOT is contained in $hostcall((_HOSTFUNC hf), s, val^n), then:
   a. Push the values val^n to the stack.
-  b. Push the value (REF.FUNC_ADDR a) to the stack.
-  c. Execute the instruction (CALL_REF yy).
+  b. Execute the instruction (CALL_ADDR a).
 
 Step/store-num-* nt ?() x ao
 1. Let z be the current state.
@@ -30507,15 +30361,15 @@ Step_pure/br_on_non_null l
   a. Push the value val to the stack.
   b. Execute the instruction (BR l).
 
-Step_pure/call_indirect x yy
+Step_pure/call_indirect x y
 1. Execute the instruction (TABLE.GET x).
-2. Execute the instruction (REF.CAST (REF ?(NULL) yy)).
-3. Execute the instruction (CALL_REF yy).
+2. Execute the instruction (REF.CAST (REF ?(NULL) (_IDX y))).
+3. Execute the instruction (CALL_REF y).
 
-Step_pure/return_call_indirect x yy
+Step_pure/return_call_indirect x y
 1. Execute the instruction (TABLE.GET x).
-2. Execute the instruction (REF.CAST (REF ?(NULL) yy)).
-3. Execute the instruction (RETURN_CALL_REF yy).
+2. Execute the instruction (REF.CAST (REF ?(NULL) (_IDX y))).
+3. Execute the instruction (RETURN_CALL_REF y).
 
 Step_pure/frame
 1. Let (FRAME_ n { f }) be the topmost FRAME_.
@@ -30882,142 +30736,132 @@ Step_read/call x
 1. Let z be the current state.
 2. Assert: Due to validation, (x < |$moduleinst(z).FUNCS|).
 3. Let a be $moduleinst(z).FUNCS[x].
-4. Assert: Due to validation, (a < |$funcinst(z)|).
-5. Push the value (REF.FUNC_ADDR a) to the stack.
-6. Execute the instruction (CALL_REF $funcinst(z)[a].TYPE).
+4. Execute the instruction (CALL_ADDR a).
+
+Step_read/call_ref x
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop the value val from the stack.
+3. If (val = REF.NULL_ADDR), then:
+  a. Trap.
+4. Assert: Due to validation, val is some REF.FUNC_ADDR.
+5. Let (REF.FUNC_ADDR a) be val.
+6. Execute the instruction (CALL_ADDR a).
 
 Step_read/return_call x
 1. Let z be the current state.
 2. Assert: Due to validation, (x < |$moduleinst(z).FUNCS|).
 3. Let a be $moduleinst(z).FUNCS[x].
-4. Assert: Due to validation, (a < |$funcinst(z)|).
-5. Push the value (REF.FUNC_ADDR a) to the stack.
-6. Execute the instruction (RETURN_CALL_REF $funcinst(z)[a].TYPE).
+4. Execute the instruction (RETURN_CALL_ADDR a).
 
-Step_read/return_call_ref yy
+Step_read/return_call_ref x
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop the value val from the stack.
+3. If (val = REF.NULL_ADDR), then:
+  a. Trap.
+4. Assert: Due to validation, val is some REF.FUNC_ADDR.
+5. Let (REF.FUNC_ADDR a) be val.
+6. Execute the instruction (RETURN_CALL_ADDR a).
+
+Step_read/return_call_addr a
 1. Let z be the current state.
 2. If the first non-value entry of the stack is a LABEL_, then:
   a. Pop all values val* from the top of the stack.
   b. Pop the label (LABEL_ _ { _ }) from the stack.
   c. Push the values val* to the stack.
-  d. Execute the instruction (RETURN_CALL_REF yy).
+  d. Execute the instruction (RETURN_CALL_ADDR a).
 3. Else if the first non-value entry of the stack is a HANDLER_, then:
   a. Pop all values val* from the top of the stack.
   b. Pop the handler (HANDLER_ _ { _ }) from the stack.
   c. Push the values val* to the stack.
-  d. Execute the instruction (RETURN_CALL_REF yy).
+  d. Execute the instruction (RETURN_CALL_ADDR a).
 4. Else:
   a. Assert: Due to validation, the first non-value entry of the stack is a FRAME_.
-  b. Assert: Due to validation, a value is on the top of the stack.
-  c. Pop the value val'' from the stack.
-  d. If (val'' = REF.NULL_ADDR), then:
-    1) Trap.
-  e. Assert: Due to validation, val'' is some REF.FUNC_ADDR.
-  f. Let (REF.FUNC_ADDR a) be val''.
-  g. Assert: Due to validation, (a < |$funcinst(z)|).
-  h. Assert: Due to validation, $Expand($funcinst(z)[a].TYPE) is some ->.
-  i. Let (FUNC t_1^n -> t_2^m) be $Expand($funcinst(z)[a].TYPE).
-  j. Assert: Due to validation, there are at least n values on the top of the stack.
-  k. Pop the values val^n from the stack.
-  l. Pop all values val'* from the top of the stack.
-  m. Pop the frame (FRAME_ _ { _ }) from the stack.
-  n. Push the values val^n to the stack.
-  o. Push the value (REF.FUNC_ADDR a) to the stack.
-  p. Execute the instruction (CALL_REF yy).
+  b. Assert: Due to validation, (a < |$funcinst(z)|).
+  c. Assert: Due to validation, $Expand($funcinst(z)[a].TYPE) is some ->.
+  d. Let (FUNC t_1^n -> t_2^m) be $Expand($funcinst(z)[a].TYPE).
+  e. Assert: Due to validation, there are at least n values on the top of the stack.
+  f. Pop the values val^n from the stack.
+  g. Pop all values val'* from the top of the stack.
+  h. Pop the frame (FRAME_ _ { _ }) from the stack.
+  i. Push the values val^n to the stack.
+  j. Execute the instruction (CALL_ADDR a).
 
 Step_read/throw_ref
-1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
-3. Pop the value val' from the stack.
-4. If (val' = REF.NULL_ADDR), then:
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop the value val from the stack.
+3. If (val = REF.NULL_ADDR), then:
   a. Trap.
-5. If val' is some REF.EXN_ADDR, then:
-  a. Let (REF.EXN_ADDR a) be val'.
-  b. Pop all values val* from the top of the stack.
-  c. If (val* =/= []), then:
-    1) Push the value (REF.EXN_ADDR a) to the stack.
-    2) Execute the instruction THROW_REF.
-  d. Else if the first non-value entry of the stack is a LABEL_, then:
-    1) Pop the label (LABEL_ _ { _ }) from the stack.
-    2) Push the value (REF.EXN_ADDR a) to the stack.
-    3) Execute the instruction THROW_REF.
-  e. Else if the first non-value entry of the stack is a FRAME_, then:
-    1) Pop the frame (FRAME_ _ { _ }) from the stack.
-    2) Push the value (REF.EXN_ADDR a) to the stack.
-    3) Execute the instruction THROW_REF.
-  f. Else if the first non-value entry of the stack is not a HANDLER_, then:
-    1) Throw the exception val' as a result.
-  g. Else:
-    1) Let (HANDLER_ n { catch''* }) be the topmost HANDLER_.
-    2) If (catch''* = []), then:
-      a) Pop the handler (HANDLER_ _ { _ }) from the stack.
-      b) Push the value (REF.EXN_ADDR a) to the stack.
-      c) Execute the instruction THROW_REF.
-    3) Else if (a >= |$exninst(z)|), then:
-      a) Let [catch_0] :: catch'* be catch''*.
-      b) If catch_0 is some CATCH_ALL, then:
-        1. Let (CATCH_ALL l) be catch_0.
-        2. Pop the handler (HANDLER_ _ { _ }) from the stack.
-        3. Execute the instruction (BR l).
-      c) Else if catch_0 is not CATCH_ALL_REF, then:
-        1. Let [catch] :: catch'* be catch''*.
-        2. Pop the handler (HANDLER_ _ { _ }) from the stack.
-        3. Push the handler (HANDLER_ n { catch'* }) to the stack.
-        4. Push the value (REF.EXN_ADDR a) to the stack.
-        5. Execute the instruction THROW_REF.
-      d) Else:
-        1. Let (CATCH_ALL_REF l) be catch_0.
-        2. Pop the handler (HANDLER_ _ { _ }) from the stack.
-        3. Push the value (REF.EXN_ADDR a) to the stack.
-        4. Execute the instruction (BR l).
+4. Assert: Due to validation, val is some REF.EXN_ADDR.
+5. Let (REF.EXN_ADDR a) be val.
+6. Execute the instruction (THROW_ADDR a).
+
+Step_read/throw_addr a
+1. Let z be the current state.
+2. If the first non-value entry of the stack is a LABEL_, then:
+  a. Pop the label (LABEL_ _ { _ }) from the stack.
+  b. Execute the instruction (THROW_ADDR a).
+3. Else if the first non-value entry of the stack is a FRAME_, then:
+  a. Pop the frame (FRAME_ _ { _ }) from the stack.
+  b. Execute the instruction (THROW_ADDR a).
+4. Else if the first non-value entry of the stack is a HANDLER_, then:
+  a. Let (HANDLER_ n { catch''* }) be the topmost HANDLER_.
+  b. If (catch''* = []), then:
+    1) Pop the handler (HANDLER_ _ { _ }) from the stack.
+    2) Execute the instruction (THROW_ADDR a).
+  c. Else if (a >= |$exninst(z)|), then:
+    1) Let [catch_0] :: catch'* be catch''*.
+    2) If catch_0 is some CATCH_ALL, then:
+      a) Let (CATCH_ALL l) be catch_0.
+      b) Pop the handler (HANDLER_ _ { _ }) from the stack.
+      c) Execute the instruction (BR l).
+    3) Else if catch_0 is not CATCH_ALL_REF, then:
+      a) Let [catch] :: catch'* be catch''*.
+      b) Pop the handler (HANDLER_ _ { _ }) from the stack.
+      c) Enter [(THROW_ADDR a)] :: [HANDLER_] with label (HANDLER_ n { catch'* }).
     4) Else:
-      a) Let val* be $exninst(z)[a].FIELDS.
-      b) Let [catch_0] :: catch'* be catch''*.
-      c) If catch_0 is some CATCH, then:
-        1. Let (CATCH x l) be catch_0.
-        2. If ((x < |$tagaddr(z)|) /\ ($exninst(z)[a].TAG = $tagaddr(z)[x])), then:
-          a. Pop the handler (HANDLER_ _ { _ }) from the stack.
-          b. Push the values val* to the stack.
-          c. Execute the instruction (BR l).
-        3. Else:
-          a. Let [catch] :: catch'* be catch''*.
-          b. Pop the handler (HANDLER_ _ { _ }) from the stack.
-          c. Push the handler (HANDLER_ n { catch'* }) to the stack.
-          d. Push the value (REF.EXN_ADDR a) to the stack.
-          e. Execute the instruction THROW_REF.
-      d) Else if catch_0 is some CATCH_REF, then:
-        1. Let (CATCH_REF x l) be catch_0.
-        2. If ((x >= |$tagaddr(z)|) \/ ($exninst(z)[a].TAG =/= $tagaddr(z)[x])), then:
-          a. Let [catch] :: catch'* be catch''*.
-          b. Pop the handler (HANDLER_ _ { _ }) from the stack.
-          c. Push the handler (HANDLER_ n { catch'* }) to the stack.
-          d. Push the value (REF.EXN_ADDR a) to the stack.
-          e. Execute the instruction THROW_REF.
-        3. Else:
-          a. Pop the handler (HANDLER_ _ { _ }) from the stack.
-          b. Push the values val* to the stack.
-          c. Push the value (REF.EXN_ADDR a) to the stack.
-          d. Execute the instruction (BR l).
-      e) Else if catch_0 is some CATCH_ALL, then:
-        1. Let (CATCH_ALL l) be catch_0.
-        2. Pop the handler (HANDLER_ _ { _ }) from the stack.
+      a) Let (CATCH_ALL_REF l) be catch_0.
+      b) Pop the handler (HANDLER_ _ { _ }) from the stack.
+      c) Push the value (REF.EXN_ADDR a) to the stack.
+      d) Execute the instruction (BR l).
+  d. Else:
+    1) Let val* be $exninst(z)[a].FIELDS.
+    2) Let [catch_0] :: catch'* be catch''*.
+    3) If catch_0 is some CATCH, then:
+      a) Let (CATCH x l) be catch_0.
+      b) If ((x < |$tagaddr(z)|) /\ ($exninst(z)[a].TAG = $tagaddr(z)[x])), then:
+        1. Pop the handler (HANDLER_ _ { _ }) from the stack.
+        2. Push the values val* to the stack.
         3. Execute the instruction (BR l).
-      f) Else if catch_0 is not CATCH_ALL_REF, then:
+      c) Else:
         1. Let [catch] :: catch'* be catch''*.
         2. Pop the handler (HANDLER_ _ { _ }) from the stack.
-        3. Push the handler (HANDLER_ n { catch'* }) to the stack.
-        4. Push the value (REF.EXN_ADDR a) to the stack.
-        5. Execute the instruction THROW_REF.
-      g) Else:
-        1. Let (CATCH_ALL_REF l) be catch_0.
+        3. Enter [(THROW_ADDR a)] :: [HANDLER_] with label (HANDLER_ n { catch'* }).
+    4) Else if catch_0 is some CATCH_REF, then:
+      a) Let (CATCH_REF x l) be catch_0.
+      b) If ((x >= |$tagaddr(z)|) \/ ($exninst(z)[a].TAG =/= $tagaddr(z)[x])), then:
+        1. Let [catch] :: catch'* be catch''*.
         2. Pop the handler (HANDLER_ _ { _ }) from the stack.
+        3. Enter [(THROW_ADDR a)] :: [HANDLER_] with label (HANDLER_ n { catch'* }).
+      c) Else:
+        1. Pop the handler (HANDLER_ _ { _ }) from the stack.
+        2. Push the values val* to the stack.
         3. Push the value (REF.EXN_ADDR a) to the stack.
         4. Execute the instruction (BR l).
-6. Else:
-  a. Assert: Due to validation, the first non-value entry of the stack is not a LABEL_.
-  b. Assert: Due to validation, the first non-value entry of the stack is not a FRAME_.
-  c. Assert: Due to validation, the first non-value entry of the stack is not a HANDLER_.
-  d. Throw the exception val' as a result.
+    5) Else if catch_0 is some CATCH_ALL, then:
+      a) Let (CATCH_ALL l) be catch_0.
+      b) Pop the handler (HANDLER_ _ { _ }) from the stack.
+      c) Execute the instruction (BR l).
+    6) Else if catch_0 is not CATCH_ALL_REF, then:
+      a) Let [catch] :: catch'* be catch''*.
+      b) Pop the handler (HANDLER_ _ { _ }) from the stack.
+      c) Enter [(THROW_ADDR a)] :: [HANDLER_] with label (HANDLER_ n { catch'* }).
+    7) Else:
+      a) Let (CATCH_ALL_REF l) be catch_0.
+      b) Pop the handler (HANDLER_ _ { _ }) from the stack.
+      c) Push the value (REF.EXN_ADDR a) to the stack.
+      d) Execute the instruction (BR l).
+5. Else:
+  a. Throw the exception (THROW_ADDR a) as a result.
 
 Step_read/try_table bt catch* instr*
 1. Let z be the current state.
@@ -31562,15 +31406,9 @@ Step_read/array.init_data x y
 15. Else if (n = 0), then:
   a. Do nothing.
 
-Step/call_ref yy
+Step/call_addr a
 1. Let z be the current state.
-2. Assert: Due to validation, a value is on the top of the stack.
-3. Pop the value val' from the stack.
-4. If (val' = REF.NULL_ADDR), then:
-  a. Trap.
-5. Assert: Due to validation, val' is some REF.FUNC_ADDR.
-6. Let (REF.FUNC_ADDR a) be val'.
-7. If (a < |$funcinst(z)|), then:
+2. If (a < |$funcinst(z)|), then:
   a. Let fi be $funcinst(z)[a].
   b. If fi.CODE is some FUNC, then:
     1) Let (FUNC x local_0* instr*) be fi.CODE.
@@ -31585,8 +31423,8 @@ Step/call_ref yy
     8) Let f be { LOCALS: ?(val)^n :: $default_(t)*; MODULE: fi.MODULE }.
     9) Push the frame (FRAME_ m { f }) to the stack.
     10) Enter instr* with label (LABEL_ m { [] }).
-8. If (a < |$funcinst((s, f))|), then:
-  a. Let fi be $funcinst((s, f))[a].
+3. If (a < |s.FUNCS|), then:
+  a. Let fi be s.FUNCS[a].
   b. If fi.CODE is some _HOSTFUNC, then:
     1) Let (_HOSTFUNC hf) be fi.CODE.
     2) Assert: Due to validation, $Expand(fi.TYPE) is some ->.
@@ -31599,8 +31437,7 @@ Step/call_ref yy
         2. Execute the sequence $lift_result(result).
       b) If BOT is contained in $hostcall((_HOSTFUNC hf), s, val^n), then:
         1. Push the values val^n to the stack.
-        2. Push the value (REF.FUNC_ADDR a) to the stack.
-        3. Execute the instruction (CALL_REF yy).
+        2. Execute the instruction (CALL_ADDR a).
 
 Step/throw x
 1. Let z be the current state.
@@ -31613,8 +31450,7 @@ Step/throw x
 8. Pop the values val^n from the stack.
 9. Let exn be { TAG: $tagaddr(z)[x]; FIELDS: val^n }.
 10. Perform $add_exninst(z, [exn]).
-11. Push the value (REF.EXN_ADDR a) to the stack.
-12. Execute the instruction THROW_REF.
+11. Execute the instruction (THROW_ADDR a).
 
 Step/local.set x
 1. Let z be the current state.
@@ -32648,22 +32484,22 @@ free_instr instr'
   a. Let (CALL funcidx) be instr'.
   b. Return $free_funcidx(funcidx).
 16. If instr' is some CALL_REF, then:
-  a. Let (CALL_REF typeuse) be instr'.
-  b. Return $free_typeuse(typeuse).
+  a. Let (CALL_REF typeidx) be instr'.
+  b. Return $free_typeidx(typeidx).
 17. If instr' is some CALL_INDIRECT, then:
-  a. Let (CALL_INDIRECT tableidx typeuse) be instr'.
-  b. Return $free_tableidx(tableidx) ++ $free_typeuse(typeuse).
+  a. Let (CALL_INDIRECT tableidx typeidx) be instr'.
+  b. Return $free_tableidx(tableidx) ++ $free_typeidx(typeidx).
 18. If (instr' = RETURN), then:
   a. Return {}.
 19. If instr' is some RETURN_CALL, then:
   a. Let (RETURN_CALL funcidx) be instr'.
   b. Return $free_funcidx(funcidx).
 20. If instr' is some RETURN_CALL_REF, then:
-  a. Let (RETURN_CALL_REF typeuse) be instr'.
-  b. Return $free_typeuse(typeuse).
+  a. Let (RETURN_CALL_REF typeidx) be instr'.
+  b. Return $free_typeidx(typeidx).
 21. If instr' is some RETURN_CALL_INDIRECT, then:
-  a. Let (RETURN_CALL_INDIRECT tableidx typeuse) be instr'.
-  b. Return $free_tableidx(tableidx) ++ $free_typeuse(typeuse).
+  a. Let (RETURN_CALL_INDIRECT tableidx typeidx) be instr'.
+  b. Return $free_tableidx(tableidx) ++ $free_typeidx(typeidx).
 22. If instr' is some THROW, then:
   a. Let (THROW tagidx) be instr'.
   b. Return $free_tagidx(tagidx).
@@ -34037,9 +33873,9 @@ lift_result result
 1. If result is some _VALS, then:
   a. Let (_VALS val*) be result.
   b. Return val*.
-2. If result is some (, then:
-  a. Let ((REF.EXN_ADDR a )THROW_REF) be result.
-  b. Return [(REF.EXN_ADDR a), THROW_REF].
+2. If result is some THROW_ADDR, then:
+  a. Let (THROW_ADDR a) be result.
+  b. Return [(THROW_ADDR a)].
 3. Assert: Due to validation, (result = TRAP).
 4. Return [TRAP].
 
@@ -34391,11 +34227,10 @@ invoke s funcaddr val*
 4. Let k be |t_2*|.
 5. Push the frame (FRAME_ k { { MODULE: {} } }) to the stack.
 6. Push the values val* to the stack.
-7. Push the value (REF.FUNC_ADDR funcaddr) to the stack.
-8. Execute the instruction (CALL_REF s.FUNCS[funcaddr].TYPE).
-9. Pop the values val'^k from the stack.
-10. Pop the frame (FRAME_ k { { MODULE: {} } }) from the stack.
-11. Return val'^k.
+7. Execute the instruction (CALL_ADDR funcaddr).
+8. Pop the values val'^k from the stack.
+9. Pop the frame (FRAME_ k { { MODULE: {} } }) from the stack.
+10. Return val'^k.
 
 concat_idctxt idctxt*
 1. If (idctxt* = []), then:

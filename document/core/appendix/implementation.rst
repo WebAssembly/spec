@@ -112,7 +112,7 @@ For a module given in :ref:`text format <text>`, additional limitations may be i
 Validation
 ~~~~~~~~~~
 
-An implementation may defer :ref:`validation <valid>` of individual :ref:`functions <syntax-func>` until they are first :ref:`invoked <exec-invoke>`.
+An implementation may defer :ref:`validation <valid>` of individual :ref:`functions <syntax-func>` until they are first :ref:`called <exec-call_addr>`.
 
 If a function turns out to be invalid, then the invocation, and every consecutive call to the same function, results in a :ref:`trap <trap>`.
 

@@ -91,7 +91,7 @@ let remove_or def =
     DecD (id, params, typ, List.concat_map remove_or_clause clauses) $ def.at
   | _ -> def
 
-(* HARDCODE: Remove a reduction rule for the block context, specifically, for THROW_REF *)
+(* HARDCODE: Remove a reduction rule for the block context, specifically, for THROW_ADDR *)
 let is_block_context_exp e =
   match e.it with
   (* instr* =/= [] *)
@@ -207,9 +207,10 @@ let preprocess (il: script) : rule_def list * helper_def list =
     | RelD (id, ps, mixop, t, rules) when List.mem id.it [ "Step"; "Step_read"; "Step_pure" ] ->
       (* HARDCODE: Exclude administrative rules *)
       let filter_rule rule =
-        ["pure"; "read"; "trap"; "ctxt"]
-        |> List.mem (name_of_rule rule)
-        |> not
+        not (
+          List.mem (name_of_rule rule) ["pure"; "read"; "trap"; "ctxt"] ||
+          String.ends_with (full_name_of_rule rule) ~suffix:"-instrs"
+        )
       in
       Some (RelD (id, ps, mixop, t, List.filter filter_rule rules) $ def.at)
     | RelD _ -> None

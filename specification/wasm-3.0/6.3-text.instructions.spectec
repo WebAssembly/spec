@@ -110,13 +110,13 @@ grammar Tplaininstr_(I)/br : instr = ...
 
 grammar Tplaininstr_(I)/func-plain : instr = ...
   | "call" x:Tfuncidx_(I) => CALL x
-  | "call_ref" x:Ttypeidx_(I) => CALL_REF $($(_IDX x))
-  | "call_indirect" x:Ttableidx_(I) (y,I'):Ttypeuse_(I) => CALL_INDIRECT x $($(_IDX y))
+  | "call_ref" x:Ttypeidx_(I) => CALL_REF x
+  | "call_indirect" x:Ttableidx_(I) (y,I'):Ttypeuse_(I) => CALL_INDIRECT x y
     -- if I' = {LOCALS (eps)*}
   | "return" => RETURN
   | "return_call" x:Tfuncidx_(I) => RETURN_CALL x
-  | "return_call_ref" x:Ttypeidx_(I) => RETURN_CALL_REF $($(_IDX x))
-  | "return_call_indirect" x:Ttableidx_(I) (y,I'):Ttypeuse_(I) => RETURN_CALL_INDIRECT x $($(_IDX y))
+  | "return_call_ref" x:Ttypeidx_(I) => RETURN_CALL_REF x
+  | "return_call_indirect" x:Ttableidx_(I) (y,I'):Ttypeuse_(I) => RETURN_CALL_INDIRECT x y
     -- if I' = {LOCALS (eps)*}
   | ...
 

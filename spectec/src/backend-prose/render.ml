@@ -1258,38 +1258,30 @@ let rec render_instr env algoname index depth instr =
       sprintf "%s If %s, then:%s" (render_order index depth)
         (render_expr env c) (render_instrs env algoname (depth + 1) il)
   )
-  | Al.Ast.IfI (c, il1, [ { it = IfI (inner_c, inner_il1, []); _ } ]) ->
-    let if_index = render_order index depth in
-    let else_if_index = render_order index depth in
-    sprintf "%s If %s, then:%s\n\n%s Else if %s, then:%s"
-      if_index
-      (render_expr env c)
-      (render_instrs env algoname (depth + 1) il1)
-      (repeat indent depth ^ else_if_index)
-      (render_expr env inner_c)
-      (render_instrs env algoname (depth + 1) inner_il1)
-  | Al.Ast.IfI (c, il1, [ { it = IfI (inner_c, inner_il1, inner_il2); _ } ]) ->
-    let if_index = render_order index depth in
-    let else_if_index = render_order index depth in
-    let else_index = render_order index depth in
-    sprintf "%s If %s, then:%s\n\n%s Else if %s, then:%s\n\n%s Else:%s"
-      if_index
-      (render_expr env c)
-      (render_instrs env algoname (depth + 1) il1)
-      (repeat indent depth ^ else_if_index)
-      (render_expr env inner_c)
-      (render_instrs env algoname (depth + 1) inner_il1)
-      (repeat indent depth ^ else_index)
-      (render_instrs env algoname (depth + 1) inner_il2)
   | Al.Ast.IfI (c, il1, il2) ->
+    (* Recursively collect a chain of "else if"s, and render them in flat manner *)
+    let rec collect_clause il =
+      match il with
+      | [ { it = Al.Ast.IfI (c', il1', il2'); _ } ] -> (Some c', il1') :: collect_clause il2'
+      | _ -> [ (None, il) ]
+    in
+    let else_clauses = collect_clause il2 |> List.filter (fun (_, il) -> il <> []) in
     let if_index = render_order index depth in
-    let else_index = render_order index depth in
-    sprintf "%s If %s, then:%s\n\n%s Else:%s"
-      if_index
-      (render_expr env c)
-      (render_instrs env algoname (depth + 1) il1)
-      (repeat indent depth ^ else_index)
-      (render_instrs env algoname (depth + 1) il2)
+    let if_prose =
+      sprintf "%s If %s, then:%s" if_index
+        (render_expr env c) (render_instrs env algoname (depth + 1) il1)
+    in
+    let else_proses = List.map (fun (cond_opt, il) ->
+      let else_index = render_order index depth in
+      match cond_opt with
+      | None -> sprintf "%s Else:%s"
+        (repeat indent depth ^ else_index)
+        (render_instrs env algoname (depth + 1) il)
+      | Some e -> sprintf "%s Else if %s, then:%s"
+        (repeat indent depth ^ else_index) (render_expr env e)
+        (render_instrs env algoname (depth + 1) il)
+    ) else_clauses in
+    String.concat "\n\n" (if_prose :: else_proses)
   | Al.Ast.OtherwiseI il ->
     sprintf "%s Otherwise:%s" (render_order index depth)
       (render_instrs env algoname (depth + 1) il)

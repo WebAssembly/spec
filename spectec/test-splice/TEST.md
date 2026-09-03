@@ -1185,12 +1185,13 @@ warning: rule `Instr_ok/vextternop` was never spliced
 warning: rule `Instr_ok/vnarrow` was never spliced
 warning: rule `Instr_ok/vcvtop` was never spliced
 warning: rule `Instr_ok2/plain` was never spliced
-warning: rule `Instr_ok2/call_ref` was never spliced
-warning: rule `Instr_ok2/return_call_ref` was never spliced
 warning: rule `Instr_ok2/ref` was never spliced
 warning: rule `Instr_ok2/label` was never spliced
 warning: rule `Instr_ok2/frame` was never spliced
 warning: rule `Instr_ok2/handler` was never spliced
+warning: rule `Instr_ok2/call_addr` was never spliced
+warning: rule `Instr_ok2/return_call_addr` was never spliced
+warning: rule `Instr_ok2/throw_addr` was never spliced
 warning: rule `Instr_ok2/trap` was never spliced
 warning: rule `Instrs_ok/empty` was spliced more than once
 warning: rule `Instrs_ok/instr` was never spliced
@@ -1256,10 +1257,9 @@ warning: rule `Step/ctxt-instrs` was never spliced
 warning: rule `Step/ctxt-label` was never spliced
 warning: rule `Step/ctxt-handler` was never spliced
 warning: rule `Step/ctxt-frame` was never spliced
-warning: rule `Step/call_ref-null` was never spliced
-warning: rule `Step/call_ref-func` was never spliced
-warning: rule `Step/call_ref-hostfunc-res` was never spliced
-warning: rule `Step/call_ref-hostfunc-div` was never spliced
+warning: rule `Step/call_addr-func` was never spliced
+warning: rule `Step/call_addr-hostfunc-res` was never spliced
+warning: rule `Step/call_addr-hostfunc-div` was never spliced
 warning: rule `Step/throw` was never spliced
 warning: rule `Step/local.set` was never spliced
 warning: rule `Step/global.set` was never spliced
@@ -1370,21 +1370,25 @@ warning: rule `Step_read/br_on_cast-fail` was never spliced
 warning: rule `Step_read/br_on_cast_fail-succeed` was never spliced
 warning: rule `Step_read/br_on_cast_fail-fail` was never spliced
 warning: rule `Step_read/call` was never spliced
+warning: rule `Step_read/call_ref-null` was never spliced
+warning: rule `Step_read/call_ref-func` was never spliced
 warning: rule `Step_read/return_call` was never spliced
-warning: rule `Step_read/return_call_ref-label` was never spliced
-warning: rule `Step_read/return_call_ref-handler` was never spliced
-warning: rule `Step_read/return_call_ref-frame-null` was never spliced
-warning: rule `Step_read/return_call_ref-frame-addr` was never spliced
+warning: rule `Step_read/return_call_ref-null` was never spliced
+warning: rule `Step_read/return_call_ref-func` was never spliced
+warning: rule `Step_read/return_call_addr-label` was never spliced
+warning: rule `Step_read/return_call_addr-handler` was never spliced
+warning: rule `Step_read/return_call_addr-frame` was never spliced
 warning: rule `Step_read/throw_ref-null` was never spliced
-warning: rule `Step_read/throw_ref-instrs` was never spliced
-warning: rule `Step_read/throw_ref-label` was never spliced
-warning: rule `Step_read/throw_ref-frame` was never spliced
-warning: rule `Step_read/throw_ref-handler-empty` was never spliced
-warning: rule `Step_read/throw_ref-handler-catch` was never spliced
-warning: rule `Step_read/throw_ref-handler-catch_ref` was never spliced
-warning: rule `Step_read/throw_ref-handler-catch_all` was never spliced
-warning: rule `Step_read/throw_ref-handler-catch_all_ref` was never spliced
-warning: rule `Step_read/throw_ref-handler-next` was never spliced
+warning: rule `Step_read/throw_ref-addr` was never spliced
+warning: rule `Step_read/throw_addr-instrs` was never spliced
+warning: rule `Step_read/throw_addr-label` was never spliced
+warning: rule `Step_read/throw_addr-frame` was never spliced
+warning: rule `Step_read/throw_addr-handler-empty` was never spliced
+warning: rule `Step_read/throw_addr-handler-catch` was never spliced
+warning: rule `Step_read/throw_addr-handler-catch_ref` was never spliced
+warning: rule `Step_read/throw_addr-handler-catch_all` was never spliced
+warning: rule `Step_read/throw_addr-handler-catch_all_ref` was never spliced
+warning: rule `Step_read/throw_addr-handler-next` was never spliced
 warning: rule `Step_read/try_table` was never spliced
 warning: rule `Step_read/local.get` was never spliced
 warning: rule `Step_read/global.get` was never spliced
@@ -2205,13 +2209,14 @@ warning: rule prose `Instr_ok/vvternop` was never spliced
 warning: rule prose `Instr_ok/vvtestop` was never spliced
 warning: rule prose `Instr_ok/vvunop` was never spliced
 warning: rule prose `Instr_ok2` was never spliced
-warning: rule prose `Instr_ok2/call_ref` was never spliced
+warning: rule prose `Instr_ok2/call_addr` was never spliced
 warning: rule prose `Instr_ok2/frame` was never spliced
 warning: rule prose `Instr_ok2/handler` was never spliced
 warning: rule prose `Instr_ok2/label` was never spliced
 warning: rule prose `Instr_ok2/plain` was never spliced
 warning: rule prose `Instr_ok2/ref` was never spliced
-warning: rule prose `Instr_ok2/return_call_ref` was never spliced
+warning: rule prose `Instr_ok2/return_call_addr` was never spliced
+warning: rule prose `Instr_ok2/throw_addr` was never spliced
 warning: rule prose `Instr_ok2/trap` was never spliced
 warning: rule prose `Instrs_ok` was never spliced
 warning: rule prose `Instrs_ok/empty` was never spliced
@@ -2282,8 +2287,8 @@ warning: rule prose `Start_ok` was never spliced
 warning: rule prose `State_ok` was never spliced
 warning: rule prose `Step/array.new_fixed` was never spliced
 warning: rule prose `Step/array.set` was never spliced
-warning: rule prose `Step/call_ref` was never spliced
-warning: rule prose `Step/call_ref-hostfunc-*` was never spliced
+warning: rule prose `Step/call_addr` was never spliced
+warning: rule prose `Step/call_addr-hostfunc-*` was never spliced
 warning: rule prose `Step/data.drop` was never spliced
 warning: rule prose `Step/elem.drop` was never spliced
 warning: rule prose `Step/global.set` was never spliced
@@ -2364,6 +2369,7 @@ warning: rule prose `Step_read/block` was never spliced
 warning: rule prose `Step_read/br_on_cast` was never spliced
 warning: rule prose `Step_read/br_on_cast_fail` was never spliced
 warning: rule prose `Step_read/call` was never spliced
+warning: rule prose `Step_read/call_ref` was never spliced
 warning: rule prose `Step_read/global.get` was never spliced
 warning: rule prose `Step_read/load` was never spliced
 warning: rule prose `Step_read/load-num-*` was never spliced
@@ -2381,8 +2387,8 @@ warning: rule prose `Step_read/ref.func` was never spliced
 warning: rule prose `Step_read/ref.null` was never spliced
 warning: rule prose `Step_read/ref.test` was never spliced
 warning: rule prose `Step_read/return_call` was never spliced
+warning: rule prose `Step_read/return_call_addr` was never spliced
 warning: rule prose `Step_read/return_call_ref` was never spliced
-warning: rule prose `Step_read/return_call_ref-frame-*` was never spliced
 warning: rule prose `Step_read/struct.get` was never spliced
 warning: rule prose `Step_read/struct.new_default` was never spliced
 warning: rule prose `Step_read/table.copy` was never spliced
@@ -2392,9 +2398,9 @@ warning: rule prose `Step_read/table.get` was never spliced
 warning: rule prose `Step_read/table.init` was never spliced
 warning: rule prose `Step_read/table.init-oob-*` was never spliced
 warning: rule prose `Step_read/table.size` was never spliced
+warning: rule prose `Step_read/throw_addr` was never spliced
+warning: rule prose `Step_read/throw_addr-handler-*` was never spliced
 warning: rule prose `Step_read/throw_ref` was never spliced
-warning: rule prose `Step_read/throw_ref-handler-*` was never spliced
-warning: rule prose `Step_read/throw_ref-instrs-*` was never spliced
 warning: rule prose `Step_read/try_table` was never spliced
 warning: rule prose `Step_read/vload` was never spliced
 warning: rule prose `Step_read/vload-pack-*` was never spliced
