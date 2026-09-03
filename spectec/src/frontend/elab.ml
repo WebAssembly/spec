@@ -1034,7 +1034,11 @@ and elab_typ_notation is_unboxed env outer_dims tid at (t : typ) (prems : prem n
   let env1 = local_env env in
   let mixop, xts' = elab_typ_notation' env1 tid t in
   let xs', ts' = List.split xts' in
-  let dims1 = Dim.check outer_dims [] [] ts' [] [] [] in
+  let outer_dims' =
+    List.fold_left (fun dims x' -> Dim.Map.add x'.it (x'.at, []) dims)
+      outer_dims xs'
+  in
+  let dims1 = Dim.check outer_dims' [] [] ts' [] [] [] in
   let ts' = List.map (Dim.annot_typ dims1) ts' in
   let t' = Il.TupT (List.combine xs' ts') $ t.at in
   let det1 = Det.det_typ t' in
@@ -1042,7 +1046,7 @@ and elab_typ_notation is_unboxed env outer_dims tid at (t : typ) (prems : prem n
 
   let env2 = local_env env1 in
   let prems' = List.concat (map_filter_nl_list (elab_prem env2) prems) in
-  let dims2 = Dim.check (Dim.union outer_dims dims1) [] [] [] [] [] prems' in
+  let dims2 = Dim.check (Dim.union outer_dims' dims1) [] [] [] [] [] prems' in
   let prems' = List.map (Dim.annot_prem dims2) prems' in
   let det2 = Det.(det_list det_prem prems') in
   let qs = infer_quants env1 env2 dims2 det2 [] [] [] [] [] prems' at in
@@ -2024,6 +2028,10 @@ and cast_exp' ?(side = `Rhs) phrase env (e' : Il.exp) t1 t2 : Il.exp' attempt =
 (* Premises *)
 
 and elab_prem env (pr : prem) : Il.prem list =
+  Debug.(log_at "el.elab_prem" pr.at
+    (fun _ -> fmt "%s" (el_prem pr))
+    (fun prs' -> fmt "%s" (String.concat " " (List.map il_prem prs')))
+  ) @@ fun _ ->
   match pr.it with
   | VarPr (id, t) ->
     let t' = elab_typ env t in
