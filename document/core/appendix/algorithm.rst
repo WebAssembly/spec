@@ -188,11 +188,6 @@ However, these variables are not manipulated directly by the main checking funct
      error_if(not matches_val(actual, expect))
      return actual
 
-   func pop_num() : num_type | Bot =
-     let actual = pop_val()
-     error_if(not is_num(actual))
-     return actual
-
    func pop_ref() : ref_type =
      let actual = pop_val()
      error_if(not is_ref(actual))
