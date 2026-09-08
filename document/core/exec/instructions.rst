@@ -551,13 +551,25 @@ Memory Instructions
    However, it may be substantially slower on some hardware.
 
 
-.. _exec-load-val:
+.. _exec-load-num:
+
+$${rule-prose: Step_read/load-num-*}
+
+$${rule: {Step_read/load-num-*}}
+
+
 .. _exec-load-pack:
-.. _exec-vload-val:
 
-$${rule-prose: Step_read/load}
+$${rule-prose: Step_read/load-pack-*}
 
-$${rule: {Step_read/load-*}}
+$${rule: {Step_read/load-pack-*}}
+
+
+.. _exec-vload-num:
+
+$${rule-prose: Step_read/vload-num-*}
+
+$${rule: {Step_read/vload-num-*}}
 
 
 .. _exec-vload-pack:
@@ -588,13 +600,19 @@ $${rule-prose: Step_read/vload_lane}
 $${rule: {Step_read/vload_lane-*}}
 
 
-.. _exec-store-val:
+.. _exec-store-num:
 .. _exec-store-pack:
-.. _exec-vstore:
 
 $${rule-prose: Step/store}
 
-$${rule: {Step/store-* Step/vstore-*}}
+$${rule: {Step/store-*}}
+
+
+.. _exec-vstore:
+
+$${rule-prose: Step/vstore}
+
+$${rule: {Step/vstore-*}}
 
 
 .. _exec-vstore_lane:

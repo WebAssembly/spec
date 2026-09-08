@@ -569,14 +569,14 @@ $${rule-prose: Memarg_ok}
 $${rule: Memarg_ok}
 
 
-.. _valid-load-val:
+.. _valid-load-num:
 
 :math:`t\K{.}\LOAD~x~\memarg`
 .............................
 
-$${rule-prose: Instr_ok/load-val}
+$${rule-prose: Instr_ok/load-num}
 
-$${rule: Instr_ok/load-val}
+$${rule: Instr_ok/load-num}
 
 
 .. _valid-load-pack:
@@ -589,14 +589,14 @@ $${rule-prose: Instr_ok/load-pack}
 $${rule: Instr_ok/load-pack}
 
 
-.. _valid-store-val:
+.. _valid-store-num:
 
 :math:`t\K{.}\STORE~x~\memarg`
 ..............................
 
-$${rule-prose: Instr_ok/store-val}
+$${rule-prose: Instr_ok/store-num}
 
-$${rule: Instr_ok/store-val}
+$${rule: Instr_ok/store-num}
 
 
 .. _valid-store-pack:
@@ -609,14 +609,14 @@ $${rule-prose: Instr_ok/store-pack}
 $${rule: Instr_ok/store-pack}
 
 
-.. _valid-vload-val:
+.. _valid-vload-num:
 
 :math:`\K{v128.}\LOAD~x~\memarg`
-.....................................
+................................
 
-$${rule-prose: Instr_ok/vload-val}
+$${rule-prose: Instr_ok/vload-num}
 
-$${rule: Instr_ok/vload-val}
+$${rule: Instr_ok/vload-num}
 
 
 .. _valid-vload-pack:
