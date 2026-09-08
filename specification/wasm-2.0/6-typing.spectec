@@ -494,7 +494,12 @@ rule Instr_ok/store-pack:
   -- if C.MEMS[0] = mt
   -- if $(2^(memarg.ALIGN) <= M/8)
 
-rule Instr_ok/vload:
+rule Instr_ok/vload-val:
+  C |- VLOAD V128 memarg : I32 -> V128
+  -- if C.MEMS[0] = mt
+  -- if $(2^(memarg.ALIGN) <= $size(V128)/8)
+
+rule Instr_ok/vload-pack:
   C |- VLOAD V128 (SHAPE M X N _ sx) memarg : I32 -> V128
   -- if C.MEMS[0] = mt
   -- if $(2^(memarg.ALIGN) <= M/8 * N)

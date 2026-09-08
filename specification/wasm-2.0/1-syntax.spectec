@@ -504,13 +504,13 @@ syntax instr/elem hint(desc "element instruction") = ...
   | ...
  
 syntax instr/memory hint(desc "memory instruction") = ...
-  | LOAD numtype loadop_(numtype)? memarg      hint(show %.LOAD % %) hint(show %.LOAD# ##% %)
-  | STORE numtype sz? memarg                   hint(show %.STORE % %)   hint(show %.STORE#% %)
+  | LOAD numtype loadop_(numtype)? memarg      hint(show %.LOAD %) hint(show %.LOAD# ##% %)
+  | STORE numtype sz? memarg                   hint(show %.STORE %)   hint(show %.STORE#% %)
     -- (if numtype = Inn /\ sz < $sizenn(Inn))?
-  | VLOAD vectype vloadop? memarg              hint(show %.LOAD % %) hint(show %.LOAD#% % %)
-  | VLOAD_LANE vectype sz memarg laneidx       hint(show %.LOAD#%#_#LANE % % %)
-  | VSTORE vectype memarg                      hint(show %.STORE % %)
-  | VSTORE_LANE vectype sz memarg laneidx      hint(show %.STORE#%#_#LANE % % %)
+  | VLOAD vectype vloadop? memarg              hint(show %.LOAD %) hint(show %.LOAD#% %)
+  | VLOAD_LANE vectype sz memarg laneidx       hint(show %.LOAD#%#_#LANE % %)
+  | VSTORE vectype memarg                      hint(show %.STORE %)
+  | VSTORE_LANE vectype sz memarg laneidx      hint(show %.STORE#%#_#LANE % %)
   | MEMORY.SIZE
   | MEMORY.GROW
   | MEMORY.FILL

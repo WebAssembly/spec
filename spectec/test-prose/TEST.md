@@ -5319,30 +5319,35 @@ The instruction :math:`({{\mathit{nt}}{.}\mathsf{store}}{{{\mathit{sz}}^?}}~{\ma
 
 
 
-The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~{\mathit{vloadop}}~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
+The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{{\mathit{vloadop}}^?}}~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
    * Either:
 
-      * :math:`{\mathit{vloadop}}` is of the form :math:`({M}{\mathsf{x}}{N}{\mathsf{\_}}{{\mathit{sx}}})`.
+      * :math:`{{\mathit{vloadop}}^?}` is absent.
+
+      * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|\mathsf{v{\scriptstyle 128}}|} / 8`.
+
+   * Or:
+
+      * :math:`{{\mathit{vloadop}}^?}` is of the form :math:`({M}{\mathsf{x}}{N}{\mathsf{\_}}{{\mathit{sx}}})`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8 \cdot N`.
-
    * Or:
 
-      * :math:`{\mathit{vloadop}}` is of the form :math:`({n}{\mathsf{\_}}{\mathsf{splat}})`.
+      * :math:`{{\mathit{vloadop}}^?}` is of the form :math:`({n}{\mathsf{\_}}{\mathsf{splat}})`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
    * Or:
 
-      * :math:`{\mathit{vloadop}}` is of the form :math:`({n}{\mathsf{\_}}{\mathsf{zero}})`.
+      * :math:`{{\mathit{vloadop}}^?}` is of the form :math:`({n}{\mathsf{\_}}{\mathsf{zero}})`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
 
 
 
 
-The instruction :math:`(\mathsf{vload\_lane}~\mathsf{v{\scriptstyle 128}}~n~{\mathit{memarg}}~{\mathit{laneidx}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
+The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{n}{\mathsf{\_}}{\mathsf{lane}}~{\mathit{memarg}}~{\mathit{laneidx}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
    * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
@@ -5352,7 +5357,7 @@ The instruction :math:`(\mathsf{vload\_lane}~\mathsf{v{\scriptstyle 128}}~n~{\ma
 
 
 
-The instruction :math:`(\mathsf{vstore}~\mathsf{v{\scriptstyle 128}}~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\epsilon` if:
+The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\epsilon` if:
 
 
    * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|\mathsf{v{\scriptstyle 128}}|} / 8`.
@@ -5360,7 +5365,7 @@ The instruction :math:`(\mathsf{vstore}~\mathsf{v{\scriptstyle 128}}~{\mathit{me
 
 
 
-The instruction :math:`(\mathsf{vstore\_lane}~\mathsf{v{\scriptstyle 128}}~n~{\mathit{memarg}}~{\mathit{laneidx}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\epsilon` if:
+The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}}{n}{\mathsf{\_}}{\mathsf{lane}}~{\mathit{memarg}}~{\mathit{laneidx}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~\mathsf{v{\scriptstyle 128}}~\rightarrow~\epsilon` if:
 
 
    * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
@@ -5398,7 +5403,7 @@ The instruction :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}}}{\mathsf{\_}}{{\ma
 
 
 
-The instruction :math:`(\mathsf{load}~{\mathit{nt}}~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathit{nt}}` if:
+The instruction :math:`({\mathit{nt}}{.}\mathsf{load}~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~{\mathit{nt}}` if:
 
 
    * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
@@ -5414,7 +5419,7 @@ The instruction :math:`({{\mathsf{i}}{n}{.}\mathsf{load}}{{M}{\mathsf{\_}}{{\mat
 
 
 
-The instruction :math:`(\mathsf{store}~{\mathit{nt}}~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~{\mathit{nt}}~\rightarrow~\epsilon` if:
+The instruction :math:`({\mathit{nt}}{.}\mathsf{store}~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~{\mathit{nt}}~\rightarrow~\epsilon` if:
 
 
    * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|{\mathit{nt}}|} / 8`.
@@ -5430,7 +5435,15 @@ The instruction :math:`({{\mathsf{i}}{n}{.}\mathsf{store}}{M}~{\mathit{memarg}})
 
 
 
-The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~({M}{\mathsf{x}}{N}{\mathsf{\_}}{{\mathit{sx}}})~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
+The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
+
+
+   * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`{|\mathsf{v{\scriptstyle 128}}|} / 8`.
+
+
+
+
+The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{({M}{\mathsf{x}}{N}{\mathsf{\_}}{{\mathit{sx}}})}~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
    * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8 \cdot N`.
@@ -5438,7 +5451,7 @@ The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~({M}{\maths
 
 
 
-The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~({n}{\mathsf{\_}}{\mathsf{splat}})~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
+The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{({n}{\mathsf{\_}}{\mathsf{splat}})}~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
    * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
@@ -5446,7 +5459,7 @@ The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~({n}{\maths
 
 
 
-The instruction :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~({n}{\mathsf{\_}}{\mathsf{zero}})~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
+The instruction :math:`({\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{({n}{\mathsf{\_}}{\mathsf{zero}})}~{\mathit{memarg}})` is :ref:`valid <valid-val>` with the function type :math:`\mathsf{i{\scriptstyle 32}}~\rightarrow~\mathsf{v{\scriptstyle 128}}` if:
 
 
    * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`n / 8`.
@@ -5933,8 +5946,8 @@ The export :math:`(\mathsf{export}~{\mathit{name}}~{\mathit{externidx}})` is :re
    a. Trap.
 
 
-:math:`\mathsf{load}~{\mathit{nt}}~{\mathit{ao}}`
-.................................................
+:math:`{\mathit{nt}}{.}\mathsf{load}~{\mathit{ao}}`
+...................................................
 
 
 1. Let :math:`z` be the current state.
@@ -5971,8 +5984,8 @@ The export :math:`(\mathsf{export}~{\mathit{name}}~{\mathit{externidx}})` is :re
 #. Push the value :math:`({\mathsf{i}}{n}{.}\mathsf{const}~{{{{\mathrm{extend}}}_{n, {|{\mathsf{i}}{n}|}}^{{\mathit{sx}}}}}{(c)})` to the stack.
 
 
-:math:`\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~({M}{\mathsf{x}}{N}{\mathsf{\_}}{{\mathit{sx}}})~{\mathit{ao}}`
-...................................................................................................................
+:math:`{\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{({M}{\mathsf{x}}{N}{\mathsf{\_}}{{\mathit{sx}}})}~{\mathit{ao}}`
+......................................................................................................................
 
 
 1. Let :math:`z` be the current state.
@@ -5994,8 +6007,8 @@ The export :math:`(\mathsf{export}~{\mathit{name}}~{\mathit{externidx}})` is :re
 #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
 
-:math:`\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~({N}{\mathsf{\_}}{\mathsf{splat}})~{\mathit{ao}}`
-.....................................................................................................
+:math:`{\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{({N}{\mathsf{\_}}{\mathsf{splat}})}~{\mathit{ao}}`
+........................................................................................................
 
 
 1. Let :math:`z` be the current state.
@@ -6019,8 +6032,8 @@ The export :math:`(\mathsf{export}~{\mathit{name}}~{\mathit{externidx}})` is :re
 #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
 
-:math:`\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~({N}{\mathsf{\_}}{\mathsf{zero}})~{\mathit{ao}}`
-....................................................................................................
+:math:`{\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{({N}{\mathsf{\_}}{\mathsf{zero}})}~{\mathit{ao}}`
+.......................................................................................................
 
 
 1. Let :math:`z` be the current state.
@@ -6094,8 +6107,8 @@ The export :math:`(\mathsf{export}~{\mathit{name}}~{\mathit{externidx}})` is :re
    a. Trap.
 
 
-:math:`\mathsf{store}~{\mathit{nt}}~{\mathit{ao}}`
-..................................................
+:math:`{\mathit{nt}}{.}\mathsf{store}~{\mathit{ao}}`
+....................................................
 
 
 1. Let :math:`z` be the current state.
@@ -7221,8 +7234,8 @@ The export :math:`(\mathsf{export}~{\mathit{name}}~{\mathit{externidx}})` is :re
    #. Push the value :math:`({\mathit{nt}}{.}\mathsf{const}~{{{{\mathrm{extend}}}_{n, {|{\mathit{nt}}|}}^{{\mathit{sx}}}}}{(c)})` to the stack.
 
 
-:math:`\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~{{\mathit{vloadop}}^?}~{\mathit{ao}}`
-.........................................................................................
+:math:`{\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{{\mathit{vloadop}}^?}}~{\mathit{ao}}`
+............................................................................................
 
 
 1. Let :math:`z` be the current state.
@@ -7294,8 +7307,8 @@ The export :math:`(\mathsf{export}~{\mathit{name}}~{\mathit{externidx}})` is :re
       #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
 
-:math:`\mathsf{vload\_lane}~\mathsf{v{\scriptstyle 128}}~N~{\mathit{ao}}~j`
-...........................................................................
+:math:`{\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{N}{\mathsf{\_}}{\mathsf{lane}}~{\mathit{ao}}~j`
+.....................................................................................................
 
 
 1. Let :math:`z` be the current state.
@@ -7615,8 +7628,8 @@ The export :math:`(\mathsf{export}~{\mathit{name}}~{\mathit{externidx}})` is :re
    #. Perform :math:`z{}[{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : n / 8] = {b^\ast}]`.
 
 
-:math:`\mathsf{vstore}~\mathsf{v{\scriptstyle 128}}~{\mathit{ao}}`
-..................................................................
+:math:`\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}~{\mathit{ao}}`
+...................................................................
 
 
 1. Let :math:`z` be the current state.
@@ -7638,8 +7651,8 @@ The export :math:`(\mathsf{export}~{\mathit{name}}~{\mathit{externidx}})` is :re
 #. Perform :math:`z{}[{.}\mathsf{mems}{}[0]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|\mathsf{v{\scriptstyle 128}}|} / 8] = {b^\ast}]`.
 
 
-:math:`\mathsf{vstore\_lane}~\mathsf{v{\scriptstyle 128}}~N~{\mathit{ao}}~j`
-............................................................................
+:math:`{\mathsf{v{\scriptstyle 128}}{.}\mathsf{store}}{N}{\mathsf{\_}}{\mathsf{lane}}~{\mathit{ao}}~j`
+......................................................................................................
 
 
 1. Let :math:`z` be the current state.
@@ -11123,15 +11136,18 @@ Instr_ok/store
     - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
 
 Instr_ok/vload
-- the instruction (VLOAD V128 ?(vloadop) memarg) is valid with the function type [I32] -> [V128] if:
+- the instruction (VLOAD V128 vloadop? memarg) is valid with the function type [I32] -> [V128] if:
   - Either:
-    - vloadop is (SHAPE M X N _ sx).
+    - vloadop? is ?().
+    - (2 ^ memarg.ALIGN) is less than or equal to ($size(V128) / 8).
+  - Or:
+    - vloadop? is ?((SHAPE M X N _ sx)).
     - (2 ^ memarg.ALIGN) is less than or equal to ((M / 8) * N).
   - Or:
-    - vloadop is (SPLAT n).
+    - vloadop? is ?((SPLAT n)).
     - (2 ^ memarg.ALIGN) is less than or equal to (n / 8).
   - Or:
-    - vloadop is (ZERO n).
+    - vloadop? is ?((ZERO n)).
     - (2 ^ memarg.ALIGN) is less than or equal to (n / 8).
 
 Instr_ok/vload_lane
@@ -11179,7 +11195,11 @@ Instr_ok/store-pack
 - the instruction (STORE Inn ?(M) memarg) is valid with the function type [I32, Inn] -> [] if:
   - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
 
-Instr_ok/vload
+Instr_ok/vload-val
+- the instruction (VLOAD V128 ?() memarg) is valid with the function type [I32] -> [V128] if:
+  - (2 ^ memarg.ALIGN) is less than or equal to ($size(V128) / 8).
+
+Instr_ok/vload-pack
 - the instruction (VLOAD V128 ?((SHAPE M X N _ sx)) memarg) is valid with the function type [I32] -> [V128] if:
   - (2 ^ memarg.ALIGN) is less than or equal to ((M / 8) * N).
 
