@@ -451,11 +451,11 @@ rule Step_read/load-pack-val:
   ----
   -- if $ibytes_(n, c) = $mem(z, x).BYTES[i + ao.OFFSET : n/8]
 
-rule Step_read/vload-oob:
+rule Step_read/vload-num-oob:
   z; (CONST at i) (VLOAD V128 x ao)  ~>  TRAP
   -- if $(i + ao.OFFSET + $vsize(V128)/8 > |$mem(z, x).BYTES|)
 
-rule Step_read/vload-val:
+rule Step_read/vload-num-val:
   z; (CONST at i) (VLOAD V128 x ao)  ~>  (VCONST V128 c)
   -- if $vbytes_(V128, c) = $mem(z, x).BYTES[i + ao.OFFSET : $vsize(V128)/8]
 

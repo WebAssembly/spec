@@ -1145,11 +1145,11 @@ warning: rule `Instr_ok/memory.fill` was never spliced
 warning: rule `Instr_ok/memory.copy` was never spliced
 warning: rule `Instr_ok/memory.init` was never spliced
 warning: rule `Instr_ok/data.drop` was never spliced
-warning: rule `Instr_ok/load-val` was never spliced
+warning: rule `Instr_ok/load-num` was never spliced
 warning: rule `Instr_ok/load-pack` was never spliced
-warning: rule `Instr_ok/store-val` was never spliced
+warning: rule `Instr_ok/store-num` was never spliced
 warning: rule `Instr_ok/store-pack` was never spliced
-warning: rule `Instr_ok/vload-val` was never spliced
+warning: rule `Instr_ok/vload-num` was never spliced
 warning: rule `Instr_ok/vload-pack` was never spliced
 warning: rule `Instr_ok/vload-splat` was never spliced
 warning: rule `Instr_ok/vload-zero` was never spliced
@@ -1405,8 +1405,8 @@ warning: rule `Step_read/load-num-oob` was never spliced
 warning: rule `Step_read/load-num-val` was never spliced
 warning: rule `Step_read/load-pack-oob` was never spliced
 warning: rule `Step_read/load-pack-val` was never spliced
-warning: rule `Step_read/vload-oob` was never spliced
-warning: rule `Step_read/vload-val` was never spliced
+warning: rule `Step_read/vload-num-oob` was never spliced
+warning: rule `Step_read/vload-num-val` was never spliced
 warning: rule `Step_read/vload-pack-oob` was never spliced
 warning: rule `Step_read/vload-pack-val` was never spliced
 warning: rule `Step_read/vload-splat-oob` was never spliced
@@ -2126,8 +2126,8 @@ warning: rule prose `Instr_ok/global.set` was never spliced
 warning: rule prose `Instr_ok/i31.get` was never spliced
 warning: rule prose `Instr_ok/if` was never spliced
 warning: rule prose `Instr_ok/load` was never spliced
+warning: rule prose `Instr_ok/load-num` was never spliced
 warning: rule prose `Instr_ok/load-pack` was never spliced
-warning: rule prose `Instr_ok/load-val` was never spliced
 warning: rule prose `Instr_ok/local.get` was never spliced
 warning: rule prose `Instr_ok/local.set` was never spliced
 warning: rule prose `Instr_ok/local.tee` was never spliced
@@ -2155,8 +2155,8 @@ warning: rule prose `Instr_ok/select` was never spliced
 warning: rule prose `Instr_ok/select-expl` was never spliced
 warning: rule prose `Instr_ok/select-impl` was never spliced
 warning: rule prose `Instr_ok/store` was never spliced
+warning: rule prose `Instr_ok/store-num` was never spliced
 warning: rule prose `Instr_ok/store-pack` was never spliced
-warning: rule prose `Instr_ok/store-val` was never spliced
 warning: rule prose `Instr_ok/struct.get` was never spliced
 warning: rule prose `Instr_ok/struct.new` was never spliced
 warning: rule prose `Instr_ok/struct.new_default` was never spliced
@@ -2183,9 +2183,9 @@ warning: rule prose `Instr_ok/vextract_lane` was never spliced
 warning: rule prose `Instr_ok/vextternop` was never spliced
 warning: rule prose `Instr_ok/vextunop` was never spliced
 warning: rule prose `Instr_ok/vload` was never spliced
+warning: rule prose `Instr_ok/vload-num` was never spliced
 warning: rule prose `Instr_ok/vload-pack` was never spliced
 warning: rule prose `Instr_ok/vload-splat` was never spliced
-warning: rule prose `Instr_ok/vload-val` was never spliced
 warning: rule prose `Instr_ok/vload-zero` was never spliced
 warning: rule prose `Instr_ok/vload_lane` was never spliced
 warning: rule prose `Instr_ok/vnarrow` was never spliced
@@ -2397,6 +2397,7 @@ warning: rule prose `Step_read/throw_ref-handler-*` was never spliced
 warning: rule prose `Step_read/throw_ref-instrs-*` was never spliced
 warning: rule prose `Step_read/try_table` was never spliced
 warning: rule prose `Step_read/vload` was never spliced
+warning: rule prose `Step_read/vload-num-*` was never spliced
 warning: rule prose `Step_read/vload-pack-*` was never spliced
 warning: rule prose `Step_read/vload-splat-*` was never spliced
 warning: rule prose `Step_read/vload-zero-*` was never spliced

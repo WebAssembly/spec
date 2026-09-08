@@ -18782,6 +18782,25 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Push the value :math:`({\mathsf{i}}{N}{.}\mathsf{const}~{{{{\mathrm{extend}}}_{n, {|{\mathsf{i}}{N}|}}^{{\mathit{sx}}}}}{(c)})` to the stack.
 
 
+:math:`\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~x~{\mathit{ao}}`
+....................................................................
+
+
+1. Let :math:`z` be the current state.
+
+#. Assert: Due to validation, a number value is on the top of the stack.
+
+#. Pop the value :math:`({\mathit{at}}{.}\mathsf{const}~i)` from the stack.
+
+#. If :math:`i + {\mathit{ao}}{.}\mathsf{offset} + {|\mathsf{v{\scriptstyle 128}}|} / 8 > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|}`, then:
+
+   a. Trap.
+
+#. Let :math:`c` be the result for which :math:`{{\mathrm{bytes}}}_{\mathsf{v{\scriptstyle 128}}}(c)` :math:`=` :math:`z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|\mathsf{v{\scriptstyle 128}}|} / 8]`.
+
+#. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+
+
 :math:`{\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}}{{K}{\mathsf{x}}{M}{\mathsf{\_}}{{\mathit{sx}}}}~x~{\mathit{ao}}`
 ......................................................................................................................
 
@@ -29110,7 +29129,7 @@ Instr_ok/select-impl
   - t matches the value type t'.
   - t' is numtype or t' is vectype.
 
-Instr_ok/load-val
+Instr_ok/load-num
 - the instruction (LOAD nt ?() x memarg) is valid with the instruction type [at] -> [nt] if:
   - the memory C.MEMS[x] exists.
   - C.MEMS[x] is at lim PAGE.
@@ -29122,7 +29141,7 @@ Instr_ok/load-pack
   - C.MEMS[x] is at lim PAGE.
   - memarg is valid for at and K.
 
-Instr_ok/store-val
+Instr_ok/store-num
 - the instruction (STORE nt ?() x memarg) is valid with the instruction type [at, nt] -> [] if:
   - the memory C.MEMS[x] exists.
   - C.MEMS[x] is at lim PAGE.
@@ -29134,7 +29153,7 @@ Instr_ok/store-pack
   - C.MEMS[x] is at lim PAGE.
   - memarg is valid for at and K.
 
-Instr_ok/vload-val
+Instr_ok/vload-num
 - the instruction (VLOAD V128 ?() x memarg) is valid with the instruction type [at] -> [V128] if:
   - the memory C.MEMS[x] exists.
   - C.MEMS[x] is at lim PAGE.
@@ -30313,6 +30332,15 @@ Step_read/load-pack-* Inn ?(n _ sx) x ao
   a. Trap.
 5. Let c be $ibytes__1^-1(n, $mem(z, x).BYTES[(i + ao.OFFSET) : (n / 8)]).
 6. Push the value (Inn.CONST $extend__(n, $size(Inn), sx, c)) to the stack.
+
+Step_read/vload-num-* V128 ?() x ao
+1. Let z be the current state.
+2. Assert: Due to validation, a value of value type num is on the top of the stack.
+3. Pop the value (at.CONST i) from the stack.
+4. If (((i + ao.OFFSET) + ($vsize(V128) / 8)) > |$mem(z, x).BYTES|), then:
+  a. Trap.
+5. Let c be $vbytes__1^-1(V128, $mem(z, x).BYTES[(i + ao.OFFSET) : ($vsize(V128) / 8)]).
+6. Push the value (V128.CONST c) to the stack.
 
 Step_read/vload-pack-* V128 ?((SHAPE K X M _ sx)) x ao
 1. Let z be the current state.

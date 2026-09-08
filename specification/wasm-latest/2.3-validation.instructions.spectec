@@ -448,7 +448,7 @@ rule Instr_ok/load:
   -- if K? = eps \/ nt = Inn
 ;)
 
-rule Instr_ok/load-val:
+rule Instr_ok/load-num:
   C |- LOAD nt x memarg : at -> nt
   -- if C.MEMS[x] = at lim PAGE
   -- Memarg_ok: |- memarg : at -> $size(nt)
@@ -467,7 +467,7 @@ rule Instr_ok/store:
   -- if K? = eps \/ nt = Inn
 ;)
 
-rule Instr_ok/store-val:
+rule Instr_ok/store-num:
   C |- STORE nt x memarg : at nt -> eps
   -- if C.MEMS[x] = at lim PAGE
   -- Memarg_ok: |- memarg : at -> $size(nt)
@@ -477,7 +477,7 @@ rule Instr_ok/store-pack:
   -- if C.MEMS[x] = at lim PAGE
   -- Memarg_ok: |- memarg : at -> K
 
-rule Instr_ok/vload-val:
+rule Instr_ok/vload-num:
   C |- VLOAD V128 x memarg : at -> V128
   -- if C.MEMS[x] = at lim PAGE
   -- Memarg_ok: |- memarg : at -> $vsize(V128)

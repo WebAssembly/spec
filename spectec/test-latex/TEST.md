@@ -6891,7 +6891,7 @@ C{.}\mathsf{mems}{}[x] = {\mathit{at}}~{\mathit{lim}}~\mathsf{page}
 {\vdash}\, {\mathit{memarg}} : {\mathit{at}} \rightarrow {|{\mathit{nt}}|}
 }{
 C \vdash {\mathit{nt}}{.}\mathsf{load}~x~{\mathit{memarg}} : {\mathit{at}} \rightarrow {\mathit{nt}}
-} \, {[\textsc{\scriptsize T{-}instr{-}load{-}val}]}
+} \, {[\textsc{\scriptsize T{-}instr{-}load{-}num}]}
 \qquad
 \end{array}
 $$
@@ -6917,7 +6917,7 @@ C{.}\mathsf{mems}{}[x] = {\mathit{at}}~{\mathit{lim}}~\mathsf{page}
 {\vdash}\, {\mathit{memarg}} : {\mathit{at}} \rightarrow {|{\mathit{nt}}|}
 }{
 C \vdash {\mathit{nt}}{.}\mathsf{store}~x~{\mathit{memarg}} : {\mathit{at}}~{\mathit{nt}} \rightarrow \epsilon
-} \, {[\textsc{\scriptsize T{-}instr{-}store{-}val}]}
+} \, {[\textsc{\scriptsize T{-}instr{-}store{-}num}]}
 \qquad
 \end{array}
 $$
@@ -6943,7 +6943,7 @@ C{.}\mathsf{mems}{}[x] = {\mathit{at}}~{\mathit{lim}}~\mathsf{page}
 {\vdash}\, {\mathit{memarg}} : {\mathit{at}} \rightarrow {|\mathsf{v{\scriptstyle 128}}|}
 }{
 C \vdash \mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~x~{\mathit{memarg}} : {\mathit{at}} \rightarrow \mathsf{v{\scriptstyle 128}}
-} \, {[\textsc{\scriptsize T{-}instr{-}vload{-}val}]}
+} \, {[\textsc{\scriptsize T{-}instr{-}vload{-}num}]}
 \qquad
 \end{array}
 $$
@@ -10241,8 +10241,8 @@ $$
 &&& \multicolumn{2}{@{}l@{}}{\quad
 \quad \mbox{if}~ {{\mathrm{bytes}}}_{{\mathsf{i}}{n}}(c) = z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : n / 8]
 } \\
-{[\textsc{\scriptsize E{-}vload{-}oob}]} \quad & z ; ({\mathit{at}}{.}\mathsf{const}~i)~(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~x~{\mathit{ao}}) & \hookrightarrow & \mathsf{trap} & \quad \mbox{if}~ i + {\mathit{ao}}{.}\mathsf{offset} + {|\mathsf{v{\scriptstyle 128}}|} / 8 > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|} \\
-{[\textsc{\scriptsize E{-}vload{-}val}]} \quad & z ; ({\mathit{at}}{.}\mathsf{const}~i)~(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~x~{\mathit{ao}}) & \hookrightarrow & (\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c) & \quad \mbox{if}~ {{\mathrm{bytes}}}_{\mathsf{v{\scriptstyle 128}}}(c) = z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|\mathsf{v{\scriptstyle 128}}|} / 8] \\
+{[\textsc{\scriptsize E{-}vload{-}num{-}oob}]} \quad & z ; ({\mathit{at}}{.}\mathsf{const}~i)~(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~x~{\mathit{ao}}) & \hookrightarrow & \mathsf{trap} & \quad \mbox{if}~ i + {\mathit{ao}}{.}\mathsf{offset} + {|\mathsf{v{\scriptstyle 128}}|} / 8 > {|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|} \\
+{[\textsc{\scriptsize E{-}vload{-}num{-}val}]} \quad & z ; ({\mathit{at}}{.}\mathsf{const}~i)~(\mathsf{v{\scriptstyle 128}}{.}\mathsf{load}~x~{\mathit{ao}}) & \hookrightarrow & (\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c) & \quad \mbox{if}~ {{\mathrm{bytes}}}_{\mathsf{v{\scriptstyle 128}}}(c) = z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}{}[i + {\mathit{ao}}{.}\mathsf{offset} : {|\mathsf{v{\scriptstyle 128}}|} / 8] \\
 \end{array}
 $$
 
