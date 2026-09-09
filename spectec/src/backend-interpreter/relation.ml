@@ -44,7 +44,9 @@ let ref_ok =
   | vs -> Numerics.error_values "$Ref_ok" vs
 
 let module_ok v =
+(* Use Wasm-3 validator for Wasm-1+2 as well. Does not work for negative tests!
   if !Construct.version <> 3 then failwith "This hardcoded function ($Module_ok) should be only called with test version 3.0";
+*)
   match v with
   | [ m ] ->
     (try
