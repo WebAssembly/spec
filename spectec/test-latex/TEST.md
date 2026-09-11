@@ -14123,8 +14123,8 @@ C = \{ \begin{array}[t]{@{}l@{}}
   \mathsf{datas}~{{\mathit{ok}}^\ast},\; \\
   \mathsf{elems}~{{\mathit{et}}^\ast},\; \\
   \mathsf{locals}~{{{\mathit{lt}}}^\ast},\; \\
-  \mathsf{labels}~{{\mathit{resulttype}}^\ast},\; \\
-  \mathsf{return}~{{\mathit{resulttype}'}^?},\; \\
+  \mathsf{labels}~{({t^\ast})^\ast},\; \\
+  \mathsf{return}~{({{t'}^\ast})^?},\; \\
   \mathsf{refs}~{x^\ast} \}\end{array}
  \qquad
 C_0 = \{ \mathsf{types}~{{\mathit{dt}}^{n}} \}
@@ -14149,9 +14149,9 @@ C_0 = \{ \mathsf{types}~{{\mathit{dt}}^{n}} \}
  \qquad
 (C_0 \vdash {{\mathit{lt}}} : \mathsf{ok})^\ast
  \qquad
-(C_0 \vdash {\mathit{resulttype}} : \mathsf{ok})^\ast
+(C_0 \vdash {t^\ast} : \mathsf{ok})^\ast
  \qquad
-(C_0 \vdash {\mathit{resulttype}'} : \mathsf{ok})^?
+(C_0 \vdash {{t'}^\ast} : \mathsf{ok})^?
  \qquad
 (x < {|{{\mathit{dt}}_{\mathsf{f}}^\ast}|})^\ast
 }{
