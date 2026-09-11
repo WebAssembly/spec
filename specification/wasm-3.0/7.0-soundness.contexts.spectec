@@ -15,8 +15,8 @@ rule Context_ok:
       DATAS ok*,
       ELEMS et*,
       LOCALS lct*,
-      LABELS rt*,
-      RETURN rt'?,
+      LABELS (t*)*,
+      RETURN (t'*)?,
       REFS x*
     }
   -- if C_0 = {TYPES dt^n}
@@ -30,6 +30,6 @@ rule Context_ok:
   -- (Expand: dt_F ~~ FUNC t_1 -> t_2)*
   -- (Reftype_ok: C_0 |- et : OK)*
   -- (Localtype_ok: C_0 |- lct : OK)*
-  -- (Resulttype_ok: C_0 |- rt : OK)*
-  -- (Resulttype_ok: C_0 |- rt' : OK)?
+  -- (Resulttype_ok: C_0 |- t*: OK)*
+  -- (Resulttype_ok: C_0 |- t'* : OK)?
   -- (if x < |dt_F*|)*
