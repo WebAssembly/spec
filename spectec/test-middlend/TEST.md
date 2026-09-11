@@ -7696,9 +7696,9 @@ def $ordered(decl*) : bool
 ;; ../../../../specification/wasm-latest/7.0-soundness.contexts.spectec
 relation Context_ok: `|-%:OK`(context,)
   ;; ../../../../specification/wasm-latest/7.0-soundness.contexts.spectec
-  rule _{C : context, n : n, `dt*` : deftype*, `jt*` : tagtype*, `gt*` : globaltype*, `mt*` : memtype*, `tt*` : tabletype*, `dt_F*` : deftype*, `ok*` : datatype*, `et*` : elemtype*, `lct*` : localtype*, `rt*` : reftype*, `rt'?` : reftype?, `x*` : idx*, m : m, `st*` : subtype*, C_0 : context, `t_1*` : valtype*, `t_2*` : valtype*}:
+  rule _{C : context, n : n, `dt*` : deftype*, `jt*` : tagtype*, `gt*` : globaltype*, `mt*` : memtype*, `tt*` : tabletype*, `dt_F*` : deftype*, `ok*` : datatype*, `et*` : elemtype*, `lct*` : localtype*, `resulttype*` : resulttype*, `resulttype'?` : resulttype?, `x*` : idx*, m : m, `st*` : subtype*, C_0 : context, `t_1*` : valtype*, `t_2*` : valtype*}:
     `|-%:OK`(C,)
-    -- if (C = {TYPES dt^n{dt <- `dt*`}, TAGS jt*{jt <- `jt*`}, GLOBALS gt*{gt <- `gt*`}, MEMS mt*{mt <- `mt*`}, TABLES tt*{tt <- `tt*`}, FUNCS dt_F*{dt_F <- `dt_F*`}, DATAS ok*{ok <- `ok*`}, ELEMS et*{et <- `et*`}, LOCALS lct*{lct <- `lct*`}, LABELS [`%`_resulttype((rt : reftype <: valtype)*{rt <- `rt*`},)], RETURN ?(`%`_resulttype(lift((rt' : reftype <: valtype)?{rt' <- `rt'?`}),)), REFS x*{x <- `x*`}, RECS st^m{st <- `st*`}})
+    -- if (C = {TYPES dt^n{dt <- `dt*`}, TAGS jt*{jt <- `jt*`}, GLOBALS gt*{gt <- `gt*`}, MEMS mt*{mt <- `mt*`}, TABLES tt*{tt <- `tt*`}, FUNCS dt_F*{dt_F <- `dt_F*`}, DATAS ok*{ok <- `ok*`}, ELEMS et*{et <- `et*`}, LOCALS lct*{lct <- `lct*`}, LABELS resulttype*{resulttype <- `resulttype*`}, RETURN resulttype'?{resulttype' <- `resulttype'?`}, REFS x*{x <- `x*`}, RECS st^m{st <- `st*`}})
     -- if (C_0 = {TYPES dt^n{dt <- `dt*`}, TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], RETURN ?(), REFS [], RECS []})
     -- (Deftype_ok: `%|-%:OK`({TYPES dt^n{dt <- `dt*`}[0 : i], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], RETURN ?(), REFS [], RECS []}, dt))^(i<n){dt <- `dt*`}
     -- (Subtype_ok2: `%|-%:%`({TYPES dt^n{dt <- `dt*`}, TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], RETURN ?(), REFS [], RECS st^m{st <- `st*`}}, st, OK_oktypenat(i)))^(i<m){st <- `st*`}
@@ -7710,8 +7710,8 @@ relation Context_ok: `|-%:OK`(context,)
     -- (Expand: `%~~%`(dt_F, `FUNC%->%`_comptype(`%`_resulttype([t_1],), `%`_resulttype([t_2],))))*{dt_F <- `dt_F*`, t_1 <- `t_1*`, t_2 <- `t_2*`}
     -- (Reftype_ok: `%|-%:OK`(C_0, et))*{et <- `et*`}
     -- (Localtype_ok: `%|-%:OK`(C_0, lct))*{lct <- `lct*`}
-    -- (Resulttype_ok: `%|-%:OK`(C_0, `%`_resulttype([(rt : reftype <: valtype)],)))*{rt <- `rt*`}
-    -- (Resulttype_ok: `%|-%:OK`(C_0, `%`_resulttype([(rt' : reftype <: valtype)],)))?{rt' <- `rt'?`}
+    -- (Resulttype_ok: `%|-%:OK`(C_0, resulttype))*{resulttype <- `resulttype*`}
+    -- (Resulttype_ok: `%|-%:OK`(C_0, resulttype'))?{resulttype' <- `resulttype'?`}
     -- (if (x!`%`_idx.0 < |dt_F*{dt_F <- `dt_F*`}|))*{x <- `x*`}
 
 ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
@@ -19607,9 +19607,9 @@ def $ordered(decl*) : bool
 ;; ../../../../specification/wasm-latest/7.0-soundness.contexts.spectec
 relation Context_ok: `|-%:OK`(context,)
   ;; ../../../../specification/wasm-latest/7.0-soundness.contexts.spectec
-  rule _{C : context, n : n, `dt*` : deftype*, `jt*` : tagtype*, `gt*` : globaltype*, `mt*` : memtype*, `tt*` : tabletype*, `dt_F*` : deftype*, `ok*` : datatype*, `et*` : elemtype*, `lct*` : localtype*, `rt*` : reftype*, `rt'?` : reftype?, `x*` : idx*, m : m, `st*` : subtype*, C_0 : context, `t_1*` : valtype*, `t_2*` : valtype*}:
+  rule _{C : context, n : n, `dt*` : deftype*, `jt*` : tagtype*, `gt*` : globaltype*, `mt*` : memtype*, `tt*` : tabletype*, `dt_F*` : deftype*, `ok*` : datatype*, `et*` : elemtype*, `lct*` : localtype*, `resulttype*` : resulttype*, `resulttype'?` : resulttype?, `x*` : idx*, m : m, `st*` : subtype*, C_0 : context, `t_1*` : valtype*, `t_2*` : valtype*}:
     `|-%:OK`(C,)
-    -- if (C = {TYPES dt^n{dt <- `dt*`}, TAGS jt*{jt <- `jt*`}, GLOBALS gt*{gt <- `gt*`}, MEMS mt*{mt <- `mt*`}, TABLES tt*{tt <- `tt*`}, FUNCS dt_F*{dt_F <- `dt_F*`}, DATAS ok*{ok <- `ok*`}, ELEMS et*{et <- `et*`}, LOCALS lct*{lct <- `lct*`}, LABELS [`%`_resulttype((rt : reftype <: valtype)*{rt <- `rt*`},)], RETURN ?(`%`_resulttype(lift((rt' : reftype <: valtype)?{rt' <- `rt'?`}),)), REFS x*{x <- `x*`}, RECS st^m{st <- `st*`}})
+    -- if (C = {TYPES dt^n{dt <- `dt*`}, TAGS jt*{jt <- `jt*`}, GLOBALS gt*{gt <- `gt*`}, MEMS mt*{mt <- `mt*`}, TABLES tt*{tt <- `tt*`}, FUNCS dt_F*{dt_F <- `dt_F*`}, DATAS ok*{ok <- `ok*`}, ELEMS et*{et <- `et*`}, LOCALS lct*{lct <- `lct*`}, LABELS resulttype*{resulttype <- `resulttype*`}, RETURN resulttype'?{resulttype' <- `resulttype'?`}, REFS x*{x <- `x*`}, RECS st^m{st <- `st*`}})
     -- if (C_0 = {TYPES dt^n{dt <- `dt*`}, TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], RETURN ?(), REFS [], RECS []})
     -- (Deftype_ok: `%|-%:OK`({TYPES dt^n{dt <- `dt*`}[0 : i], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], RETURN ?(), REFS [], RECS []}, dt))^(i<n){dt <- `dt*`}
     -- (Subtype_ok2: `%|-%:%`({TYPES dt^n{dt <- `dt*`}, TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], RETURN ?(), REFS [], RECS st^m{st <- `st*`}}, st, OK_oktypenat(i)))^(i<m){st <- `st*`}
@@ -19621,8 +19621,8 @@ relation Context_ok: `|-%:OK`(context,)
     -- (Expand: `%~~%`(dt_F, `FUNC%->%`_comptype(`%`_resulttype([t_1],), `%`_resulttype([t_2],))))*{dt_F <- `dt_F*`, t_1 <- `t_1*`, t_2 <- `t_2*`}
     -- (Reftype_ok: `%|-%:OK`(C_0, et))*{et <- `et*`}
     -- (Localtype_ok: `%|-%:OK`(C_0, lct))*{lct <- `lct*`}
-    -- (Resulttype_ok: `%|-%:OK`(C_0, `%`_resulttype([(rt : reftype <: valtype)],)))*{rt <- `rt*`}
-    -- (Resulttype_ok: `%|-%:OK`(C_0, `%`_resulttype([(rt' : reftype <: valtype)],)))?{rt' <- `rt'?`}
+    -- (Resulttype_ok: `%|-%:OK`(C_0, resulttype))*{resulttype <- `resulttype*`}
+    -- (Resulttype_ok: `%|-%:OK`(C_0, resulttype'))?{resulttype' <- `resulttype'?`}
     -- (if (x!`%`_idx.0 < |dt_F*{dt_F <- `dt_F*`}|))*{x <- `x*`}
 
 ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec
@@ -31704,9 +31704,9 @@ def $ordered(decl*) : bool
 ;; ../../../../specification/wasm-latest/7.0-soundness.contexts.spectec
 relation Context_ok: `|-%:OK`(context,)
   ;; ../../../../specification/wasm-latest/7.0-soundness.contexts.spectec
-  rule _{C : context, n : n, `dt*` : deftype*, `jt*` : tagtype*, `gt*` : globaltype*, `mt*` : memtype*, `tt*` : tabletype*, `dt_F*` : deftype*, `ok*` : datatype*, `et*` : elemtype*, `lct*` : localtype*, `rt*` : reftype*, `rt'?` : reftype?, `x*` : idx*, m : m, `st*` : subtype*, C_0 : context, `t_1*` : valtype*, `t_2*` : valtype*}:
+  rule _{C : context, n : n, `dt*` : deftype*, `jt*` : tagtype*, `gt*` : globaltype*, `mt*` : memtype*, `tt*` : tabletype*, `dt_F*` : deftype*, `ok*` : datatype*, `et*` : elemtype*, `lct*` : localtype*, `resulttype*` : resulttype*, `resulttype'?` : resulttype?, `x*` : idx*, m : m, `st*` : subtype*, C_0 : context, `t_1*` : valtype*, `t_2*` : valtype*}:
     `|-%:OK`(C,)
-    -- if (C = {TYPES dt^n{dt <- `dt*`}, TAGS jt*{jt <- `jt*`}, GLOBALS gt*{gt <- `gt*`}, MEMS mt*{mt <- `mt*`}, TABLES tt*{tt <- `tt*`}, FUNCS dt_F*{dt_F <- `dt_F*`}, DATAS ok*{ok <- `ok*`}, ELEMS et*{et <- `et*`}, LOCALS lct*{lct <- `lct*`}, LABELS [`%`_resulttype((rt : reftype <: valtype)*{rt <- `rt*`},)], RETURN ?(`%`_resulttype(lift((rt' : reftype <: valtype)?{rt' <- `rt'?`}),)), REFS x*{x <- `x*`}, RECS st^m{st <- `st*`}})
+    -- if (C = {TYPES dt^n{dt <- `dt*`}, TAGS jt*{jt <- `jt*`}, GLOBALS gt*{gt <- `gt*`}, MEMS mt*{mt <- `mt*`}, TABLES tt*{tt <- `tt*`}, FUNCS dt_F*{dt_F <- `dt_F*`}, DATAS ok*{ok <- `ok*`}, ELEMS et*{et <- `et*`}, LOCALS lct*{lct <- `lct*`}, LABELS resulttype*{resulttype <- `resulttype*`}, RETURN resulttype'?{resulttype' <- `resulttype'?`}, REFS x*{x <- `x*`}, RECS st^m{st <- `st*`}})
     -- if (C_0 = {TYPES dt^n{dt <- `dt*`}, TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], RETURN ?(), REFS [], RECS []})
     -- (Deftype_ok: `%|-%:OK`({TYPES dt^n{dt <- `dt*`}[0 : i], TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], RETURN ?(), REFS [], RECS []}, dt))^(i<n){dt <- `dt*`}
     -- (Subtype_ok2: `%|-%:%`({TYPES dt^n{dt <- `dt*`}, TAGS [], GLOBALS [], MEMS [], TABLES [], FUNCS [], DATAS [], ELEMS [], LOCALS [], LABELS [], RETURN ?(), REFS [], RECS st^m{st <- `st*`}}, st, OK_oktypenat(i)))^(i<m){st <- `st*`}
@@ -31720,8 +31720,8 @@ relation Context_ok: `|-%:OK`(context,)
     -- (Expand: `%~~%`(dt_F, `FUNC%->%`_comptype(`%`_resulttype([t_1],), `%`_resulttype([t_2],))))*{dt_F <- `dt_F*`, t_1 <- `t_1*`, t_2 <- `t_2*`}
     -- (Reftype_ok: `%|-%:OK`(C_0, et))*{et <- `et*`}
     -- (Localtype_ok: `%|-%:OK`(C_0, lct))*{lct <- `lct*`}
-    -- (Resulttype_ok: `%|-%:OK`(C_0, `%`_resulttype([(rt : reftype <: valtype)],)))*{rt <- `rt*`}
-    -- (Resulttype_ok: `%|-%:OK`(C_0, `%`_resulttype([(rt' : reftype <: valtype)],)))?{rt' <- `rt'?`}
+    -- (Resulttype_ok: `%|-%:OK`(C_0, resulttype))*{resulttype <- `resulttype*`}
+    -- (Resulttype_ok: `%|-%:OK`(C_0, resulttype'))?{resulttype' <- `resulttype'?`}
     -- (if (x!`%`_idx.0 < |dt_F*{dt_F <- `dt_F*`}|))*{x <- `x*`}
 
 ;; ../../../../specification/wasm-latest/7.1-soundness.configurations.spectec

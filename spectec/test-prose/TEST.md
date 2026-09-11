@@ -17745,7 +17745,7 @@ The identifier context :math:`I` is :ref:`valid <valid-val>` if:
 The context :math:`C` is :ref:`valid <valid-val>` if:
 
 
-   * The context :math:`C` is of the form :math:`\{ \mathsf{types}~{{\mathit{dt}}^{n}},\;\allowbreak \mathsf{tags}~{{\mathit{jt}}^\ast},\;\allowbreak \mathsf{globals}~{{\mathit{gt}}^\ast},\;\allowbreak \mathsf{mems}~{{\mathit{mt}}^\ast},\;\allowbreak \mathsf{tables}~{{\mathit{tt}}^\ast},\;\allowbreak \mathsf{funcs}~{{\mathit{dt}}_{\mathsf{f}}^\ast},\;\allowbreak \mathsf{datas}~{{\mathit{ok}}^\ast},\;\allowbreak \mathsf{elems}~{{\mathit{et}}^\ast},\;\allowbreak \mathsf{locals}~{{{\mathit{lt}}}^\ast},\;\allowbreak \mathsf{labels}~{{\mathit{rt}}^\ast},\;\allowbreak \mathsf{return}~{{\mathit{rt}'}^?},\;\allowbreak \mathsf{refs}~{x^\ast},\;\allowbreak \mathsf{recs}~{{\mathit{st}}^{m}} \}`.
+   * The context :math:`C` is of the form :math:`\{ \mathsf{types}~{{\mathit{dt}}^{n}},\;\allowbreak \mathsf{tags}~{{\mathit{jt}}^\ast},\;\allowbreak \mathsf{globals}~{{\mathit{gt}}^\ast},\;\allowbreak \mathsf{mems}~{{\mathit{mt}}^\ast},\;\allowbreak \mathsf{tables}~{{\mathit{tt}}^\ast},\;\allowbreak \mathsf{funcs}~{{\mathit{dt}}_{\mathsf{f}}^\ast},\;\allowbreak \mathsf{datas}~{{\mathit{ok}}^\ast},\;\allowbreak \mathsf{elems}~{{\mathit{et}}^\ast},\;\allowbreak \mathsf{locals}~{{{\mathit{lt}}}^\ast},\;\allowbreak \mathsf{labels}~{{\mathit{resulttype}}^\ast},\;\allowbreak \mathsf{return}~{{\mathit{resulttype}'}^?},\;\allowbreak \mathsf{refs}~{x^\ast},\;\allowbreak \mathsf{recs}~{{\mathit{st}}^{m}} \}`.
 
    * The context :math:`C_0` is of the form :math:`\{ \mathsf{types}~{{\mathit{dt}}^{n}},\;\allowbreak \mathsf{return}~\epsilon \}`.
 
@@ -17787,13 +17787,13 @@ The context :math:`C` is :ref:`valid <valid-val>` if:
 
       * Under the context :math:`C_0`, the local type :math:`{{\mathit{lt}}}` is :ref:`valid <valid-val>`.
 
-   * For all :math:`{\mathit{rt}}` in :math:`{{\mathit{rt}}^\ast}`:
+   * For all :math:`{\mathit{resulttype}}` in :math:`{{\mathit{resulttype}}^\ast}`:
 
-      * Under the context :math:`C_0`, the result type :math:`{\mathit{rt}}` is :ref:`valid <valid-val>`.
+      * Under the context :math:`C_0`, the result type :math:`{\mathit{resulttype}}` is :ref:`valid <valid-val>`.
 
-   * If :math:`{\mathit{rt}'}` is defined, then:
+   * If :math:`{\mathit{resulttype}'}` is defined, then:
 
-      * Under the context :math:`C_0`, the result type :math:`{\mathit{rt}'}` is :ref:`valid <valid-val>`.
+      * Under the context :math:`C_0`, the result type :math:`{\mathit{resulttype}'}` is :ref:`valid <valid-val>`.
 
    * For all :math:`x` in :math:`{x^\ast}`:
 
@@ -29830,7 +29830,7 @@ Idctxt_ok
 
 Context_ok
 - the context C is valid if:
-  - C is { TYPES: dt^n; TAGS: jt*; GLOBALS: gt*; MEMS: mt*; TABLES: tt*; FUNCS: dt_F*; DATAS: ok*; ELEMS: et*; LOCALS: lct*; LABELS: [rt*]; RETURN: ?(rt'?); REFS: x*; RECS: st^m }.
+  - C is { TYPES: dt^n; TAGS: jt*; GLOBALS: gt*; MEMS: mt*; TABLES: tt*; FUNCS: dt_F*; DATAS: ok*; ELEMS: et*; LOCALS: lct*; LABELS: resulttype*; RETURN: resulttype'?; REFS: x*; RECS: st^m }.
   - the context C_0 is { TYPES: dt^n; RETURN: ?() }.
   - For all dt in dt*:
     - Under the context { TYPES: dt^n[0 : i]; RETURN: ?() }, the defined type dt is valid.
@@ -29851,10 +29851,10 @@ Context_ok
     - Under the context C_0, the reference type et is valid.
   - For all lct in lct*:
     - Under the context C_0, the local type lct is valid.
-  - For all rt in rt*:
-    - Under the context C_0, the result type [rt] is valid.
-  - If rt' is defined, then:
-    - Under the context C_0, the result type [rt'] is valid.
+  - For all resulttype in resulttype*:
+    - Under the context C_0, the result type resulttype is valid.
+  - If resulttype' is defined, then:
+    - Under the context C_0, the result type resulttype' is valid.
   - For all x in x*:
     - |dt_F*| is greater than x.
 
