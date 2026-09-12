@@ -297,6 +297,12 @@ $${grammar: {
   Tplaininstr_/num-cvt-reinterpret
 }}
 
+.. _text-wideop:
+
+$${grammar: {
+  Tplaininstr_/num-wide
+}}
+
 
 .. index:: vector instruction
    pair: text format; instruction

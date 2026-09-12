@@ -934,6 +934,37 @@ The integer result of predicates -- i.e., :ref:`tests <syntax-testop>` and :ref:
    \iq15mulrsats_N(i_1, i_2) &=& \signed_N^{-1}(\sats_N(\ishrs_N(i_1 \cdot i_2 + 2^{14}, 15)))
    \end{array}
 
+.. _op-iconcat:
+
+:math:`\iconcat_{M,N}(i_1, i_2)`
+.................................
+
+* Let :math:`h` be the result of :math:`\ishl_N(\extend^u_{M,N}(i_2), M)`
+
+* Return the result of :math:`\ior_N(\extend^u_{M,N}(i_1), h)`
+
+.. math::
+   \begin{array}{lll@{\qquad}l}
+   \iconcat_{M,N}(i_1, i_2) &=& \ior_N(\extend^u_{M,N}(i_1), \ishl_N(\extend^u_{M,N}(i_2), M))
+   \end{array}
+
+
+.. _op-isplit:
+
+:math:`\isplit_{M,N}(i)`
+.................................
+
+* Let :math:`l` be the result of :math:`\wrap_{M,N}(i)`
+
+* Let :math:`h` be the result of :math:`\wrap_{M,N}(\ishru_M(i, N))`
+
+* Return :math:`l, h`
+
+.. math::
+   \begin{array}{lll@{\qquad}l}
+   \isplit_{M,N}(i) &=& \wrap_{M,N}(i), \wrap_{M,N}(\ishru_M(i, N))
+   \end{array}
+
 
 .. index:: floating-point, IEEE 754
 .. _float-ops:

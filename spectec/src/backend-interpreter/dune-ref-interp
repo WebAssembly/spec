@@ -3,7 +3,7 @@
 (library
   (name reference_interpreter)
   (modules :standard \ main)
-  (libraries menhirLib)
+  (libraries menhirLib stdint)
 )
 
 ; For parsing

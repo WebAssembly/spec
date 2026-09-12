@@ -249,6 +249,10 @@ let al_to_op f1 f2 = function
   | [ CaseV ("F64", []); op ] -> F64 (f2 op)
   | l -> error_values "op" l
 
+let al_to_i64op f = function
+  | [ CaseV ("I64", []); op ] -> I64 (f op)
+  | l -> error_values "op" l
+
 let al_to_int_unop: value -> IntOp.unop = function
   | CaseV ("CLZ", []) -> IntOp.Clz
   | CaseV ("CTZ", []) -> IntOp.Ctz
@@ -342,6 +346,19 @@ let al_to_cvtop: value list -> cvtop = function
   | CaseV ("F32", []) :: _ as op -> F32 (al_to_float_cvtop op)
   | CaseV ("F64", []) :: _ as op -> F64 (al_to_float_cvtop op)
   | l -> error_values "cvtop" l
+
+let al_to_i64_wideop = function
+  | CaseV ("ADD128", []) -> I64Op.Add128
+  | CaseV ("SUB128", []) -> I64Op.Sub128
+  | v -> error_value "i64_wideop" v
+
+let al_to_wideop = al_to_i64op al_to_i64_wideop
+
+let al_to_i64_extwideop = function
+  | CaseV ("MUL_WIDE", [op]) -> I64Op.MulWide (al_to_sx op)
+  | v -> error_value "i64_extwideop" v
+
+let al_to_extwideop = al_to_i64op al_to_i64_extwideop
 
 (* Vector operator *)
 
@@ -847,6 +864,8 @@ and al_to_instr': value -> Ast.instr' = function
     ArrayInitElem (al_to_idx idx1, al_to_idx idx2)
   | CaseV ("ANY.CONVERT_EXTERN", []) -> ExternConvert Internalize
   | CaseV ("EXTERN.CONVERT_ANY", []) -> ExternConvert Externalize
+  | CaseV ("WIDEOP", op) -> Wide (al_to_wideop op)
+  | CaseV ("EXTWIDEOP", op) -> Extwide (al_to_extwideop op)
   | v -> error_value "instruction" v
 
 let al_to_const: value -> const = al_to_list al_to_instr |> al_to_phrase
@@ -1373,6 +1392,27 @@ let al_of_cvtop = function
     let to_, op', sx = al_of_float_cvtop "64" op in
     [ nullary "F64"; nullary to_; caseV (op', sx) ]
 
+let al_of_i64_wideop = function
+  | I64Op.Add128 -> CaseV ("ADD128", [])
+  | I64Op.Sub128 -> CaseV ("SUB128", [])
+
+let al_of_wideop (op: wideop) =
+  match op with
+  | I32 _ -> .
+  | I64 op -> [ nullary "I64"; al_of_i64_wideop op ]
+  | F32 _ -> .
+  | F64 _ -> .
+
+let al_of_i64_extwideop = function
+  | I64Op.MulWide sx -> CaseV ("MUL_WIDE", [ al_of_sx sx ])
+
+let al_of_extwideop (op: extwideop) =
+  match op with
+  | I32 _ -> .
+  | I64 op -> [ nullary "I64"; al_of_i64_extwideop op ]
+  | F32 _ -> .
+  | F64 _ -> .
+
 (* Vector operator *)
 
 let al_of_half = function
@@ -1878,6 +1918,8 @@ let rec al_of_instr instr =
     CaseV ("ARRAY.INIT_ELEM", [ al_of_idx idx1; al_of_idx idx2 ])
   | ExternConvert Internalize -> nullary "ANY.CONVERT_EXTERN"
   | ExternConvert Externalize -> nullary "EXTERN.CONVERT_ANY"
+  | Wide op -> CaseV ("WIDEOP", al_of_wideop op)
+  | Extwide op -> CaseV ("EXTWIDEOP", al_of_extwideop op)
   (* | _ -> CaseV ("TODO: Unconstructed Wasm instruction (al_of_instr)", []) *)
 
 let al_of_const const = al_of_list al_of_instr const.it

@@ -134,5 +134,8 @@ spectec 0.5 generator
 - print_i32: 1
 - print_i32: 2
 - print: ()
+../test-interpreter/spec-test-3/wide-arithmetic.wast:25.1-28.44
+- Test failed at ../test-interpreter/spec-test-3/wide-arithmetic.wast:25.1-28.44 (Algorithm not found: WIDEOP (interpreting CaseV(WIDEOP, [CaseV(I64, []), CaseV(ADD128, [])]) at ))
+Test failed for ../test-interpreter/spec-test-3/wide-arithmetic.wast
 == Complete.
 ```

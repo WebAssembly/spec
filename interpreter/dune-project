@@ -16,5 +16,6 @@
   (depends
     (ocaml (>= 4.14))
     (menhir (>= 20220210))
+    (stdint (>= 0.7.2))
   )
 )

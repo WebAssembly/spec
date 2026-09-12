@@ -115,7 +115,7 @@ jobs:
         with:
           ocaml-compiler: 5.04.x
       - name: Setup Dune
-        run: opam install --yes dune menhir mdx zarith && opam exec dune --version
+        run: opam install --yes dune menhir mdx zarith stdint.0.7.2 && opam exec dune --version
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:

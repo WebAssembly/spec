@@ -256,6 +256,13 @@ whereas the actual opcode is encoded by a variable-length :ref:`unsigned integer
 
 $${grammar: Binstr/num-cvt-sat}
 
+.. _binary-num-wide:
+
+wide-arithmetic instructions have a 1-byte prefix and the actual opcode is
+encoded by a variable-length :ref:`unsigned integer <binary-uint>`.
+
+$${grammar: Binstr/num-wide}
+
 
 .. index:: vector instruction
    pair: binary format; instruction
