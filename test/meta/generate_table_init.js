@@ -3,6 +3,9 @@
 
 print_origin("generate_table_init.js");
 
+const addrtype = INDEX_TYPE;
+const decltype = addrtype == 'i64' ? ' i64' : '';
+
 // This module "a" exports 5 functions ...
 
 function emit_a() {
@@ -159,12 +162,12 @@ function do_test(insn1, insn2, table, errText)
 {
     print(`
 (module
-  (table $t0 ${tab0_len} ${tab0_len} funcref)
-  (table $t1 ${tab1_len} ${tab1_len} funcref)
-  (elem (table $t${table}) (i32.const 2) func 3 1 4 1)
+  (table $t0${decltype} ${tab0_len} ${tab0_len} funcref)
+  (table $t1${decltype} ${tab1_len} ${tab1_len} funcref)
+  (elem (table $t${table}) (${addrtype}.const 2) func 3 1 4 1)
   (elem funcref
     (ref.func 2) (ref.func 7) (ref.func 1) (ref.func 8))
-  (elem (table $t${table}) (i32.const 12) func 7 5 2 3 6)
+  (elem (table $t${table}) (${addrtype}.const 12) func 7 5 2 3 6)
   (elem funcref
     (ref.func 5) (ref.func 9) (ref.func 2) (ref.func 7) (ref.func 6))
   (func (result i32) (i32.const 0))
@@ -201,13 +204,13 @@ tab_test1("(elem.drop 2)", 0,
           undefined);
 
 // init with elem seg ix indicating an active segment
-tab_test1("(table.init 2 (i32.const 12) (i32.const 1) (i32.const 1))", 0,
+tab_test1(`(table.init 2 (${addrtype}.const 12) (i32.const 1) (i32.const 1))`, 0,
           "out of bounds table access");
 
 // init, using an elem seg ix more than once is OK
 tab_test2(
-    "(table.init 1 (i32.const 12) (i32.const 1) (i32.const 1))",
-    "(table.init 1 (i32.const 21) (i32.const 1) (i32.const 1))",
+    `(table.init 1 (${addrtype}.const 12) (i32.const 1) (i32.const 1))`,
+    `(table.init 1 (${addrtype}.const 21) (i32.const 1) (i32.const 1))`,
     undefined);
 
 // drop, then drop
@@ -216,41 +219,41 @@ tab_test2("(elem.drop 1)",
           undefined);
 
 // init from a passive segment succeeds...
-tab_test1("(table.init 1 (i32.const 12) (i32.const 1) (i32.const 1))",
+tab_test1(`(table.init 1 (${addrtype}.const 12) (i32.const 1) (i32.const 1))`,
           0,
           undefined);
 
 // ...but dropping the segment first makes the same init trap
 tab_test2("(elem.drop 1)",
-          "(table.init 1 (i32.const 12) (i32.const 1) (i32.const 1))",
+          `(table.init 1 (${addrtype}.const 12) (i32.const 1) (i32.const 1))`,
           "out of bounds table access");
 
 // drop, then init: zero length at zero src and in-range dst is OK
 tab_test2("(elem.drop 1)",
-          "(table.init 1 (i32.const 12) (i32.const 0) (i32.const 0))",
+          `(table.init 1 (${addrtype}.const 12) (i32.const 0) (i32.const 0))`,
           undefined);
 
 // drop, then init: zero length, src offset past dropped seg end is invalid
 tab_test2("(elem.drop 1)",
-          "(table.init 1 (i32.const 12) (i32.const 1) (i32.const 0))",
+          `(table.init 1 (${addrtype}.const 12) (i32.const 1) (i32.const 0))`,
           "out of bounds table access");
 
 // drop, then init: zero length, dst offset at end of table is OK
 tab_test2("(elem.drop 1)",
-          "(table.init 1 (i32.const 30) (i32.const 0) (i32.const 0))",
+          `(table.init 1 (${addrtype}.const 30) (i32.const 0) (i32.const 0))`,
           undefined);
 
 // drop, then init: zero length, dst offset past end of table is invalid
 tab_test2("(elem.drop 1)",
-          "(table.init 1 (i32.const 31) (i32.const 0) (i32.const 0))",
+          `(table.init 1 (${addrtype}.const 31) (i32.const 0) (i32.const 0))`,
           "out of bounds table access");
 
 // init: seg ix is valid passive, but length to copy > len of seg
-tab_test1("(table.init 1 (i32.const 12) (i32.const 0) (i32.const 5))", 0,
+tab_test1(`(table.init 1 (${addrtype}.const 12) (i32.const 0) (i32.const 5))`, 0,
           "out of bounds table access");
 
 // init: seg ix is valid passive, but implies copying beyond end of seg
-tab_test1("(table.init 1 (i32.const 12) (i32.const 2) (i32.const 3))", 0,
+tab_test1(`(table.init 1 (${addrtype}.const 12) (i32.const 2) (i32.const 3))`, 0,
           "out of bounds table access");
 
 // Tables are of different length with t1 shorter than t0, to test that we're not
@@ -258,43 +261,43 @@ tab_test1("(table.init 1 (i32.const 12) (i32.const 2) (i32.const 3))", 0,
 
 for ( let [table, oobval] of [[0,30],[1,28]] ) {
     // init: seg ix is valid passive, but implies copying beyond end of dst
-    tab_test1(`(table.init $t${table} 1 (i32.const ${oobval-2}) (i32.const 1) (i32.const 3))`,
+    tab_test1(`(table.init $t${table} 1 (${addrtype}.const ${oobval-2}) (i32.const 1) (i32.const 3))`,
               table,
               "out of bounds table access");
 
     // init: seg ix is valid passive, zero len, and src offset out of bounds at the
     // end of the table - this is allowed
-    tab_test1(`(table.init $t${table} 1 (i32.const 12) (i32.const 4) (i32.const 0))`,
+    tab_test1(`(table.init $t${table} 1 (${addrtype}.const 12) (i32.const 4) (i32.const 0))`,
               table,
               undefined);
 
     // init: seg ix is valid passive, zero len, and src offset out of bounds past the
     // end of the table - this is not allowed
-    tab_test1(`(table.init $t${table} 1 (i32.const 12) (i32.const 5) (i32.const 0))`,
+    tab_test1(`(table.init $t${table} 1 (${addrtype}.const 12) (i32.const 5) (i32.const 0))`,
               table,
               "out of bounds table access");
 
     // init: seg ix is valid passive, zero len, and dst offset out of bounds at the
     // end of the table - this is allowed
-    tab_test1(`(table.init $t${table} 1 (i32.const ${oobval}) (i32.const 2) (i32.const 0))`,
+    tab_test1(`(table.init $t${table} 1 (${addrtype}.const ${oobval}) (i32.const 2) (i32.const 0))`,
               table,
               undefined);
 
     // init: seg ix is valid passive, zero len, and dst offset out of bounds past the
     // end of the table - this is not allowed
-    tab_test1(`(table.init $t${table} 1 (i32.const ${oobval+1}) (i32.const 2) (i32.const 0))`,
+    tab_test1(`(table.init $t${table} 1 (${addrtype}.const ${oobval+1}) (i32.const 2) (i32.const 0))`,
               table,
               "out of bounds table access");
 
     // init: seg ix is valid passive, zero len, and dst and src offsets out of bounds
     // at the end of the table - this is allowed
-    tab_test1(`(table.init $t${table} 1 (i32.const ${oobval}) (i32.const 4) (i32.const 0))`,
+    tab_test1(`(table.init $t${table} 1 (${addrtype}.const ${oobval}) (i32.const 4) (i32.const 0))`,
               table,
               undefined);
 
     // init: seg ix is valid passive, zero len, and src/dst offset out of bounds past the
     // end of the table - this is not allowed
-    tab_test1(`(table.init $t${table} 1 (i32.const ${oobval+1}) (i32.const 5) (i32.const 0))`,
+    tab_test1(`(table.init $t${table} 1 (${addrtype}.const ${oobval+1}) (i32.const 5) (i32.const 0))`,
               table,
               "out of bounds table access");
 }
@@ -335,7 +338,7 @@ function tbl_init(min, max, backup, write, segoffs=0) {
         `
 (module
   (type (func (result i32)))
-  (table ${min} ${max} funcref)
+  (table${decltype} ${min} ${max} funcref)
   (elem funcref
     (ref.func $f0) (ref.func $f1) (ref.func $f2) (ref.func $f3)
     (ref.func $f4) (ref.func $f5) (ref.func $f6) (ref.func $f7)
@@ -357,9 +360,9 @@ function tbl_init(min, max, backup, write, segoffs=0) {
   (func $f13 (export "f13") (result i32) (i32.const 13))
   (func $f14 (export "f14") (result i32) (i32.const 14))
   (func $f15 (export "f15") (result i32) (i32.const 15))
-  (func (export "test") (param $n i32) (result i32)
+  (func (export "test") (param $n ${addrtype}) (result i32)
     (call_indirect (type 0) (local.get $n)))
-  (func (export "run") (param $offs i32) (param $len i32)
+  (func (export "run") (param $offs ${addrtype}) (param $len i32)
     (table.init 0 (local.get $offs) (i32.const ${segoffs}) (local.get $len))))`);
 
     // A fill writing past the end of the table should throw *and* have filled
@@ -368,9 +371,9 @@ function tbl_init(min, max, backup, write, segoffs=0) {
     // A fill reading past the end of the segment should throw *and* have filled
     // table with as much data as was available.
     let offs = min - backup;
-    print(`(assert_trap (invoke "run" (i32.const ${offs}) (i32.const ${write})) "out of bounds table access")`);
+    print(`(assert_trap (invoke "run" (${addrtype}.const ${offs}) (i32.const ${write})) "out of bounds table access")`);
     for (let i=0; i < min; i++) {
-        print(`(assert_trap (invoke "test" (i32.const ${i})) "uninitialized element")`);
+        print(`(assert_trap (invoke "test" (${addrtype}.const ${i})) "uninitialized element")`);
     }
 }
 
