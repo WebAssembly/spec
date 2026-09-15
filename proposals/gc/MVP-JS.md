@@ -25,7 +25,7 @@ objects supports the following JS operations:
  - `GetPrototypeOf`: returns `null`.
  - `SetPrototypeOf`: returns `false` (and does not set a prototype).
  - `IsExtensible`: returns `false`.
- - `PreventExtensions`: returns `false`.
+ - `PreventExtensions`: returns `true`.
  - `GetOwnProperty`: returns `undefined`.
  - `DefineOwnProperty`: returns `false`.
  - `HasProperty`: returns `false`.
