@@ -198,6 +198,7 @@ urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: df
     url: syntax/types.html#syntax-reftype
         text: reftype
         text: funcref
+        text: anyref
         text: exnref
         text: externref
         text: ref
@@ -989,8 +990,8 @@ Immediately after a WebAssembly [=memory.grow=] |x| instruction executes, perfor
 enum TableKind {
   "externref",
   "anyfunc",
-  // Note: More values may be added in future iterations,
-  // e.g., typed function references, typed GC references
+  "funcref",
+  "anyref",
 };
 
 dictionary TableDescriptor {
@@ -1125,6 +1126,8 @@ enum ValueType {
   "v128",
   "externref",
   "anyfunc",
+  "funcref",
+  "anyref",
 };
 </pre>
 
@@ -1175,8 +1178,9 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     1. If |s| equals "f32", return [=f32=].
     1. If |s| equals "f64", return [=f64=].
     1. If |s| equals "v128", return [=v128=].
-    1. If |s| equals "anyfunc", return [=funcref=].
+    1. If |s| equals "anyfunc" or |s| equals "funcref", return [=funcref=].
     1. If |s| equals "externref", return [=externref=].
+    1. If |s| equals "anyref", return [=anyref=].
     1. Assert: This step is not reached.
 </div>
 
