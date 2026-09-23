@@ -1796,6 +1796,7 @@ warning: definition `ivdot_sat_` was never spliced
 warning: definition `ivextbinop__` was never spliced
 warning: definition `ivextunop__` was never spliced
 warning: definition `ivmul_` was never spliced
+warning: definition `ivrelaxed_dot_` was never spliced
 warning: definition `ivrelop_` was never spliced
 warning: definition `ivrelopsx_` was never spliced
 warning: definition `ivshiftop_` was never spliced
@@ -2662,6 +2663,7 @@ warning: definition prose `ivdot_sat_` was never spliced
 warning: definition prose `ivextbinop__` was never spliced
 warning: definition prose `ivextunop__` was never spliced
 warning: definition prose `ivmul_` was never spliced
+warning: definition prose `ivrelaxed_dot_` was never spliced
 warning: definition prose `ivrelop_` was never spliced
 warning: definition prose `ivrelopsx_` was never spliced
 warning: definition prose `ivshiftop_` was never spliced

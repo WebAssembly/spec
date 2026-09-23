@@ -2221,7 +2221,7 @@ where :math:`f`, :math:`\sx_1`, :math:`\sx_2`, :math:`h`, and :math:`k` are inst
    \VEXTMUL{\K\_}\LOW{\K\_}\sx & \ivmul & \sx & \sx & 0 & M_2 \\
    \VEXTMUL{\K\_}\HIGH{\K\_}\sx & \ivmul & \sx & \sx & M_2 & M_2 \\
    \VDOT{\K\_}\S & \ivdot & \S & \S & 0 & M_1 \\
-   \VRELAXEDDOT{\K\_}\S & \ivdotsat & \S & \relaxed(R_{\F{idot}})[ \S, \U ] & 0 & M_1 \\
+   \VRELAXEDDOT{\K\_}\S & \ivrelaxeddot & \S & \relaxed(R_{\F{idot}})[ \S, \U ] & 0 & M_1 \\
    \end{array}
 
 .. note::
@@ -2533,16 +2533,21 @@ where:
    it behaves like regular :math:`\ivswizzle`.
 
 
-.. _op-irelaxed_dot:
+.. _op-ivrelaxed_dot:
 .. _op-irelaxed_dot_add:
 
-:math:`\VRELAXEDDOT(i_1, i_2)`
-..............................
+:math:`\ivrelaxeddot_N(i_1^{2m}, i_2^{2m})`
+...........................................
 
 The implementation-specific behaviour of this operation is determined by the global parameter :math:`R_{\F{idot}} \in \{0, 1\}`.
-It also affects the behaviour of :math:`\VRELAXEDDOTADD`.
+It also affects the behaviour of :math:`\VRELAXEDDOT` and :math:`\VRELAXEDDOTADD` specified :ref:`above <op-vextbinop>`.
 
-Its definition is part of the definition of :math:`\vextbinop` specified :ref:`above <op-vextbinop>`.
+* Return :math:`\relaxed(R_{\F{idot}})[ \ivdot_N(i_1^{2m}, i_2^{2m}), \ivdotsat_N(i_1^{2m}, i_2^{2m}) ]`.
+
+.. math::
+   \begin{array}{@{}lcll}
+   \ivrelaxeddot_N(i_1^{2m}, i_2^{2m}) &=& \relaxed(R_{\F{idot}})[ \ivdot_N(i_1^{2m}, i_2^{2m}), \ivdotsat_N(i_1^{2m}, i_2^{2m}) ] \\
+   \end{array}
 
 .. note::
    Relaxed dot product is implementation-dependent when the second operand is negative in a signed intepretation.
