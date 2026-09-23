@@ -1,4 +1,33 @@
 ;;
+;; External addresses
+;;
+
+relation Externaddr_ok: store |- externaddr : externtype  hint(macro "%externaddr")
+
+rule Externaddr_ok/global:
+  s |- GLOBAL a : GLOBAL globalinst.TYPE
+  -- if s.GLOBALS[a] = globalinst
+
+rule Externaddr_ok/mem:
+  s |- MEM a : MEM meminst.TYPE
+  -- if s.MEMS[a] = meminst
+
+rule Externaddr_ok/table:
+  s |- TABLE a : TABLE tableinst.TYPE
+  -- if s.TABLES[a] = tableinst
+
+rule Externaddr_ok/func:
+  s |- FUNC a : FUNC funcinst.TYPE
+  -- if s.FUNCS[a] = funcinst
+
+rule Externaddr_ok/sub:
+  s |- externaddr : xt
+  -- Externaddr_ok: s |- externaddr : xt'
+  -- Externtype_ok: |- xt : OK
+  -- Externtype_sub: |- xt' <: xt
+
+
+;;
 ;; Projections
 ;;
 
@@ -166,6 +195,8 @@ def $rundata(DATA byte* (ACTIVE 0 instr*), i) =
 
 def $instantiate(store, module, externaddr*) : config
 def $instantiate(s, module, externaddr*) = s'; f; instr_E* instr_D* (CALL x)?
+  -- Module_ok: |- module : xt_I* -> xt_E*
+  -- (Externaddr_ok: s |- externaddr : xt_I)*
   -- if module = MODULE type* import* func* global* table* mem* elem* data* start? export*
   -- if type* = (TYPE functype)*
   -- if global* = (GLOBAL globaltype expr_G)*

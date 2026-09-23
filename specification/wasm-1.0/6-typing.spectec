@@ -404,7 +404,7 @@ rule Start_ok:
 ;; Module im/exports
 
 relation Import_ok: context |- import : externtype        hint(show "T-import")
-relation Export_ok: context |- export : externtype        hint(show "T-export")
+relation Export_ok: context |- export : name externtype   hint(show "T-export")
 relation Externidx_ok: context |- externidx : externtype  hint(show "T-externidx")
 
 rule Import_ok:
@@ -412,7 +412,7 @@ rule Import_ok:
   -- Externtype_ok: |- xt : OK
 
 rule Export_ok:
-  C |- EXPORT name externidx : xt
+  C |- EXPORT name externidx : name xt
   -- Externidx_ok: C |- externidx : xt
 
 
@@ -450,11 +450,11 @@ rule Module_ok:
   -- (Elem_ok: C |- elem : OK)*
   -- (Data_ok: C |- data : OK)*
   -- (Start_ok: C |- start : OK)?
-  -- (Export_ok: C |- export : xt)*
+  -- (Export_ok: C |- export : nm xt)*
   ----
   -- if |tt*| <= 1
   -- if |mt*| <= 1
-  ;; -- TODO: disjoint export names
+  -- if $disjoint_(name, nm*)
   ----
   -- if C = {TYPES ft'*, FUNCS ift* ft*, GLOBALS igt* gt*, TABLES itt* tt*, MEMS imt* mt*}
   ----
