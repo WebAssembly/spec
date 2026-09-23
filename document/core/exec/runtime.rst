@@ -69,7 +69,7 @@ Results
 ~~~~~~~
 
 A *result* is the outcome of a computation.
-It is either a sequence of :ref:`values <syntax-val>`, a thrown :ref:`exception <exec-throw_ref>`, or a :ref:`trap <syntax-trap>`.
+It is either a sequence of :ref:`values <syntax-val>`, a thrown :ref:`exception <exec-throw_addr>`, or a :ref:`trap <syntax-trap>`.
 
 $${syntax: result}
 
@@ -578,6 +578,9 @@ Conventions
 .. index:: ! administrative instructions, function, function instance, function address, label, frame, instruction, trap, call, memory, memory instance, table, table instance, element, data, segment, tag, tag instance, tag address, exception, reftype, handler, caught, caught exception
    pair:: abstract syntax; administrative instruction
 .. _syntax-trap:
+.. _syntax-throw_addr:
+.. _syntax-call_addr:
+.. _syntax-return_call_addr:
 .. _syntax-instr-admin:
 
 Administrative Instructions
@@ -594,6 +597,11 @@ A :ref:`reference <syntax-ref>` represents a :ref:`reference <syntax-ref>` value
 
 The ${:LABEL}, ${:FRAME}, and ${:HANDLER} instructions model :ref:`labels <syntax-label>`, :ref:`frames <syntax-frame>`, and active :ref:`exception handlers <syntax-handler>`, respectively, :ref:`"on the stack" <exec-notation>`.
 Moreover, the administrative syntax maintains the nesting structure of the original :ref:`structured control instruction <syntax-instr-control>` or :ref:`function body <syntax-func>` and their :ref:`instruction sequences <syntax-instrs>`.
+
+The variants of the ${:CALL} and ${:RETURN_CALL} instructions with a :ref:`function address <syntax-funcaddr>` represent an imminent call to a specific target function.
+
+Similarly, the variant of the ${:THROW} instruction with an :ref:`exception address <syntax-exnaddr>` represents an exception that is being thrown.
+Such exceptions are propagated through nested instruction sequences until a matching handler is found.
 
 The ${:TRAP} instruction represents the occurrence of a trap.
 Traps are bubbled up through nested instruction sequences, ultimately reducing the entire program to a single ${:TRAP} instruction, signalling abrupt termination.

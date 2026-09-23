@@ -241,12 +241,12 @@ syntax instr/br hint(desc "branch instruction") = ...
 
 syntax instr/call hint(desc "function instruction") = ...
   | CALL funcidx
-  | CALL_REF typeuse
-  | CALL_INDIRECT tableidx typeuse
+  | CALL_REF typeidx
+  | CALL_INDIRECT tableidx typeidx
   | RETURN
   | RETURN_CALL funcidx
-  | RETURN_CALL_REF typeuse
-  | RETURN_CALL_INDIRECT tableidx typeuse
+  | RETURN_CALL_REF typeidx
+  | RETURN_CALL_INDIRECT tableidx typeidx
   | ...
 
 syntax instr/exn hint(desc "exception instructions") = ...
@@ -455,14 +455,14 @@ def $free_instr(BR_ON_CAST_FAIL labelidx reftype_1 reftype_2) =
   $free_labelidx(labelidx) ++ $free_reftype(reftype_1) ++ $free_reftype(reftype_2)
 
 def $free_instr(CALL funcidx) = $free_funcidx(funcidx)
-def $free_instr(CALL_REF typeuse) = $free_typeuse(typeuse)
-def $free_instr(CALL_INDIRECT tableidx typeuse) =
-  $free_tableidx(tableidx) ++ $free_typeuse(typeuse)
+def $free_instr(CALL_REF typeidx) = $free_typeidx(typeidx)
+def $free_instr(CALL_INDIRECT tableidx typeidx) =
+  $free_tableidx(tableidx) ++ $free_typeidx(typeidx)
 def $free_instr(RETURN) = {}
 def $free_instr(RETURN_CALL funcidx) = $free_funcidx(funcidx)
-def $free_instr(RETURN_CALL_REF typeuse) = $free_typeuse(typeuse)
-def $free_instr(RETURN_CALL_INDIRECT tableidx typeuse) =
-  $free_tableidx(tableidx) ++ $free_typeuse(typeuse)
+def $free_instr(RETURN_CALL_REF typeidx) = $free_typeidx(typeidx)
+def $free_instr(RETURN_CALL_INDIRECT tableidx typeidx) =
+  $free_tableidx(tableidx) ++ $free_typeidx(typeidx)
 
 def $free_instr(THROW tagidx) = $free_tagidx(tagidx)
 def $free_instr(THROW_REF) = {}
