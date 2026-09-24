@@ -26188,15 +26188,6 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`{{{\mathrm{iadd}}}_{N}(j_1, j_2)^\ast}`.
 
 
-:math:`{{\mathrm{ivdot\_sat}}}_{N}({i_1^\ast}, {i_2^\ast})`
-...........................................................
-
-
-1. Let :math:`{j_1~j_2^\ast}` be the result for which the :ref:`concatenation <notation-concat>` of :math:`{j_1~j_2^\ast}` is :math:`{{{\mathrm{imul}}}_{N}(i_1, i_2)^\ast}`.
-
-#. Return :math:`{{{\mathrm{iadd\_sat}}}{\mathsf{s}}{{}_{N}(j_1, j_2)}^\ast}`.
-
-
 :math:`{{\mathrm{ivextbinop}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}({\mathrm{f}}, {\mathit{sx}}_1, {\mathit{sx}}_2, i, k, v_1, v_2)`
 ................................................................................................................................................................................
 
@@ -26233,6 +26224,22 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`{{{\mathrm{imul}}}_{N}(i_1, i_2)^\ast}`.
 
 
+:math:`{{\mathrm{ivdot\_sat}}}_{N}({i_1^\ast}, {i_2^\ast})`
+...........................................................
+
+
+1. Let :math:`{j_1~j_2^\ast}` be the result for which the :ref:`concatenation <notation-concat>` of :math:`{j_1~j_2^\ast}` is :math:`{{{\mathrm{imul}}}_{N}(i_1, i_2)^\ast}`.
+
+#. Return :math:`{{{\mathrm{iadd\_sat}}}{\mathsf{s}}{{}_{N}(j_1, j_2)}^\ast}`.
+
+
+:math:`{{\mathrm{ivrelaxed\_dot}}}_{N}({i_1^\ast}, {i_2^\ast})`
+...............................................................
+
+
+1. Return :math:`{{\mathrm{relaxed}}({\mathrm{R}}_{\mathit{idot}})}{{}[ {{\mathrm{ivdot}}}_{N}({i_1^\ast}, {i_2^\ast}), {{\mathrm{ivdot\_sat}}}_{N}({i_1^\ast}, {i_2^\ast}) ]}`.
+
+
 :math:`{{\mathit{vextbinop}}}{{}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}(v_1, v_2)}`
 .............................................................................................................................
 
@@ -26249,7 +26256,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Assert: Due to validation, :math:`{\mathit{vextbinop}} = `.
 
-#. Return :math:`{{\mathrm{ivextbinop}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}({\mathrm{ivdot}}_{{\mathit{sat}}}, \mathsf{s}, {{\mathrm{relaxed}}({\mathrm{R}}_{\mathit{idot}})}{{}[ \mathsf{s}, \mathsf{u} ]}, 0, M_1, v_1, v_2)`.
+#. Return :math:`{{\mathrm{ivextbinop}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}({\mathrm{ivrelaxed}}_{{\mathit{dot}}}, \mathsf{s}, {{\mathrm{relaxed}}({\mathrm{R}}_{\mathit{idot}})}{{}[ \mathsf{s}, \mathsf{u} ]}, 0, M_1, v_1, v_2)`.
 
 
 :math:`{}{{}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}(c_1, c_2, c_3)}`
@@ -33837,10 +33844,6 @@ ivdot_ N i_1* i_2*
 1. Let [j_1, j_2]* be $concat__1^-1(`iN(N), $imul_(N, i_1, i_2)*).
 2. Return $iadd_(N, j_1, j_2)*.
 
-ivdot_sat_ N i_1* i_2*
-1. Let [j_1, j_2]* be $concat__1^-1(`iN(N), $imul_(N, i_1, i_2)*).
-2. Return $iadd_sat_(N, S, j_1, j_2)*.
-
 ivextbinop__ Jnn_1 X M_1 Jnn_2 X M_2 $f_ sx_1 sx_2 i k v_1 v_2
 1. Let c_1* be $lanes_(Jnn_1 X M_1, v_1)[i : k].
 2. Let c_2* be $lanes_(Jnn_1 X M_1, v_2)[i : k].
@@ -33858,6 +33861,13 @@ ivextbinop__ Jnn_1 X M_1 Jnn_2 X M_2 $f_ sx_1 sx_2 i k v_1 v_2
 ivmul_ N i_1* i_2*
 1. Return $imul_(N, i_1, i_2)*.
 
+ivdot_sat_ N i_1* i_2*
+1. Let [j_1, j_2]* be $concat__1^-1(`iN(N), $imul_(N, i_1, i_2)*).
+2. Return $iadd_sat_(N, S, j_1, j_2)*.
+
+ivrelaxed_dot_ N i_1* i_2*
+1. Return $relaxed2($R_idot(), `iN(N)*, $ivdot_(N, i_1*, i_2*), $ivdot_sat_(N, i_1*, i_2*)).
+
 vextbinop__ Jnn_1 X M_1 Jnn_2 X M_2 vextbinop__ v_1 v_2
 1. If vextbinop__ is some EXTMUL, then:
   a. Let (EXTMUL half sx) be vextbinop__.
@@ -33865,7 +33875,7 @@ vextbinop__ Jnn_1 X M_1 Jnn_2 X M_2 vextbinop__ v_1 v_2
 2. If (vextbinop__ = DOTS), then:
   a. Return $ivextbinop__(Jnn_1 X M_1, Jnn_2 X M_2, $ivdot_, S, S, 0, M_1, v_1, v_2).
 3. Assert: Due to validation, (vextbinop__ = RELAXED_DOTS).
-4. Return $ivextbinop__(Jnn_1 X M_1, Jnn_2 X M_2, $ivdot_sat_, S, $relaxed2($R_idot(), `sx, S, U), 0, M_1, v_1, v_2).
+4. Return $ivextbinop__(Jnn_1 X M_1, Jnn_2 X M_2, $ivrelaxed_dot_, S, $relaxed2($R_idot(), `sx, S, U), 0, M_1, v_1, v_2).
 
 vextternop__ Jnn_1 X M_1 Jnn_2 X M_2 RELAXED_DOT_ADDS c_1 c_2 c_3
 1. Let M be (2 * M_2).

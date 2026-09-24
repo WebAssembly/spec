@@ -368,6 +368,9 @@ def $ivdot_sat_(N, iN(N)*, iN(N)*) : iN(N)*  hint(show $ivdot__sat_(%,%,%))
 def $ivdot_sat_(N, i_1*, i_2*) = $iadd_sat_(N, S, j_1, j_2)*
   -- if $concat_(iN(N), (j_1 j_2)*) = $imul_(N, i_1, i_2)*
 
+def $ivrelaxed_dot_(N, iN(N)*, iN(N)*) : iN(N)*  hint(show $ivrelaxed__dot_(%,%,%))
+def $ivrelaxed_dot_(N, i_1*, i_2*) = $relaxed2($R_idot, iN(N)*, $ivdot_(N, i_1*, i_2*), $ivdot_sat_(N, i_1*, i_2*))
+
 def $vextunop__(Jnn_1 X M_1, Jnn_2 X M_2, EXTADD_PAIRWISE sx, v_1) =
     $ivextunop__(Jnn_1 X M_1, Jnn_2 X M_2, $ivadd_pairwise_, sx, v_1)
 
@@ -376,7 +379,7 @@ def $vextbinop__(Jnn_1 X M_1, Jnn_2 X M_2, EXTMUL half sx, v_1, v_2) =
 def $vextbinop__(Jnn_1 X M_1, Jnn_2 X M_2, DOT S, v_1, v_2) =
     $ivextbinop__(Jnn_1 X M_1, Jnn_2 X M_2, $ivdot_, S, S, 0, M_1, v_1, v_2)
 def $vextbinop__(Jnn_1 X M_1, Jnn_2 X M_2, RELAXED_DOT S, v_1, v_2) =
-    $ivextbinop__(Jnn_1 X M_1, Jnn_2 X M_2, $ivdot_sat_, S, $relaxed2($R_idot, sx, S, U), 0, M_1, v_1, v_2)
+    $ivextbinop__(Jnn_1 X M_1, Jnn_2 X M_2, $ivrelaxed_dot_, S, $relaxed2($R_idot, sx, S, U), 0, M_1, v_1, v_2)
 
 (;
 ;; TODO(2, rossberg): this is obsolete, clean up
