@@ -30,6 +30,12 @@ Date: now
     "title": "WebAssembly Web API Specification",
     "publisher": "W3C WebAssembly Community Group",
     "status": "Draft"
+  },
+  "CSP": {
+    "href" : "https://www.w3.org/TR/CSP3/#wasm-integration",
+    "title" : ""Content Security Policy level 3",
+    "publisher" : "W3C Web Application Security Working Group",
+    "status" : "Draft"
   }
 }
 </pre>
@@ -2207,7 +2213,7 @@ Note: ECMAScript doesn't specify any sort of behavior on out-of-memory condition
     See [Issue 879](https://github.com/WebAssembly/spec/issues/879) for further discussion.
 </div>
 
-<h2>Implementation-defined Operations</h2>
+<h2>Host-defined Operations</h2>
 
 <h3 id="host-ensure-can-compile-wasm-bytes">HostEnsureCanCompileWasmBytes()</h3>
 
@@ -2219,6 +2225,8 @@ An implementation of HostEnsureCanCompileWasmBytes may complete normally or
 abruptly. Any abrupt completions will be propagated to its callers. The default
 implementation of HostEnsureCanCompileWasmBytes is to unconditionally return an
 empty normal completion.
+
+HostEnsureCanCompileWasmBytes is referenced by the Content Security Policy [[CSP]] specification to implement policy constraints on the execution of WebAssembly in browsers.
 
 <h2 id="limits">Implementation-defined Limits</h2>
 
