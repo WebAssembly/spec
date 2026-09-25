@@ -418,8 +418,8 @@ To <dfn>validate builtins and imported string for a WebAssembly module</dfn> fro
 <div algorithm>
   The <dfn method for="WebAssembly">validate(|bytes|, |options|)</dfn> method, when invoked, performs the following steps:
     1. Let |stableBytes| be a [=get a copy of the buffer source|copy of the bytes held by the buffer=] |bytes|.
-    1. [=Compile a WebAssembly module|Compile=] |stableBytes| as a WebAssembly module and store the results as |module|.
-    1. If |module| is [=error=], return false.
+    1. Let |module| be [=module_decode=](|stableBytes|). If |module| is [=error=], return [=error=].
+    1. If [=module_validate=](|module|) is [=error=], return false.
     1. Let |builtinSetNames| be |options|["builtins"].
     1. Let |importedStringModule| be |options|["importedStringConstants"].
     1. If [=validate builtins and imported string for a WebAssembly module|validating builtins and imported strings=] for |module| with |builtinSetNames| and |importedStringModule| returns false, return false.
