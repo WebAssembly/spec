@@ -399,7 +399,8 @@ Note:
 
 <div algorithm>
   To <dfn>compile a WebAssembly module</dfn> from source bytes |bytes|, perform the following steps:
-    1. Perform [=?=] [$HostEnsureCanCompileWasmBytes()$].
+    1. Let |realm| be the [=current Realm=].
+    1. Perform [=?=] [$HostEnsureCanCompileWasmBytes(realm)$].
         Note: This operation terminates with a {{CompileError}} exception if the operation is not permitted.
     1. Let |module| be [=module_decode=](|bytes|). If |module| is [=error=], return [=error=].
     1. If [=module_validate=](|module|) is [=error=], return [=error=].
@@ -454,6 +455,8 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
   To <dfn>asynchronously compile a WebAssembly module</dfn> from source bytes |bytes| and {{WebAssemblyCompileOptions}} |options| using optional [=task source=] |taskSource|, perform the following steps:
 
     1. Let |promise| be [=a new promise=].
+    1. Let |realm| be the [=current Realm=].
+    1. Perform [=?=] [$HostEnsureCanCompileWasmBytes(realm)$]
     1. Run the following steps [=in parallel=]:
         1. [=compile a WebAssembly module|Compile the WebAssembly module=] |bytes| and store the result as |module|.
         1. [=Queue a task=] on |taskSource|, if provided, to perform the following steps:
@@ -621,6 +624,8 @@ The verification of WebAssembly type requirements is deferred to the
 
 <div algorithm>
   To <dfn>asynchronously instantiate a WebAssembly module</dfn> from a {{Module}} |moduleObject| and imports |importObject|, perform the following steps:
+    1. Let |realm| be the [=current Realm=].
+    1. Perform [=?=] [$HostEnsureCanCompileWasmBytes(realm)$]
     1. Let |promise| be [=a new promise=].
     1. Let |module| be |moduleObject|.\[[Module]].
     1. Let |builtinSetNames| be |moduleObject|.\[[BuiltinSets]].
@@ -660,8 +665,10 @@ The verification of WebAssembly type requirements is deferred to the
 <div algorithm>
   The <dfn method for="WebAssembly">instantiate(|bytes|, |importObject|, |options|)</dfn> method, when invoked, performs the following steps:
     1. Let |stableBytes| be a [=get a copy of the buffer source|copy of the bytes held by the buffer=] |bytes|.
-    1. Perform [=?=] [$HostEnsureCanCompileWasmBytes()$]
+    1. Let |realm| be the [=current Realm=].
+    1. Perform [=?=] [$HostEnsureCanCompileWasmBytes(realm)$]
     1. [=Asynchronously compile a WebAssembly module=] from |stableBytes| using |options| and let |promiseOfModule| be the result.
+       1. If this operation throws a {{TypeError}}, catch it, and throw a {{LinkError}} exception.
     1. [=Instantiate a promise of a module|Instantiate=] |promiseOfModule| with imports |importObject| and return the result.
 </div>
 
@@ -2215,11 +2222,12 @@ Note: ECMAScript doesn't specify any sort of behavior on out-of-memory condition
 
 <h2>Host-defined Operations</h2>
 
-<h3 id="host-ensure-can-compile-wasm-bytes">HostEnsureCanCompileWasmBytes()</h3>
+<h3 id="host-ensure-can-compile-wasm-bytes">HostEnsureCanCompileWasmBytes(realm)</h3>
 
-<dfn abstract-op>HostEnsureCanCompileWasmBytes()</dfn> is a host-defined abstract operation
+<dfn abstract-op>HostEnsureCanCompileWasmBytes(realm)</dfn> is a host-defined abstract operation
 that allows host environments to block certain WebAssembly functions which
-compile bytes into WebAssembly code.
+compile bytes into WebAssembly code. The |realm| argument allows the host environment to constrain the
+check to be within the given |realm|.
 
 An implementation of HostEnsureCanCompileWasmBytes may complete normally or
 abruptly. Any abrupt completions will be propagated to its callers. The default
