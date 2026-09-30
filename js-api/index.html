@@ -6,7 +6,7 @@
   <meta content="ED" name="w3c-status">
   <meta content="Bikeshed version ea4009a02, updated Thu Sep 17 15:24:44 2026 -0700" name="generator">
   <link href="https://www.w3.org/TR/wasm-js-api-2/" rel="canonical">
-  <meta content="ba9fd9f5c23e569201265d5bda6fb8dde18ad8c0" name="revision">
+  <meta content="31ef4f71f75dc1965b9c39bd648ab2ca00e54457" name="revision">
   <meta content="dark light" name="color-scheme">
 <style>
 emu-const {
@@ -778,7 +778,7 @@ var[data-var-color="6"] { --var-vg: #FFBCF2; }
 </p>
    <h1 class="no-ref p-name" id="title">WebAssembly JavaScript Interface</h1>
    <p id="w3c-state"><a href="https://www.w3.org/standards/types/#ED">Editor’s Draft</a>,
-    <time class="dt-updated" datetime="2026-09-21">21 September 2026</time></p>
+    <time class="dt-updated" datetime="2026-09-30">30 September 2026</time></p>
    <details open>
     <summary>More details about this document</summary>
     <div data-fill-with="spec-metadata">
@@ -1188,7 +1188,7 @@ This mapping is used to ensure that, for a given <a data-link-type="dfn" href="h
      <li data-md>
       <p class="assertion">Assert: <var>importedStringModule</var> is not null.</p>
      <li data-md>
-      <p>Let <var>exportsObject</var> be <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands">!</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/ordinary-and-exotic-objects-behaviours.html#sec-ordinaryobjectcreate" id="ref-for-sec-ordinaryobjectcreate">OrdinaryObjectCreate</a>(null).</p>
+      <p>Let <var>exportsObject</var> be <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/ordinary-and-exotic-objects-behaviours.html#sec-ordinaryobjectcreate" id="ref-for-sec-ordinaryobjectcreate">OrdinaryObjectCreate</a>(null).</p>
      <li data-md>
       <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate①">For each</a> (<var>moduleName</var>, <var>componentName</var>, <var>externtype</var>) of <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-module-imports" id="ref-for-embed-module-imports①">module_imports</a>(<var>module</var>),</p>
       <ol>
@@ -1197,7 +1197,7 @@ This mapping is used to ensure that, for a given <a data-link-type="dfn" href="h
        <li data-md>
         <p>Let <var>stringConstant</var> be <var>componentName</var>.</p>
        <li data-md>
-        <p>Let <var>status</var> be <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands①">!</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-createdataproperty" id="ref-for-sec-createdataproperty">CreateDataProperty</a>(<var>exportsObject</var>, <var>stringConstant</var>, <var>stringConstant</var>).</p>
+        <p>Let <var>status</var> be <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands">!</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-createdataproperty" id="ref-for-sec-createdataproperty">CreateDataProperty</a>(<var>exportsObject</var>, <var>stringConstant</var>, <var>stringConstant</var>).</p>
        <li data-md>
         <p class="assertion">Assert: <var>status</var> is true.</p>
       </ol>
@@ -1247,7 +1247,7 @@ This mapping is used to ensure that, for a given <a data-link-type="dfn" href="h
          <li data-md>
           <p>Let <var>o</var> be <var>builtinOrStringImports</var>[<var>moduleName</var>].</p>
          <li data-md>
-          <p>If <var>o</var> <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-object-type" id="ref-for-sec-object-type">is not an Object</a> or if <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-hasproperty" id="ref-for-sec-hasproperty">HasProperty</a>(<var>o</var>, <var>componentName</var>) is false,</p>
+          <p>If <var>o</var> <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-object-type" id="ref-for-sec-object-type">is not an Object</a> or if <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands①">?</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-hasproperty" id="ref-for-sec-hasproperty">HasProperty</a>(<var>o</var>, <var>componentName</var>) is false,</p>
           <ol>
            <li data-md>
             <p>Set <var>o</var> to <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands②">?</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-get-o-p" id="ref-for-sec-get-o-p">Get</a>(<var>importObject</var>, <var>moduleName</var>).</p>
@@ -1381,7 +1381,7 @@ The verification of WebAssembly type requirements is deferred to the
 
     <ol>
      <li data-md>
-      <p>Let <var>exportsObject</var> be <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands⑤">!</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/ordinary-and-exotic-objects-behaviours.html#sec-ordinaryobjectcreate" id="ref-for-sec-ordinaryobjectcreate①">OrdinaryObjectCreate</a>(null).</p>
+      <p>Let <var>exportsObject</var> be <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/ordinary-and-exotic-objects-behaviours.html#sec-ordinaryobjectcreate" id="ref-for-sec-ordinaryobjectcreate①">OrdinaryObjectCreate</a>(null).</p>
      <li data-md>
       <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate④">For each</a> (<var>name</var>, <var>externtype</var>) of <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-module-exports" id="ref-for-embed-module-exports">module_exports</a>(<var>module</var>),</p>
       <ol>
@@ -1452,13 +1452,13 @@ The verification of WebAssembly type requirements is deferred to the
           <p>Let <var>value</var> be <var>tag</var>.</p>
         </ol>
        <li data-md>
-        <p>Let <var>status</var> be <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands⑥">!</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-createdataproperty" id="ref-for-sec-createdataproperty①">CreateDataProperty</a>(<var>exportsObject</var>, <var>name</var>, <var>value</var>).</p>
+        <p>Let <var>status</var> be <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands⑤">!</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-createdataproperty" id="ref-for-sec-createdataproperty①">CreateDataProperty</a>(<var>exportsObject</var>, <var>name</var>, <var>value</var>).</p>
        <li data-md>
         <p class="assertion">Assert: <var>status</var> is true.</p>
       </ol>
       <p class="note" role="note"><span class="marker">Note:</span> the validity and uniqueness checks performed during <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/valid/modules.html#valid-module" id="ref-for-valid-module">WebAssembly module validation</a> ensure that each property name is valid and no properties are defined twice.</p>
      <li data-md>
-      <p>Perform <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands⑦">!</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-setintegritylevel" id="ref-for-sec-setintegritylevel">SetIntegrityLevel</a>(<var>exportsObject</var>, <code>"frozen"</code>).</p>
+      <p>Perform <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands⑥">!</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-setintegritylevel" id="ref-for-sec-setintegritylevel">SetIntegrityLevel</a>(<var>exportsObject</var>, <code>"frozen"</code>).</p>
      <li data-md>
       <p>Return <var>exportsObject</var>.</p>
     </ol>
@@ -1932,9 +1932,9 @@ which can be simultaneously referenced by multiple <code class="idl"><a data-lin
      <li data-md>
       <p>If <var>descriptor</var>["address"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists③">exists</a>, let <var>addrtype</var> be <var>descriptor</var>["address"]; otherwise, let <var>addrtype</var> be "i32".</p>
      <li data-md>
-      <p>Let <var>initial</var> be <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands⑧">?</a> <a data-link-type="dfn" href="#addressvaluetou64" id="ref-for-addressvaluetou64">AddressValueToU64</a>(<var>descriptor</var>["initial"], <var>addrtype</var>).</p>
+      <p>Let <var>initial</var> be <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands⑦">?</a> <a data-link-type="dfn" href="#addressvaluetou64" id="ref-for-addressvaluetou64">AddressValueToU64</a>(<var>descriptor</var>["initial"], <var>addrtype</var>).</p>
      <li data-md>
-      <p>If <var>descriptor</var>["maximum"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists④">exists</a>, let <var>maximum</var> be <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands⑨">?</a> <a data-link-type="dfn" href="#addressvaluetou64" id="ref-for-addressvaluetou64①">AddressValueToU64</a>(<var>descriptor</var>["maximum"], <var>addrtype</var>); otherwise, let <var>maximum</var> be empty.</p>
+      <p>If <var>descriptor</var>["maximum"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists④">exists</a>, let <var>maximum</var> be <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands⑧">?</a> <a data-link-type="dfn" href="#addressvaluetou64" id="ref-for-addressvaluetou64①">AddressValueToU64</a>(<var>descriptor</var>["maximum"], <var>addrtype</var>); otherwise, let <var>maximum</var> be empty.</p>
      <li data-md>
       <p>Let <var>memtype</var> be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-memtype" id="ref-for-syntax-memtype">memory type</a> <var>addrtype</var> { <strong>min</strong> <var>initial</var>, <strong>max</strong> <var>maximum</var> }.</p>
      <li data-md>
@@ -1967,7 +1967,7 @@ which can be simultaneously referenced by multiple <code class="idl"><a data-lin
       <p>If <a data-link-type="dfn" href="https://tc39.es/proposal-resizablearraybuffer/#sec-isfixedarraybuffer" id="ref-for-sec-isfixedarraybuffer">IsFixedLengthArrayBuffer</a>(<var>buffer</var>) is true,</p>
       <ol>
        <li data-md>
-        <p>Perform <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands①⓪">!</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/structured-data.html#sec-detacharraybuffer" id="ref-for-sec-detacharraybuffer">DetachArrayBuffer</a>(<var>buffer</var>, "WebAssembly.Memory").</p>
+        <p>Perform <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands⑨">!</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/structured-data.html#sec-detacharraybuffer" id="ref-for-sec-detacharraybuffer">DetachArrayBuffer</a>(<var>buffer</var>, "WebAssembly.Memory").</p>
        <li data-md>
         <p>Let <var>buffer</var> be the result of <a data-link-type="dfn" href="#create-a-fixed-length-memory-buffer" id="ref-for-create-a-fixed-length-memory-buffer①">creating a fixed length memory buffer</a> from <var>memaddr</var>.</p>
        <li data-md>
@@ -2019,7 +2019,7 @@ which can be simultaneously referenced by multiple <code class="idl"><a data-lin
      <li data-md>
       <p>Let <var>addrtype</var> be the <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-addrtype" id="ref-for-syntax-addrtype">address type</a> in <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-mem-type" id="ref-for-embed-mem-type">mem_type</a>(<var>store</var>, <var>memaddr</var>).</p>
      <li data-md>
-      <p>Let <var>delta64</var> be <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands①①">?</a> <a data-link-type="dfn" href="#addressvaluetou64" id="ref-for-addressvaluetou64②">AddressValueToU64</a>(<var>delta</var>, <var>addrtype</var>).</p>
+      <p>Let <var>delta64</var> be <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands①⓪">?</a> <a data-link-type="dfn" href="#addressvaluetou64" id="ref-for-addressvaluetou64②">AddressValueToU64</a>(<var>delta</var>, <var>addrtype</var>).</p>
      <li data-md>
       <p>Let <var>ret</var> be the result of <a data-link-type="dfn" href="#grow-the-memory-buffer" id="ref-for-grow-the-memory-buffer">growing the memory buffer</a> associated with <var>memaddr</var> by <var>delta64</var>.</p>
      <li data-md>
@@ -2057,7 +2057,7 @@ which can be simultaneously referenced by multiple <code class="idl"><a data-lin
      <li data-md>
       <p>Let <var>fixedBuffer</var> be the result of <a data-link-type="dfn" href="#create-a-fixed-length-memory-buffer" id="ref-for-create-a-fixed-length-memory-buffer②">creating a fixed length memory buffer</a> from <var>memaddr</var>.</p>
      <li data-md>
-      <p>Perform <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands①②">!</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/structured-data.html#sec-detacharraybuffer" id="ref-for-sec-detacharraybuffer①">DetachArrayBuffer</a>(<var>buffer</var>, "WebAssembly.Memory").</p>
+      <p>Perform <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands①①">!</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/structured-data.html#sec-detacharraybuffer" id="ref-for-sec-detacharraybuffer①">DetachArrayBuffer</a>(<var>buffer</var>, "WebAssembly.Memory").</p>
      <li data-md>
       <p>Set <strong>this</strong>.[[BufferObject]] to <var>fixedBuffer</var>.</p>
      <li data-md>
@@ -2092,7 +2092,7 @@ which can be simultaneously referenced by multiple <code class="idl"><a data-lin
      <li data-md>
       <p>Let <var>resizableBuffer</var> be the result of <a data-link-type="dfn" href="#create-a-resizable-memory-buffer" id="ref-for-create-a-resizable-memory-buffer">creating a resizable memory buffer</a> from <var>memaddr</var> and <var>maxsize</var>.</p>
      <li data-md>
-      <p>Perform <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands①③">!</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/structured-data.html#sec-detacharraybuffer" id="ref-for-sec-detacharraybuffer②">DetachArrayBuffer</a>(<var>buffer</var>, "WebAssembly.Memory").</p>
+      <p>Perform <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands①②">!</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/structured-data.html#sec-detacharraybuffer" id="ref-for-sec-detacharraybuffer②">DetachArrayBuffer</a>(<var>buffer</var>, "WebAssembly.Memory").</p>
      <li data-md>
       <p>Set <strong>this</strong>.[[BufferObject]] to <var>resizableBuffer</var>.</p>
      <li data-md>
@@ -2221,9 +2221,9 @@ Each <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table�
      <li data-md>
       <p>If <var>descriptor</var>["address"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists⑧">exists</a>, let <var>addrtype</var> be <var>descriptor</var>["address"]; otherwise, let <var>addrtype</var> be "i32".</p>
      <li data-md>
-      <p>Let <var>initial</var> be <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands①④">?</a> <a data-link-type="dfn" href="#addressvaluetou64" id="ref-for-addressvaluetou64③">AddressValueToU64</a>(<var>descriptor</var>["initial"], <var>addrtype</var>).</p>
+      <p>Let <var>initial</var> be <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands①③">?</a> <a data-link-type="dfn" href="#addressvaluetou64" id="ref-for-addressvaluetou64③">AddressValueToU64</a>(<var>descriptor</var>["initial"], <var>addrtype</var>).</p>
      <li data-md>
-      <p>If <var>descriptor</var>["maximum"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists⑨">exists</a>, let <var>maximum</var> be <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands①⑤">?</a> <a data-link-type="dfn" href="#addressvaluetou64" id="ref-for-addressvaluetou64④">AddressValueToU64</a>(<var>descriptor</var>["maximum"], <var>addrtype</var>); otherwise, let <var>maximum</var> be empty.</p>
+      <p>If <var>descriptor</var>["maximum"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists⑨">exists</a>, let <var>maximum</var> be <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands①④">?</a> <a data-link-type="dfn" href="#addressvaluetou64" id="ref-for-addressvaluetou64④">AddressValueToU64</a>(<var>descriptor</var>["maximum"], <var>addrtype</var>); otherwise, let <var>maximum</var> be empty.</p>
      <li data-md>
       <p>Let <var>type</var> be the <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-tabletype" id="ref-for-syntax-tabletype">table type</a> <var>addrtype</var> { <b><a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-limits" id="ref-for-syntax-limits">min</a></b> <var>initial</var>, <b><a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-limits" id="ref-for-syntax-limits①">max</a></b> <var>maximum</var> } <var>elementtype</var>.</p>
      <li data-md>
@@ -2240,7 +2240,7 @@ Each <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table�
       <p>Otherwise,</p>
       <ol>
        <li data-md>
-        <p>Let <var>ref</var> be <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands①⑥">?</a> <a data-link-type="dfn" href="#towebassemblyvalue" id="ref-for-towebassemblyvalue①">ToWebAssemblyValue</a>(<var>value</var>, <var>elementtype</var>).</p>
+        <p>Let <var>ref</var> be <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands①⑤">?</a> <a data-link-type="dfn" href="#towebassemblyvalue" id="ref-for-towebassemblyvalue①">ToWebAssemblyValue</a>(<var>value</var>, <var>elementtype</var>).</p>
       </ol>
      <li data-md>
       <p>Let <var>store</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent①⑥">surrounding agent</a>’s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store①⓪">associated store</a>.</p>
@@ -2266,7 +2266,7 @@ Each <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table�
      <li data-md>
       <p>Let (<var>addrtype</var>, <var>limits</var>, <var>elementtype</var>) be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-table-type" id="ref-for-embed-table-type">table_type</a>(<var>store</var>, <var>tableaddr</var>).</p>
      <li data-md>
-      <p>Let <var>delta64</var> be <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands①⑦">?</a> <a data-link-type="dfn" href="#addressvaluetou64" id="ref-for-addressvaluetou64⑤">AddressValueToU64</a>(<var>delta</var>, <var>addrtype</var>).</p>
+      <p>Let <var>delta64</var> be <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands①⑥">?</a> <a data-link-type="dfn" href="#addressvaluetou64" id="ref-for-addressvaluetou64⑤">AddressValueToU64</a>(<var>delta</var>, <var>addrtype</var>).</p>
      <li data-md>
       <p>If <var>value</var> is missing,</p>
       <ol>
@@ -2279,7 +2279,7 @@ Each <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table�
       <p>Otherwise,</p>
       <ol>
        <li data-md>
-        <p>Let <var>ref</var> be <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands①⑧">?</a> <a data-link-type="dfn" href="#towebassemblyvalue" id="ref-for-towebassemblyvalue②">ToWebAssemblyValue</a>(<var>value</var>, <var>elementtype</var>).</p>
+        <p>Let <var>ref</var> be <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands①⑦">?</a> <a data-link-type="dfn" href="#towebassemblyvalue" id="ref-for-towebassemblyvalue②">ToWebAssemblyValue</a>(<var>value</var>, <var>elementtype</var>).</p>
       </ol>
      <li data-md>
       <p>Let <var>result</var> be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-table-grow" id="ref-for-embed-table-grow">table_grow</a>(<var>store</var>, <var>tableaddr</var>, <var>delta64</var>, <var>ref</var>).</p>
@@ -2327,13 +2327,13 @@ Each <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table�
         <p>Throw a <code class="idl"><a data-link-type="idl" href="https://tc39.es/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror⑥">TypeError</a></code> exception.</p>
       </ol>
      <li data-md>
-      <p>Let <var>index64</var> be <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands①⑨">?</a> <a data-link-type="dfn" href="#addressvaluetou64" id="ref-for-addressvaluetou64⑥">AddressValueToU64</a>(<var>index</var>, <var>addrtype</var>).</p>
+      <p>Let <var>index64</var> be <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands①⑧">?</a> <a data-link-type="dfn" href="#addressvaluetou64" id="ref-for-addressvaluetou64⑥">AddressValueToU64</a>(<var>index</var>, <var>addrtype</var>).</p>
      <li data-md>
       <p>Let <var>result</var> be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-table-read" id="ref-for-embed-table-read">table_read</a>(<var>store</var>, <var>tableaddr</var>, <var>index64</var>).</p>
      <li data-md>
       <p>If <var>result</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-error" id="ref-for-embed-error①③">error</a>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.es/ecma262/#sec-native-error-types-used-in-this-standard-rangeerror" id="ref-for-sec-native-error-types-used-in-this-standard-rangeerror⑦">RangeError</a></code> exception.</p>
      <li data-md>
-      <p>Return <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands②⓪">!</a> <a data-link-type="dfn" href="#tojsvalue" id="ref-for-tojsvalue">ToJSValue</a>(<var>result</var>).</p>
+      <p>Return <a data-link-type="dfn" href="#tojsvalue" id="ref-for-tojsvalue">ToJSValue</a>(<var>result</var>).</p>
     </ol>
    </div>
    <div class="algorithm" data-algorithm="set(index, value)" data-algorithm-for="Table">
@@ -2354,7 +2354,7 @@ Each <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table�
         <p>Throw a <code class="idl"><a data-link-type="idl" href="https://tc39.es/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror⑦">TypeError</a></code> exception.</p>
       </ol>
      <li data-md>
-      <p>Let <var>index64</var> be <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands②①">?</a> <a data-link-type="dfn" href="#addressvaluetou64" id="ref-for-addressvaluetou64⑦">AddressValueToU64</a>(<var>index</var>, <var>addrtype</var>).</p>
+      <p>Let <var>index64</var> be <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands①⑨">?</a> <a data-link-type="dfn" href="#addressvaluetou64" id="ref-for-addressvaluetou64⑦">AddressValueToU64</a>(<var>index</var>, <var>addrtype</var>).</p>
      <li data-md>
       <p>If <var>value</var> is missing,</p>
       <ol>
@@ -2367,7 +2367,7 @@ Each <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table�
       <p>Otherwise,</p>
       <ol>
        <li data-md>
-        <p>Let <var>ref</var> be <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands②②">?</a> <a data-link-type="dfn" href="#towebassemblyvalue" id="ref-for-towebassemblyvalue③">ToWebAssemblyValue</a>(<var>value</var>, <var>elementtype</var>).</p>
+        <p>Let <var>ref</var> be <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands②⓪">?</a> <a data-link-type="dfn" href="#towebassemblyvalue" id="ref-for-towebassemblyvalue③">ToWebAssemblyValue</a>(<var>value</var>, <var>elementtype</var>).</p>
       </ol>
      <li data-md>
       <p>Let <var>store</var> be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-table-write" id="ref-for-embed-table-write">table_write</a>(<var>store</var>, <var>tableaddr</var>, <var>index64</var>, <var>ref</var>).</p>
@@ -2473,7 +2473,7 @@ which can be simultaneously referenced by multiple <code class="idl"><a data-lin
 
     <ol>
      <li data-md>
-      <p>If <var>valuetype</var> equals <a data-link-type="dfn" data-refhint-key="92193adb" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-reftype" id="ref-for-syntax-reftype④">externref</a>, return <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands②③">!</a> <a data-link-type="dfn" href="#towebassemblyvalue" id="ref-for-towebassemblyvalue④">ToWebAssemblyValue</a>(undefined, <var>valuetype</var>).</p>
+      <p>If <var>valuetype</var> equals <a data-link-type="dfn" data-refhint-key="92193adb" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-reftype" id="ref-for-syntax-reftype④">externref</a>, return <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands②①">!</a> <a data-link-type="dfn" href="#towebassemblyvalue" id="ref-for-towebassemblyvalue④">ToWebAssemblyValue</a>(undefined, <var>valuetype</var>).</p>
      <li data-md>
       <p>Return <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-val-default" id="ref-for-embed-val-default">val_default</a>(<var>valuetype</var>).</p>
     </ol>
@@ -2505,7 +2505,7 @@ which can be simultaneously referenced by multiple <code class="idl"><a data-lin
       <p>Otherwise,</p>
       <ol>
        <li data-md>
-        <p>Let <var>value</var> be <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands②④">?</a> <a data-link-type="dfn" href="#towebassemblyvalue" id="ref-for-towebassemblyvalue⑤">ToWebAssemblyValue</a>(<var>v</var>, <var>valuetype</var>).</p>
+        <p>Let <var>value</var> be <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands②②">?</a> <a data-link-type="dfn" href="#towebassemblyvalue" id="ref-for-towebassemblyvalue⑤">ToWebAssemblyValue</a>(<var>v</var>, <var>valuetype</var>).</p>
       </ol>
      <li data-md>
       <p>If <var>mutable</var> is true, let <var>globaltype</var> be <a data-link-type="dfn" data-refhint-key="e638887d" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-mut" id="ref-for-syntax-mut①">var</a> <var>valuetype</var>; otherwise, let <var>globaltype</var> be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-mut" id="ref-for-syntax-mut②">const</a> <var>valuetype</var>.</p>
@@ -2535,7 +2535,7 @@ which can be simultaneously referenced by multiple <code class="idl"><a data-lin
      <li data-md>
       <p>Let <var>value</var> be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-global-read" id="ref-for-embed-global-read">global_read</a>(<var>store</var>, <var>globaladdr</var>).</p>
      <li data-md>
-      <p>Return <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands②⑤">!</a> <a data-link-type="dfn" href="#tojsvalue" id="ref-for-tojsvalue①">ToJSValue</a>(<var>value</var>).</p>
+      <p>Return <a data-link-type="dfn" href="#tojsvalue" id="ref-for-tojsvalue①">ToJSValue</a>(<var>value</var>).</p>
     </ol>
    </div>
    <div class="algorithm" data-algorithm="value" data-algorithm-for="Global">
@@ -2559,7 +2559,7 @@ which can be simultaneously referenced by multiple <code class="idl"><a data-lin
      <li data-md>
       <p>If <var>mut</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-mut" id="ref-for-syntax-mut③">const</a>, throw a <code class="idl"><a data-link-type="idl" href="https://tc39.es/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror①②">TypeError</a></code>.</p>
      <li data-md>
-      <p>Let <var>value</var> be <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands②⑥">?</a> <a data-link-type="dfn" href="#towebassemblyvalue" id="ref-for-towebassemblyvalue⑥">ToWebAssemblyValue</a>(<strong>the given value</strong>, <var>valuetype</var>).</p>
+      <p>Let <var>value</var> be <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands②③">?</a> <a data-link-type="dfn" href="#towebassemblyvalue" id="ref-for-towebassemblyvalue⑥">ToWebAssemblyValue</a>(<strong>the given value</strong>, <var>valuetype</var>).</p>
      <li data-md>
       <p>Let <var>store</var> be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-global-write" id="ref-for-embed-global-write">global_write</a>(<var>store</var>, <var>globaladdr</var>, <var>value</var>).</p>
      <li data-md>
@@ -2610,7 +2610,7 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
         <p>Let <var>index</var> be the index of <var>moduleinst</var>.funcaddrs where <var>funcaddr</var> is found.</p>
       </ol>
      <li data-md>
-      <p>Return <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands②⑦">!</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-tostring" id="ref-for-sec-tostring">ToString</a>(<var>index</var>).</p>
+      <p>Return <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands②④">!</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-tostring" id="ref-for-sec-tostring">ToString</a>(<var>index</var>).</p>
     </ol>
    </div>
    <div class="algorithm" data-algorithm="a new Exported Function">
@@ -2642,7 +2642,7 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
      <li data-md>
       <p>Let <var>name</var> be the <a data-link-type="dfn" href="#name-of-the-webassembly-function" id="ref-for-name-of-the-webassembly-function">name of the WebAssembly function</a> <var>funcaddr</var>.</p>
      <li data-md>
-      <p>Let <var>function</var> be <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands②⑧">!</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/ordinary-and-exotic-objects-behaviours.html#sec-createbuiltinfunction" id="ref-for-sec-createbuiltinfunction">CreateBuiltinFunction</a>(<var>steps</var>, <var>arity</var>, <var>name</var>, « [[FunctionAddress]] », <var>realm</var>).</p>
+      <p>Let <var>function</var> be <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/ordinary-and-exotic-objects-behaviours.html#sec-createbuiltinfunction" id="ref-for-sec-createbuiltinfunction">CreateBuiltinFunction</a>(<var>steps</var>, <var>arity</var>, <var>name</var>, « [[FunctionAddress]] », <var>realm</var>).</p>
      <li data-md>
       <p>Set <var>function</var>.[[FunctionAddress]] to <var>funcaddr</var>.</p>
      <li data-md>
@@ -2678,7 +2678,7 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
        <li data-md>
         <p>Otherwise, let <var>arg</var> be undefined.</p>
        <li data-md>
-        <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append⑧">Append</a> <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands②⑨">?</a> <a data-link-type="dfn" href="#towebassemblyvalue" id="ref-for-towebassemblyvalue⑦">ToWebAssemblyValue</a>(<var>arg</var>, <var>t</var>) to <var>args</var>.</p>
+        <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append⑧">Append</a> <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands②⑤">?</a> <a data-link-type="dfn" href="#towebassemblyvalue" id="ref-for-towebassemblyvalue⑦">ToWebAssemblyValue</a>(<var>arg</var>, <var>t</var>) to <var>args</var>.</p>
        <li data-md>
         <p>Set <var>i</var> to <var>i</var> + 1.</p>
       </ol>
@@ -2706,7 +2706,7 @@ spec:webidl; type:dfn; for:/; text:exception">exception</u> <var>exnaddr</var>, 
         <p>If <var>tagaddr</var> is equal to <var>jsTagAddr</var>,</p>
         <ol>
          <li data-md>
-          <p>Throw <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands③⓪">!</a> <a data-link-type="dfn" href="#tojsvalue" id="ref-for-tojsvalue②">ToJSValue</a>(<var>payload</var>[0]).</p>
+          <p>Throw <a data-link-type="dfn" href="#tojsvalue" id="ref-for-tojsvalue②">ToJSValue</a>(<var>payload</var>[0]).</p>
         </ol>
        <li data-md>
         <p>Otherwise,</p>
@@ -2722,7 +2722,7 @@ spec:webidl; type:dfn; for:/; text:exception">exception</u> <var>exnaddr</var>, 
      <li data-md>
       <p>If <var>outArity</var> is 0, return undefined.</p>
      <li data-md>
-      <p>Otherwise, if <var>outArity</var> is 1, return <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands③①">!</a> <a data-link-type="dfn" href="#tojsvalue" id="ref-for-tojsvalue③">ToJSValue</a>(<var>ret</var>[0]).</p>
+      <p>Otherwise, if <var>outArity</var> is 1, return <a data-link-type="dfn" href="#tojsvalue" id="ref-for-tojsvalue③">ToJSValue</a>(<var>ret</var>[0]).</p>
      <li data-md>
       <p>Otherwise,</p>
       <ol>
@@ -2732,7 +2732,7 @@ spec:webidl; type:dfn; for:/; text:exception">exception</u> <var>exnaddr</var>, 
         <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate⑨">For each</a> <var>r</var> of <var>ret</var>,</p>
         <ol>
          <li data-md>
-          <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append⑨">Append</a> <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands③②">!</a> <a data-link-type="dfn" href="#tojsvalue" id="ref-for-tojsvalue④">ToJSValue</a>(<var>r</var>) to <var>values</var>.</p>
+          <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append⑨">Append</a> <a data-link-type="dfn" href="#tojsvalue" id="ref-for-tojsvalue④">ToJSValue</a>(<var>r</var>) to <var>values</var>.</p>
         </ol>
        <li data-md>
         <p>Return <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-createarrayfromlist" id="ref-for-sec-createarrayfromlist">CreateArrayFromList</a>(<var>values</var>).</p>
@@ -2757,25 +2757,25 @@ spec:webidl; type:dfn; for:/; text:exception">exception</u> <var>exnaddr</var>, 
       <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate①⓪">For each</a> <var>arg</var> of <var>arguments</var>,</p>
       <ol>
        <li data-md>
-        <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append①⓪">Append</a> <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands③③">!</a> <a data-link-type="dfn" href="#tojsvalue" id="ref-for-tojsvalue⑤">ToJSValue</a>(<var>arg</var>) to <var>jsArguments</var>.</p>
+        <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append①⓪">Append</a> <a data-link-type="dfn" href="#tojsvalue" id="ref-for-tojsvalue⑤">ToJSValue</a>(<var>arg</var>) to <var>jsArguments</var>.</p>
       </ol>
      <li data-md>
-      <p>Let <var>ret</var> be <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands③④">?</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-call" id="ref-for-sec-call">Call</a>(<var>func</var>, undefined, <var>jsArguments</var>).</p>
+      <p>Let <var>ret</var> be <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands②⑥">?</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-call" id="ref-for-sec-call">Call</a>(<var>func</var>, undefined, <var>jsArguments</var>).</p>
      <li data-md>
       <p>Let <var>resultsSize</var> be <var>results</var>’s <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-size" id="ref-for-list-size③">size</a>.</p>
      <li data-md>
       <p>If <var>resultsSize</var> is 0, return « ».</p>
      <li data-md>
-      <p>Otherwise, if <var>resultsSize</var> is 1, return « <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands③⑤">?</a> <a data-link-type="dfn" href="#towebassemblyvalue" id="ref-for-towebassemblyvalue⑧">ToWebAssemblyValue</a>(<var>ret</var>, <var>results</var>[0]) ».</p>
+      <p>Otherwise, if <var>resultsSize</var> is 1, return « <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands②⑦">?</a> <a data-link-type="dfn" href="#towebassemblyvalue" id="ref-for-towebassemblyvalue⑧">ToWebAssemblyValue</a>(<var>ret</var>, <var>results</var>[0]) ».</p>
      <li data-md>
       <p>Otherwise,</p>
       <ol>
        <li data-md>
-        <p>Let <var>method</var> be <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands③⑥">?</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-getmethod" id="ref-for-sec-getmethod">GetMethod</a>(<var>ret</var>, <code class="idl"><a data-link-type="idl" href="https://tc39.es/ecma262/multipage/ecmascript-data-types-and-values.html#sec-well-known-symbols" id="ref-for-sec-well-known-symbols">%Symbol.iterator%</a></code>).</p>
+        <p>Let <var>method</var> be <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands②⑧">?</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-getmethod" id="ref-for-sec-getmethod">GetMethod</a>(<var>ret</var>, <code class="idl"><a data-link-type="idl" href="https://tc39.es/ecma262/multipage/ecmascript-data-types-and-values.html#sec-well-known-symbols" id="ref-for-sec-well-known-symbols">%Symbol.iterator%</a></code>).</p>
        <li data-md>
         <p>If <var>method</var> is undefined, <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#dfn-throw" id="ref-for-dfn-throw②">throw</a> a <code class="idl"><a data-link-type="idl" href="https://tc39.es/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror①⑤">TypeError</a></code>.</p>
        <li data-md>
-        <p>Let <var>values</var> be <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands③⑦">?</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-iteratortolist" id="ref-for-sec-iteratortolist">IteratorToList</a>(<a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands③⑧">?</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-getiteratorfrommethod" id="ref-for-sec-getiteratorfrommethod">GetIteratorFromMethod</a>(<var>ret</var>, <var>method</var>)).</p>
+        <p>Let <var>values</var> be <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands②⑨">?</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-iteratortolist" id="ref-for-sec-iteratortolist">IteratorToList</a>(<a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands③⓪">?</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-getiteratorfrommethod" id="ref-for-sec-getiteratorfrommethod">GetIteratorFromMethod</a>(<var>ret</var>, <var>method</var>)).</p>
        <li data-md>
         <p>Let <var>wasmValues</var> be a new, empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list③">list</a>.</p>
        <li data-md>
@@ -2784,7 +2784,7 @@ spec:webidl; type:dfn; for:/; text:exception">exception</u> <var>exnaddr</var>, 
         <p>For each <var>value</var> and <var>resultType</var> in <var>values</var> and <var>results</var>, paired linearly,</p>
         <ol>
          <li data-md>
-          <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append①①">Append</a> <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands③⑨">?</a> <a data-link-type="dfn" href="#towebassemblyvalue" id="ref-for-towebassemblyvalue⑨">ToWebAssemblyValue</a>(<var>value</var>, <var>resultType</var>) to <var>wasmValues</var>.</p>
+          <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append①①">Append</a> <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands③①">?</a> <a data-link-type="dfn" href="#towebassemblyvalue" id="ref-for-towebassemblyvalue⑨">ToWebAssemblyValue</a>(<var>value</var>, <var>resultType</var>) to <var>wasmValues</var>.</p>
         </ol>
        <li data-md>
         <p>Return <var>wasmValues</var>.</p>
@@ -2839,7 +2839,7 @@ spec:webidl; type:dfn; for:/; text:exception">exception</u> <var>exnaddr</var>, 
            <li data-md>
             <p>Let <var>type</var> be the result of <a data-link-type="dfn" href="#get-the-javascript-exception-tag" id="ref-for-get-the-javascript-exception-tag②">getting the JavaScript exception tag</a>.</p>
            <li data-md>
-            <p>Let <var>payload</var> be <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands④⓪">!</a> <a data-link-type="dfn" href="#towebassemblyvalue" id="ref-for-towebassemblyvalue①⓪">ToWebAssemblyValue</a>(<var>v</var>, <a data-link-type="dfn" data-refhint-key="92193adb" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-reftype" id="ref-for-syntax-reftype①⓪">externref</a>).</p>
+            <p>Let <var>payload</var> be <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands③②">!</a> <a data-link-type="dfn" href="#towebassemblyvalue" id="ref-for-towebassemblyvalue①⓪">ToWebAssemblyValue</a>(<var>v</var>, <a data-link-type="dfn" data-refhint-key="92193adb" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-reftype" id="ref-for-syntax-reftype①⓪">externref</a>).</p>
            <li data-md>
             <p>Let (<var>store</var>, <var>address</var>) be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-exn-alloc" id="ref-for-embed-exn-alloc">exn_alloc</a>(<var>store</var>, <var>type</var>, « <var>payload</var> »).</p>
            <li data-md>
@@ -2955,7 +2955,7 @@ The algorithm <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="tow
       <p>If <var>type</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-numtype" id="ref-for-syntax-numtype⑧">i64</a>,</p>
       <ol>
        <li data-md>
-        <p>Let <var>i64</var> be <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands④①">?</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-tobigint64" id="ref-for-sec-tobigint64">ToBigInt64</a>(<var>v</var>).</p>
+        <p>Let <var>i64</var> be <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands③③">?</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-tobigint64" id="ref-for-sec-tobigint64">ToBigInt64</a>(<var>v</var>).</p>
        <li data-md>
         <p>Let <var>u64</var> be the unsigned integer such that <var>i64</var> is <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/numerics.html#aux-signed" id="ref-for-aux-signed③">signed_64</a>(<var>u64</var>).</p>
        <li data-md>
@@ -2965,7 +2965,7 @@ The algorithm <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="tow
       <p>If <var>type</var> is <a data-link-type="dfn" data-refhint-key="1eccdce5" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-numtype" id="ref-for-syntax-numtype⑨">i32</a>,</p>
       <ol>
        <li data-md>
-        <p>Let <var>i32</var> be <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands④②">?</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-toint32" id="ref-for-sec-toint32">ToInt32</a>(<var>v</var>).</p>
+        <p>Let <var>i32</var> be <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands③④">?</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-toint32" id="ref-for-sec-toint32">ToInt32</a>(<var>v</var>).</p>
        <li data-md>
         <p>Let <var>u32</var> be the unsigned integer such that <var>i32</var> is <a data-link-type="dfn" data-refhint-key="71830f3f" href="https://webassembly.github.io/spec/core/exec/numerics.html#aux-signed" id="ref-for-aux-signed④">signed_32</a>(<var>u32</var>).</p>
        <li data-md>
@@ -2975,7 +2975,7 @@ The algorithm <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="tow
       <p>If <var>type</var> is <a data-link-type="dfn" data-refhint-key="a4646532" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-numtype" id="ref-for-syntax-numtype①⓪">f32</a>,</p>
       <ol>
        <li data-md>
-        <p>Let <var>number</var> be <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands④③">?</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-tonumber" id="ref-for-sec-tonumber">ToNumber</a>(<var>v</var>).</p>
+        <p>Let <var>number</var> be <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands③⑤">?</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-tonumber" id="ref-for-sec-tonumber">ToNumber</a>(<var>v</var>).</p>
        <li data-md>
         <p>If <var>number</var> is <strong>NaN</strong>,</p>
         <ol>
@@ -2997,7 +2997,7 @@ The algorithm <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="tow
       <p>If <var>type</var> is <a data-link-type="dfn" data-refhint-key="487b76fe" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-numtype" id="ref-for-syntax-numtype①①">f64</a>,</p>
       <ol>
        <li data-md>
-        <p>Let <var>number</var> be <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands④④">?</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-tonumber" id="ref-for-sec-tonumber①">ToNumber</a>(<var>v</var>).</p>
+        <p>Let <var>number</var> be <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands③⑥">?</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-tonumber" id="ref-for-sec-tonumber①">ToNumber</a>(<var>v</var>).</p>
        <li data-md>
         <p>If <var>number</var> is <strong>NaN</strong>,</p>
         <ol>
@@ -3028,7 +3028,7 @@ The algorithm <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="tow
         <p>Else if <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-match-valtype" id="ref-for-embed-match-valtype">match_valtype</a>(<var>type</var>, <a data-link-type="dfn" data-refhint-key="a130a533" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-reftype" id="ref-for-syntax-reftype①③">ref</a> <var>null</var> <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/types.html#heap-types" id="ref-for-heap-types">extern</a>),</p>
         <ol>
          <li data-md>
-          <p>Let <var>ref</var> be <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands④⑤">!</a> <a data-link-type="dfn" href="#towebassemblyvalue" id="ref-for-towebassemblyvalue①①">ToWebAssemblyValue</a>(<var>v</var>, <a data-link-type="dfn" data-refhint-key="a130a533" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-reftype" id="ref-for-syntax-reftype①④">ref</a> <a data-link-type="dfn" data-refhint-key="f4809bf4" href="https://webassembly.github.io/spec/core/syntax/types.html#heap-types" id="ref-for-heap-types①">any</a>).</p>
+          <p>Let <var>ref</var> be <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands③⑦">!</a> <a data-link-type="dfn" href="#towebassemblyvalue" id="ref-for-towebassemblyvalue①①">ToWebAssemblyValue</a>(<var>v</var>, <a data-link-type="dfn" data-refhint-key="a130a533" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-reftype" id="ref-for-syntax-reftype①④">ref</a> <a data-link-type="dfn" data-refhint-key="f4809bf4" href="https://webassembly.github.io/spec/core/syntax/types.html#heap-types" id="ref-for-heap-types①">any</a>).</p>
          <li data-md>
           <p>Let <var>r</var> be <a data-link-type="dfn" data-refhint-key="f3505c41" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values②④">ref.extern</a> <var>ref</var>.</p>
         </ol>
@@ -3041,10 +3041,10 @@ The algorithm <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="tow
           <p>Let <var>r</var> be <a data-link-type="dfn" data-refhint-key="e4a6ca14" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values②⑤">ref.func</a> <var>funcaddr</var>.</p>
         </ol>
        <li data-md>
-        <p>Else if <var>v</var> <a data-link-type="dfn" data-refhint-key="019acbc0" href="https://tc39.es/ecma262/#sec-ecmascript-language-types-number-type" id="ref-for-sec-ecmascript-language-types-number-type①">is a Number</a> and <var>v</var> is equal to <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands④⑥">?</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-toint32" id="ref-for-sec-toint32①">ToInt32</a>(<var>v</var>) and <a data-link-type="dfn" href="https://tc39.es/ecma262/#ℝ" id="ref-for-ℝ">ℝ</a>(<var>v</var>) &lt; 2<sup>30</sup> and <a data-link-type="dfn" href="https://tc39.es/ecma262/#ℝ" id="ref-for-ℝ①">ℝ</a>(<var>v</var>) ⩾ -2<sup>30</sup>,</p>
+        <p>Else if <var>v</var> <a data-link-type="dfn" data-refhint-key="019acbc0" href="https://tc39.es/ecma262/#sec-ecmascript-language-types-number-type" id="ref-for-sec-ecmascript-language-types-number-type①">is a Number</a> and <var>v</var> is equal to <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands③⑧">?</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-toint32" id="ref-for-sec-toint32①">ToInt32</a>(<var>v</var>) and <a data-link-type="dfn" href="https://tc39.es/ecma262/#ℝ" id="ref-for-ℝ">ℝ</a>(<var>v</var>) &lt; 2<sup>30</sup> and <a data-link-type="dfn" href="https://tc39.es/ecma262/#ℝ" id="ref-for-ℝ①">ℝ</a>(<var>v</var>) ⩾ -2<sup>30</sup>,</p>
         <ol>
          <li data-md>
-          <p>Let <var>i31</var> be <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands④⑦">?</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-toint32" id="ref-for-sec-toint32②">ToInt32</a>(<var>v</var>).</p>
+          <p>Let <var>i31</var> be <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands③⑨">?</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-toint32" id="ref-for-sec-toint32②">ToInt32</a>(<var>v</var>).</p>
          <li data-md>
           <p>Let <var>u31</var> be the unsigned integer such that <var>i31</var> is <a data-link-type="dfn" data-refhint-key="87dd702b" href="https://webassembly.github.io/spec/core/exec/numerics.html#aux-signed" id="ref-for-aux-signed⑤">signed_31</a>(<var>u31</var>).</p>
          <li data-md>
@@ -3115,7 +3115,7 @@ The algorithm <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="add
       <p>If <var>addrtype</var> is "i32",</p>
       <ol>
        <li data-md>
-        <p>Let <var>n</var> be <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands④⑧">?</a> <a data-link-type="abstract-op" href="https://webidl.spec.whatwg.org/#abstract-opdef-converttoint" id="ref-for-abstract-opdef-converttoint">ConvertToInt</a>(<var>v</var>, 32, "unsigned"), where the destination type is associated with <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#EnforceRange" id="ref-for-EnforceRange①">[EnforceRange]</a>.</p>
+        <p>Let <var>n</var> be <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands④⓪">?</a> <a data-link-type="abstract-op" href="https://webidl.spec.whatwg.org/#abstract-opdef-converttoint" id="ref-for-abstract-opdef-converttoint">ConvertToInt</a>(<var>v</var>, 32, "unsigned"), where the destination type is associated with <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#EnforceRange" id="ref-for-EnforceRange①">[EnforceRange]</a>.</p>
         <p class="note" role="note"><span class="marker">Note:</span> This is equivalent to the <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#js-unsigned-long" id="ref-for-js-unsigned-long">JS conversion rules</a> for <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#EnforceRange" id="ref-for-EnforceRange②">[EnforceRange]</a> <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#idl-unsigned-long" id="ref-for-idl-unsigned-long①">unsigned long</a>.</p>
        <li data-md>
         <p>Return <a data-link-type="dfn" href="https://tc39.es/ecma262/#ℝ" id="ref-for-ℝ②">ℝ</a>(<var>n</var>) as a WebAssembly <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/syntax/values.html#syntax-int" id="ref-for-syntax-int①">u64</a>.</p>
@@ -3124,7 +3124,7 @@ The algorithm <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="add
       <p>If <var>addrtype</var> is "i64",</p>
       <ol>
        <li data-md>
-        <p>Let <var>n</var> be <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands④⑨">?</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-tobigint" id="ref-for-sec-tobigint">ToBigInt</a>(<var>v</var>).</p>
+        <p>Let <var>n</var> be <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands④①">?</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-tobigint" id="ref-for-sec-tobigint">ToBigInt</a>(<var>v</var>).</p>
        <li data-md>
         <p>If <var>n</var> &lt; 0 or <var>n</var> > 2<sup>64</sup> − 1, <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#dfn-throw" id="ref-for-dfn-throw③">throw</a> a <code class="idl"><a data-link-type="idl" href="https://tc39.es/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror①⑧">TypeError</a></code>.</p>
         <p class="note" role="note"><span class="marker">Note:</span> This operation is designed to emulate <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#EnforceRange" id="ref-for-EnforceRange③">[EnforceRange]</a>.</p>
@@ -3481,7 +3481,7 @@ constructor steps are:</p>
           <p>Throw a <code class="idl"><a data-link-type="idl" href="https://tc39.es/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror②③">TypeError</a></code>.</p>
         </ol>
        <li data-md>
-        <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append①③">Append</a> <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands⑤⓪">?</a> <a data-link-type="dfn" href="#towebassemblyvalue" id="ref-for-towebassemblyvalue①②">ToWebAssemblyValue</a>(<var>value</var>, <var>resultType</var>) to <var>wasmPayload</var>.</p>
+        <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append①③">Append</a> <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands④②">?</a> <a data-link-type="dfn" href="#towebassemblyvalue" id="ref-for-towebassemblyvalue①②">ToWebAssemblyValue</a>(<var>value</var>, <var>resultType</var>) to <var>wasmPayload</var>.</p>
       </ol>
      <li data-md>
       <p>Let (<var>store</var>, <var>exceptionAddr</var>) be <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-exn-alloc" id="ref-for-embed-exn-alloc①">exn_alloc</a>(<var>store</var>, <var>exceptionTag</var>.[[Address]], <var>wasmPayload</var>).</p>
@@ -3529,7 +3529,7 @@ constructor steps are:</p>
         <p>Throw a <code class="idl"><a data-link-type="idl" href="https://tc39.es/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror②⑤">TypeError</a></code>.</p>
       </ol>
      <li data-md>
-      <p>Return <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands⑤①">!</a> <a data-link-type="dfn" href="#tojsvalue" id="ref-for-tojsvalue⑦">ToJSValue</a>(<var>payload</var>[<var>index</var>]).</p>
+      <p>Return <a data-link-type="dfn" href="#tojsvalue" id="ref-for-tojsvalue⑦">ToJSValue</a>(<var>payload</var>[<var>index</var>]).</p>
     </ol>
    </div>
    <div class="algorithm" data-algorithm="is(exceptionTag)" data-algorithm-for="Exception">
@@ -3593,7 +3593,7 @@ When the <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#dfn-names
        <li data-md>
         <p>Let <var>constructor</var> be a new object, implementing the <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-nativeerror-object-structure" id="ref-for-sec-nativeerror-object-structure">NativeError Object Structure</a>, with <var>NativeError</var> set to <var>error</var>.</p>
        <li data-md>
-        <p><a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands⑤②">!</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/ordinary-and-exotic-objects-behaviours.html#sec-definemethodproperty" id="ref-for-sec-definemethodproperty">DefineMethodProperty</a>(<var>namespaceObject</var>, <var>error</var>,  <var>constructor</var>, false).</p>
+        <p><a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands④③">!</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/ordinary-and-exotic-objects-behaviours.html#sec-definemethodproperty" id="ref-for-sec-definemethodproperty">DefineMethodProperty</a>(<var>namespaceObject</var>, <var>error</var>,  <var>constructor</var>, false).</p>
       </ol>
     </ol>
    </div>
@@ -3675,7 +3675,7 @@ They expose the same interface as native JavaScript errors like <code class="idl
      <li data-md>
       <p>Let <var>builtins</var> be the result of <a data-link-type="dfn" href="#get-the-builtins-for-a-builtin-set" id="ref-for-get-the-builtins-for-a-builtin-set①">get the builtins for a builtin set</a> <var>builtinSetName</var>.</p>
      <li data-md>
-      <p>Let <var>exportsObject</var> be <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands⑤③">!</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/ordinary-and-exotic-objects-behaviours.html#sec-ordinaryobjectcreate" id="ref-for-sec-ordinaryobjectcreate②">OrdinaryObjectCreate</a>(null).</p>
+      <p>Let <var>exportsObject</var> be <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/ordinary-and-exotic-objects-behaviours.html#sec-ordinaryobjectcreate" id="ref-for-sec-ordinaryobjectcreate②">OrdinaryObjectCreate</a>(null).</p>
      <li data-md>
       <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate①⑥">For each</a> (<var>name</var>, <var>funcType</var>, <var>steps</var>) of <var>builtins</var>,</p>
       <ol>
@@ -3686,7 +3686,7 @@ They expose the same interface as native JavaScript errors like <code class="idl
        <li data-md>
         <p>Let <var>value</var> be <var>func</var>.</p>
        <li data-md>
-        <p>Let <var>status</var> be <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands⑤④">!</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-createdataproperty" id="ref-for-sec-createdataproperty②">CreateDataProperty</a>(<var>exportsObject</var>, <var>name</var>, <var>value</var>).</p>
+        <p>Let <var>status</var> be <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands④④">!</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-createdataproperty" id="ref-for-sec-createdataproperty②">CreateDataProperty</a>(<var>exportsObject</var>, <var>name</var>, <var>value</var>).</p>
        <li data-md>
         <p class="assertion">Assert: <var>status</var> is true.</p>
       </ol>
@@ -3736,7 +3736,7 @@ They expose the same interface as native JavaScript errors like <code class="idl
      <li data-md>
       <p class="assertion">Assert: <var>v</var> is of type <a data-link-type="dfn" data-refhint-key="1eccdce5" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-numtype" id="ref-for-syntax-numtype①②">i32</a>.</p>
      <li data-md>
-      <p>Return <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands⑤⑤">!</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-call" id="ref-for-sec-call①">Call</a>(<a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-string.fromcharcode" id="ref-for-sec-string.fromcharcode">String.fromCharCode</a>, undefined, « <a data-link-type="dfn" href="#tojsvalue" id="ref-for-tojsvalue⑧">ToJSValue</a>(<var>v</var>) »).</p>
+      <p>Return <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands④⑤">!</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-call" id="ref-for-sec-call①">Call</a>(<a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-string.fromcharcode" id="ref-for-sec-string.fromcharcode">String.fromCharCode</a>, undefined, « <a data-link-type="dfn" href="#tojsvalue" id="ref-for-tojsvalue⑧">ToJSValue</a>(<var>v</var>) »).</p>
     </ol>
    </div>
    <div class="algorithm" data-algorithm="CharCodeAt">
@@ -3745,7 +3745,7 @@ They expose the same interface as native JavaScript errors like <code class="idl
      <li data-md>
       <p class="assertion">Assert: <var>index</var> is of type <a data-link-type="dfn" data-refhint-key="1eccdce5" href="https://webassembly.github.io/spec/core/syntax/types.html#syntax-numtype" id="ref-for-syntax-numtype①③">i32</a>.</p>
      <li data-md>
-      <p>Return <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands⑤⑥">!</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-call" id="ref-for-sec-call②">Call</a>(<a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-string.prototype.charcodeat" id="ref-for-sec-string.prototype.charcodeat">String.prototype.charCodeAt</a>, <var>string</var>, « <a data-link-type="dfn" href="#tojsvalue" id="ref-for-tojsvalue⑨">ToJSValue</a>(<var>index</var>) »).</p>
+      <p>Return <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands④⑥">!</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-call" id="ref-for-sec-call②">Call</a>(<a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-string.prototype.charcodeat" id="ref-for-sec-string.prototype.charcodeat">String.prototype.charCodeAt</a>, <var>string</var>, « <a data-link-type="dfn" href="#tojsvalue" id="ref-for-tojsvalue⑨">ToJSValue</a>(<var>index</var>) »).</p>
     </ol>
    </div>
    <h4 class="heading settled" data-level="6.1.2" id="js-string-cast"><span class="secno">6.1.2. </span><span class="content">cast</span><a class="self-link" href="#js-string-cast"></a></h4>
@@ -3754,7 +3754,7 @@ They expose the same interface as native JavaScript errors like <code class="idl
     <p>When this builtin is invoked with parameter <var>v</var>, the following steps must be run:</p>
     <ol>
      <li data-md>
-      <p>Return <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands⑤⑦">?</a> <a data-link-type="abstract-op" href="#abstract-opdef-unwrapstring" id="ref-for-abstract-opdef-unwrapstring">UnwrapString</a>(<var>v</var>)</p>
+      <p>Return <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands④⑦">?</a> <a data-link-type="abstract-op" href="#abstract-opdef-unwrapstring" id="ref-for-abstract-opdef-unwrapstring">UnwrapString</a>(<var>v</var>)</p>
     </ol>
    </div>
    <h4 class="heading settled" data-level="6.1.3" id="js-string-test"><span class="secno">6.1.3. </span><span class="content">test</span><a class="self-link" href="#js-string-test"></a></h4>
@@ -3825,7 +3825,7 @@ They expose the same interface as native JavaScript errors like <code class="idl
         <p>Throw a <code class="idl"><a data-link-type="idl" href="#exceptiondef-runtimeerror" id="ref-for-exceptiondef-runtimeerror⑥">RuntimeError</a></code> exception as if a <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-trap" id="ref-for-syntax-trap③">trap</a> was executed.</p>
       </ol>
      <li data-md>
-      <p>Let <var>string</var> be <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands⑤⑧">?</a> <a data-link-type="abstract-op" href="#abstract-opdef-unwrapstring" id="ref-for-abstract-opdef-unwrapstring①">UnwrapString</a>(<var>string</var>).</p>
+      <p>Let <var>string</var> be <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands④⑧">?</a> <a data-link-type="abstract-op" href="#abstract-opdef-unwrapstring" id="ref-for-abstract-opdef-unwrapstring①">UnwrapString</a>(<var>string</var>).</p>
      <li data-md>
       <p>Let <var>stringLength</var> be the <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string-length" id="ref-for-string-length">length</a> of <var>string</var>.</p>
      <li data-md>
@@ -3873,7 +3873,7 @@ They expose the same interface as native JavaScript errors like <code class="idl
         <p>Throw a <code class="idl"><a data-link-type="idl" href="#exceptiondef-runtimeerror" id="ref-for-exceptiondef-runtimeerror⑧">RuntimeError</a></code> exception as if a <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-trap" id="ref-for-syntax-trap⑤">trap</a> was executed.</p>
       </ol>
      <li data-md>
-      <p>Return <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands⑤⑨">!</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-call" id="ref-for-sec-call③">Call</a>(<a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-string.fromcodepoint" id="ref-for-sec-string.fromcodepoint">String.fromCodePoint</a>, undefined, « <a data-link-type="dfn" href="#tojsvalue" id="ref-for-tojsvalue①⓪">ToJSValue</a>(<var>v</var>) »).</p>
+      <p>Return <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands④⑨">!</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-call" id="ref-for-sec-call③">Call</a>(<a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-string.fromcodepoint" id="ref-for-sec-string.fromcodepoint">String.fromCodePoint</a>, undefined, « <a data-link-type="dfn" href="#tojsvalue" id="ref-for-tojsvalue①⓪">ToJSValue</a>(<var>v</var>) »).</p>
     </ol>
    </div>
    <h4 class="heading settled" data-level="6.1.8" id="js-string-charCodeAt"><span class="secno">6.1.8. </span><span class="content">charCodeAt</span><a class="self-link" href="#js-string-charCodeAt"></a></h4>
@@ -3882,7 +3882,7 @@ They expose the same interface as native JavaScript errors like <code class="idl
     <p>When this builtin is invoked with parameters <var>string</var> and <var>index</var>, the following steps must be run:</p>
     <ol>
      <li data-md>
-      <p>Let <var>string</var> be <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands⑥⓪">?</a> <a data-link-type="abstract-op" href="#abstract-opdef-unwrapstring" id="ref-for-abstract-opdef-unwrapstring②">UnwrapString</a>(<var>string</var>).</p>
+      <p>Let <var>string</var> be <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands⑤⓪">?</a> <a data-link-type="abstract-op" href="#abstract-opdef-unwrapstring" id="ref-for-abstract-opdef-unwrapstring②">UnwrapString</a>(<var>string</var>).</p>
      <li data-md>
       <p>Let <var>length</var> be the <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string-length" id="ref-for-string-length①">length</a> of <var>string</var>.</p>
      <li data-md>
@@ -3901,7 +3901,7 @@ They expose the same interface as native JavaScript errors like <code class="idl
     <p>When this builtin is invoked with parameters <var>string</var> and <var>index</var>, the following steps must be run:</p>
     <ol>
      <li data-md>
-      <p>Let <var>string</var> be <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands⑥①">?</a> <a data-link-type="abstract-op" href="#abstract-opdef-unwrapstring" id="ref-for-abstract-opdef-unwrapstring③">UnwrapString</a>(<var>string</var>).</p>
+      <p>Let <var>string</var> be <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands⑤①">?</a> <a data-link-type="abstract-op" href="#abstract-opdef-unwrapstring" id="ref-for-abstract-opdef-unwrapstring③">UnwrapString</a>(<var>string</var>).</p>
      <li data-md>
       <p>Let <var>length</var> be the <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string-length" id="ref-for-string-length②">length</a> of <var>string</var>.</p>
      <li data-md>
@@ -3911,7 +3911,7 @@ They expose the same interface as native JavaScript errors like <code class="idl
         <p>Throw a <code class="idl"><a data-link-type="idl" href="#exceptiondef-runtimeerror" id="ref-for-exceptiondef-runtimeerror①⓪">RuntimeError</a></code> exception as if a <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-trap" id="ref-for-syntax-trap⑦">trap</a> was executed.</p>
       </ol>
      <li data-md>
-      <p>Return <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands⑥②">!</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-call" id="ref-for-sec-call④">Call</a>(<a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-string.prototype.codepointat" id="ref-for-sec-string.prototype.codepointat">String.prototype.codePointAt</a>, <var>string</var>, « <a data-link-type="dfn" href="#tojsvalue" id="ref-for-tojsvalue①①">ToJSValue</a>(<var>index</var>) »).</p>
+      <p>Return <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands⑤②">!</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-call" id="ref-for-sec-call④">Call</a>(<a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-string.prototype.codepointat" id="ref-for-sec-string.prototype.codepointat">String.prototype.codePointAt</a>, <var>string</var>, « <a data-link-type="dfn" href="#tojsvalue" id="ref-for-tojsvalue①①">ToJSValue</a>(<var>index</var>) »).</p>
     </ol>
    </div>
    <h4 class="heading settled" data-level="6.1.10" id="js-string-length"><span class="secno">6.1.10. </span><span class="content">length</span><a class="self-link" href="#js-string-length"></a></h4>
@@ -3920,7 +3920,7 @@ They expose the same interface as native JavaScript errors like <code class="idl
     <p>When this builtin is invoked with parameter <var>v</var>, the following steps must be run:</p>
     <ol>
      <li data-md>
-      <p>Let <var>string</var> be <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands⑥③">?</a> <a data-link-type="abstract-op" href="#abstract-opdef-unwrapstring" id="ref-for-abstract-opdef-unwrapstring④">UnwrapString</a>(<var>v</var>).</p>
+      <p>Let <var>string</var> be <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands⑤③">?</a> <a data-link-type="abstract-op" href="#abstract-opdef-unwrapstring" id="ref-for-abstract-opdef-unwrapstring④">UnwrapString</a>(<var>v</var>).</p>
      <li data-md>
       <p>Return the <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string-length" id="ref-for-string-length③">length</a> of <var>string</var>.</p>
     </ol>
@@ -3931,11 +3931,11 @@ They expose the same interface as native JavaScript errors like <code class="idl
     <p>When this builtin is invoked with parameters <var>first</var> and <var>second</var>, the following steps must be run:</p>
     <ol>
      <li data-md>
-      <p>Let <var>first</var> be <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands⑥④">?</a> <a data-link-type="abstract-op" href="#abstract-opdef-unwrapstring" id="ref-for-abstract-opdef-unwrapstring⑤">UnwrapString</a>(<var>first</var>).</p>
+      <p>Let <var>first</var> be <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands⑤④">?</a> <a data-link-type="abstract-op" href="#abstract-opdef-unwrapstring" id="ref-for-abstract-opdef-unwrapstring⑤">UnwrapString</a>(<var>first</var>).</p>
      <li data-md>
-      <p>Let <var>second</var> be <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands⑥⑤">?</a> <a data-link-type="abstract-op" href="#abstract-opdef-unwrapstring" id="ref-for-abstract-opdef-unwrapstring⑥">UnwrapString</a>(<var>second</var>).</p>
+      <p>Let <var>second</var> be <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands⑤⑤">?</a> <a data-link-type="abstract-op" href="#abstract-opdef-unwrapstring" id="ref-for-abstract-opdef-unwrapstring⑥">UnwrapString</a>(<var>second</var>).</p>
      <li data-md>
-      <p>Return <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands⑥⑥">!</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-call" id="ref-for-sec-call⑤">Call</a>(<a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-string.prototype.concat" id="ref-for-sec-string.prototype.concat">String.prototype.concat</a>, <var>first</var>, « <var>second</var> »).</p>
+      <p>Return <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands⑤⑥">!</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-call" id="ref-for-sec-call⑤">Call</a>(<a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-string.prototype.concat" id="ref-for-sec-string.prototype.concat">String.prototype.concat</a>, <var>first</var>, « <var>second</var> »).</p>
     </ol>
    </div>
    <h4 class="heading settled" data-level="6.1.12" id="js-string-substring"><span class="secno">6.1.12. </span><span class="content">substring</span><a class="self-link" href="#js-string-substring"></a></h4>
@@ -3944,7 +3944,7 @@ They expose the same interface as native JavaScript errors like <code class="idl
     <p>When this builtin is invoked with parameters <var>string</var>, <var>start</var>, and <var>end</var>, the following steps must be run:</p>
     <ol>
      <li data-md>
-      <p>Let <var>string</var> be <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands⑥⑦">?</a> <a data-link-type="abstract-op" href="#abstract-opdef-unwrapstring" id="ref-for-abstract-opdef-unwrapstring⑦">UnwrapString</a>(<var>string</var>).</p>
+      <p>Let <var>string</var> be <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands⑤⑦">?</a> <a data-link-type="abstract-op" href="#abstract-opdef-unwrapstring" id="ref-for-abstract-opdef-unwrapstring⑦">UnwrapString</a>(<var>string</var>).</p>
      <li data-md>
       <p>Let <var>length</var> be the <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string-length" id="ref-for-string-length④">length</a> of <var>string</var>.</p>
      <li data-md>
@@ -3954,7 +3954,7 @@ They expose the same interface as native JavaScript errors like <code class="idl
         <p>Return the empty string.</p>
       </ol>
      <li data-md>
-      <p>Return <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands⑥⑧">!</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-call" id="ref-for-sec-call⑥">Call</a>(<a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-string.prototype.substring" id="ref-for-sec-string.prototype.substring">String.prototype.substring</a>, <var>string</var>, « <a data-link-type="dfn" href="#tojsvalue" id="ref-for-tojsvalue①②">ToJSValue</a>(<var>start</var>), <a data-link-type="dfn" href="#tojsvalue" id="ref-for-tojsvalue①③">ToJSValue</a>(<var>end</var>) »).</p>
+      <p>Return <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands⑤⑧">!</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-call" id="ref-for-sec-call⑥">Call</a>(<a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-string.prototype.substring" id="ref-for-sec-string.prototype.substring">String.prototype.substring</a>, <var>string</var>, « <a data-link-type="dfn" href="#tojsvalue" id="ref-for-tojsvalue①②">ToJSValue</a>(<var>start</var>), <a data-link-type="dfn" href="#tojsvalue" id="ref-for-tojsvalue①③">ToJSValue</a>(<var>end</var>) »).</p>
     </ol>
    </div>
    <h4 class="heading settled" data-level="6.1.13" id="js-string-equals"><span class="secno">6.1.13. </span><span class="content">equals</span><a class="self-link" href="#js-string-equals"></a></h4>
@@ -3976,7 +3976,7 @@ They expose the same interface as native JavaScript errors like <code class="idl
         <p>Throw a <code class="idl"><a data-link-type="idl" href="#exceptiondef-runtimeerror" id="ref-for-exceptiondef-runtimeerror①②">RuntimeError</a></code> exception as if a <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-trap" id="ref-for-syntax-trap⑨">trap</a> was executed.</p>
       </ol>
      <li data-md>
-      <p>If <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands⑥⑨">!</a> <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-isstrictlyequal" id="ref-for-sec-isstrictlyequal">IsStrictlyEqual</a>(<var>first</var>, <var>second</var>) is true,</p>
+      <p>If <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-isstrictlyequal" id="ref-for-sec-isstrictlyequal">IsStrictlyEqual</a>(<var>first</var>, <var>second</var>) is true,</p>
       <ol>
        <li data-md>
         <p>Return 1.</p>
@@ -3991,17 +3991,17 @@ They expose the same interface as native JavaScript errors like <code class="idl
     <p>When this builtin is invoked with parameters <var>first</var> and <var>second</var>, the following steps must be run:</p>
     <ol>
      <li data-md>
-      <p>Let <var>first</var> be <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands⑦⓪">?</a> <a data-link-type="abstract-op" href="#abstract-opdef-unwrapstring" id="ref-for-abstract-opdef-unwrapstring⑧">UnwrapString</a>(<var>first</var>).</p>
+      <p>Let <var>first</var> be <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands⑤⑨">?</a> <a data-link-type="abstract-op" href="#abstract-opdef-unwrapstring" id="ref-for-abstract-opdef-unwrapstring⑧">UnwrapString</a>(<var>first</var>).</p>
      <li data-md>
-      <p>Let <var>second</var> be <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands⑦①">?</a> <a data-link-type="abstract-op" href="#abstract-opdef-unwrapstring" id="ref-for-abstract-opdef-unwrapstring⑨">UnwrapString</a>(<var>second</var>).</p>
+      <p>Let <var>second</var> be <a data-link-type="dfn" data-refhint-key="009dc6f4" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands⑥⓪">?</a> <a data-link-type="abstract-op" href="#abstract-opdef-unwrapstring" id="ref-for-abstract-opdef-unwrapstring⑨">UnwrapString</a>(<var>second</var>).</p>
      <li data-md>
-      <p>If <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands⑦②">!</a> <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-isstrictlyequal" id="ref-for-sec-isstrictlyequal①">IsStrictlyEqual</a>(<var>first</var>, <var>second</var>) is true,</p>
+      <p>If <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-isstrictlyequal" id="ref-for-sec-isstrictlyequal①">IsStrictlyEqual</a>(<var>first</var>, <var>second</var>) is true,</p>
       <ol>
        <li data-md>
         <p>Return 0.</p>
       </ol>
      <li data-md>
-      <p>If <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands⑦③">!</a> <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-islessthan" id="ref-for-sec-islessthan">IsLessThan</a>(<var>first</var>, <var>second</var>, true) is true,</p>
+      <p>If <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands⑥①">!</a> <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-islessthan" id="ref-for-sec-islessthan">IsLessThan</a>(<var>first</var>, <var>second</var>, true) is true,</p>
       <ol>
        <li data-md>
         <p>Return -1.</p>
@@ -5157,7 +5157,7 @@ let dfnPanelData = {
 "56473266": {"dfnID":"56473266","dfnText":"exn_read","external":true,"refSections":[{"refs":[{"id":"ref-for-embed-exn-read"}],"title":"5.6. Exported Functions"},{"refs":[{"id":"ref-for-embed-exn-read\u2460"},{"id":"ref-for-embed-exn-read\u2461"}],"title":"5.9. Exceptions"}],"url":"https://webassembly.github.io/spec/core/appendix/embedding.html#embed-exn-read"},
 "5672836e": {"dfnID":"5672836e","dfnText":"trap","external":true,"refSections":[{"refs":[{"id":"ref-for-syntax-trap"}],"title":"6.1.1. Abstract operations"},{"refs":[{"id":"ref-for-syntax-trap\u2460"},{"id":"ref-for-syntax-trap\u2461"}],"title":"6.1.4. fromCharCodeArray"},{"refs":[{"id":"ref-for-syntax-trap\u2462"},{"id":"ref-for-syntax-trap\u2463"}],"title":"6.1.5. intoCharCodeArray"},{"refs":[{"id":"ref-for-syntax-trap\u2464"}],"title":"6.1.7. fromCodePoint"},{"refs":[{"id":"ref-for-syntax-trap\u2465"}],"title":"6.1.8. charCodeAt"},{"refs":[{"id":"ref-for-syntax-trap\u2466"}],"title":"6.1.9. codePointAt"},{"refs":[{"id":"ref-for-syntax-trap\u2467"},{"id":"ref-for-syntax-trap\u2468"}],"title":"6.1.13. equals"}],"url":"https://webassembly.github.io/spec/core/exec/runtime.html#syntax-trap"},
 "56f81a8e": {"dfnID":"56f81a8e","dfnText":"new","external":true,"refSections":[{"refs":[{"id":"ref-for-new"},{"id":"ref-for-new\u2460"}],"title":"5. The WebAssembly Namespace"},{"refs":[{"id":"ref-for-new\u2461"}],"title":"5.3. Memories"},{"refs":[{"id":"ref-for-new\u2462"}],"title":"5.4. Tables"},{"refs":[{"id":"ref-for-new\u2463"}],"title":"5.5. Globals"},{"refs":[{"id":"ref-for-new\u2464"}],"title":"5.7.1. Tag types"},{"refs":[{"id":"ref-for-new\u2465"}],"title":"5.9. Exceptions"}],"url":"https://webidl.spec.whatwg.org/#new"},
-"570979f1": {"dfnID":"570979f1","dfnText":"!","external":true,"refSections":[{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2461"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2462"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2463"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2464"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2465"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2466"}],"title":"5. The WebAssembly Namespace"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2467"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2468"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u24ea"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2460"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2461"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2462"}],"title":"5.3. Memories"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2463"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2464"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2465"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2466"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2467"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2468"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2461\u24ea"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2461\u2460"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2461\u2461"}],"title":"5.4. Tables"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2461\u2462"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2461\u2463"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2461\u2464"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2461\u2465"}],"title":"5.5. Globals"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2461\u2466"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2461\u2467"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2461\u2468"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2462\u24ea"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2462\u2460"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2462\u2461"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2462\u2462"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2462\u2463"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2462\u2464"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2462\u2465"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2462\u2466"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2462\u2467"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2462\u2468"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2463\u24ea"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2463\u2460"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2463\u2461"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2463\u2462"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2463\u2463"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2463\u2464"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2463\u2465"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2463\u2466"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2463\u2467"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2463\u2468"}],"title":"5.6. Exported Functions"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2464\u24ea"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2464\u2460"}],"title":"5.9. Exceptions"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2464\u2461"}],"title":"5.10. Error Objects"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2464\u2462"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2464\u2463"}],"title":"6. Builtins"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2464\u2464"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2464\u2465"}],"title":"6.1.1. Abstract operations"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2464\u2466"}],"title":"6.1.2. cast"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2464\u2467"}],"title":"6.1.5. intoCharCodeArray"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2464\u2468"}],"title":"6.1.7. fromCodePoint"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2465\u24ea"}],"title":"6.1.8. charCodeAt"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2465\u2460"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2465\u2461"}],"title":"6.1.9. codePointAt"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2465\u2462"}],"title":"6.1.10. length"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2465\u2463"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2465\u2464"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2465\u2465"}],"title":"6.1.11. concat"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2465\u2466"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2465\u2467"}],"title":"6.1.12. substring"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2465\u2468"}],"title":"6.1.13. equals"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2466\u24ea"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2466\u2460"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2466\u2461"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2466\u2462"}],"title":"6.1.14. compare"}],"url":"https://tc39.es/ecma262/#sec-returnifabrupt-shorthands"},
+"570979f1": {"dfnID":"570979f1","dfnText":"!","external":true,"refSections":[{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2461"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2462"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2463"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2464"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2465"}],"title":"5. The WebAssembly Namespace"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2466"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2467"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2468"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u24ea"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2460"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2461"}],"title":"5.3. Memories"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2462"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2463"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2464"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2465"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2466"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2467"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2468"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2461\u24ea"}],"title":"5.4. Tables"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2461\u2460"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2461\u2461"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2461\u2462"}],"title":"5.5. Globals"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2461\u2463"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2461\u2464"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2461\u2465"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2461\u2466"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2461\u2467"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2461\u2468"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2462\u24ea"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2462\u2460"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2462\u2461"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2462\u2462"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2462\u2463"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2462\u2464"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2462\u2465"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2462\u2466"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2462\u2467"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2462\u2468"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2463\u24ea"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2463\u2460"}],"title":"5.6. Exported Functions"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2463\u2461"}],"title":"5.9. Exceptions"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2463\u2462"}],"title":"5.10. Error Objects"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2463\u2463"}],"title":"6. Builtins"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2463\u2464"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2463\u2465"}],"title":"6.1.1. Abstract operations"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2463\u2466"}],"title":"6.1.2. cast"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2463\u2467"}],"title":"6.1.5. intoCharCodeArray"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2463\u2468"}],"title":"6.1.7. fromCodePoint"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2464\u24ea"}],"title":"6.1.8. charCodeAt"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2464\u2460"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2464\u2461"}],"title":"6.1.9. codePointAt"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2464\u2462"}],"title":"6.1.10. length"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2464\u2463"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2464\u2464"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2464\u2465"}],"title":"6.1.11. concat"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2464\u2466"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2464\u2467"}],"title":"6.1.12. substring"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2464\u2468"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2465\u24ea"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2465\u2460"}],"title":"6.1.14. compare"}],"url":"https://tc39.es/ecma262/#sec-returnifabrupt-shorthands"},
 "5b7339ce": {"dfnID":"5b7339ce","dfnText":"GetMethod","external":true,"refSections":[{"refs":[{"id":"ref-for-sec-getmethod"}],"title":"5.6. Exported Functions"}],"url":"https://tc39.es/ecma262/multipage/abstract-operations.html#sec-getmethod"},
 "5ce71be2": {"dfnID":"5ce71be2","dfnText":"val_default","external":true,"refSections":[{"refs":[{"id":"ref-for-embed-val-default"}],"title":"5.5. Globals"}],"url":"https://webassembly.github.io/spec/core/appendix/embedding.html#embed-val-default"},
 "5daa6a7d": {"dfnID":"5daa6a7d","dfnText":"MakeBasicObject","external":true,"refSections":[{"refs":[{"id":"ref-for-sec-makebasicobject"}],"title":"5.8. Garbage Collected Objects"}],"url":"https://tc39.es/ecma262/#sec-makebasicobject"},
@@ -5201,7 +5201,7 @@ let dfnPanelData = {
 "8780316d": {"dfnID":"8780316d","dfnText":"module_imports","external":true,"refSections":[{"refs":[{"id":"ref-for-embed-module-imports"},{"id":"ref-for-embed-module-imports\u2460"},{"id":"ref-for-embed-module-imports\u2461"}],"title":"5. The WebAssembly Namespace"},{"refs":[{"id":"ref-for-embed-module-imports\u2462"}],"title":"5.1. Modules"}],"url":"https://webassembly.github.io/spec/core/appendix/embedding.html#embed-module-imports"},
 "8855a9aa": {"dfnID":"8855a9aa","dfnText":"DOMString","external":true,"refSections":[{"refs":[{"id":"ref-for-idl-DOMString"}],"title":"5.1. Modules"},{"refs":[{"id":"ref-for-idl-DOMString\u2460"},{"id":"ref-for-idl-DOMString\u2461"}],"title":"5.9. Exceptions"}],"url":"https://webidl.spec.whatwg.org/#idl-DOMString"},
 "889e932f": {"dfnID":"889e932f","dfnText":"Exposed","external":true,"refSections":[{"refs":[{"id":"ref-for-Exposed"}],"title":"5.7.1. Tag types"},{"refs":[{"id":"ref-for-Exposed\u2460"}],"title":"5.9. Exceptions"}],"url":"https://webidl.spec.whatwg.org/#Exposed"},
-"8c6dc739": {"dfnID":"8c6dc739","dfnText":"?","external":true,"refSections":[{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2461"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2462"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2463"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2464"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2465"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2466"}],"title":"5. The WebAssembly Namespace"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2467"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2468"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u24ea"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2460"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2461"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2462"}],"title":"5.3. Memories"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2463"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2464"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2465"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2466"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2467"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2468"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2461\u24ea"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2461\u2460"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2461\u2461"}],"title":"5.4. Tables"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2461\u2462"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2461\u2463"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2461\u2464"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2461\u2465"}],"title":"5.5. Globals"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2461\u2466"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2461\u2467"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2461\u2468"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2462\u24ea"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2462\u2460"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2462\u2461"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2462\u2462"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2462\u2463"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2462\u2464"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2462\u2465"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2462\u2466"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2462\u2467"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2462\u2468"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2463\u24ea"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2463\u2460"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2463\u2461"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2463\u2462"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2463\u2463"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2463\u2464"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2463\u2465"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2463\u2466"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2463\u2467"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2463\u2468"}],"title":"5.6. Exported Functions"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2464\u24ea"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2464\u2460"}],"title":"5.9. Exceptions"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2464\u2461"}],"title":"5.10. Error Objects"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2464\u2462"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2464\u2463"}],"title":"6. Builtins"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2464\u2464"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2464\u2465"}],"title":"6.1.1. Abstract operations"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2464\u2466"}],"title":"6.1.2. cast"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2464\u2467"}],"title":"6.1.5. intoCharCodeArray"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2464\u2468"}],"title":"6.1.7. fromCodePoint"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2465\u24ea"}],"title":"6.1.8. charCodeAt"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2465\u2460"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2465\u2461"}],"title":"6.1.9. codePointAt"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2465\u2462"}],"title":"6.1.10. length"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2465\u2463"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2465\u2464"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2465\u2465"}],"title":"6.1.11. concat"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2465\u2466"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2465\u2467"}],"title":"6.1.12. substring"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2465\u2468"}],"title":"6.1.13. equals"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2466\u24ea"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2466\u2460"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2466\u2461"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2466\u2462"}],"title":"6.1.14. compare"}],"url":"https://tc39.es/ecma262/#sec-returnifabrupt-shorthands"},
+"8c6dc739": {"dfnID":"8c6dc739","dfnText":"?","external":true,"refSections":[{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2461"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2462"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2463"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2464"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2465"}],"title":"5. The WebAssembly Namespace"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2466"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2467"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2468"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u24ea"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2460"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2461"}],"title":"5.3. Memories"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2462"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2463"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2464"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2465"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2466"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2467"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460\u2468"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2461\u24ea"}],"title":"5.4. Tables"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2461\u2460"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2461\u2461"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2461\u2462"}],"title":"5.5. Globals"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2461\u2463"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2461\u2464"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2461\u2465"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2461\u2466"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2461\u2467"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2461\u2468"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2462\u24ea"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2462\u2460"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2462\u2461"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2462\u2462"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2462\u2463"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2462\u2464"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2462\u2465"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2462\u2466"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2462\u2467"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2462\u2468"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2463\u24ea"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2463\u2460"}],"title":"5.6. Exported Functions"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2463\u2461"}],"title":"5.9. Exceptions"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2463\u2462"}],"title":"5.10. Error Objects"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2463\u2463"}],"title":"6. Builtins"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2463\u2464"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2463\u2465"}],"title":"6.1.1. Abstract operations"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2463\u2466"}],"title":"6.1.2. cast"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2463\u2467"}],"title":"6.1.5. intoCharCodeArray"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2463\u2468"}],"title":"6.1.7. fromCodePoint"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2464\u24ea"}],"title":"6.1.8. charCodeAt"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2464\u2460"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2464\u2461"}],"title":"6.1.9. codePointAt"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2464\u2462"}],"title":"6.1.10. length"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2464\u2463"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2464\u2464"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2464\u2465"}],"title":"6.1.11. concat"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2464\u2466"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2464\u2467"}],"title":"6.1.12. substring"},{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands\u2464\u2468"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2465\u24ea"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2465\u2460"}],"title":"6.1.14. compare"}],"url":"https://tc39.es/ecma262/#sec-returnifabrupt-shorthands"},
 "903777ae": {"dfnID":"903777ae","dfnText":"exn_tag","external":true,"refSections":[{"refs":[{"id":"ref-for-embed-exn-tag"}],"title":"5.6. Exported Functions"},{"refs":[{"id":"ref-for-embed-exn-tag\u2460"},{"id":"ref-for-embed-exn-tag\u2461"}],"title":"5.9. Exceptions"}],"url":"https://webassembly.github.io/spec/core/appendix/embedding.html#embed-exn-tag"},
 "9057d48e": {"dfnID":"9057d48e","dfnText":"global instance","external":true,"refSections":[{"refs":[{"id":"ref-for-global-instances"}],"title":"5.5. Globals"}],"url":"https://webassembly.github.io/spec/core/exec/runtime.html#global-instances"},
 "9105068d": {"dfnID":"9105068d","dfnText":"f32","external":true,"refSections":[{"refs":[{"id":"ref-for-syntax-numtype"},{"id":"ref-for-syntax-numtype\u2460"},{"id":"ref-for-syntax-numtype\u2461"},{"id":"ref-for-syntax-numtype\u2462"}],"title":"5. The WebAssembly Namespace"},{"refs":[{"id":"ref-for-syntax-numtype\u2463"},{"id":"ref-for-syntax-numtype\u2464"},{"id":"ref-for-syntax-numtype\u2465"},{"id":"ref-for-syntax-numtype\u2466"}],"title":"5.5. Globals"},{"refs":[{"id":"ref-for-syntax-numtype\u2467"},{"id":"ref-for-syntax-numtype\u2468"},{"id":"ref-for-syntax-numtype\u2460\u24ea"},{"id":"ref-for-syntax-numtype\u2460\u2460"}],"title":"5.6. Exported Functions"},{"refs":[{"id":"ref-for-syntax-numtype\u2460\u2461"},{"id":"ref-for-syntax-numtype\u2460\u2462"}],"title":"6.1.1. Abstract operations"},{"refs":[{"id":"ref-for-syntax-numtype\u2460\u2463"}],"title":"6.1.5. intoCharCodeArray"},{"refs":[{"id":"ref-for-syntax-numtype\u2460\u2464"}],"title":"BigInt Integration"}],"url":"https://webassembly.github.io/spec/core/syntax/types.html#syntax-numtype"},
