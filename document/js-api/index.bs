@@ -482,7 +482,7 @@ To <dfn>instantiate imported strings</dfn> with module |module| and |importedStr
 
 <div algorithm="read-the-imports">
   To <dfn>read the imports</dfn> from a WebAssembly module |module| from imports object |importObject|, enabled builtins |builtinSetNames|, and |importedStringModule|, perform the following steps:
-    1. If |module|.[=imports=] [=list/is empty|is not empty=], and |importObject| is undefined, throw a {{TypeError}} exception.
+    1. If [=module_imports=](|module|) [=list/is empty|is not empty=], and |importObject| is undefined, throw a {{TypeError}} exception.
     1. Let |builtinOrStringImports| be the ordered map « ».
     1. [=list/iterate|For each=] |builtinSetName| of |builtinSetNames|,
         1. Let |builtinSetQualifiedName| be |builtinSetName| prefixed with "wasm:"
@@ -537,8 +537,7 @@ To <dfn>instantiate imported strings</dfn> with module |module| and |importedStr
             1. Let |tableaddr| be |v|.\[[Table]].
             1. Let |externtable| be the [=external value=] [=external value|table=] |tableaddr|.
             1. [=list/Append=] |externtable| to |imports|.
-        1. If |externtype| is of the form [=external-type/tag=] |attribute| <var ignore>functype</var>,
-            1. Assert: |attribute| is [=tagtype/attribute/exception=].
+        1. If |externtype| is of the form [=external-type/tag=] <var ignore>functype</var>,
             1. If |v| does not [=implement=] {{Tag}}, throw a {{LinkError}} exception.
             1. Let |tagaddr| be |v|.\[[Address]].
             1. Let |externtag| be the [=external value=] [=external value/tag=] |tagaddr|.
@@ -576,8 +575,7 @@ The verification of WebAssembly type requirements is deferred to the
             1. Let [=external value|table=] |tableaddr| be |externval|.
             1. Let |table| be [=create a Table object|a new Table object=] created from |tableaddr|.
             1. Let |value| be |table|.
-        1. If |externtype| is of the form [=external-type/tag=] |attribute| <var ignore>functype</var>,
-            1. Assert: |attribute| is [=tagtype/attribute/exception=].
+        1. If |externtype| is of the form [=external-type/tag=] <var ignore>functype</var>,
             1. Assert: |externval| is of the form [=external value/tag=] |tagaddr|.
             1. Let [=external value/tag=] |tagaddr| be |externval|.
             1. Let |tag| be [=create a Tag object|a new Tag object=] created from |tagaddr|.
@@ -601,14 +599,13 @@ The verification of WebAssembly type requirements is deferred to the
 <div algorithm>
   To <dfn>instantiate the core of a WebAssembly module</dfn> from a module |module| and imports |imports|, perform the following steps:
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
-    1. Let |result| be [=module_instantiate=](|store|, |module|, |imports|).
+    1. Let (|store|, |result|) be [=module_instantiate=](|store|, |module|, |imports|).
     1. If |result| is [=error=], throw an appropriate exception type:
         * A {{LinkError}} exception for most cases which occur during linking.
         * If the error came when running the start function, throw a {{RuntimeError}} for most errors which occur from WebAssembly, or the error object propagated from inner ECMAScript code.
         * Another error type if appropriate, for example an out-of-memory exception, as documented in <a href="#errors">the WebAssembly error mapping</a>.
-    1. Let (|store|, |instance|) be |result|.
     1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
-    1. Return |instance|.
+    1. Return |result|.
 </div>
 
 <div algorithm>
@@ -1251,8 +1248,8 @@ This slot holds a [=function address=] relative to the [=surrounding agent=]'s [
         1. Let |index| be the [=index of the host function=] |funcaddr|.
     1. Otherwise,
         1. Let |moduleinst| be |funcinst|.module.
-        1. Assert: |funcaddr| is contained in |moduleinst|.funcaddrs.
-        1. Let |index| be the index of |moduleinst|.funcaddrs where |funcaddr| is found.
+        1. Assert: |funcaddr| is contained in |moduleinst|.funcs.
+        1. Let |index| be the index of |moduleinst|.funcs where |funcaddr| is found.
     1. Return [=!=] [$ToString$](|index|).
 </div>
 
@@ -1391,7 +1388,7 @@ The algorithm <dfn>ToJSValue</dfn>(|w|) coerces a [=WebAssembly value=] to a Jav
     1. If |f64| is [=+∞=] or [=−∞=], return **+∞**<sub>𝔽</sub> or **-∞**<sub>𝔽</sub>, respectively.
     1. If |f64| is [=nan=], return **NaN**.
     1. Return [=𝔽=](|f64| interpreted as a [=mathematical value=]).
-1. If |w| is of the form [=ref.null=] <var ignore>t</var>, return null.
+1. If |w| is of the form [=ref.null=], return null.
 1. If |w| is of the form [=ref.i31=] |u31|,
     1. Let |i31| be [=signed_31=](|u31|).
     1. Return [=𝔽=](|i31|).
@@ -1444,9 +1441,9 @@ The algorithm <dfn>ToWebAssemblyValue</dfn>(|v|, |type|) coerces a JavaScript va
     1. Otherwise,
         1. Let |f64| be |number|.
     1. Return [=f64.const=] |f64|.
-1. If |type| is of the form [=ref=] |null| |heaptype|,
+1. If |type| is of the form [=ref=] |null| <var ignore>heaptype</var>,
     1. If |v| is null,
-        1. Let |r| be [=ref.null=] |heaptype|.
+        1. Let |r| be [=ref.null=].
     1. Else if [=match_valtype=](|type|, [=ref=] |null| [=heap-type/extern=]),
         1. Let |ref| be [=!=] [=ToWebAssemblyValue=](|v|, [=ref=] [=heap-type/any=]).
         1. Let |r| be [=ref.extern=] |ref|.
