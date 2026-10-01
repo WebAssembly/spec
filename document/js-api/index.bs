@@ -486,7 +486,7 @@ To <dfn>instantiate imported strings</dfn> with module |module| and |importedStr
 
 <div algorithm="read-the-imports">
   To <dfn>read the imports</dfn> from a WebAssembly module |module| from imports object |importObject|, enabled builtins |builtinSetNames|, and |importedStringModule|, perform the following steps:
-    1. If [=module_imports=](|module|) [=list/is empty|is not empty=], and |importObject| is undefined, throw a {{TypeError}} exception.
+    1. If [=module_imports=](|module|) [=list/is empty|is not empty=], and |importObject| is missing, throw a {{TypeError}} exception.
     1. Let |builtinOrStringImports| be the ordered map «[ ]».
     1. [=list/iterate|For each=] |builtinSetName| of |builtinSetNames|,
         1. Let |builtinSetQualifiedName| be |builtinSetName| prefixed with "wasm:"
