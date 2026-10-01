@@ -217,6 +217,10 @@ urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: df
     url: exec/runtime.html#syntax-externval
         text: external value
         for: external value
+            text: func
+            text: table
+            text: mem
+            text: global
             text: tag
     text: host function; url: exec/runtime.html#syntax-hostfunc
     text: the instantiation algorithm; url: exec/modules.html#instantiation
@@ -449,10 +453,10 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
     1. Run the following steps [=in parallel=]:
         1. [=compile a WebAssembly module|Compile the WebAssembly module=] |bytes| and store the result as |module|.
         1. [=Queue a task=] on |taskSource|, if provided, to perform the following steps:
-            1. If |module| is [=error=], reject |promise| with a {{CompileError}} exception and return.
+            1. If |module| is [=error=], [=reject=] |promise| with a {{CompileError}} exception and return.
             1. Let |builtinSetNames| be |options|["builtins"].
             1. Let |importedStringModule| be |options|["importedStringConstants"].
-            1. If [=validate builtins and imported string for a WebAssembly module|validating builtins and imported strings=] for |module| with |builtinSetNames| and |importedStringModule| is false, reject |promise| with a {{CompileError}} exception.
+            1. If [=validate builtins and imported string for a WebAssembly module|validating builtins and imported strings=] for |module| with |builtinSetNames| and |importedStringModule| is false, [=reject=] |promise| with a {{CompileError}} exception.
             1. Otherwise,
                 1. [=Construct a WebAssembly module object=] from |module|, |bytes|, |builtinSetNames|, |importedStringModule|, and let |moduleObject| be the result.
                 1. [=Resolve=] |promise| with |moduleObject|.
@@ -483,7 +487,7 @@ To <dfn>instantiate imported strings</dfn> with module |module| and |importedStr
 <div algorithm="read-the-imports">
   To <dfn>read the imports</dfn> from a WebAssembly module |module| from imports object |importObject|, enabled builtins |builtinSetNames|, and |importedStringModule|, perform the following steps:
     1. If [=module_imports=](|module|) [=list/is empty|is not empty=], and |importObject| is undefined, throw a {{TypeError}} exception.
-    1. Let |builtinOrStringImports| be the ordered map « ».
+    1. Let |builtinOrStringImports| be the ordered map «[ ]».
     1. [=list/iterate|For each=] |builtinSetName| of |builtinSetNames|,
         1. Let |builtinSetQualifiedName| be |builtinSetName| prefixed with "wasm:"
         1. Assert: |builtinOrStringImports| does not contain |builtinSetQualifiedName|
@@ -495,7 +499,7 @@ To <dfn>instantiate imported strings</dfn> with module |module| and |importedStr
         1. [=map/set|Set=] |builtinOrStringImports|[|importedStringModule|] to |exportsObject|
     1. Let |imports| be « ».
     1. [=list/iterate|For each=] (|moduleName|, |componentName|, |externtype|) of [=module_imports=](|module|),
-        1. If |builtinOrStringImports| [=map/exist|contains=] |moduleName|,
+        1. If |builtinOrStringImports|[|moduleName|] [=map/exists=],
             1. Let |o| be |builtinOrStringImports|[|moduleName|].
             1. If |o| [=is not an Object=] or if [=?=] [$HasProperty$](|o|, |componentName|) is false,
                 1. Set |o| to [=?=] [$Get$](|importObject|, |moduleName|).
@@ -510,7 +514,7 @@ To <dfn>instantiate imported strings</dfn> with module |module| and |importedStr
             1. Otherwise,
                 1. [=Create a host function=] from |v| and |functype|, and let |funcaddr| be the result.
                 1. Let |index| be the number of external functions in |imports|. This value |index| is known as the <dfn>index of the host function</dfn> |funcaddr|.
-            1. Let |externfunc| be the [=external value=] [=external value|func=] |funcaddr|.
+            1. Let |externfunc| be the [=external value=] [=external value/func=] |funcaddr|.
             1. [=list/Append=] |externfunc| to |imports|.
         1. If |externtype| is of the form [=external-type/global=] <var ignore>mut</var> |valtype|,
             1. If |v| [=implements=] {{Global}},
@@ -526,16 +530,16 @@ To <dfn>instantiate imported strings</dfn> with module |module| and |importedStr
                 1. Let |store| be the [=surrounding agent=]'s [=associated store=].
                 1. Let (|store|, |globaladdr|) be [=global_alloc=](|store|, [=const=] |valtype|, |value|).
                 1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
-            1. Let |externglobal| be [=external value|global=] |globaladdr|.
+            1. Let |externglobal| be [=external value/global=] |globaladdr|.
             1. [=list/Append=] |externglobal| to |imports|.
         1. If |externtype| is of the form [=external-type/mem=] <var ignore>memtype</var>,
             1. If |v| does not [=implement=] {{Memory}}, throw a {{LinkError}} exception.
-            1. Let |externmem| be the [=external value=] [=external value|mem=] |v|.\[[Memory]].
+            1. Let |externmem| be the [=external value=] [=external value/mem=] |v|.\[[Memory]].
             1. [=list/Append=] |externmem| to |imports|.
         1. If |externtype| is of the form [=external-type/table=] <var ignore>tabletype</var>,
             1. If |v| does not [=implement=] {{Table}}, throw a {{LinkError}} exception.
             1. Let |tableaddr| be |v|.\[[Table]].
-            1. Let |externtable| be the [=external value=] [=external value|table=] |tableaddr|.
+            1. Let |externtable| be the [=external value=] [=external value/table=] |tableaddr|.
             1. [=list/Append=] |externtable| to |imports|.
         1. If |externtype| is of the form [=external-type/tag=] <var ignore>functype</var>,
             1. If |v| does not [=implement=] {{Tag}}, throw a {{LinkError}} exception.
@@ -556,23 +560,23 @@ The verification of WebAssembly type requirements is deferred to the
         1. Let |externval| be [=instance_export=](|instance|, |name|).
         1. Assert: |externval| is not [=error=].
         1. If |externtype| is of the form [=external-type/func=] <var ignore>functype</var>,
-            1. Assert: |externval| is of the form [=external value|func=] |funcaddr|.
-            1. Let [=external value|func=] |funcaddr| be |externval|.
+            1. Assert: |externval| is of the form [=external value/func=] |funcaddr|.
+            1. Let [=external value/func=] |funcaddr| be |externval|.
             1. Let |func| be the result of creating [=a new Exported Function=] from |funcaddr|.
             1. Let |value| be |func|.
         1. If |externtype| is of the form [=external-type/global=] <var ignore>mut</var> <var ignore>globaltype</var>,
-            1. Assert: |externval| is of the form [=external value|global=] |globaladdr|.
-            1. Let [=external value|global=] |globaladdr| be |externval|.
+            1. Assert: |externval| is of the form [=external value/global=] |globaladdr|.
+            1. Let [=external value/global=] |globaladdr| be |externval|.
             1. Let |global| be [=create a global object|a new Global object=] created from |globaladdr|.
             1. Let |value| be |global|.
         1. If |externtype| is of the form [=external-type/mem=] <var ignore>memtype</var>,
-            1. Assert: |externval| is of the form [=external value|mem=] |memaddr|.
-            1. Let [=external value|mem=] |memaddr| be |externval|.
+            1. Assert: |externval| is of the form [=external value/mem=] |memaddr|.
+            1. Let [=external value/mem=] |memaddr| be |externval|.
             1. Let |memory| be [=create a memory object|a new Memory object=] created from |memaddr|.
             1. Let |value| be |memory|.
         1. If |externtype| is of the form [=external-type/table=] <var ignore>tabletype</var>,
-            1. Assert: |externval| is of the form [=external value|table=] |tableaddr|.
-            1. Let [=external value|table=] |tableaddr| be |externval|.
+            1. Assert: |externval| is of the form [=external value/table=] |tableaddr|.
+            1. Let [=external value/table=] |tableaddr| be |externval|.
             1. Let |table| be [=create a Table object|a new Table object=] created from |tableaddr|.
             1. Let |value| be |table|.
         1. If |externtype| is of the form [=external-type/tag=] <var ignore>functype</var>,
@@ -660,10 +664,13 @@ The verification of WebAssembly type requirements is deferred to the
 
 Note: A follow-on streaming API is documented in the <a href="https://webassembly.github.io/spec/web-api/index.html">WebAssembly Web API</a>.
 
+<div algorithm>
+
 The getter of the <dfn attribute for="WebAssembly">JSTag</dfn> attribute of the {{WebAssembly}} Namespace, when invoked, performs the following steps:
     1. Let |JSTagAddr| be the result of [=get the JavaScript exception tag|getting the JavaScript exception tag=].
     1. Let |JSTagObject| be the result of [=create a Tag object|creating a Tag object=] from |JSTagAddr|.
     1. Return |JSTagObject|.
+</div>
 
 <h3 id="modules">Modules</h3>
 
@@ -867,7 +874,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
 
 <div algorithm>
     The <dfn constructor for="Memory">Memory(|descriptor|)</dfn> constructor, when invoked, performs the following steps:
-    1. If |descriptor|["address"] [=map/exists=], let |addrtype| be |descriptor|["address"]; otherwise, let |addrtype| be "i32".
+    1. If |descriptor|["address"] [=map/exists=], let |addrtype| be [=ToValueType=](|descriptor|["address"]); otherwise, let |addrtype| be [=i32=].
     1. Let |initial| be [=?=] [=AddressValueToU64=](|descriptor|["initial"], |addrtype|).
     1. If |descriptor|["maximum"] [=map/exists=], let |maximum| be [=?=] [=AddressValueToU64=](|descriptor|["maximum"], |addrtype|); otherwise, let |maximum| be empty.
     1. Let |memtype| be [=memory type=] |addrtype| { **min** |initial|, **max** |maximum| }.
@@ -899,7 +906,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     To <dfn>grow the memory buffer</dfn> associated with a [=memory address=] |memaddr| by |delta|, perform the following steps:
 
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
-    1. Let |ret| be the [=mem_size=](|store|, |memaddr|).
+    1. Let |ret| be [=mem_size=](|store|, |memaddr|).
     1. Let |store| be [=mem_grow=](|store|, |memaddr|, |delta|).
     1. If |store| is [=error=], throw a {{RangeError}} exception.
     1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
@@ -923,7 +930,7 @@ Immediately after a WebAssembly [=memory.grow=] |x| instruction executes, perfor
     1. If the top of the stack is not [=i32.const=] (−1) and the top of the stack is not [=i64.const=] (−1),
         1. Let |frame| be the [=current frame=].
         1. Assert: due to validation, |frame|.[=frame/module=].[=moduleinst/memaddrs=][|x|] exists.
-        1. Let |memaddr| be the memory address |frame|.[=frame/module=].[=moduleinst/memaddrs=][|x|].
+        1. Let |memaddr| be the [=memory address=] |frame|.[=frame/module=].[=moduleinst/memaddrs=][|x|].
         1. [=Refresh the memory buffer=] of |memaddr|.
 </div>
 
@@ -1034,7 +1041,7 @@ Each {{Table}} object has a \[[Table]] internal slot, which is a [=table address
     1. Let |elementtype| be [=ToValueType=](|descriptor|["element"]).
     1. If |elementtype| is not a [=reftype=],
         1. [=Throw=] a {{TypeError}} exception.
-    1. If |descriptor|["address"] [=map/exists=], let |addrtype| be |descriptor|["address"]; otherwise, let |addrtype| be "i32".
+    1. If |descriptor|["address"] [=map/exists=], let |addrtype| be [=ToValueType=](|descriptor|["address"]); otherwise, let |addrtype| be [=i32=].
     1. Let |initial| be [=?=] [=AddressValueToU64=](|descriptor|["initial"], |addrtype|).
     1. If |descriptor|["maximum"] [=map/exists=], let |maximum| be [=?=] [=AddressValueToU64=](|descriptor|["maximum"], |addrtype|); otherwise, let |maximum| be empty.
     1. Let |type| be the [=table type=] |addrtype| { <b>[=limits|min=]</b> |initial|, <b>[=limits|max=]</b> |maximum| } |elementtype|.
@@ -1211,10 +1218,12 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     1. Return [=ToJSValue=](|value|).
 </div>
 
-<div algorithm>
+<div algorithm="Global value getter">
     The getter of the <dfn attribute for="Global">value</dfn> attribute of {{Global}}, when invoked, performs the following steps:
     1. Return [=GetGlobalValue=](**this**).
+</div>
 
+<div algorithm="Global value setter">
     The setter of the value attribute of {{Global}}, when invoked, performs the following steps:
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
     1. Let |globaladdr| be **this**.\[[Global]].
@@ -1291,7 +1300,7 @@ This slot holds a [=function address=] relative to the [=surrounding agent=]'s [
     1. Let (|store|, |ret|) be the result of [=func_invoke=](|store|, |funcaddr|, |args|).
     1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
     1. If |ret| is [=error=], throw an exception. This exception should be a WebAssembly {{RuntimeError}} exception, unless otherwise indicated by <a href="#errors">the WebAssembly error mapping</a>.
-    1. If |ret| is [=exception=] |exnaddr|, then
+    1. If |ret| is of the form [=/exception=] |exnaddr|, then
         1. Let |tagaddr| be [=exn_tag=](|store|, |exnaddr|).
         1. Let |payload| be [=exn_read=](|store|, |exnaddr|).
         1. Let |jsTagAddr| be the result of [=get the JavaScript exception tag|getting the JavaScript exception tag=].
@@ -1391,7 +1400,7 @@ The algorithm <dfn>ToJSValue</dfn>(|w|) coerces a [=WebAssembly value=] to a Jav
 1. If |w| is of the form [=ref.null=], return null.
 1. If |w| is of the form [=ref.i31=] |u31|,
     1. Let |i31| be [=signed_31=](|u31|).
-    1. Return [=𝔽=](|i31|).
+    1. Return [=𝔽=](|i31| interpreted as a [=mathematical value=]).
 1. If |w| is of the form [=ref.struct=] |structaddr|, return the result of creating [=a new Exported GC Object=] from |structaddr| and "struct".
 1. If |w| is of the form [=ref.array=] |arrayaddr|, return the result of creating [=a new Exported GC Object=] from |arrayaddr| and "array".
 1. If |w| is of the form [=ref.func=] |funcaddr|, return the result of creating [=a new Exported Function=] from |funcaddr|.
@@ -1444,10 +1453,10 @@ The algorithm <dfn>ToWebAssemblyValue</dfn>(|v|, |type|) coerces a JavaScript va
 1. If |type| is of the form [=ref=] |null| <var ignore>heaptype</var>,
     1. If |v| is null,
         1. Let |r| be [=ref.null=].
-    1. Else if [=match_valtype=](|type|, [=ref=] |null| [=heap-type/extern=]),
+    1. Else if [=match_valtype=](|type|, [=ref=] |null| [=heap-type/extern=]) is true,
         1. Let |ref| be [=!=] [=ToWebAssemblyValue=](|v|, [=ref=] [=heap-type/any=]).
         1. Let |r| be [=ref.extern=] |ref|.
-    1. Else if |v| is an [=Exported Function=] and [=match_valtype=](|type|, [=ref=] |null| [=heap-type/func=]),
+    1. Else if |v| is an [=Exported Function=] and [=match_valtype=](|type|, [=ref=] |null| [=heap-type/func=]) is true,
         1. Let |funcaddr| be the value of |v|'s \[[FunctionAddress]] internal slot.
         1. Let |r| be [=ref.func=] |funcaddr|.
     1. Else if |v| [=is a Number=] and |v| is equal to [=?=] [$ToInt32$](|v|) and [=ℝ=](|v|) < 2<sup>30</sup> and [=ℝ=](|v|) ⩾ -2<sup>30</sup>,
@@ -1465,7 +1474,7 @@ The algorithm <dfn>ToWebAssemblyValue</dfn>(|v|, |type|) coerces a JavaScript va
         1. Let |map| be the [=surrounding agent=]'s associated [=host value cache=].
         1. If a [=host address=] |hostaddr| exists such that |map|[|hostaddr|] is the same as |v|,
             1. Return [=ref.host=] |hostaddr|.
-        1. Let [=host address=] |hostaddr| be the smallest address such that |map|[|hostaddr|] [=map/exists=] is false.
+        1. Let |hostaddr| be the smallest [=host address=] such that |map|[|hostaddr|] [=map/exists=] is false.
         1. [=map/Set=] |map|[|hostaddr|] to |v|.
         1. Let |r| be [=ref.host=] |hostaddr|.
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
@@ -1480,12 +1489,12 @@ The algorithm <dfn>ToWebAssemblyValue</dfn>(|v|, |type|) coerces a JavaScript va
 <div algorithm>
 The algorithm <dfn>AddressValueToU64</dfn>(|v|, |addrtype|) converts a JavaScript value to a WebAssembly [=u64=] for use in embedding operations. It is designed to act like [=[EnforceRange]=] [=unsigned long=] for {{AddressType}} "i32", and to extend these semantics to {{AddressType}} "i64", by performing the following steps:
 
-1. If |addrtype| is "i32",
+1. If |addrtype| is [=i32=],
     1. Let |n| be [=?=] [$ConvertToInt$](|v|, 32, "unsigned"), where the destination type is associated with [=[EnforceRange]=].
 
         Note: This is equivalent to the [=js-unsigned-long|JS conversion rules=] for [=[EnforceRange]=] [=unsigned long=].
     1. Return [=ℝ=](|n|) as a WebAssembly [=u64=].
-1. If |addrtype| is "i64",
+1. If |addrtype| is [=i64=],
     1. Let |n| be [=?=] [$ToBigInt$](|v|).
     1. If |n| &lt; 0 or |n| &gt; 2<sup>64</sup> &minus; 1, [=throw=] a {{TypeError}}.
 
@@ -1498,8 +1507,8 @@ The algorithm <dfn>AddressValueToU64</dfn>(|v|, |addrtype|) converts a JavaScrip
 <div algorithm>
 The algorithm <dfn>U64ToAddressValue</dfn>(|v|, |addrtype|) converts a [=u64=] value from a WebAssembly embedding operation to the correct variant of {{AddressValue}} for an {{AddressType}}, by performing the following steps:
 
-1. If |addrtype| is "i32", return [=𝔽=](|v| interpreted as a [=mathematical value=]).
-1. Else if |addrtype| is "i64", return [=ℤ=](|v| interpreted as a [=mathematical value=]).
+1. If |addrtype| is [=i32=], return [=𝔽=](|v| interpreted as a [=mathematical value=]).
+1. Else if |addrtype| is [=i64=], return [=ℤ=](|v| interpreted as a [=mathematical value=]).
 1. Assert: This step is not reached.
 
 </div>
@@ -1636,8 +1645,7 @@ The internal methods of an [=Exported GC Object=] use the following implementati
 <div algorithm>
   The <dfn>\[[OwnPropertyKeys]] internal method of an Exported GC Object</dfn> <var ignore>O</var> takes no arguments and returns a list. It performs the following steps when called:
 
-    1. Let keys be a new empty list.
-    1. Return keys.
+    1. Return « ».
 </div>
 
 <div algorithm>
