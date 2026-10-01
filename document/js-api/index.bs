@@ -474,7 +474,7 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
 To <dfn>instantiate imported strings</dfn> with module |module| and |importedStringModule|, perform the following steps:
 
 1. Assert: |importedStringModule| is not null.
-1. Let |exportsObject| be [=!=] [$OrdinaryObjectCreate$](null).
+1. Let |exportsObject| be [$OrdinaryObjectCreate$](null).
 1. [=list/iterate|For each=] (|moduleName|, |componentName|, |externtype|) of [=module_imports=](|module|),
     1. If |moduleName| does not equal |importedStringModule|, then [=iteration/continue=].
     1. Let |stringConstant| be |componentName|.
@@ -486,7 +486,7 @@ To <dfn>instantiate imported strings</dfn> with module |module| and |importedStr
 
 <div algorithm="read-the-imports">
   To <dfn>read the imports</dfn> from a WebAssembly module |module| from imports object |importObject|, enabled builtins |builtinSetNames|, and |importedStringModule|, perform the following steps:
-    1. If |module|.[=imports=] [=list/is empty|is not empty=], and |importObject| is undefined, throw a {{TypeError}} exception.
+    1. If [=module_imports=](|module|) [=list/is empty|is not empty=], and |importObject| is undefined, throw a {{TypeError}} exception.
     1. Let |builtinOrStringImports| be the ordered map «[ ]».
     1. [=list/iterate|For each=] |builtinSetName| of |builtinSetNames|,
         1. Let |builtinSetQualifiedName| be |builtinSetName| prefixed with "wasm:"
@@ -501,7 +501,7 @@ To <dfn>instantiate imported strings</dfn> with module |module| and |importedStr
     1. [=list/iterate|For each=] (|moduleName|, |componentName|, |externtype|) of [=module_imports=](|module|),
         1. If |builtinOrStringImports|[|moduleName|] [=map/exists=],
             1. Let |o| be |builtinOrStringImports|[|moduleName|].
-            1. If |o| [=is not an Object=] or if [$HasProperty$](|o|, |componentName|) is false,
+            1. If |o| [=is not an Object=] or if [=?=] [$HasProperty$](|o|, |componentName|) is false,
                 1. Set |o| to [=?=] [$Get$](|importObject|, |moduleName|).
         1. Else,
             1. Let |o| be [=?=] [$Get$](|importObject|, |moduleName|).
@@ -541,8 +541,7 @@ To <dfn>instantiate imported strings</dfn> with module |module| and |importedStr
             1. Let |tableaddr| be |v|.\[[Table]].
             1. Let |externtable| be the [=external value=] [=external value/table=] |tableaddr|.
             1. [=list/Append=] |externtable| to |imports|.
-        1. If |externtype| is of the form [=external-type/tag=] |attribute| <var ignore>functype</var>,
-            1. Assert: |attribute| is [=tagtype/attribute/exception=].
+        1. If |externtype| is of the form [=external-type/tag=] <var ignore>functype</var>,
             1. If |v| does not [=implement=] {{Tag}}, throw a {{LinkError}} exception.
             1. Let |tagaddr| be |v|.\[[Address]].
             1. Let |externtag| be the [=external value=] [=external value/tag=] |tagaddr|.
@@ -556,7 +555,7 @@ The verification of WebAssembly type requirements is deferred to the
 
 <div algorithm>
   To <dfn>create an exports object</dfn> from a WebAssembly module |module| and instance |instance|, perform the following steps:
-    1. Let |exportsObject| be [=!=] [$OrdinaryObjectCreate$](null).
+    1. Let |exportsObject| be [$OrdinaryObjectCreate$](null).
     1. [=list/iterate|For each=] (|name|, |externtype|) of [=module_exports=](|module|),
         1. Let |externval| be [=instance_export=](|instance|, |name|).
         1. Assert: |externval| is not [=error=].
@@ -580,8 +579,7 @@ The verification of WebAssembly type requirements is deferred to the
             1. Let [=external value/table=] |tableaddr| be |externval|.
             1. Let |table| be [=create a Table object|a new Table object=] created from |tableaddr|.
             1. Let |value| be |table|.
-        1. If |externtype| is of the form [=external-type/tag=] |attribute| <var ignore>functype</var>,
-            1. Assert: |attribute| is [=tagtype/attribute/exception=].
+        1. If |externtype| is of the form [=external-type/tag=] <var ignore>functype</var>,
             1. Assert: |externval| is of the form [=external value/tag=] |tagaddr|.
             1. Let [=external value/tag=] |tagaddr| be |externval|.
             1. Let |tag| be [=create a Tag object|a new Tag object=] created from |tagaddr|.
@@ -605,14 +603,13 @@ The verification of WebAssembly type requirements is deferred to the
 <div algorithm>
   To <dfn>instantiate the core of a WebAssembly module</dfn> from a module |module| and imports |imports|, perform the following steps:
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
-    1. Let |result| be [=module_instantiate=](|store|, |module|, |imports|).
+    1. Let (|store|, |result|) be [=module_instantiate=](|store|, |module|, |imports|).
     1. If |result| is [=error=], throw an appropriate exception type:
         * A {{LinkError}} exception for most cases which occur during linking.
         * If the error came when running the start function, throw a {{RuntimeError}} for most errors which occur from WebAssembly, or the error object propagated from inner ECMAScript code.
         * Another error type if appropriate, for example an out-of-memory exception, as documented in <a href="#errors">the WebAssembly error mapping</a>.
-    1. Let (|store|, |instance|) be |result|.
     1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
-    1. Return |instance|.
+    1. Return |result|.
 </div>
 
 <div algorithm>
@@ -1100,7 +1097,7 @@ Each {{Table}} object has a \[[Table]] internal slot, which is a [=table address
     1. Let |index64| be [=?=] [=AddressValueToU64=](|index|, |addrtype|).
     1. Let |result| be [=table_read=](|store|, |tableaddr|, |index64|).
     1. If |result| is [=error=], throw a {{RangeError}} exception.
-    1. Return [=!=] [=ToJSValue=](|result|).
+    1. Return [=ToJSValue=](|result|).
 </div>
 
 <div algorithm>
@@ -1218,7 +1215,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     1. Let |globaltype| be [=global_type=](|store|, |globaladdr|).
     1. If |globaltype| is of the form <var ignore>mut</var> |valuetype| where |valuetype| [=matches/valtype|matches=] [=v128=] or [=exnref=], throw a {{TypeError}}.
     1. Let |value| be [=global_read=](|store|, |globaladdr|).
-    1. Return [=!=] [=ToJSValue=](|value|).
+    1. Return [=ToJSValue=](|value|).
 </div>
 
 <div algorithm="Global value getter">
@@ -1260,8 +1257,8 @@ This slot holds a [=function address=] relative to the [=surrounding agent=]'s [
         1. Let |index| be the [=index of the host function=] |funcaddr|.
     1. Otherwise,
         1. Let |moduleinst| be |funcinst|.module.
-        1. Assert: |funcaddr| is contained in |moduleinst|.funcaddrs.
-        1. Let |index| be the index of |moduleinst|.funcaddrs where |funcaddr| is found.
+        1. Assert: |funcaddr| is contained in |moduleinst|.funcs.
+        1. Let |index| be the index of |moduleinst|.funcs where |funcaddr| is found.
     1. Return [=!=] [$ToString$](|index|).
 </div>
 
@@ -1278,7 +1275,7 @@ This slot holds a [=function address=] relative to the [=surrounding agent=]'s [
     1. Let [|paramTypes|] → [<var ignore>resultTypes</var>] be |functype|.
     1. Let |arity| be |paramTypes|'s [=list/size=].
     1. Let |name| be the [=name of the WebAssembly function=] |funcaddr|.
-    1. Let |function| be [=!=] [$CreateBuiltinFunction$](|steps|, |arity|, |name|, « \[[FunctionAddress]] », |realm|).
+    1. Let |function| be [$CreateBuiltinFunction$](|steps|, |arity|, |name|, « \[[FunctionAddress]] », |realm|).
     1. Set |function|.\[[FunctionAddress]] to |funcaddr|.
     1. [=map/Set=] |map|[|funcaddr|] to |function|.
     1. Return |function|.
@@ -1308,17 +1305,17 @@ This slot holds a [=function address=] relative to the [=surrounding agent=]'s [
         1. Let |payload| be [=exn_read=](|store|, |exnaddr|).
         1. Let |jsTagAddr| be the result of [=get the JavaScript exception tag|getting the JavaScript exception tag=].
         1. If |tagaddr| is equal to |jsTagAddr|,
-            1. Throw [=!=] [=ToJSValue=](|payload|[0]).
+            1. Throw [=ToJSValue=](|payload|[0]).
         1. Otherwise,
             1. Let |exception| be [=create an Exception object|a new Exception=] created from |exnaddr|.
             1. Throw |exception|.
     1. Let |outArity| be the [=list/size=] of |ret|.
     1. If |outArity| is 0, return undefined.
-    1. Otherwise, if |outArity| is 1, return [=!=] [=ToJSValue=](|ret|[0]).
+    1. Otherwise, if |outArity| is 1, return [=ToJSValue=](|ret|[0]).
     1. Otherwise,
         1. Let |values| be « ».
         1. [=list/iterate|For each=] |r| of |ret|,
-            1. [=list/Append=] [=!=] [=ToJSValue=](|r|) to |values|.
+            1. [=list/Append=] [=ToJSValue=](|r|) to |values|.
         1. Return [$CreateArrayFromList$](|values|).
 </div>
 
@@ -1333,7 +1330,7 @@ Note: Exported Functions do not have a \[[Construct]] method and thus it is not 
     1. If any type in |parameters| or |results| [=matches/valtype|matches=] [=v128=] or [=exnref=], throw a {{TypeError}}.
     1. Let |jsArguments| be « ».
     1. [=list/iterate|For each=] |arg| of |arguments|,
-        1. [=list/Append=] [=!=] [=ToJSValue=](|arg|) to |jsArguments|.
+        1. [=list/Append=] [=ToJSValue=](|arg|) to |jsArguments|.
     1. Let |ret| be [=?=] [$Call$](|func|, undefined, |jsArguments|).
     1. Let |resultsSize| be |results|'s [=list/size=].
     1. If |resultsSize| is 0, return « ».
@@ -1400,7 +1397,7 @@ The algorithm <dfn>ToJSValue</dfn>(|w|) coerces a [=WebAssembly value=] to a Jav
     1. If |f64| is [=+∞=] or [=−∞=], return **+∞**<sub>𝔽</sub> or **-∞**<sub>𝔽</sub>, respectively.
     1. If |f64| is [=nan=], return **NaN**.
     1. Return [=𝔽=](|f64| interpreted as a [=mathematical value=]).
-1. If |w| is of the form [=ref.null=] <var ignore>t</var>, return null.
+1. If |w| is of the form [=ref.null=], return null.
 1. If |w| is of the form [=ref.i31=] |u31|,
     1. Let |i31| be [=signed_31=](|u31|).
     1. Return [=𝔽=](|i31| interpreted as a [=mathematical value=]).
@@ -1453,9 +1450,9 @@ The algorithm <dfn>ToWebAssemblyValue</dfn>(|v|, |type|) coerces a JavaScript va
     1. Otherwise,
         1. Let |f64| be |number|.
     1. Return [=f64.const=] |f64|.
-1. If |type| is of the form [=ref=] |null| |heaptype|,
+1. If |type| is of the form [=ref=] |null| <var ignore>heaptype</var>,
     1. If |v| is null,
-        1. Let |r| be [=ref.null=] |heaptype|.
+        1. Let |r| be [=ref.null=].
     1. Else if [=match_valtype=](|type|, [=ref=] |null| [=heap-type/extern=]) is true,
         1. Let |ref| be [=!=] [=ToWebAssemblyValue=](|v|, [=ref=] [=heap-type/any=]).
         1. Let |r| be [=ref.extern=] |ref|.
@@ -1767,7 +1764,7 @@ The <dfn method for="Exception">getArg(|exceptionTag|, |index|)</dfn> method ste
 1. Let [|types|] → [] be [=tag_type=](|store|, |tagaddr|).
 1. If |types|[|index|] [=matches/valtype|matches=] [=v128=] or [=exnref=],
     1. Throw a {{TypeError}}.
-1. Return [=!=] [=ToJSValue=](|payload|[|index|]).
+1. Return [=ToJSValue=](|payload|[|index|]).
 
 </div>
 
@@ -1890,7 +1887,7 @@ To <dfn>create a builtin function</dfn> from type |funcType| and execution steps
 To <dfn>instantiate a builtin set</dfn> with name |builtinSetName|, perform the following steps:
 
 1. Let |builtins| be the result of [=get the builtins for a builtin set=] |builtinSetName|.
-1. Let |exportsObject| be [=!=] [$OrdinaryObjectCreate$](null).
+1. Let |exportsObject| be [$OrdinaryObjectCreate$](null).
 1. [=list/iterate|For each=] (|name|, |funcType|, |steps|) of |builtins|,
     1. Let |funcaddr| be the result of [=create a builtin function=] with |funcType| and |steps|.
     1. Let |func| be the result of creating [=a new Exported Function=] from |funcaddr|.
@@ -2146,7 +2143,7 @@ When this builtin is invoked with parameters |first| and |second|, the following
     1. Throw a {{RuntimeError}} exception as if a [=trap=] was executed.
 1. If |second| is not null and |second| [=is not a String=],
     1. Throw a {{RuntimeError}} exception as if a [=trap=] was executed.
-1. If [=!=] [=IsStrictlyEqual=](|first|, |second|) is true,
+1. If [=IsStrictlyEqual=](|first|, |second|) is true,
     1. Return 1.
 1. Return 0.
 
@@ -2162,7 +2159,7 @@ When this builtin is invoked with parameters |first| and |second|, the following
 
 1. Let |first| be [=?=] [$UnwrapString$](|first|).
 1. Let |second| be [=?=] [$UnwrapString$](|second|).
-1. If [=!=] [=IsStrictlyEqual=](|first|, |second|) is true,
+1. If [=IsStrictlyEqual=](|first|, |second|) is true,
     1. Return 0.
 1. If [=!=] [=IsLessThan=](|first|, |second|, true) is true,
     1. Return -1.
