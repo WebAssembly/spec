@@ -72,11 +72,7 @@ jobs:
           if encoded=$(gh api "repos/$REPOSITORY/contents/$BASELINE_STAMP?ref=gh-pages" --jq .content 2>/dev/null); then
             published=$(printf '%s' "$encoded" | base64 -d | tr -d '[:space:]')
           fi
-          parent=$(gh api "repos/$REPOSITORY" --jq '.parent.full_name // ""' 2>/dev/null) || parent=''
-          if [ -z "$parent" ]; then
-            echo "::warning::Could not determine the parent repo, not rendering an upstream copy."
-            exit 0
-          fi
+          parent=$(gh api "repos/$REPOSITORY" --jq '.parent.full_name // "WebAssembly/spec"' 2>/dev/null) || parent='WebAssembly/spec'
           if ! git fetch --no-tags --quiet "https://github.com/$parent.git" main; then
             echo "::warning::Could not fetch $parent, not rendering an upstream copy."
             exit 0
