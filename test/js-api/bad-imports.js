@@ -123,6 +123,18 @@ function test_bad_imports(t) {
           "global": global,
         },
       });
+
+    const mutableGlobal = new WebAssembly.Global({ "value": type, "mutable": true }, value);
+    t(`Importing an ${type} global with a mutable Global object`,
+      WebAssembly.LinkError,
+      builder => {
+        builder.addImportedGlobal("module", "global", value_type(type));
+      },
+      {
+        "module": {
+          "global": mutableGlobal,
+        },
+      });
   }
 
   const nonMemories = [

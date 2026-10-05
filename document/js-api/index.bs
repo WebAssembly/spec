@@ -516,10 +516,17 @@ To <dfn>instantiate imported strings</dfn> with module |module| and |importedStr
                 1. Let |index| be the number of external functions in |imports|. This value |index| is known as the <dfn>index of the host function</dfn> |funcaddr|.
             1. Let |externfunc| be the [=external value=] [=external value/func=] |funcaddr|.
             1. [=list/Append=] |externfunc| to |imports|.
-        1. If |externtype| is of the form [=external-type/global=] <var ignore>mut</var> |valtype|,
+        1. If |externtype| is of the form [=external-type/global=] |mut| |valtype|,
             1. If |v| [=implements=] {{Global}},
                 1. Let |globaladdr| be |v|.\[[Global]].
+                1. If |mut| is [=const=],
+                    1. Let |store| be the [=surrounding agent=]'s [=associated store=].
+                    1. Let |globalmut| |globalvaltype| be [=global_type=](|store|, |globaladdr|).
+                    1. If |globalmut| is [=var=],
+                        1. Throw a {{LinkError}} exception.
             1. Otherwise,
+                1. If |mut| is [=var=],
+                    1. Throw a {{LinkError}} exception.
                 1. If |valtype| is [=i64=] and |v| [=is not a BigInt=],
                     1. Throw a {{LinkError}} exception.
                 1. If |valtype| is one of [=i32=], [=f32=] or [=f64=] and |v| [=is not a Number=],
@@ -528,7 +535,7 @@ To <dfn>instantiate imported strings</dfn> with module |module| and |importedStr
                     1. Throw a {{LinkError}} exception.
                 1. Let |value| be [=ToWebAssemblyValue=](|v|, |valtype|). If this operation throws a {{TypeError}}, catch it, and throw a {{LinkError}} exception.
                 1. Let |store| be the [=surrounding agent=]'s [=associated store=].
-                1. Let (|store|, |globaladdr|) be [=global_alloc=](|store|, [=const=] |valtype|, |value|).
+                1. Let (|store|, |globaladdr|) be [=global_alloc=](|store|, |mut| |valtype|, |value|).
                 1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
             1. Let |externglobal| be [=external value/global=] |globaladdr|.
             1. [=list/Append=] |externglobal| to |imports|.
@@ -548,8 +555,9 @@ To <dfn>instantiate imported strings</dfn> with module |module| and |importedStr
             1. [=list/Append=] |externtag| to |imports|.
     1. Return |imports|.
 
-Note: This algorithm only verifies the right kind of JavaScript values are passed.
-The verification of WebAssembly type requirements is deferred to the
+Note: This algorithm verifies the right kind of JavaScript values are passed.
+A value that does not [=implement=] {{Global}} can only initialize a [=const=] global, and a [=const=] import cannot be a [=var=] {{Global}}.
+The remaining WebAssembly type requirements are deferred to the
 "[=instantiate the core of a WebAssembly module=]" algorithm.
 </div>
 
