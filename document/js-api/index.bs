@@ -509,8 +509,10 @@ To <dfn>instantiate imported strings</dfn> with module |module| and |importedStr
         1. If |builtinOrStringImports|[|moduleName|] [=map/exists=],
             1. Let |o| be |builtinOrStringImports|[|moduleName|].
             1. If |o| [=is not an Object=] or if [=?=] [$HasProperty$](|o|, |componentName|) is false,
+                1. Assert: |importObject| is not missing.
                 1. Set |o| to [=?=] [$Get$](|importObject|, |moduleName|).
         1. Else,
+            1. Assert: |importObject| is not missing.
             1. Let |o| be [=?=] [$Get$](|importObject|, |moduleName|).
         1. If |o| [=is not an Object=], throw a {{TypeError}} exception.
         1. Let |v| be [=?=] [$Get$](|o|, |componentName|).
@@ -559,7 +561,12 @@ Note: This algorithm only verifies the right kind of JavaScript values are passe
 The verification of WebAssembly type requirements is deferred to the
 "[=instantiate the core of a WebAssembly module=]" algorithm.
 
-Note: |importObject| is required only for an import that is not supplied by an enabled builtin or by the imported string constants module.
+Note: |importObject| is required only for an import that is not supplied by an
+enabled builtin or by the imported string constants module. If it is missing,
+the opening check throws unless every import is supplied that way. Each such
+import is then an own property of the object in |builtinOrStringImports| for
+its module name, so the [$Get$](|importObject|, |moduleName|) steps are not
+reached.
 </div>
 
 <div algorithm>
