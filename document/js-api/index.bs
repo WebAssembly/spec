@@ -486,7 +486,14 @@ To <dfn>instantiate imported strings</dfn> with module |module| and |importedStr
 
 <div algorithm="read-the-imports">
   To <dfn>read the imports</dfn> from a WebAssembly module |module| from imports object |importObject|, enabled builtins |builtinSetNames|, and |importedStringModule|, perform the following steps:
-    1. If [=module_imports=](|module|) [=list/is empty|is not empty=], and |importObject| is missing, throw a {{TypeError}} exception.
+    1. If |importObject| is missing,
+        1. [=list/iterate|For each=] |import| of [=module_imports=](|module|),
+            1. Let |moduleName| be |import|[0].
+            1. If |importedStringModule| is not null and |moduleName| equals |importedStringModule|,
+                1. [=iteration/continue=].
+            1. If [=find a builtin|finding a builtin=] for |import| and |builtinSetNames| is not null,
+                1. [=iteration/continue=].
+            1. Throw a {{TypeError}} exception.
     1. Let |builtinOrStringImports| be the ordered map «[ ]».
     1. [=list/iterate|For each=] |builtinSetName| of |builtinSetNames|,
         1. Let |builtinSetQualifiedName| be |builtinSetName| prefixed with "wasm:"
@@ -551,6 +558,8 @@ To <dfn>instantiate imported strings</dfn> with module |module| and |importedStr
 Note: This algorithm only verifies the right kind of JavaScript values are passed.
 The verification of WebAssembly type requirements is deferred to the
 "[=instantiate the core of a WebAssembly module=]" algorithm.
+
+Note: |importObject| is required only for an import that is not supplied by an enabled builtin or by the imported string constants module.
 </div>
 
 <div algorithm>
