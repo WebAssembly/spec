@@ -438,7 +438,7 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
 <div algorithm>
   To <dfn>construct a WebAssembly module object</dfn> from a module |module|, source bytes |bytes|, enabled builtins |builtinSetNames|, and |importedStringModule|, perform the following steps:
 
-    1. Let |moduleObject| be a [=/new=] {{Module}}.
+    1. Let |moduleObject| be a [=/new=] {{Module}} in the [=current Realm=].
     1. Set |moduleObject|.\[[Module]] to |module|.
     1. Set |moduleObject|.\[[Bytes]] to |bytes|.
     1. Set |moduleObject|.\[[BuiltinSets]] to |builtinSetNames|.
@@ -449,7 +449,7 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
 <div algorithm>
   To <dfn>asynchronously compile a WebAssembly module</dfn> from source bytes |bytes| and {{WebAssemblyCompileOptions}} |options| using optional [=task source=] |taskSource|, perform the following steps:
 
-    1. Let |promise| be [=a new promise=].
+    1. Let |promise| be [=a new promise=] in the [=current Realm=].
     1. Run the following steps [=in parallel=]:
         1. [=compile a WebAssembly module|Compile the WebAssembly module=] |bytes| and store the result as |module|.
         1. [=Queue a task=] on |taskSource|, if provided, to perform the following steps:
@@ -614,7 +614,7 @@ The verification of WebAssembly type requirements is deferred to the
 
 <div algorithm>
   To <dfn>asynchronously instantiate a WebAssembly module</dfn> from a {{Module}} |moduleObject| and imports |importObject|, perform the following steps:
-    1. Let |promise| be [=a new promise=].
+    1. Let |promise| be [=a new promise=] in the [=current Realm=].
     1. Let |module| be |moduleObject|.\[[Module]].
     1. Let |builtinSetNames| be |moduleObject|.\[[BuiltinSets]].
     1. Let |importedStringModule| be |moduleObject|.\[[ImportedStringModule]].
@@ -625,7 +625,7 @@ The verification of WebAssembly type requirements is deferred to the
             Note: Implementation-specific work may be performed here.
             1.  [=Instantiate the core of a WebAssembly module=] |module| with |imports|, and let |instance| be the result.
                 If this throws an exception, catch it, [=reject=] |promise| with the exception, and terminate these substeps.
-            1.  Let |instanceObject| be a [=/new=] {{Instance}}.
+            1.  Let |instanceObject| be a [=/new=] {{Instance}} in the [=current Realm=].
             1.  [=initialize an instance object|Initialize=] |instanceObject| from |module| and |instance|.
                 If this throws an exception, catch it, [=reject=] |promise| with the exception, and terminate these substeps.
             1. [=Resolve=] |promise| with |instanceObject|.
@@ -635,7 +635,7 @@ The verification of WebAssembly type requirements is deferred to the
 <div algorithm>
   To <dfn>instantiate a promise of a module</dfn> |promiseOfModule| with imports |importObject|, perform the following steps:
 
-    1. Let |promise| be [=a new promise=].
+    1. Let |promise| be [=a new promise=] in the [=current Realm=].
     1. [=React=] to |promiseOfModule|:
         * If |promiseOfModule| was fulfilled with value |module|:
             1. [=asynchronously instantiate a WebAssembly module|Instantiate the WebAssembly module=] |module| importing |importObject|, and let |innerPromise| be the result.
@@ -867,7 +867,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     1. Let |map| be the [=surrounding agent=]'s associated [=Memory object cache=].
     1. If |map|[|memaddr|] [=map/exists=],
         1. Return |map|[|memaddr|].
-    1. Let |memory| be a [=/new=] {{Memory}}.
+    1. Let |memory| be a [=/new=] {{Memory}} in the [=current Realm=].
     1. [=initialize a memory object|Initialize=] |memory| from |memaddr|.
     1. Return |memory|.
 </div>
@@ -1031,7 +1031,7 @@ Each {{Table}} object has a \[[Table]] internal slot, which is a [=table address
     1. Let |map| be the [=surrounding agent=]'s associated [=Table object cache=].
     1. If |map|[|tableaddr|] [=map/exists=],
         1. Return |map|[|tableaddr|].
-    1. Let |table| be a [=/new=] {{Table}}.
+    1. Let |table| be a [=/new=] {{Table}} in the [=current Realm=].
     1. [=initialize a table object|Initialize=] |table| from |tableaddr|.
     1. Return |table|.
 </div>
@@ -1167,7 +1167,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     1. Let |map| be the [=surrounding agent=]'s associated [=Global object cache=].
     1. If |map|[|globaladdr|] [=map/exists=],
         1. Return |map|[|globaladdr|].
-    1. Let |global| be a [=/new=] {{Global}}.
+    1. Let |global| be a [=/new=] {{Global}} in the [=current Realm=].
     1. [=initialize a global object|Initialize=] |global| from |globaladdr|.
     1. Return |global|.
 </div>
@@ -1547,7 +1547,7 @@ To <dfn>create a Tag object</dfn> from a [=tag address=] |tagAddress|, perform t
 1. Let |map| be the [=surrounding agent=]'s associated [=Tag object cache=].
 1. If |map|[|tagAddress|] [=map/exists=],
     1. Return |map|[|tagAddress|].
-1. Let |tag| be a [=/new=] {{Tag}}.
+1. Let |tag| be a [=/new=] {{Tag}} in the [=current Realm=].
 1. [=initialize a Tag object|Initialize=] |tag| from |tagAddress|.
 1. Return |tag|.
 
@@ -1715,7 +1715,7 @@ To <dfn>create an Exception object</dfn> from a [=exception address=] |exnAddres
 1. Let |map| be the [=surrounding agent=]'s associated [=Exception object cache=].
 1. If |map|[|exnAddress|] [=map/exists=],
     1. Return |map|[|exnAddress|].
-1. Let |exn| be a [=/new=] {{Exception}}.
+1. Let |exn| be a [=/new=] {{Exception}} in the [=current Realm=].
 1. [=initialize an Exception object|Initialize=] |exn| from |exnAddress|.
 1. Return |exn|.
 
