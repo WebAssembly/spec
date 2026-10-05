@@ -486,7 +486,14 @@ To <dfn>instantiate imported strings</dfn> with module |module| and |importedStr
 
 <div algorithm="read-the-imports">
   To <dfn>read the imports</dfn> from a WebAssembly module |module| from imports object |importObject|, enabled builtins |builtinSetNames|, and |importedStringModule|, perform the following steps:
-    1. If [=module_imports=](|module|) [=list/is empty|is not empty=], and |importObject| is missing, throw a {{TypeError}} exception.
+    1. If |importObject| is missing,
+        1. [=list/iterate|For each=] |import| of [=module_imports=](|module|),
+            1. Let |moduleName| be |import|[0].
+            1. If |importedStringModule| is not null and |moduleName| equals |importedStringModule|,
+                1. [=iteration/continue=].
+            1. If [=find a builtin|finding a builtin=] for |import| and |builtinSetNames| is not null,
+                1. [=iteration/continue=].
+            1. Throw a {{TypeError}} exception.
     1. Let |builtinOrStringImports| be the ordered map «[ ]».
     1. [=list/iterate|For each=] |builtinSetName| of |builtinSetNames|,
         1. Let |builtinSetQualifiedName| be |builtinSetName| prefixed with "wasm:"
@@ -502,8 +509,10 @@ To <dfn>instantiate imported strings</dfn> with module |module| and |importedStr
         1. If |builtinOrStringImports|[|moduleName|] [=map/exists=],
             1. Let |o| be |builtinOrStringImports|[|moduleName|].
             1. If |o| [=is not an Object=] or if [=?=] [$HasProperty$](|o|, |componentName|) is false,
+                1. Assert: |importObject| is not missing.
                 1. Set |o| to [=?=] [$Get$](|importObject|, |moduleName|).
         1. Else,
+            1. Assert: |importObject| is not missing.
             1. Let |o| be [=?=] [$Get$](|importObject|, |moduleName|).
         1. If |o| [=is not an Object=], throw a {{TypeError}} exception.
         1. Let |v| be [=?=] [$Get$](|o|, |componentName|).
@@ -551,6 +560,13 @@ To <dfn>instantiate imported strings</dfn> with module |module| and |importedStr
 Note: This algorithm only verifies the right kind of JavaScript values are passed.
 The verification of WebAssembly type requirements is deferred to the
 "[=instantiate the core of a WebAssembly module=]" algorithm.
+
+Note: |importObject| is required only for an import that is not supplied by an
+enabled builtin or by the imported string constants module. If it is missing,
+the opening check throws unless every import is supplied that way. Each such
+import is then an own property of the object in |builtinOrStringImports| for
+its module name, so the [$Get$](|importObject|, |moduleName|) steps are not
+reached.
 </div>
 
 <div algorithm>
