@@ -176,7 +176,7 @@ and short_alt_prod' = function
 %token COLON SEMICOLON COMMA DOT DOTDOT DOTDOTDOT BAR BARBAR DASH COLONSUB
 %token BIGAND BIGOR BIGFORALL BIGEXISTS BIGADD BIGMUL BIGCAT
 %token COMMA_NL NL_BAR NL_NL NL_NL_NL
-%token EQ NE LT GT LE GE APPROX EQUIV ASSIGN SUB SUP EQCAT EQSUB EQUIVSUB APPROXSUB
+%token EQ NE LT GT LE GE APPROX SIM EQUIV ASSIGN SUB SUP EQCAT EQSUB EQUIVSUB APPROXSUB SIMSUB
 %token NOT AND OR IMPL DIMPL
 %token QUEST PLUS MINUS STAR SLASH BACKSLASH UP CAT PLUSMINUS MINUSPLUS
 %token ARROW ARROW2 ARROWSUB ARROW2SUB SQARROW SQARROWSUB SQARROWSTAR SQARROWSTARSUB
@@ -201,7 +201,7 @@ and short_alt_prod' = function
 %nonassoc TURNSTILE TURNSTILESUB
 %nonassoc TILESTURN TILESTURNSUB
 %right SQARROW SQARROWSUB SQARROWSTAR SQARROWSTARSUB PREC SUCC PRECSUB SUCCSUB BIGAND BIGOR BIGFORALL BIGEXISTS BIGADD BIGMUL BIGCAT
-%left COLON SUB SUP ASSIGN EQUIV APPROX COLONSUB EQUIVSUB APPROXSUB
+%left COLON SUB SUP ASSIGN EQUIV APPROX SIM COLONSUB EQUIVSUB APPROXSUB SIMSUB
 %left COMMA COMMA_NL
 %right EQ NE LT GT LE GE MEM NOTMEM EQSUB
 %right ARROW ARROWSUB
@@ -344,7 +344,7 @@ atom_escape :
   | TICK PLUSMINUS { Atom.PlusMinus }
   | TICK MINUSPLUS { Atom.MinusPlus }
   | TICK STAR { Atom.Times }
-  | TICK NOT { Atom.Not }
+  | TICK SIM { Atom.Not }
   | TICK AND { Atom.And }
   | TICK OR { Atom.Or }
   | TICK IMPL { Atom.Arrow2 }
@@ -353,7 +353,7 @@ atom_escape :
   | TICK CAT { Atom.Cat }
   | TICK COMMA { Atom.Comma }
   | TICK infixop_ { $2 }
-  | TICK relop_ { $2 }
+  | TICK relop_prefix_ { $2 }
   | BOT { Atom.Bot }
   | TOP { Atom.Top }
   | INFINITY { Atom.Infinity }
@@ -391,6 +391,7 @@ check_atom :
 
 %inline unop :
   | NOT { `NotOp }
+  | SIM { `NotOp }
   | PLUS { `PlusOp }
   | MINUS { `MinusOp }
   | PLUSMINUS { `PlusMinusOp }
@@ -442,9 +443,9 @@ check_atom :
   | ARROWSUB { Atom.ArrowSub }
   | ARROW2SUB { Atom.Arrow2Sub }
 
-%inline relop :
-  | relop_ { $1 $$ $sloc }
-%inline relop_ :
+%inline relop_prefix :
+  | relop_prefix_ { $1 $$ $sloc }
+%inline relop_prefix_ :
   | COLON { Atom.Colon }
   | SUB { Atom.Sub }
   | SUP { Atom.Sup }
@@ -458,9 +459,15 @@ check_atom :
   | TILESTURN { Atom.Tilesturn }
   | TURNSTILE { Atom.Turnstile }
 
-%inline relopsub :
-  | relopsub_ { $1 $$ $sloc }
-%inline relopsub_ :
+%inline relop :
+  | relop_ { $1 $$ $sloc }
+%inline relop_ :
+  | relop_prefix_ { $1 }
+  | SIM { Atom.Sim }
+
+%inline relopsub_prefix :
+  | relopsub_prefix_ { $1 $$ $sloc }
+%inline relopsub_prefix_ :
   | EQSUB { Atom.EqualSub }
   | COLONSUB { Atom.ColonSub }
   | EQUIVSUB { Atom.EquivSub }
@@ -471,6 +478,12 @@ check_atom :
   | SUCCSUB { Atom.SuccSub }
   | TILESTURNSUB { Atom.TilesturnSub }
   | TURNSTILESUB { Atom.TurnstileSub }
+
+%inline relopsub :
+  | relopsub_ { $1 $$ $sloc }
+%inline relopsub_ :
+  | relopsub_prefix_ { $1 }
+  | SIMSUB { Atom.SimSub }
 
 
 (* Iteration *)
@@ -638,8 +651,8 @@ nottyp_bin_ :
 nottyp_rel : nottyp_rel_ { $1 $ $sloc }
 nottyp_rel_ :
   | nottyp_bin_ { $1 }
-  | relop nottyp_rel { InfixT (SeqT [] $ $loc($1), $1, $2) }
-  | relopsub nottyp_prim nottyp_rel
+  | relop_prefix nottyp_rel { InfixT (SeqT [] $ $loc($1), $1, $2) }
+  | relopsub_prefix nottyp_prim nottyp_rel
     { InfixT (SeqT [] $ $loc($1), $1, cat_seq_typ $2 $3) }
   | nottyp_rel relop nottyp_rel { InfixT ($1, $2, $3) }
   | nottyp_rel relopsub nottyp_prim nottyp_rel
@@ -798,8 +811,8 @@ exp_bin_ :
 exp_rel : exp_rel_ { $1 $ $sloc }
 exp_rel_ :
   | exp_bin_ { $1 }
-  | relop exp_rel { InfixE (SeqE [] $ $loc($1), $1, $2) }
-  | relopsub exp_prim exp_rel
+  | relop_prefix exp_rel { InfixE (SeqE [] $ $loc($1), $1, $2) }
+  | relopsub_prefix exp_prim exp_rel
     { InfixE (SeqE [] $ $loc($1), $1, cat_seq_exp $2 $3) }
   | exp_rel relop exp_rel { InfixE ($1, $2, $3) }
   | exp_rel relopsub exp_prim exp_rel { InfixE ($1, $2, cat_seq_exp $3 $4) }
@@ -808,8 +821,8 @@ exp_comma : exp_comma_ { $1 $ $sloc }
 exp_comma_ :
   | exp_bin_ { $1 }
   | comma(exp) exp_comma { CommaE (SeqE [] $ $loc($1), $2) }
-  | relop exp_comma { InfixE (SeqE [] $ $loc($1), $1, $2) }
-  | relopsub exp_prim exp_comma
+  | relop_prefix exp_comma { InfixE (SeqE [] $ $loc($1), $1, $2) }
+  | relopsub_prefix exp_prim exp_comma
     { InfixE (SeqE [] $ $loc($1), $1, cat_seq_exp $2 $3) }
   | exp_comma comma(exp) exp_comma { CommaE ($1, $3) }
   | exp_comma relop exp_comma { InfixE ($1, $2, $3) }

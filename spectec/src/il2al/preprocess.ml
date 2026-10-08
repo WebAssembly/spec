@@ -138,8 +138,8 @@ let rec preprocess_prem prem =
       when turnstile.it = Turnstile && colon.it = Colon ->
         typing_functions := id.it :: !typing_functions;
         Some (lhs, rhs)
-      (* `lhs` ~~ `rhs` *)
-      | [[]; [approx]; []], TupE [lhs; rhs] when approx.it = Approx -> Some (lhs, rhs)
+      (* `lhs` ~~ `rhs` or `lhs` ~ `rhs` *)
+      | [[]; [op]; []], TupE [lhs; rhs] when op.it = Approx || op.it = Sim -> Some (lhs, rhs)
       | _ -> None
     in
     (match lhs_rhs_opt with
