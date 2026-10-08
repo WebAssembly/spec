@@ -111,7 +111,7 @@ Conventions
 * For every index space ${-:abcidx}, the notation ${-:$abcidx(A)} denotes the set of indices from that index space occurring free in ${:A}. Sometimes this set is reinterpreted as the :ref:`list <syntax-list>` of its elements.
 
 .. note::
-   For example, if ${:instr*} is ${instr*: (DATA.DROP 1) (MEMORY.INIT 2 3)}, then ${:$dataidx_instrs(instr*) = 1 3}, or equivalently, the set ${:`{1, 3}}.
+   For example, if ${:instr*} is ${instr*: (DATA.DROP 1) (MEMORY.INIT 2 3)}, then ${:$dataidx(instr*) = 1 3}, or equivalently, the set ${:`{1, 3}}.
 
 
 .. index:: ! type definition, type index, function type, aggregate type
