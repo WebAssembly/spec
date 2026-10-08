@@ -1358,8 +1358,6 @@ $${rule-prose: Instrs_ok}
 
 $${rule: Instrs_ok/empty}
 
-$${rule: Instrs_ok/instr}
-
 $${rule: Instrs_ok/seq}
 
 $${rule: Instrs_ok/sub}
