@@ -801,7 +801,7 @@ def $utf8(char*) : byte*
     -- if (ch!`%`_char.0 = ((((2 ^ 12) * (((b_1!`%`_byte.0 : nat <:> int) - (224 : nat <:> int)) : int <:> nat)) + ((2 ^ 6) * $cont(b_2))) + $cont(b_3)))
   ;; ../../../../specification/wasm-latest/5.1-binary.values.spectec:62.1-64.82
   def $utf8{ch : char, b_1 : byte, b_2 : byte, b_3 : byte, b_4 : byte}([ch]) = [b_1 b_2 b_3 b_4]
-    -- if ((65536 <= ch!`%`_char.0) /\ (ch!`%`_char.0 < 69632))
+    -- if ((65536 <= ch!`%`_char.0) /\ (ch!`%`_char.0 < 1114112))
     -- if (ch!`%`_char.0 = (((((2 ^ 18) * (((b_1!`%`_byte.0 : nat <:> int) - (240 : nat <:> int)) : int <:> nat)) + ((2 ^ 12) * $cont(b_2))) + ((2 ^ 6) * $cont(b_3))) + $cont(b_4)))
 }
 
