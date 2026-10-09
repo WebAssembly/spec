@@ -26900,21 +26900,47 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`{{\mathrm{ivextbinop}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}({\mathrm{ivrelaxed}}_{{\mathit{dot}}}, \mathsf{s}, {{\mathrm{relaxed}}({\mathrm{R}}_{\mathit{idot}})}{{}[ \mathsf{s}, \mathsf{u} ]}, 0, M_1, v_1, v_2)`.
 
 
-:math:`{}{{}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}(c_1, c_2, c_3)}`
+:math:`{}{{}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}(v_1, v_2, v_3)}`
 ..............................................................................................................
 
 
-1. Let :math:`M` be :math:`2 \, M_2`.
+1. Let :math:`N` be :math:`{{\mathrm{relaxed}}({{\mathrm{R}}}_{{\mathit{idot\_add}}})}{{}[ 2 \cdot N_1, N_2 ]}`.
 
-#. Let :math:`{\mathsf{i}}{N}` be the result for which :math:`N` :math:`=` :math:`2 \cdot N_1`.
+#. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}}(v_1)`.
 
-#. Let :math:`{c'}` be :math:`{}{{}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{\mathsf{i}}{N}}{\mathsf{x}}{M}}(c_1, c_2)}`.
+#. Let :math:`{c_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}}(v_2)`.
 
-#. Let :math:`{c''}` be :math:`{{\mathsf{extadd\_pairwise}}{\mathsf{\_}}{\mathsf{s}}}{{}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}({c'})}`.
+#. Let :math:`{{c'}_1^\ast}` be :math:`\epsilon`.
 
-#. Let :math:`c` be an element of :math:`{\mathsf{add}}{{}_{{{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}({c''}, c_3)}`.
+#. For each :math:`c_1` in :math:`{c_1^\ast}`, do:
 
-#. Return :math:`c`.
+   a. Let :math:`{c'}_1` be :math:`{{{{\mathrm{extend}}}_{N_1, N}^{\mathsf{s}}}}{(c_1)}`.
+
+   #. Append :math:`{c'}_1` to :math:`{{c'}_1^\ast}`.
+
+#. Let :math:`{{c'}_2^\ast}` be :math:`\epsilon`.
+
+#. For each :math:`c_2` in :math:`{c_2^\ast}`, do:
+
+   a. Let :math:`{c'}_2` be :math:`{{{{\mathrm{extend}}}_{N_1, N}^{{{\mathrm{relaxed}}({\mathrm{R}}_{\mathit{idot}})}{{}[ \mathsf{s}, \mathsf{u} ]}}}}{(c_2)}`.
+
+   #. Append :math:`{c'}_2` to :math:`{{c'}_2^\ast}`.
+
+#. Let :math:`{c^\ast}` be :math:`{{\mathrm{ivrelaxed\_dot}}}_{N}({{c'}_1^\ast}, {{c'}_2^\ast})`.
+
+#. Let :math:`{{c'}^\ast}` be :math:`\epsilon`.
+
+#. For each :math:`c` in :math:`{c^\ast}`, do:
+
+   a. Let :math:`{c'}` be :math:`{{{{\mathrm{extend}}}_{N, N_2}^{\mathsf{s}}}}{(c)}`.
+
+   #. Append :math:`{c'}` to :math:`{{c'}^\ast}`.
+
+#. Let :math:`{v'}` be :math:`{{{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}^{{-1}}}}{({{\mathrm{ivadd\_pairwise}}}_{N_2}({{c'}^\ast}))}`.
+
+#. Let :math:`v` be an element of :math:`{\mathsf{add}}{{}_{{{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}({v'}, v_3)}`.
+
+#. Return :math:`v`.
 
 
 :math:`{\mathrm{Ki}}`
@@ -34512,13 +34538,26 @@ vextbinop__ Jnn_1 X M_1 Jnn_2 X M_2 vextbinop__ v_1 v_2
 3. Assert: Due to validation, (vextbinop__ = RELAXED_DOTS).
 4. Return $ivextbinop__(Jnn_1 X M_1, Jnn_2 X M_2, $ivrelaxed_dot_, S, $relaxed2($R_idot(), `sx, S, U), 0, M_1, v_1, v_2).
 
-vextternop__ Jnn_1 X M_1 Jnn_2 X M_2 RELAXED_DOT_ADDS c_1 c_2 c_3
-1. Let M be (2 * M_2).
-2. Let Jnn be $jsizenn^-1((2 * $lsizenn1(Jnn_1))).
-3. Let c' be $vextbinop__(Jnn_1 X M_1, Jnn X M, RELAXED_DOTS, c_1, c_2).
-4. Let c'' be $vextunop__(Jnn X M, Jnn_2 X M_2, (EXTADD_PAIRWISE S), c').
-5. Let c be an element of $vbinop_(Jnn_2 X M_2, ADD, c'', c_3).
-6. Return c.
+vextternop__ Jnn_1 X M_1 Jnn_2 X M_2 RELAXED_DOT_ADDS v_1 v_2 v_3
+1. Let N be $relaxed2($R_idot_add(), `nat, (2 * $lsizenn1(Jnn_1)), $lsizenn2(Jnn_2)).
+2. Let c_1* be $lanes_(Jnn_1 X M_1, v_1).
+3. Let c_2* be $lanes_(Jnn_1 X M_1, v_2).
+4. Let c'_1* be [].
+5. For each c_1 in c_1*, do:
+  a. Let c'_1 be $extend__($lsizenn1(Jnn_1), N, S, c_1).
+  b. Append c'_1 to the c'_1*.
+6. Let c'_2* be [].
+7. For each c_2 in c_2*, do:
+  a. Let c'_2 be $extend__($lsizenn1(Jnn_1), N, $relaxed2($R_idot(), `sx, S, U), c_2).
+  b. Append c'_2 to the c'_2*.
+8. Let c* be $ivrelaxed_dot_(N, c'_1*, c'_2*).
+9. Let c'* be [].
+10. For each c in c*, do:
+  a. Let c' be $extend__(N, $lsizenn2(Jnn_2), S, c).
+  b. Append c' to the c'*.
+11. Let v' be $inv_lanes_(Jnn_2 X M_2, $ivadd_pairwise_($lsizenn2(Jnn_2), c'*)).
+12. Let v be an element of $vbinop_(Jnn_2 X M_2, ADD, v', v_3).
+13. Return v.
 
 Ki
 1. Return 1024.

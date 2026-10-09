@@ -9011,13 +9011,17 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{{\mathsf{relaxed\_dot\_add}}{\mathsf{\_}}{\mathsf{s}}}{{}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}(c_1, c_2, c_3)} & = & c & \quad
+{{\mathsf{relaxed\_dot\_add}}{\mathsf{\_}}{\mathsf{s}}}{{}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}(v_1, v_2, v_3)} & = & v & \quad
 \begin{array}[t]{@{}l@{}}
-\mbox{if}~ N = 2 \cdot N_1 \\
-{\land}~ M = 2 \, M_2 \\
-{\land}~ {c'} = {{\mathsf{relaxed\_dot}}{\mathsf{\_}}{\mathsf{s}}}{{}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{\mathsf{i}}{N}}{\mathsf{x}}{M}}(c_1, c_2)} \\
-{\land}~ {c''} = {{\mathsf{extadd\_pairwise}}{\mathsf{\_}}{\mathsf{s}}}{{}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}({c'})} \\
-{\land}~ c \in {\mathsf{add}}{{}_{{{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}({c''}, c_3)} \\
+\mbox{if}~ N = {{\mathrm{relaxed}}({{\mathrm{R}}}_{{\mathit{idot\_add}}})}{{}[ 2 \cdot N_1, N_2 ]} \\
+{\land}~ {c_1^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}}(v_1) \\
+{\land}~ {c_2^\ast} = {{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}}(v_2) \\
+{\land}~ {{c'}_1^\ast} = {{{{{\mathrm{extend}}}_{N_1, N}^{\mathsf{s}}}}{(c_1)}^\ast} \\
+{\land}~ {{c'}_2^\ast} = {{{{{\mathrm{extend}}}_{N_1, N}^{{{\mathrm{relaxed}}({\mathrm{R}}_{\mathit{idot}})}{{}[ \mathsf{s}, \mathsf{u} ]}}}}{(c_2)}^\ast} \\
+{\land}~ {c^\ast} = {{\mathrm{ivrelaxed\_dot}}}_{N}({{c'}_1^\ast}, {{c'}_2^\ast}) \\
+{\land}~ {{c'}^\ast} = {{{{{\mathrm{extend}}}_{N, N_2}^{\mathsf{s}}}}{(c)}^\ast} \\
+{\land}~ {v'} = {{{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}^{{-1}}}}{({{\mathrm{ivadd\_pairwise}}}_{N_2}({{c'}^\ast}))} \\
+{\land}~ v \in {\mathsf{add}}{{}_{{{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}({v'}, v_3)} \\
 \end{array} \\
 \end{array}
 $$

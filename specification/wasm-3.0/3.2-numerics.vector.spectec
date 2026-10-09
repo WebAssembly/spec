@@ -398,9 +398,13 @@ def $vextternop__(Jnn_1 X M_1, Jnn_2 X M_2, RELAXED_DOT_ADD S, c_1, c_2, c_3) = 
   -- if c = $inv_lanes_(Jnn_2 X M_2, $iadd_($lsizenn2(Jnn_2), ck, ci_3)*)
 ;)
 
-def $vextternop__(Jnn_1 X M_1, Jnn_2 X M_2, RELAXED_DOT_ADD S, c_1, c_2, c_3) = c
-  -- if $jsizenn(Jnn) = $(2*$lsizenn1(Jnn_1))
-  -- if M = $(2*M_2)
-  -- if c' = $vextbinop__(Jnn_1 X M_1, Jnn X M, RELAXED_DOT S, c_1, c_2)
-  -- if c'' = $vextunop__(Jnn X M, Jnn_2 X M_2, EXTADD_PAIRWISE S, c')
-  -- if c <- $vbinop_(Jnn_2 X M_2, ADD, c'', c_3)
+def $vextternop__(Jnn_1 X M_1, Jnn_2 X M_2, RELAXED_DOT_ADD S, v_1, v_2, v_3) = v
+  -- if N = $relaxed2($R_idot_add, nat, $(2*$lsizenn1(Jnn_1)), $lsizenn2(Jnn_2))
+  -- if c_1* = $lanes_(Jnn_1 X M_1, v_1)
+  -- if c_2* = $lanes_(Jnn_1 X M_1, v_2)
+  -- if c'_1* = $extend__($lsizenn1(Jnn_1), N, S, c_1)*
+  -- if c'_2* = $extend__($lsizenn1(Jnn_1), N, $relaxed2($R_idot, sx, S, U), c_2)*
+  -- if c* = $ivrelaxed_dot_(N, c'_1*, c'_2*)
+  -- if c'* = $extend__(N, $lsizenn2(Jnn_2), S, c)*
+  -- if v' = $inv_lanes_(Jnn_2 X M_2, $ivadd_pairwise_($lsizenn2(Jnn_2), c'*))
+  -- if v <- $vbinop_(Jnn_2 X M_2, ADD, v', v_3)

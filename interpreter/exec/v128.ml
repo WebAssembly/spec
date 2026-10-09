@@ -425,20 +425,6 @@ struct
       | _, _ -> assert false
     in I32x4.of_lanes (dot xs ys)
 
-  let dot_add_s x y z =
-    let xs = List.map Convert.I16_.extend_i8_s (I8x16.to_lanes x) in
-    let ys = List.map Convert.I16_.extend_i8_s (I8x16.to_lanes y) in
-    let rec dot xs ys =
-      match xs, ys with
-      | x1::x2::x3::x4::xs', y1::y2::y3::y4::ys' ->
-        Int32.(add
-          (Convert.I32_.extend_i16_s (I16.(add_sat_s (mul x1 y1) (mul x2 y2))))
-          (Convert.I32_.extend_i16_s (I16.(add_sat_s (mul x3 y3) (mul x4 y4))))
-        ) :: dot xs' ys'
-      | [], [] -> []
-      | _, _ -> assert false
-    in I32x4.add (I32x4.of_lanes (dot xs ys)) z
-
   let extmul_low_s x y = I32x4.mul (extend_low_s x) (extend_low_s y)
   let extmul_high_s x y = I32x4.mul (extend_high_s x) (extend_high_s y)
   let extmul_low_u x y = I32x4.mul (extend_low_u x) (extend_low_u y)
@@ -449,6 +435,9 @@ struct
     I32x4.of_lanes (Lib.List.map_pairwise (extadd Convert.I32_.extend_i16_s) (I16x8.to_lanes x))
   let extadd_pairwise_u x =
     I32x4.of_lanes (Lib.List.map_pairwise (extadd Convert.I32_.extend_i16_u) (I16x8.to_lanes x))
+
+  let dot_add_s x y z =
+    I32x4.add (extadd_pairwise_s (I16x8_convert.dot_s x y)) z
 end
 
 module I64x2_convert =
