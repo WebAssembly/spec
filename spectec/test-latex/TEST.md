@@ -11569,7 +11569,7 @@ $$
 \end{array} \\
 {\mathrm{utf{\kern-0.1em\scriptstyle 8}}}({\mathit{ch}}) & = & b_1~b_2~b_3~b_4 & \quad
 \begin{array}[t]{@{}l@{}}
-\mbox{if}~ \mathrm{U{+}10000} \leq {\mathit{ch}} < \mathrm{U{+}11000} \\
+\mbox{if}~ \mathrm{U{+}10000} \leq {\mathit{ch}} < \mathrm{U{+}110000} \\
 {\land}~ {\mathit{ch}} = {2^{18}} \cdot (b_1 - \mathtt{0xF0}) + {2^{12}} \cdot {\mathrm{cont}}(b_2) + {2^{6}} \cdot {\mathrm{cont}}(b_3) + {\mathrm{cont}}(b_4) \\
 \end{array} \\
 \end{array}
