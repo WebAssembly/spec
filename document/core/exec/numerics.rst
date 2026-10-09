@@ -1051,7 +1051,7 @@ then its sign is non-deterministic and the :ref:`payload <syntax-payload>` is co
 
 * Otherwise the payload is picked non-deterministically among all :ref:`arithmetic NaNs <arithmetic-nan>`; that is, its most significant bit is :math:`1` and all others are unspecified.
 
-* In the :ref:`deterministic profile <profile-deterministic>`, however, a positive canonical NaNs is reliably produced in the latter case.
+* In the :ref:`deterministic profile <profile-deterministic>`, only positive canonical NaN outputs are produced.
 
 The non-deterministic result is expressed by the following auxiliary function producing a set of allowed outputs from a set of inputs:
 
@@ -1059,9 +1059,9 @@ The non-deterministic result is expressed by the following auxiliary function pr
    \begin{array}{llcl@{\qquad}l}
    & \nans_N\{z^\ast\} &=& \{ + \NAN(\canon_N) \} \\
    \exprofiles{\PROFDET} & \nans_N\{z^\ast\} &=& \{ + \NAN(n), - \NAN(n) ~|~ n = \canon_N \}
-     & (\iff \{z^\ast\} \subseteq \{ + \NAN(\canon_N), - \NAN(\canon_N) \} \\
+     & (\iff \forall \,{\pm \NAN(n)} \in z^\ast,~ n = \canon_N) \\
    \exprofiles{\PROFDET} & \nans_N\{z^\ast\} &=& \{ + \NAN(n), - \NAN(n) ~|~ n \geq \canon_N \}
-     & (\iff \{z^\ast\} \not\subseteq \{ + \NAN(\canon_N), - \NAN(\canon_N) \} \\
+     & (\iff \exists \,{\pm \NAN(n)} \in z^\ast,~ n \neq \canon_N) \\
    \end{array}
 
 
