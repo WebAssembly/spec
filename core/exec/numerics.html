@@ -1760,7 +1760,7 @@ However, some operators consider multiple lanes at once.</p>
 \href{../syntax/instructions.html#syntax-instr-vec}{\mathsf{extmul}}{\mathsf\_}\href{../syntax/instructions.html#syntax-instr-vec}{\mathsf{low}}{\mathsf\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}} &amp; \href{../exec/numerics.html#op-ivmul}{\mathrm{ivmul}} &amp; \href{../syntax/instructions.html#syntax-sx}{\mathit{sx}} &amp; \href{../syntax/instructions.html#syntax-sx}{\mathit{sx}} &amp; 0 &amp; M_2 \\
 \href{../syntax/instructions.html#syntax-instr-vec}{\mathsf{extmul}}{\mathsf\_}\href{../syntax/instructions.html#syntax-instr-vec}{\mathsf{high}}{\mathsf\_}\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}} &amp; \href{../exec/numerics.html#op-ivmul}{\mathrm{ivmul}} &amp; \href{../syntax/instructions.html#syntax-sx}{\mathit{sx}} &amp; \href{../syntax/instructions.html#syntax-sx}{\mathit{sx}} &amp; M_2 &amp; M_2 \\
 \href{../syntax/instructions.html#syntax-instr-vec}{\mathsf{dot}}{\mathsf\_}\href{../syntax/instructions.html#syntax-sx}{\mathsf{s}} &amp; \href{../exec/numerics.html#op-ivdot}{\mathrm{ivdot}} &amp; \href{../syntax/instructions.html#syntax-sx}{\mathsf{s}} &amp; \href{../syntax/instructions.html#syntax-sx}{\mathsf{s}} &amp; 0 &amp; M_1 \\
-\href{../syntax/instructions.html#syntax-instr-vec}{\mathsf{relaxed\_dot}}{\mathsf\_}\href{../syntax/instructions.html#syntax-sx}{\mathsf{s}} &amp; \href{../exec/numerics.html#op-ivdot-sat}{\mathrm{ivdotsat}} &amp; \href{../syntax/instructions.html#syntax-sx}{\mathsf{s}} &amp; \href{../exec/numerics.html#aux-relaxed}{\mathrm{relaxed}}(R_{\mathrm{idot}})[ \href{../syntax/instructions.html#syntax-sx}{\mathsf{s}}, \href{../syntax/instructions.html#syntax-sx}{\mathsf{u}} ] &amp; 0 &amp; M_1 \\
+\href{../syntax/instructions.html#syntax-instr-vec}{\mathsf{relaxed\_dot}}{\mathsf\_}\href{../syntax/instructions.html#syntax-sx}{\mathsf{s}} &amp; \href{../exec/numerics.html#op-ivrelaxed-dot}{\mathrm{ivrelaxed\_dot}} &amp; \href{../syntax/instructions.html#syntax-sx}{\mathsf{s}} &amp; \href{../exec/numerics.html#aux-relaxed}{\mathrm{relaxed}}(R_{\mathrm{idot}})[ \href{../syntax/instructions.html#syntax-sx}{\mathsf{s}}, \href{../syntax/instructions.html#syntax-sx}{\mathsf{u}} ] &amp; 0 &amp; M_1 \\
 \end{array}\end{split}\]</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -2011,11 +2011,17 @@ In the <a class="reference internal" href="../appendix/profiles.html#profile-det
 it behaves like regular <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#op-ivswizzle}{\mathrm{ivswizzle}}\)</span>.</p>
 </div>
 </section>
-<section id="xref-syntax-instructions-syntax-instr-vec-mathsf-relaxed-dot-i-1-i-2">
-<span id="op-irelaxed-dot-add"></span><span id="op-irelaxed-dot"></span><h3><span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-vec}{\mathsf{relaxed\_dot}}(i_1, i_2)\)</span><a class="headerlink" href="#xref-syntax-instructions-syntax-instr-vec-mathsf-relaxed-dot-i-1-i-2" title="Link to this heading">¶</a></h3>
+<section id="xref-exec-numerics-op-ivrelaxed-dot-mathrm-ivrelaxed-dot-n-i-1-2m-i-2-2m">
+<span id="op-irelaxed-dot-add"></span><span id="op-ivrelaxed-dot"></span><h3><span class="math notranslate nohighlight">\(\href{../exec/numerics.html#op-ivrelaxed-dot}{\mathrm{ivrelaxed\_dot}}_N(i_1^{2m}, i_2^{2m})\)</span><a class="headerlink" href="#xref-exec-numerics-op-ivrelaxed-dot-mathrm-ivrelaxed-dot-n-i-1-2m-i-2-2m" title="Link to this heading">¶</a></h3>
 <p>The implementation-specific behaviour of this operation is determined by the global parameter <span class="math notranslate nohighlight">\(R_{\mathrm{idot}} \in \{0, 1\}\)</span>.
-It also affects the behaviour of <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-vec}{\mathsf{relaxed\_dot\_add}}\)</span>.</p>
-<p>Its definition is part of the definition of <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-vextbinop}{\mathit{vextbinop}}\)</span> specified <a class="reference internal" href="#op-vextbinop"><span class="std std-ref">above</span></a>.</p>
+It also affects the behaviour of <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-vec}{\mathsf{relaxed\_dot}}\)</span> and <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-vec}{\mathsf{relaxed\_dot\_add}}\)</span> specified <a class="reference internal" href="#op-vextbinop"><span class="std std-ref">above</span></a>.</p>
+<ul class="simple">
+<li><p>Return <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#aux-relaxed}{\mathrm{relaxed}}(R_{\mathrm{idot}})[ \href{../exec/numerics.html#op-ivdot}{\mathrm{ivdot}}_N(i_1^{2m}, i_2^{2m}), \href{../exec/numerics.html#op-ivdot-sat}{\mathrm{ivdotsat}}_N(i_1^{2m}, i_2^{2m}) ]\)</span>.</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{array}{&#64;{}lcll}
+\href{../exec/numerics.html#op-ivrelaxed-dot}{\mathrm{ivrelaxed\_dot}}_N(i_1^{2m}, i_2^{2m}) &amp;=&amp; \href{../exec/numerics.html#aux-relaxed}{\mathrm{relaxed}}(R_{\mathrm{idot}})[ \href{../exec/numerics.html#op-ivdot}{\mathrm{ivdot}}_N(i_1^{2m}, i_2^{2m}), \href{../exec/numerics.html#op-ivdot-sat}{\mathrm{ivdotsat}}_N(i_1^{2m}, i_2^{2m}) ] \\
+\end{array}\end{split}\]</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Relaxed dot product is implementation-dependent when the second operand is negative in a signed intepretation.
