@@ -5,11 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Instructions &#8212; WebAssembly 3.0 (2026-10-08)</title>
+    <title>Instructions &#8212; WebAssembly 3.0 (2026-10-09)</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=686e5160" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=057308f9" />
-    <script src="../_static/documentation_options.js?v=5e8fb0b5"></script>
+    <script src="../_static/documentation_options.js?v=2f5afaec"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>window.MathJax = {"tex": {"maxBuffer": 30720, "macros": {"multicolumn": ["", 2]}}, "options": {"menuOptions": {"settings": {"enrich": false}}}}</script>
@@ -438,7 +438,7 @@ For the other integer instructions, the use of two’s complement for the signed
 &amp; &amp; | &amp; {{\href{../syntax/instructions.html#syntax-shape}{\mathit{ishape}}}_1{.}\href{../syntax/instructions.html#syntax-instr-vec}{\mathsf{narrow}}}{\mathsf{\_}}{{\href{../syntax/instructions.html#syntax-shape}{\mathit{ishape}}}_2}{\mathsf{\_}}{{\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}}} &amp; \quad \mbox{if}~ {|{\href{../syntax/instructions.html#aux-lanetype}{\mathrm{lanetype}}}({\href{../syntax/instructions.html#syntax-shape}{\mathit{ishape}}}_2)|} = 2 \cdot {|{\href{../syntax/instructions.html#aux-lanetype}{\mathrm{lanetype}}}({\href{../syntax/instructions.html#syntax-shape}{\mathit{ishape}}}_1)|} \leq \mathsf{{\scriptstyle 32}} \\
 &amp; &amp; | &amp; {\href{../syntax/instructions.html#syntax-shape}{\mathit{shape}}}_1 {.} {{{\href{../syntax/instructions.html#syntax-vcvtop}{\mathit{vcvtop}}}}_{{\href{../syntax/instructions.html#syntax-shape}{\mathit{shape}}}_2, {\href{../syntax/instructions.html#syntax-shape}{\mathit{shape}}}_1}}{\mathsf{\_}}{{\href{../syntax/instructions.html#syntax-shape}{\mathit{shape}}}_2} \\
 &amp; &amp; | &amp; {\href{../syntax/instructions.html#syntax-shape}{\mathit{shape}}}{.}\href{../syntax/instructions.html#syntax-instr-vec}{\mathsf{splat}} \\
-&amp; &amp; | &amp; {{\href{../syntax/instructions.html#syntax-shape}{\mathit{shape}}}{.}\href{../syntax/instructions.html#syntax-instr-vec}{\mathsf{extract\_lane}}}{\mathsf{\_}}{{{\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}}^?}}~{\href{../syntax/instructions.html#syntax-laneidx}{\mathit{laneidx}}} &amp; \quad \mbox{if}~ {{\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}}^?} = \epsilon \Leftrightarrow {\href{../syntax/instructions.html#aux-lanetype}{\mathrm{lanetype}}}({\href{../syntax/instructions.html#syntax-shape}{\mathit{shape}}}) \in \href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}~\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle64}}~\href{../syntax/types.html#syntax-numtype}{\mathsf{f\scriptstyle32}}~\href{../syntax/types.html#syntax-numtype}{\mathsf{f\scriptstyle64}} \\
+&amp; &amp; | &amp; {{\href{../syntax/instructions.html#syntax-shape}{\mathit{shape}}}{.}\href{../syntax/instructions.html#syntax-instr-vec}{\mathsf{extract\_lane}}}{\mathsf{\_}}{{{\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}}^?}}~{\href{../syntax/instructions.html#syntax-laneidx}{\mathit{laneidx}}} &amp; \quad \mbox{if}~ {{\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}}^?} = \epsilon \Leftrightarrow {\href{../syntax/instructions.html#aux-lanetype}{\mathrm{lanetype}}}({\href{../syntax/instructions.html#syntax-shape}{\mathit{shape}}}) = {\href{../syntax/types.html#syntax-numtype}{\mathit{numtype}}} \\
 &amp; &amp; | &amp; {\href{../syntax/instructions.html#syntax-shape}{\mathit{shape}}}{.}\href{../syntax/instructions.html#syntax-instr-vec}{\mathsf{replace\_lane}}~{\href{../syntax/instructions.html#syntax-laneidx}{\mathit{laneidx}}} \\
 &amp; &amp; | &amp; \dots \\
 \end{array}\end{split}\]</div>
