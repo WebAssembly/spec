@@ -37,6 +37,26 @@
                  (v128.const i16x8  32512 0 0 0 0 0 0 0)
                  (v128.const i16x8  33024 0 0 0 0 0 0 0)))
 
+;; Repeat 4 corner cases in both 64-bit halves (i16x8 lanes 0..3 and 4..7):
+;;   lanes 0, 4 (a = -128, b = -128 or 128):
+;;     signed * signed (wrapping)     : -128 * -128 * 2 =  32,768 wrapped to -32,768
+;;     signed * unsigned (saturating) : -128 *  128 * 2 = -32,768 saturated to -32,768
+;;   lanes 1, 5 (a = -128, b = -127 or 129):
+;;     signed * signed (wrapping)     : -128 * -127 * 2 =  32,512
+;;     signed * unsigned (saturating) : -128 *  129 * 2 = -33,024 saturated to -32,768
+;;   lanes 2, 6 (a =  127, b = -128 or 128):
+;;     signed * signed (wrapping)     :  127 * -128 * 2 = -32,512
+;;     signed * unsigned (saturating) :  127 *  128 * 2 =  32,512
+;;   lanes 3, 7 (a =  127, b =   -1 or 255):
+;;     signed * signed (wrapping)     :  127 *   -1 * 2 =    -254
+;;     signed * unsigned (saturating) :  127 *  255 * 2 =  64,770 saturated to  32,767
+(assert_return (invoke "i16x8.relaxed_dot_i8x16_i7x16_s"
+                       (v128.const i8x16 -128 -128 -128 -128  127  127 127 127 -128 -128 -128 -128  127  127 127 127)
+                       (v128.const i8x16 -128 -128 -127 -127 -128 -128  -1  -1 -128 -128 -127 -127 -128 -128  -1  -1))
+               (either
+                 (v128.const i16x8 -32768  32512 -32512  -254 -32768  32512 -32512  -254)  ;; signed * signed, wrapping add (ARM NEON smull + smull2 + addp)
+                 (v128.const i16x8 -32768 -32768  32512 32767 -32768 -32768  32512 32767))) ;; signed * unsigned, saturating add (x86-64 vpmaddubsw)
+
 ;; Simple values to ensure things are functional.
 (assert_return (invoke "i32x4.relaxed_dot_i8x16_i7x16_add_s"
                        (v128.const i8x16 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15)
