@@ -1176,10 +1176,10 @@ Expressions
 
 An :ref:`expression <syntax-expr>` is *evaluated* relative to a :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>` pointing to its containing :ref:`module instance <syntax-moduleinst>`.
 
-$${rule-prose: Eval_expr}
+$${rule-prose-ignore: Eval_expr}
 
-$${rule: Eval_expr}
+$${rule-ignore: Eval_expr}
 
-.. note::
-   Evaluation iterates this reduction rule until reaching a value.
-   Expressions constituting :ref:`function <syntax-func>` bodies are executed during function :ref:`invocation <exec-invoke>`.
+Expression evaluation iterates single-step reduction until reaching a sequence of resulting :ref:`values <syntax-val>`.
+
+Expressions constituting :ref:`function <syntax-func>` bodies are executed during function :ref:`invocation <exec-invoke>`.
