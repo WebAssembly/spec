@@ -10,7 +10,7 @@ def $s33_to_u32(s33) : u32  hint(show %)
 ;; Representation
 
 def $ibits_(N, iN(N)) : bit*                         hint(show $bits_($IN(%),%)) hint(inverse $inv_ibits_)
-def $fbits_(N, fN(N)) : bit*                         hint(show $bits_($FN(%),%)) hint(inverse $inv_ibits_)
+def $fbits_(N, fN(N)) : bit*                         hint(show $bits_($FN(%),%)) hint(inverse $inv_fbits_)
 def $ibytes_(N, iN(N)) : byte*                       hint(show $bytes_($IN(%),%)) hint(inverse $inv_ibytes_)
 def $fbytes_(N, fN(N)) : byte*                       hint(show $bytes_($FN(%),%)) hint(inverse $inv_fbytes_)
 def $nbytes_(numtype, num_(numtype)) : byte*         hint(show $bytes_(%,%)) hint(inverse $inv_nbytes_)
