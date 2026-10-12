@@ -366,8 +366,8 @@ dictionary WebAssemblyInstantiatedSource {
 };
 
 dictionary WebAssemblyCompileOptions {
-    USVString? importedStringConstants;
-    sequence&lt;USVString> builtins;
+    USVString? importedStringConstants = null;
+    sequence&lt;USVString> builtins = [];
 };
 
 [Exposed=*]
