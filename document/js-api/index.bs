@@ -237,8 +237,11 @@ urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: df
             text: tag
     text: global type; url: syntax/types.html#syntax-globaltype
     url: syntax/types.html#syntax-mut
-        text: var
-        text: const
+        text: mut
+    url: syntax/types.html#syntax-comptype; for: comp-type
+        text: func
+    text: defined type; url: valid/conventions.html#syntax-deftype
+    text: expansion; url: valid/conventions.html#aux-expand-deftype
     text: address; url: exec/runtime.html#addresses
     text: signed_31; url: exec/numerics.html#aux-signed
     text: signed_32; url: exec/numerics.html#aux-signed
@@ -409,7 +412,7 @@ To <dfn>validate builtins and imported string for a WebAssembly module</dfn> fro
 1. [=list/iterate|For each=] |import| of [=module_imports=](|module|),
     1. If |importedStringModule| is not null and |import|[0] equals |importedStringModule|,
         1. Let |importExternType| be |import|[2].
-        1. Let |stringExternType| be `global const (ref extern)`.
+        1. Let |stringExternType| be [=external-type/global=] [=ref=] [=heap-type/extern=].
         1. If [=match_externtype=](|stringExternType|, |importExternType|) is false, return false
     1. Else,
         1. If [=validate an import for builtins|validating an import for builtins=] with |import| and |builtinSetNames| is false, return false.
@@ -528,7 +531,7 @@ To <dfn>instantiate imported strings</dfn> with module |module| and |importedStr
                     1. Throw a {{LinkError}} exception.
                 1. Let |value| be [=ToWebAssemblyValue=](|v|, |valtype|). If this operation throws a {{TypeError}}, catch it, and throw a {{LinkError}} exception.
                 1. Let |store| be the [=surrounding agent=]'s [=associated store=].
-                1. Let (|store|, |globaladdr|) be [=global_alloc=](|store|, [=const=] |valtype|, |value|).
+                1. Let (|store|, |globaladdr|) be [=global_alloc=](|store|, |valtype|, |value|).
                 1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
             1. Let |externglobal| be [=external value/global=] |globaladdr|.
             1. [=list/Append=] |externglobal| to |imports|.
@@ -877,7 +880,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     1. If |descriptor|["address"] [=map/exists=], let |addrtype| be [=ToValueType=](|descriptor|["address"]); otherwise, let |addrtype| be [=i32=].
     1. Let |initial| be [=?=] [=AddressValueToU64=](|descriptor|["initial"], |addrtype|).
     1. If |descriptor|["maximum"] [=map/exists=], let |maximum| be [=?=] [=AddressValueToU64=](|descriptor|["maximum"], |addrtype|); otherwise, let |maximum| be empty.
-    1. Let |memtype| be [=memory type=] |addrtype| { **min** |initial|, **max** |maximum| }.
+    1. Let |memtype| be the [=memory type=] |addrtype| [|initial| .. |maximum|] page.
     1. If |memtype| is not [=valid memtype|valid=], throw a {{RangeError}} exception.
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
     1. Let (|store|, |memaddr|) be [=mem_alloc=](|store|, |memtype|). If allocation fails, throw a {{RangeError}} exception.
@@ -918,7 +921,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     The <dfn method for="Memory">grow(|delta|)</dfn> method, when invoked, performs the following steps:
     1. Let |memaddr| be **this**.\[[Memory]].
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
-    1. Let |addrtype| be the [=address type=] in [=mem_type=](|store|, |memaddr|).
+    1. Let (|addrtype|, <var ignore>limits</var>) be [=mem_type=](|store|, |memaddr|).
     1. Let |delta64| be [=?=] [=AddressValueToU64=](|delta|, |addrtype|).
     1. Let |ret| be the result of [=grow the memory buffer|growing the memory buffer=] associated with |memaddr| by |delta64|.
     1. Return [=U64ToAddressValue=](|ret|, |addrtype|).
@@ -1044,7 +1047,7 @@ Each {{Table}} object has a \[[Table]] internal slot, which is a [=table address
     1. If |descriptor|["address"] [=map/exists=], let |addrtype| be [=ToValueType=](|descriptor|["address"]); otherwise, let |addrtype| be [=i32=].
     1. Let |initial| be [=?=] [=AddressValueToU64=](|descriptor|["initial"], |addrtype|).
     1. If |descriptor|["maximum"] [=map/exists=], let |maximum| be [=?=] [=AddressValueToU64=](|descriptor|["maximum"], |addrtype|); otherwise, let |maximum| be empty.
-    1. Let |type| be the [=table type=] |addrtype| { <b>[=limits|min=]</b> |initial|, <b>[=limits|max=]</b> |maximum| } |elementtype|.
+    1. Let |type| be the [=table type=] |addrtype| [|initial| .. |maximum|] |elementtype|.
     1. If |type| is not [=valid tabletype|valid=], throw a {{RangeError}} exception.
     1. If |value| is missing,
         1. Let |ref| be [=DefaultValue=](|elementtype|).
@@ -1082,7 +1085,7 @@ Each {{Table}} object has a \[[Table]] internal slot, which is a [=table address
     The getter of the <dfn attribute for="Table">length</dfn> attribute of {{Table}}, when invoked, performs the following steps:
     1. Let |tableaddr| be **this**.\[[Table]].
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
-    1. Let |addrtype| be the [=address type=] in [=table_type=](|store|, |tableaddr|).
+    1. Let (|addrtype|, <var ignore>limits</var>, <var ignore>elementtype</var>) be [=table_type=](|store|, |tableaddr|).
     1. Let |length64| be [=table_size=](|store|, |tableaddr|).
     1. Return [=U64ToAddressValue=](|length64|, |addrtype|).
 </div>
@@ -1201,7 +1204,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
         1. Assert: |value| is not [=error=].
     1. Otherwise,
         1. Let |value| be [=?=] [=ToWebAssemblyValue=](|v|, |valuetype|).
-    1. If |mutable| is true, let |globaltype| be [=var=] |valuetype|; otherwise, let |globaltype| be [=const=] |valuetype|.
+    1. If |mutable| is true, let |globaltype| be [=mut=] |valuetype|; otherwise, let |globaltype| be |valuetype|.
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
     1. Let (|store|, |globaladdr|) be [=global_alloc=](|store|, |globaltype|, |value|). <!-- TODO(littledan): Report allocation failure https://github.com/WebAssembly/spec/issues/584 -->
     1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
@@ -1229,7 +1232,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     1. Let |globaladdr| be **this**.\[[Global]].
     1. Let |mut| |valuetype| be [=global_type=](|store|, |globaladdr|).
     1. If |valuetype| [=matches/valtype|matches=] [=v128=] or [=exnref=], throw a {{TypeError}}.
-    1. If |mut| is [=const=], throw a {{TypeError}}.
+    1. If |mut| is empty, throw a {{TypeError}}.
     1. Let |value| be [=?=] [=ToWebAssemblyValue=](**the given value**, |valuetype|).
     1. Let |store| be [=global_write=](|store|, |globaladdr|, |value|).
     1. If |store| is [=error=], throw a {{RangeError}} exception.
@@ -1272,7 +1275,7 @@ This slot holds a [=function address=] relative to the [=surrounding agent=]'s [
     1. Let |realm| be the [=current Realm=].
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
     1. Let |functype| be [=func_type=](|store|, |funcaddr|).
-    1. Let [|paramTypes|] → [<var ignore>resultTypes</var>] be |functype|.
+    1. Let [=comp-type/func=] |paramTypes| → <var ignore>resultTypes</var> be the [=expansion=] of |functype|.
     1. Let |arity| be |paramTypes|'s [=list/size=].
     1. Let |name| be the [=name of the WebAssembly function=] |funcaddr|.
     1. Let |function| be [$CreateBuiltinFunction$](|steps|, |arity|, |name|, « \[[FunctionAddress]] », |realm|).
@@ -1286,7 +1289,7 @@ This slot holds a [=function address=] relative to the [=surrounding agent=]'s [
 
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
     1. Let |functype| be [=func_type=](|store|, |funcaddr|).
-    1. Let [|parameters|] → [|results|] be |functype|.
+    1. Let [=comp-type/func=] |parameters| → |results| be the [=expansion=] of |functype|.
     1. If any type in |parameters| or |results| [=matches/valtype|matches=] [=v128=] or [=exnref=], throw a {{TypeError}}.
 
         Note: the above error is thrown each time the \[[Call]] method is invoked.
@@ -1326,7 +1329,7 @@ Note: Exported Functions do not have a \[[Construct]] method and thus it is not 
 <div algorithm>
   To <dfn>run a host function</dfn> from the JavaScript object |func|, type |functype|, and [=list=] of [=WebAssembly values=] |arguments|, perform the following steps:
 
-    1. Let [|parameters|] → [|results|] be |functype|.
+    1. Let [=comp-type/func=] |parameters| → |results| be the [=expansion=] of |functype|.
     1. If any type in |parameters| or |results| [=matches/valtype|matches=] [=v128=] or [=exnref=], throw a {{TypeError}}.
     1. Let |jsArguments| be « ».
     1. [=list/iterate|For each=] |arg| of |arguments|,
@@ -1561,8 +1564,9 @@ The <dfn constructor for="Tag" lt="Tag(type)">new Tag(|type|)</dfn> constructor 
 1. Let |wasmParameters| be «».
 1. [=list/iterate|For each=] |paramType| of |parameters|,
     1. [=list/Append=] [=ToValueType=](|paramType|) to |wasmParameters|.
+1. Let |tagtype| be the [=defined type=] such that [=comp-type/func=] |wasmParameters| → « » is the [=expansion=] of |tagtype|.
 1. Let |store| be the [=surrounding agent=]'s [=associated store=].
-1. Let (|store|, |tagAddress|) be [=tag_alloc=](|store|, |wasmParameters| → « »).
+1. Let (|store|, |tagAddress|) be [=tag_alloc=](|store|, |tagtype|).
 1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
 1. [=initialize a Tag object|Initialize=] **this** from |tagAddress|.
 
@@ -1732,7 +1736,7 @@ constructor steps are:
 1. If |exceptionTag|.\[[Address]] is equal to |JSTagAddr|,
     1. Throw a {{TypeError}}.
 1. Let |store| be the [=surrounding agent=]'s [=associated store=].
-1. Let [|types|] → [] be [=tag_type=](|store|, |exceptionTag|.\[[Address]]).
+1. Let [=comp-type/func=] |types| → « » be the [=expansion=] of [=tag_type=](|store|, |exceptionTag|.\[[Address]]).
 1. If |types|'s [=list/size=] is not |payload|'s [=list/size=],
     1. Throw a {{TypeError}}.
 1. Let |wasmPayload| be « ».
@@ -1761,7 +1765,7 @@ The <dfn method for="Exception">getArg(|exceptionTag|, |index|)</dfn> method ste
 1. Assert: |tagaddr| is equal to **this**.\[[Type]].
 1. If |index| ≥ |payload|'s [=list/size=],
     1. Throw a {{RangeError}}.
-1. Let [|types|] → [] be [=tag_type=](|store|, |tagaddr|).
+1. Let [=comp-type/func=] |types| → « » be the [=expansion=] of [=tag_type=](|store|, |tagaddr|).
 1. If |types|[|index|] [=matches/valtype|matches=] [=v128=] or [=exnref=],
     1. Throw a {{TypeError}}.
 1. Return [=ToJSValue=](|payload|[|index|]).
@@ -1799,8 +1803,9 @@ To <dfn>get the JavaScript exception tag</dfn>, perform the following steps:
 
     1. If the [=surrounding agent=]'s associated [=JavaScript exception tag=] has been initialized,
         1. return the [=surrounding agent=]'s associated [=JavaScript exception tag=]
+    1. Let |tagtype| be the [=defined type=] such that [=comp-type/func=] « [=externref=] » → « » is the [=expansion=] of |tagtype|.
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
-    1. Let (|store|, |tagAddress|) be [=tag_alloc=](|store|, « [=externref=] » → « »).
+    1. Let (|store|, |tagAddress|) be [=tag_alloc=](|store|, |tagtype|).
     1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
     1. Set the [=surrounding agent=]'s associated [=JavaScript exception tag=] to |tagAddress|.
     1. return |tagAddress|.
