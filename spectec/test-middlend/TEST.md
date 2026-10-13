@@ -4370,7 +4370,7 @@ def $R_idot : relaxed2
 def $R_iq15mulr : relaxed2
 
 ;; ../../../../specification/wasm-latest/3.0-numerics.relaxed.spectec
-def $R_trunc_u : relaxed4
+def $R_trunc_u : relaxed2
 
 ;; ../../../../specification/wasm-latest/3.0-numerics.relaxed.spectec
 def $R_trunc_s : relaxed2
@@ -16284,7 +16284,7 @@ def $R_idot : relaxed2
 def $R_iq15mulr : relaxed2
 
 ;; ../../../../specification/wasm-latest/3.0-numerics.relaxed.spectec
-def $R_trunc_u : relaxed4
+def $R_trunc_u : relaxed2
 
 ;; ../../../../specification/wasm-latest/3.0-numerics.relaxed.spectec
 def $R_trunc_s : relaxed2
@@ -28327,7 +28327,7 @@ def $R_idot : relaxed2
 def $R_iq15mulr : relaxed2
 
 ;; ../../../../specification/wasm-latest/3.0-numerics.relaxed.spectec
-def $R_trunc_u : relaxed4
+def $R_trunc_u : relaxed2
 
 ;; ../../../../specification/wasm-latest/3.0-numerics.relaxed.spectec
 def $R_trunc_s : relaxed2
