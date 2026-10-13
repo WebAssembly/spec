@@ -1490,18 +1490,21 @@ The algorithm <dfn>ToWebAssemblyValue</dfn>(|v|, |type|) coerces a JavaScript va
 <div algorithm>
 The algorithm <dfn>AddressValueToU64</dfn>(|v|, |addrtype|) converts an IDL value to a WebAssembly [=u64=] for use in embedding operations. It is designed to act like [=[EnforceRange]=] [=unsigned long=] for {{AddressType}} "i32", and to extend these semantics to {{AddressType}} "i64", by performing the following steps:
 
-1. Let |V| be |v|, [=converted to a JavaScript value=].
+1. Let |jsValue| be |v|, [=converted to a JavaScript value=].
+
+    Note: The IDL `any` type is a discriminated union, not a transparent wrapper around a JavaScript value.
 1. If |addrtype| is [=i32=],
-    1. Let |n| be [=?=] [$ConvertToInt$](|V|, 32, "unsigned"), where the destination type is associated with [=[EnforceRange]=].
+    1. Let |n| be [=?=] [$ConvertToInt$](|jsValue|, 32, "unsigned"), where the destination type is associated with [=[EnforceRange]=].
 
         Note: This is equivalent to the [=js-unsigned-long|JS conversion rules=] for [=[EnforceRange]=] [=unsigned long=].
     1. Return [=ℝ=](|n|) as a WebAssembly [=u64=].
 1. If |addrtype| is [=i64=],
-    1. Let |n| be [=?=] [$ToBigInt$](|V|).
-    1. If [=ℝ=](|n|) &lt; 0 or [=ℝ=](|n|) &gt; 2<sup>64</sup> &minus; 1, [=throw=] a {{TypeError}}.
+    1. Let |n| be [=?=] [$ToBigInt$](|jsValue|).
+    1. Let |r| be [=ℝ=](|n|).
+    1. If |r| &lt; 0 or |r| &gt; 2<sup>64</sup> &minus; 1, [=throw=] a {{TypeError}}.
 
         Note: This operation is designed to emulate [=[EnforceRange]=].
-    1. Return [=ℝ=](|n|) as a WebAssembly [=u64=].
+    1. Return |r| as a WebAssembly [=u64=].
 1. Assert: This step is not reached.
 
 </div>
