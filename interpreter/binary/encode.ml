@@ -65,7 +65,7 @@ struct
   let u32 i = u64 Int64.(logand (of_int32 i) 0xffffffffL)
   let s7 i = s64 (Int64.of_int i)
   let s32 i = s64 (Int64.of_int32 i)
-  let s33 i = s64 (Convert.I64_.extend_i32_s i)
+  let s33 i = s64 i
   let f32 x = word32 (F32.to_bits x)
   let f64 x = word64 (F64.to_bits x)
   let v128 v = String.iter (put s) (V128.to_bits v)
@@ -100,13 +100,14 @@ struct
   open Source
 
   let idx x = u32 x.it
+  let idx32 x = u32 (Convert.I32_.wrap_i64 x)
 
   let mutability = function
     | Cons -> byte 0
     | Var -> byte 1
 
   let typeuse idx = function
-    | Idx x -> idx x
+    | Idx x -> idx (Convert.I64_.extend_i32_u x)
     | Rec _ | Def _ -> assert false
 
   let numtype = function
@@ -176,8 +177,8 @@ struct
 
   let subtype = function
     | SubT (Final, [], ct) -> comptype ct
-    | SubT (Final, uts, ct) -> s7 (-0x31); vec (typeuse u32) uts; comptype ct
-    | SubT (NoFinal, uts, ct) -> s7 (-0x30); vec (typeuse u32) uts; comptype ct
+    | SubT (Final, uts, ct) -> s7 (-0x31); vec (typeuse idx32) uts; comptype ct
+    | SubT (NoFinal, uts, ct) -> s7 (-0x30); vec (typeuse idx32) uts; comptype ct
 
   let rectype = function
     | RecT [st] -> subtype st
@@ -188,7 +189,7 @@ struct
     byte flags; u64 min; opt u64 max
 
   let tagtype = function
-    | TagT ut -> u32 0x00l; typeuse u32 ut
+    | TagT ut -> u32 0x00l; typeuse idx32 ut
 
   let globaltype = function
     | GlobalT (mut, t) -> valtype t; mutability mut
@@ -200,7 +201,7 @@ struct
     | TableT (at, lim, t) -> reftype t; limits at lim
 
   let externtype = function
-    | ExternFuncT ut -> byte 0x00; typeuse u32 ut
+    | ExternFuncT ut -> byte 0x00; typeuse idx32 ut
     | ExternTableT tt -> byte 0x01; tabletype tt
     | ExternMemoryT mt -> byte 0x02; memorytype mt
     | ExternGlobalT gt -> byte 0x03; globaltype gt
@@ -228,7 +229,7 @@ struct
 
   let blocktype = function
     | VarBlockType x -> typeuse s33 (Idx x.it)
-    | ValBlockType None -> s33 (-0x40l)
+    | ValBlockType None -> s33 (-0x40L)
     | ValBlockType (Some t) -> valtype t
 
   let local (n, loc) =
