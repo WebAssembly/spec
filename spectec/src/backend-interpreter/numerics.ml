@@ -936,6 +936,7 @@ let inv_zbytes : numerics =
       (function
       | [ CaseV ("I8", []); l ] -> inv_ibytes.f [ NumV eight; l ]
       | [ CaseV ("I16", []); l ] -> inv_ibytes.f [ NumV sixteen; l ]
+      | [ CaseV ("V128", []); _ ] as args -> inv_vbytes.f args
       | args -> inv_nbytes.f args
       );
   }
