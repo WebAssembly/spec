@@ -150,13 +150,10 @@ struct
   let div x y = binary x (/.) y
 
   let fma x y z =
-    let xf = to_float x in
-    let yf = to_float y in
-    let zf = to_float z in
-    let t = Float.fma xf yf zf in
-    if t = t then of_float t else determine_binary_nan x y
+    let r = add (mul x y) z in
+    if not (is_nan r) then r else determine_binary_nan x y
 
-  let sqrt  x = unary Stdlib.sqrt x
+  let sqrt x = unary Stdlib.sqrt x
 
   let ceil  x = unary Stdlib.ceil x
   let floor x = unary Stdlib.floor x
