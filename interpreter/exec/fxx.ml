@@ -149,12 +149,9 @@ struct
   let mul x y = binary x ( *.) y
   let div x y = binary x (/.) y
 
-  let fma x y z =
-    let r = add (mul x y) z in
-    if not (is_nan r) then r else determine_binary_nan x y
+  let fma x y z = add (mul x y) z
 
   let sqrt x = unary Stdlib.sqrt x
-
   let ceil  x = unary Stdlib.ceil x
   let floor x = unary Stdlib.floor x
 

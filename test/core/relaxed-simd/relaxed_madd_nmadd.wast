@@ -187,6 +187,15 @@
                        (v128.const f64x2 -0x1.00000204p+0 -0x1.00000204p+0))
                (v128.const i64x2 -1 -1))
 
+;; Check that FMA rounds correctly
+(assert_return
+  (invoke "f32x4.relaxed_madd"
+    (v128.const i32x4 0x3ff40a3e 0x3ff40a3e 0x3ff40a3e 0x3ff40a3e)
+    (v128.const i32x4 0x3fe158e1 0x3fe158e1 0x3fe158e1 0x3fe158e1)
+    (v128.const i32x4 0xafa0fbff 0xafa0fbff 0xafa0fbff 0xafa0fbff))
+  (v128.const i32x4 0x4056d1bb 0x4056d1bb 0x4056d1bb 0x4056d1bb)
+)
+
 ;; Test that the non-deterministic choice of fusing and then rounding or
 ;; rounding multiple times in `relaxed_madd` is consistent throughout a
 ;; program's execution.
@@ -219,13 +228,3 @@
                        (v128.const f32x4 2.0 2.0 2.0 2.0)
                        (v128.const f32x4 -0x1.fffffep+127 -0x1.fffffep+127 -0x1.fffffep+127 -0x1.fffffep+127))
                (v128.const i32x4 -1 -1 -1 -1))
-
-
-(module
-  (func (export "madd") (result v128)
-    (f32x4.relaxed_madd
-      (v128.const i32x4 0x3ff40a3e 0x3ff40a3e 0x3ff40a3e 0x3ff40a3e)
-      (v128.const i32x4 0x3fe158e1 0x3fe158e1 0x3fe158e1 0x3fe158e1)
-      (v128.const i32x4 0xafa0fbff 0xafa0fbff 0xafa0fbff 0xafa0fbff))))
-(assert_return (invoke "madd")
-  (v128.const i32x4 0x4056d1bb 0x4056d1bb 0x4056d1bb 0x4056d1bb))
