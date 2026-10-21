@@ -18,8 +18,6 @@ and encode' = function
     raise Utf8
   | n::ns when n < 0x10000 ->
     0xe0 lor (n lsr 12) :: con (n lsr 6) :: con n :: encode' ns
-  | n::ns when n < 0x10000 ->
-    0xe0 lor (n lsr 12) :: con (n lsr 6) :: con n :: encode' ns
   | n::ns when n < 0x110000 ->
     0xf0 lor (n lsr 18) :: con (n lsr 12) :: con (n lsr 6) :: con n
     :: encode' ns

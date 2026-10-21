@@ -36,10 +36,11 @@ let string lexbuf s =
       | 'u' ->
         let j = !i + 2 in
         i := String.index_from s j '}';
-        let n = int_of_string ("0x" ^ String.sub s j (!i - j)) in
         let bs =
-          try Utf8.encode [n]
-          with Utf8.Utf8 -> error lexbuf "malformed UTF-8 codepoint"
+          try
+            let n = int_of_string ("0x" ^ String.sub s j (!i - j)) in
+            Utf8.encode [n]
+          with Failure _ | Utf8.Utf8 -> error lexbuf "malformed UTF-8 codepoint"
         in
         Buffer.add_substring b bs 0 (String.length bs - 1);
         bs.[String.length bs - 1]
