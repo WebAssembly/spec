@@ -36,7 +36,7 @@ let create n =
     let mem = Array1_64.create Int8_unsigned C_layout size in
     Array1.fill mem 0;
     mem
-  with Out_of_memory -> raise OutOfMemory
+  with Out_of_memory | Invalid_argument _ -> raise OutOfMemory
 
 let alloc (MemoryT (at, lim) as ty) =
   assert Free.((memorytype ty).types = Set.empty);

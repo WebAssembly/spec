@@ -437,6 +437,6 @@
 ;; (assert_return (invoke "grow" (i32.const 0xFFFF))
 ;;   (either (i32.const -1) (i32.const 1))
 ;; )
-;; (assert_return (invoke "size" (i32.const 0xFFFF))
+;; (assert_return (invoke "size")
 ;;   (either (i32.const 1) (i32.const 0x1_0000))
 ;; )
