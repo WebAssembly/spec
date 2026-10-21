@@ -1232,3 +1232,13 @@
   )
   "illegal opcode ff"
 )
+
+;; Decoding of s33
+(assert_invalid
+  (module binary
+    "\00asm" "\01\00\00\00"
+    "\01\0a\01"                   ;; type section with 1 entry
+    "\60\01\63\80\80\80\80\08\00" ;; (func (param (ref null 0x8000_0000)))
+  )
+  "unknown type"
+)
