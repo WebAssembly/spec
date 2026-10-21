@@ -93,3 +93,18 @@
 (assert_return (invoke "check-memory-zero" (i64.const 0x40000) (i64.const 0x4_ffff)) (i32.const 0))
 (assert_return (invoke "grow" (i64.const 1)) (i64.const 5))
 (assert_return (invoke "check-memory-zero" (i64.const 0x50000) (i64.const 0x5_ffff)) (i32.const 0))
+
+
+(module
+  (memory i64 1)
+  (func (export "grow") (param i64) (result i64) (memory.grow (local.get 0)))
+  (func (export "size") (result i64) (memory.size))
+)
+(assert_return (invoke "grow" (i64.const 0x1_0000_0000_0000)) (i64.const -1))
+(assert_return (invoke "size") (i64.const 1))
+(assert_return (invoke "grow" (i64.const 0xFFFF_FFFF_FFFF))
+  (either (i64.const -1) (i64.const 1))
+)
+(assert_return (invoke "size")
+  (either (i64.const 1) (i64.const 0x1_0000_0000_0000))
+)

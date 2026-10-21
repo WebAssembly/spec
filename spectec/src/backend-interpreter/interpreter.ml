@@ -370,7 +370,7 @@ and eval_expr env expr =
   (* Optimized getter for list init *)
   | IterE (e1, (ListN (e2, None), [])) ->
     let v = eval_expr env e1 in
-    let i = eval_expr env e2 |> al_to_nat in
+    let i = try eval_expr env e2 |> al_to_nat with Z.Overflow -> raise Exception.OutOfMemory in
     if i > 1024 * 64 * 1024 (* 1024 pages *) then
       raise Exception.OutOfMemory
     else
