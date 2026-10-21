@@ -24,8 +24,9 @@ let valid_size at i =
   | I64AT -> true
 
 let create size r =
+  if size < 0L then raise OutOfMemory else
   try Lib.Array64.make size r
-  with Out_of_memory | Invalid_argument _ -> raise OutOfMemory
+  with Out_of_memory -> raise OutOfMemory
 
 let alloc (TableT (at, lim, t) as ty) r =
   assert Free.((reftype t).types = Set.empty);

@@ -26,12 +26,13 @@ let valid_limits {min; max} =
 
 let valid_size at i =
   match at with
-  | I32AT -> I64.le_u i 0xffffL
-  | I64AT -> true
+  | I32AT -> I64.le_u i 0x1_0000L
+  | I64AT -> I64.le_u i 0x1_0000_0000_0000L
 
 let create n =
+  if n > Int64.(div max_int page_size) then raise OutOfMemory else
+  let size = Int64.(mul n page_size) in
   try
-    let size = Int64.(mul n page_size) in
     let mem = Array1_64.create Int8_unsigned C_layout size in
     Array1.fill mem 0;
     mem

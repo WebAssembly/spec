@@ -424,3 +424,19 @@
   )
   "type mismatch"
 )
+
+
+(module
+  (memory 1)
+  (func (export "grow") (param i32) (result i32) (memory.grow (local.get 0)))
+  (func (export "size") (result i32) (memory.size))
+)
+(assert_return (invoke "grow" (i32.const 0x1_0000)) (i32.const -1))
+(assert_return (invoke "size") (i32.const 1))
+;; This may be too slow on some implementations
+;; (assert_return (invoke "grow" (i32.const 0xFFFF))
+;;   (either (i32.const -1) (i32.const 1))
+;; )
+;; (assert_return (invoke "size" (i32.const 0xFFFF))
+;;   (either (i32.const 1) (i32.const 0x1_0000))
+;; )

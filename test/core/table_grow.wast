@@ -196,3 +196,21 @@
   )
   "type mismatch"
 )
+
+
+(module
+  (table 1 funcref)
+  (func (export "grow") (param i32) (result i32)
+    (table.grow (ref.null func) (local.get 0))
+  )
+  (func (export "size") (result i32) (table.size))
+)
+(assert_return (invoke "grow" (i32.const 0xFFFF_FFFF)) (i32.const -1))
+(assert_return (invoke "size") (i32.const 1))
+;; This may be too slow on some implementations
+;; (assert_return (invoke "grow" (i32.const 0xFFFF_FFFE))
+;;   (either (i32.const -1) (i32.const 1))
+;; )
+;; (assert_return (invoke "size")
+;;   (either (i32.const 1) (i32.const 0xFFFF_FFFF))
+;; )
