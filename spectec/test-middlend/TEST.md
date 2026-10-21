@@ -9980,7 +9980,7 @@ grammar Tstringchar : char
   prod "\\\\" => `%`_char(92,)
   ;; ../../../../specification/wasm-latest/6.1-text.values.spectec
   prod{n : n} {{"\\u{"} {n:Thexnum} {"}"}} => `%`_char(n,)
-    -- if ((n < 55296) \/ ((59392 <= n) /\ (n < 1114112)))
+    -- if ((n < 55296) \/ ((57344 <= n) /\ (n < 1114112)))
 
 ;; ../../../../specification/wasm-latest/6.1-text.values.spectec
 grammar Tstringelem : byte*
@@ -21896,7 +21896,7 @@ grammar Tstringchar : char
   prod "\\\\" => `%`_char(92,)
   ;; ../../../../specification/wasm-latest/6.1-text.values.spectec
   prod{n : n} {{"\\u{"} {n:Thexnum} {"}"}} => `%`_char(n,)
-    -- if ((n < 55296) \/ ((59392 <= n) /\ (n < 1114112)))
+    -- if ((n < 55296) \/ ((57344 <= n) /\ (n < 1114112)))
 
 ;; ../../../../specification/wasm-latest/6.1-text.values.spectec
 grammar Tstringelem : byte*
@@ -34054,7 +34054,7 @@ grammar Tstringchar : char
   prod "\\\\" => `%`_char(92,)
   ;; ../../../../specification/wasm-latest/6.1-text.values.spectec
   prod{n : n} {{"\\u{"} {n:Thexnum} {"}"}} => `%`_char(n,)
-    -- if ((n < 55296) \/ ((59392 <= n) /\ (n < 1114112)))
+    -- if ((n < 55296) \/ ((57344 <= n) /\ (n < 1114112)))
 
 ;; ../../../../specification/wasm-latest/6.1-text.values.spectec
 grammar Tstringelem : byte*

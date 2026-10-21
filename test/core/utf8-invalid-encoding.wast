@@ -174,3 +174,25 @@
 (assert_malformed (module quote "(func (export \"\\ff\"))") "malformed UTF-8 encoding")
 (assert_malformed (module quote "(func (export \"\\ff\\fe\\00\\00\"))") "malformed UTF-8 encoding")
 (assert_malformed (module quote "(func (export \"\\ff\\fe\"))") "malformed UTF-8 encoding")
+
+
+(module quote "(func (export \"\\u{D7FF}\"))")
+(module quote "(func (export \"\\u{E000}\"))")
+(module quote "(func (export \"\\u{00D7FF}\"))")
+
+(assert_malformed
+  (module quote "(func (export \"\\u{110000}\"))")
+  "malformed UTF-8 codepoint"
+)
+(assert_malformed
+  (module quote "(func (export \"\\u{D800}\"))")
+  "malformed UTF-8 codepoint"
+)
+(assert_malformed
+  (module quote "(func (export \"\\u{DFFF}\"))")
+  "malformed UTF-8 codepoint"
+)
+(assert_malformed
+  (module quote "(func (export \"\\u{00D800}\"))")
+  "malformed UTF-8 codepoint"
+)

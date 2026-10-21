@@ -12701,7 +12701,7 @@ $$
 & & | & \mbox{‘\texttt{\(\mathtt{\backslash}\)\kern-0.02em{'}\kern-0.05em{'}\kern-0.02em}’} & \quad\Rightarrow\quad{} & \mathrm{U{+}22} \\
 & & | & \mbox{‘\texttt{\(\mathtt{\backslash}\)\kern0.03em{'}\kern0.03em}’} & \quad\Rightarrow\quad{} & \mathrm{U{+}27} \\
 & & | & \mbox{‘\texttt{\(\mathtt{\backslash}\)\(\mathtt{\backslash}\)}’} & \quad\Rightarrow\quad{} & \mathrm{U{+}5C} \\
-& & | & \mbox{‘\texttt{\(\mathtt{\backslash}\)u{\{}}’}~~n{:}{\mathtt{hexnum}}~~\mbox{‘\texttt{{\}}}’} & \quad\Rightarrow\quad{} & n & \quad \mbox{if}~ n < \mathtt{0xD800} \lor \mathtt{0xE800} \leq n < \mathtt{0x110000} \\
+& & | & \mbox{‘\texttt{\(\mathtt{\backslash}\)u{\{}}’}~~n{:}{\mathtt{hexnum}}~~\mbox{‘\texttt{{\}}}’} & \quad\Rightarrow\quad{} & n & \quad \mbox{if}~ n < \mathtt{0xD800} \lor \mathtt{0xE000} \leq n < \mathtt{0x110000} \\
 & {\mathtt{stringelem}} & ::= & c{:}{\mathtt{stringchar}} & \quad\Rightarrow\quad{} & {\mathrm{utf{\kern-0.1em\scriptstyle 8}}}(c) \\
 & & | & \mbox{‘\texttt{\(\mathtt{\backslash}\)}’}~~h_1{:}{\mathtt{hexdigit}}~~h_2{:}{\mathtt{hexdigit}} & \quad\Rightarrow\quad{} & 16 \, h_1 + h_2 \\
 & {\mathtt{string}} & ::= & \mbox{‘\texttt{\kern-0.02em{'}\kern-0.05em{'}\kern-0.02em}’}~~{({b^\ast}{:}{\mathtt{stringelem}})^\ast}~~\mbox{‘\texttt{\kern-0.02em{'}\kern-0.05em{'}\kern-0.02em}’} & \quad\Rightarrow\quad{} & {\bigoplus}\, {{b^\ast}^\ast} & \quad \mbox{if}~ {|{\bigoplus}\, {{b^\ast}^\ast}|} < {2^{32}} \\
