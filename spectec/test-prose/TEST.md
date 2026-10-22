@@ -22140,6 +22140,43 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`b - 128`.
 
 
+:math:`{\mathrm{utf{\kern-0.1em\scriptstyle 8}}}({\mathit{ch}})`
+................................................................
+
+
+1. If :math:`{\mathit{ch}} < 128`, then:
+
+   a. Return :math:`{\mathit{ch}}`.
+
+#. If :math:`128 \leq {\mathit{ch}}` and :math:`{\mathit{ch}} < 2048` and :math:`{\mathit{ch}} \geq {\mathrm{cont}}(b_2)`, then:
+
+   a. Let :math:`{2^{6}} \cdot (b_1 - 192)` be :math:`{\mathit{ch}} - {\mathrm{cont}}(b_2)`.
+
+   #. Return :math:`b_1~b_2`.
+
+#. If :math:`2048 \leq {\mathit{ch}}` and :math:`{\mathit{ch}} < 55296` and :math:`{\mathit{ch}} \geq {\mathrm{cont}}(b_3)`, then:
+
+   a. Let :math:`{2^{12}} \cdot (b_1 - 224) + {2^{6}} \cdot {\mathrm{cont}}(b_2)` be :math:`{\mathit{ch}} - {\mathrm{cont}}(b_3)`.
+
+   #. Return :math:`b_1~b_2~b_3`.
+
+#. If :math:`57344 \leq {\mathit{ch}}` and :math:`{\mathit{ch}} < 65536` and :math:`{\mathit{ch}} \geq {\mathrm{cont}}(b_3)`, then:
+
+   a. Let :math:`{2^{12}} \cdot (b_1 - 224) + {2^{6}} \cdot {\mathrm{cont}}(b_2)` be :math:`{\mathit{ch}} - {\mathrm{cont}}(b_3)`.
+
+   #. Return :math:`b_1~b_2~b_3`.
+
+#. Assert: Due to validation, :math:`65536 \leq {\mathit{ch}}`.
+
+#. Assert: Due to validation, :math:`{\mathit{ch}} < 1114112`.
+
+#. Assert: Due to validation, :math:`{\mathit{ch}} \geq {\mathrm{cont}}(b_4)`.
+
+#. Let :math:`{2^{18}} \cdot (b_1 - 240) + {2^{12}} \cdot {\mathrm{cont}}(b_2) + {2^{6}} \cdot {\mathrm{cont}}(b_3)` be :math:`{\mathit{ch}} - {\mathrm{cont}}(b_4)`.
+
+#. Return :math:`b_1~b_2~b_3~b_4`.
+
+
 :math:`{\mathrm{funcs}}({{\mathit{externidx}'}^\ast})`
 ......................................................
 
@@ -31943,6 +31980,24 @@ cont b
 1. Assert: Due to validation, (128 < b).
 2. Assert: Due to validation, (b < 192).
 3. Return (b - 128).
+
+utf8single ch
+1. If (ch < 128), then:
+  a. Return [ch].
+2. If ((128 <= ch) /\ ((ch < 2048) /\ (ch >= $cont(b_2)))), then:
+  a. Let ((2 ^ 6) * (b_1 - 192)) be (ch - $cont(b_2)).
+  b. Return [b_1, b_2].
+3. If ((2048 <= ch) /\ ((ch < 55296) /\ (ch >= $cont(b_3)))), then:
+  a. Let (((2 ^ 12) * (b_1 - 224)) + ((2 ^ 6) * $cont(b_2))) be (ch - $cont(b_3)).
+  b. Return [b_1, b_2, b_3].
+4. If ((57344 <= ch) /\ ((ch < 65536) /\ (ch >= $cont(b_3)))), then:
+  a. Let (((2 ^ 12) * (b_1 - 224)) + ((2 ^ 6) * $cont(b_2))) be (ch - $cont(b_3)).
+  b. Return [b_1, b_2, b_3].
+5. Assert: Due to validation, (65536 <= ch).
+6. Assert: Due to validation, (ch < 1114112).
+7. Assert: Due to validation, (ch >= $cont(b_4)).
+8. Let ((((2 ^ 18) * (b_1 - 240)) + ((2 ^ 12) * $cont(b_2))) + ((2 ^ 6) * $cont(b_3))) be (ch - $cont(b_4)).
+9. Return [b_1, b_2, b_3, b_4].
 
 funcsxx externidx'*
 1. If (externidx'* = []), then:
