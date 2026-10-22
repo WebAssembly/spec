@@ -173,6 +173,8 @@ and al_to_heaptype: value -> heaptype = function
   | v -> error_value "heaptype" v
 
 and al_to_reftype: value -> reftype = function
+  | CaseV ("FUNCREF", []) -> Null, FuncHT
+  | CaseV ("EXTERNREF", []) -> Null, ExternHT
   | CaseV ("REF", [ n; ht ]) -> al_to_null n, al_to_heaptype ht
   | v -> error_value "reftype" v
 
@@ -197,11 +199,12 @@ and al_to_valtype: value -> valtype = function
   | CaseV ("I32", _) | CaseV ("I64", _)
   | CaseV ("F32", _) | CaseV ("F64", _) as v -> NumT (al_to_numtype v)
   | CaseV ("V128", []) -> VecT V128T
-  | CaseV ("REF", _) as v -> RefT (al_to_reftype v)
+  | CaseV (("REF" | "FUNCREF" | "EXTERNREF"), _) as v -> RefT (al_to_reftype v)
   | CaseV ("BOT", []) -> BotT
   | v -> error_value "valtype" v
 
 let al_to_blocktype: value -> blocktype = function
+  | OptV _ as v when !version = 1 -> ValBlockType (al_to_opt al_to_valtype v)
   | CaseV ("_IDX", [ idx ]) -> VarBlockType (al_to_idx idx)
   | CaseV ("_RESULT", [ vt_opt ]) -> ValBlockType (al_to_opt al_to_valtype vt_opt)
   | v -> error_value "blocktype" v
@@ -216,10 +219,14 @@ let al_to_globaltype: value -> globaltype = function
   | v -> error_value "globaltype" v
 
 let al_to_tabletype: value -> tabletype = function
+  | CaseV ("[", _) as v when !version = 1 -> TableT (I32AT, al_to_limits v, (Null, FuncHT))
+  | TupV [ limits; rt ] | CaseV ("", [ limits; rt ]) -> TableT (I32AT, al_to_limits limits, al_to_reftype rt)
   | TupV [ at; limits; rt ] | CaseV (_, [ at; limits; rt ]) -> TableT (al_to_addrtype at, al_to_limits limits, al_to_reftype rt)
   | v -> error_value "tabletype" v
 
 let al_to_memorytype: value -> memorytype = function
+  | CaseV ("[", _) as v when !version = 1 -> MemoryT (I32AT, al_to_limits v)
+  | CaseV ("PAGE", [ limits ]) -> MemoryT (I32AT, al_to_limits limits)
   | CaseV ("PAGE", [ at; limits ]) -> MemoryT (al_to_addrtype at, al_to_limits limits)
   | v -> error_value "memorytype" v
 
@@ -792,6 +799,8 @@ and al_to_instr': value -> Ast.instr' = function
   | CaseV ("RETURN", []) -> Return
   | CaseV ("CALL", [ idx ]) -> Call (al_to_idx idx)
   | CaseV ("CALL_REF", [ typeuse ]) -> CallRef (al_to_idx_of_typeuse typeuse)
+  | CaseV ("CALL_INDIRECT", [ idx ]) when !version = 1 ->
+    CallIndirect (0l @@ no_region, al_to_idx idx)
   | CaseV ("CALL_INDIRECT", [ idx1; typeuse2 ]) ->
     CallIndirect (al_to_idx idx1, al_to_idx_of_typeuse typeuse2)
   | CaseV ("RETURN_CALL", [ idx ]) -> ReturnCall (al_to_idx idx)
@@ -810,8 +819,13 @@ and al_to_instr': value -> Ast.instr' = function
   | CaseV ("VSTORE", vstoreop) -> let idx, op = al_to_vstoreop vstoreop in VecStore (idx, op)
   | CaseV ("VSTORE_LANE", vlaneop) ->
     let idx, op, i = al_to_vlaneop vlaneop in VecStoreLane (idx, op, i)
+  | CaseV ("MEMORY.SIZE", []) when !version <= 2 -> MemorySize (0l @@ no_region)
+  | CaseV ("MEMORY.GROW", []) when !version <= 2 -> MemoryGrow (0l @@ no_region)
   | CaseV ("MEMORY.SIZE", [ idx ]) -> MemorySize (al_to_idx idx)
   | CaseV ("MEMORY.GROW", [ idx ]) -> MemoryGrow (al_to_idx idx)
+  | CaseV ("MEMORY.FILL", []) when !version <= 2 -> MemoryFill (0l @@ no_region)
+  | CaseV ("MEMORY.COPY", []) when !version <= 2 -> MemoryCopy (0l @@ no_region, 0l @@ no_region)
+  | CaseV ("MEMORY.INIT", [ idx ]) when !version <= 2 -> MemoryInit (0l @@ no_region, al_to_idx idx)
   | CaseV ("MEMORY.FILL", [ idx ]) -> MemoryFill (al_to_idx idx)
   | CaseV ("MEMORY.COPY", [ idx1; idx2 ]) -> MemoryCopy (al_to_idx idx1, al_to_idx idx2)
   | CaseV ("MEMORY.INIT", [ idx1; idx2 ]) -> MemoryInit (al_to_idx idx1, al_to_idx idx2)
@@ -855,6 +869,8 @@ let al_to_const: value -> const = al_to_list al_to_instr |> al_to_phrase
 (* Deconstruct module *)
 
 let al_to_type: value -> type_ = function
+  | CaseV ("TYPE", [ ft ]) when !version <= 2 ->
+    RecT [SubT (Final, [], al_to_comptype ft)] @@ no_region
   | CaseV ("TYPE", [ rt ]) -> al_to_phrase al_to_rectype rt
   | v -> error_value "type" v
 
@@ -876,6 +892,10 @@ let al_to_global': value -> global' = function
 let al_to_global: value -> global = al_to_phrase al_to_global'
 
 let al_to_table': value -> table' = function
+  | CaseV ("TABLE", [ tt ]) when !version <= 2 ->
+    let TableT (_, _, rt) as tt' = al_to_tabletype tt in
+    let _, ht = rt in
+    Table (tt', [RefNull ht @@ no_region] @@ no_region)
   | CaseV ("TABLE", [ tt; const ]) ->
     Table (al_to_tabletype tt, al_to_const const)
   | v -> error_value "table" v
@@ -899,18 +919,26 @@ let al_to_segmentmode': value -> segmentmode' = function
 let al_to_segmentmode: value -> segmentmode = al_to_phrase al_to_segmentmode'
 
 let al_to_elem': value -> elem' = function
+  | CaseV ("ELEM", [ offset; indices ]) when !version = 1 ->
+    let const x = [RefFunc (al_to_idx x) @@ no_region] @@ no_region in
+    Elem ((Null, FuncHT), al_to_list const indices,
+      Active (0l @@ no_region, al_to_const offset) @@ no_region)
   | CaseV ("ELEM", [ rt; consts; mode ]) ->
     Elem (al_to_reftype rt, al_to_list al_to_const consts, al_to_segmentmode mode)
   | v -> error_value "elem" v
 let al_to_elem: value -> elem = al_to_phrase al_to_elem'
 
 let al_to_data': value -> data' = function
+  | CaseV ("DATA", [ offset; bytes ]) when !version = 1 ->
+    Data (al_to_bytes bytes, Active (0l @@ no_region, al_to_const offset) @@ no_region)
   | CaseV ("DATA", [ bytes; mode ]) ->
     Data (al_to_bytes bytes, al_to_segmentmode mode)
   | v -> error_value "data" v
 let al_to_data: value -> data = al_to_phrase al_to_data'
 
 let al_to_externtype = function
+  | CaseV ("FUNC", [CaseV ("->", _) as ft]) when !version <= 2 ->
+    ExternFuncT (Def (DefT (RecT [SubT (Final, [], al_to_comptype ft)], 0l)))
   | CaseV ("FUNC", [typeuse]) -> ExternFuncT (al_to_typeuse typeuse)
   | CaseV ("GLOBAL", [globaltype]) -> ExternGlobalT (al_to_globaltype globaltype)
   | CaseV ("TABLE", [tabletype]) -> ExternTableT (al_to_tabletype tabletype)
@@ -1973,6 +2001,8 @@ let al_of_data data =
 
 
 let al_of_externtype = function
+  | ExternFuncT (Def dt) when !version <= 2 ->
+    CaseV ("FUNC", [al_of_comptype (Types.expand_deftype dt)])
   | ExternFuncT (typeuse) -> CaseV ("FUNC", [al_of_typeuse typeuse])
   | ExternGlobalT (globaltype) -> CaseV ("GLOBAL", [al_of_globaltype globaltype])
   | ExternTableT (tabletype) -> CaseV ("TABLE", [al_of_tabletype tabletype])

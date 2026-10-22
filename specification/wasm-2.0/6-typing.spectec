@@ -676,7 +676,7 @@ rule Externidx_ok/mem:
 
 ;; Modules proper
 
-relation Module_ok: |- module : externtype* -> externtype*  hint(show "T-module")
+relation Module_ok: |- module : moduletype  hint(show "T-module")
 
 ;; TODO: refs
 rule Module_ok:
