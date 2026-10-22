@@ -44,7 +44,7 @@ let ref_ok =
   | vs -> Numerics.error_values "$Ref_ok" vs
 
 let module_ok v =
-  (* The reference validator also accepts modules from earlier versions. *)
+  (* Use Wasm-3 validator for Wasm-1+2 as well. Does not work for negative tests! *)
   match v with
   | [ m ] ->
     (try
