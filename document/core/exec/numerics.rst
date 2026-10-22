@@ -1169,6 +1169,10 @@ The non-deterministic result is expressed by the following auxiliary function pr
 
 * Else if either :math:`z_1` or :math:`z_2` is an infinity and the other a value with opposite sign, then return negative infinity.
 
+* Else if either :math:`z_1` or :math:`z_2` is a zero and the other a value with the same sign, then return positive infinity.
+
+* Else if either :math:`z_1` or :math:`z_2` is a zero and the other a value with opposite sign, then return negative infinity.
+
 * Else if both :math:`z_1` and :math:`z_2` are zeroes of equal sign, then return positive zero.
 
 * Else if both :math:`z_1` and :math:`z_2` are zeroes of opposite sign, then return negative zero.
@@ -1189,8 +1193,10 @@ The non-deterministic result is expressed by the following auxiliary function pr
    \fmul_N(\pm q_1, \mp \infty) &=& -\infty \\
    \fmul_N(\pm \infty, \pm q_2) &=& +\infty \\
    \fmul_N(\pm \infty, \mp q_2) &=& -\infty \\
-   \fmul_N(\pm 0, \pm 0) &=& + 0 \\
-   \fmul_N(\pm 0, \mp 0) &=& - 0 \\
+   \fmul_N(\pm 0, \pm q_2) &=& +0 \\
+   \fmul_N(\pm 0, \mp q_2) &=& -0 \\
+   \fmul_N(\pm q_1, \pm 0) &=& +0 \\
+   \fmul_N(\pm q_1, \mp 0) &=& -0 \\
    \fmul_N(z_1, z_2) &=& \ieee_N(z_1 \cdot z_2) \\
    \end{array}
 
