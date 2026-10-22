@@ -168,7 +168,7 @@ Similarly, both <span class="math notranslate nohighlight">\(\mathtt{0x83}~\math
 {\land}~ {\mathit{ch}} = {2^{18}} \cdot (b_1 - \mathtt{0xF0}) + {2^{12}} \cdot {\mathrm{cont}}(b_2) + {2^{6}} \cdot {\mathrm{cont}}(b_3) + {\mathrm{cont}}(b_4) \\
 \end{array} \\
 \end{array}\end{split}\]</div>
-<p>where <span class="math notranslate nohighlight">\(\begin{array}[t]{&#64;{}l&#64;{~}c&#64;{~}l&#64;{}l&#64;{}} {\mathrm{cont}}(b) &amp; = &amp; b - \mathtt{0x80} &amp; \quad \mbox{if}~ (\mathtt{0x80} &lt; b &lt; \mathtt{0xC0}) \\ \end{array}\)</span></p>
+<p>where <span class="math notranslate nohighlight">\(\begin{array}[t]{&#64;{}l&#64;{~}c&#64;{~}l&#64;{}l&#64;{}} {\mathrm{cont}}(b) &amp; = &amp; b - \mathtt{0x80} &amp; \quad \mbox{if}~ \mathtt{0x80} \leq b &lt; \mathtt{0xC0} \\ \end{array}\)</span></p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Unlike in some other formats, name strings are not 0-terminated.</p>
