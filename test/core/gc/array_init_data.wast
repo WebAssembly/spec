@@ -210,3 +210,22 @@
 (assert_trap (invoke "g7") "out of bounds memory access")
 (assert_return (invoke "g8"))
 (assert_trap (invoke "g9") "out of bounds memory access")
+
+
+;; Arrays of vectors
+(module
+  (type $av (array (mut v128)))
+
+  (data $d "\00\01\02\03\04\05\06\07\08\09\0a\0b\0c\0d\0e\0f")
+
+  (func (export "init") (result i32)
+    (local $x (ref $av))
+    (local.set $x (array.new_default $av (i32.const 1)))
+    (array.init_data $av $d
+      (local.get $x) (i32.const 0) (i32.const 0) (i32.const 1)
+    )
+    (i32x4.extract_lane 1 (array.get $av (local.get $x) (i32.const 0)))
+  )
+)
+
+(assert_return (invoke "init") (i32.const 0x07060504))
