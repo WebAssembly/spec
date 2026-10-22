@@ -301,7 +301,7 @@ syntax char =
 def $cont(byte : byte) : nat
   ;; ../../../../specification/wasm-latest/5.1-binary.values.spectec
   def $cont{b : byte}(b) = (((b!`%`_byte.0 : nat <:> int) - (128 : nat <:> int)) : int <:> nat)
-    -- if ((128 < b!`%`_byte.0) /\ (b!`%`_byte.0 < 192))
+    -- if ((128 <= b!`%`_byte.0) /\ (b!`%`_byte.0 < 192))
 
 ;; ../../../../specification/wasm-latest/5.1-binary.values.spectec
 def $utf8single(char : char) : byte*
@@ -8297,12 +8297,12 @@ grammar Bs33 : s33
 ;; ../../../../specification/wasm-latest/5.1-binary.values.spectec
 grammar Bi32 : i32
   ;; ../../../../specification/wasm-latest/5.1-binary.values.spectec
-  prod{`<implicit-prod-result>` : uN(32)} `<implicit-prod-result>`:BuN(32) => `<implicit-prod-result>`
+  prod{`<implicit-prod-result>` : iN(32)} `<implicit-prod-result>`:BiN(32) => `<implicit-prod-result>`
 
 ;; ../../../../specification/wasm-latest/5.1-binary.values.spectec
 grammar Bi64 : i64
   ;; ../../../../specification/wasm-latest/5.1-binary.values.spectec
-  prod{`<implicit-prod-result>` : uN(64)} `<implicit-prod-result>`:BuN(64) => `<implicit-prod-result>`
+  prod{`<implicit-prod-result>` : iN(64)} `<implicit-prod-result>`:BiN(64) => `<implicit-prod-result>`
 
 ;; ../../../../specification/wasm-latest/5.1-binary.values.spectec
 grammar Bf32 : f32
@@ -12207,7 +12207,7 @@ syntax char =
 def $cont(byte : byte) : nat
   ;; ../../../../specification/wasm-latest/5.1-binary.values.spectec
   def $cont{b : byte}(b) = (((b!`%`_byte.0 : nat <:> int) - (128 : nat <:> int)) : int <:> nat)
-    -- if ((128 < b!`%`_byte.0) /\ (b!`%`_byte.0 < 192))
+    -- if ((128 <= b!`%`_byte.0) /\ (b!`%`_byte.0 < 192))
 
 ;; ../../../../specification/wasm-latest/5.1-binary.values.spectec
 def $utf8single(char : char) : byte*
@@ -20212,12 +20212,12 @@ grammar Bs33 : s33
 ;; ../../../../specification/wasm-latest/5.1-binary.values.spectec
 grammar Bi32 : i32
   ;; ../../../../specification/wasm-latest/5.1-binary.values.spectec
-  prod{`<implicit-prod-result>` : uN(32)} `<implicit-prod-result>`:BuN(32) => `<implicit-prod-result>`
+  prod{`<implicit-prod-result>` : iN(32)} `<implicit-prod-result>`:BiN(32) => `<implicit-prod-result>`
 
 ;; ../../../../specification/wasm-latest/5.1-binary.values.spectec
 grammar Bi64 : i64
   ;; ../../../../specification/wasm-latest/5.1-binary.values.spectec
-  prod{`<implicit-prod-result>` : uN(64)} `<implicit-prod-result>`:BuN(64) => `<implicit-prod-result>`
+  prod{`<implicit-prod-result>` : iN(64)} `<implicit-prod-result>`:BiN(64) => `<implicit-prod-result>`
 
 ;; ../../../../specification/wasm-latest/5.1-binary.values.spectec
 grammar Bf32 : f32
@@ -24122,7 +24122,7 @@ syntax char =
 def $cont(byte : byte) : nat
   ;; ../../../../specification/wasm-latest/5.1-binary.values.spectec
   def $cont{b : byte}(b) = (((b!`%`_byte.0 : nat <:> int) - (128 : nat <:> int)) : int <:> nat)
-    -- if ((128 < b!`%`_byte.0) /\ (b!`%`_byte.0 < 192))
+    -- if ((128 <= b!`%`_byte.0) /\ (b!`%`_byte.0 < 192))
 
 ;; ../../../../specification/wasm-latest/5.1-binary.values.spectec
 def $utf8single(char : char) : byte*
@@ -32369,12 +32369,12 @@ grammar Bs33 : s33
 ;; ../../../../specification/wasm-latest/5.1-binary.values.spectec
 grammar Bi32 : i32
   ;; ../../../../specification/wasm-latest/5.1-binary.values.spectec
-  prod{`<implicit-prod-result>` : uN(32)} `<implicit-prod-result>`:BuN(32) => `<implicit-prod-result>`
+  prod{`<implicit-prod-result>` : iN(32)} `<implicit-prod-result>`:BiN(32) => `<implicit-prod-result>`
 
 ;; ../../../../specification/wasm-latest/5.1-binary.values.spectec
 grammar Bi64 : i64
   ;; ../../../../specification/wasm-latest/5.1-binary.values.spectec
-  prod{`<implicit-prod-result>` : uN(64)} `<implicit-prod-result>`:BuN(64) => `<implicit-prod-result>`
+  prod{`<implicit-prod-result>` : iN(64)} `<implicit-prod-result>`:BiN(64) => `<implicit-prod-result>`
 
 ;; ../../../../specification/wasm-latest/5.1-binary.values.spectec
 grammar Bf32 : f32

@@ -22133,7 +22133,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ..........................
 
 
-1. Assert: Due to validation, :math:`128 < b`.
+1. Assert: Due to validation, :math:`128 \leq b`.
 
 #. Assert: Due to validation, :math:`b < 192`.
 
@@ -31977,7 +31977,7 @@ canon_ N
 1. Return (2 ^ ($signif(N) - 1)).
 
 cont b
-1. Assert: Due to validation, (128 < b).
+1. Assert: Due to validation, (128 <= b).
 2. Assert: Due to validation, (b < 192).
 3. Return (b - 128).
 

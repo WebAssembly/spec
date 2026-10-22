@@ -28,8 +28,8 @@ grammar Bu64 : u64 = BuN(64)
 
 grammar Bs33 : s33 = BsN(33)
 
-grammar Bi32 : i32 = BuN(32)
-grammar Bi64 : i64 = BuN(64)
+grammar Bi32 : i32 = BiN(32)
+grammar Bi64 : i64 = BiN(64)
 
 grammar Bf32 : f32 = BfN(32)
 grammar Bf64 : f64 = BfN(64)
@@ -46,7 +46,7 @@ grammar Blist(grammar BX : el) : el* =
 var ch : char
 
 def $cont(byte) : nat hint(macro none)
-def $cont(b) = $(b - 0x80) -- if (0x80 < b < 0xC0)
+def $cont(b) = $(b - 0x80) -- if 0x80 <= b < 0xC0
 
 ;; def $utf8(char*) : byte*
 def $utf8(ch*) = $concat_(byte, $utf8single(ch)*)

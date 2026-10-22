@@ -11526,8 +11526,8 @@ $$
 & {\mathtt{u32}} & ::= & {{\mathtt{u}}}{32} \\
 & {\mathtt{u64}} & ::= & {{\mathtt{u}}}{64} \\
 & {\mathtt{s33}} & ::= & {{\mathtt{s}}}{33} \\
-& {\mathtt{i32}} & ::= & {{\mathtt{u}}}{32} \\
-& {\mathtt{i64}} & ::= & {{\mathtt{u}}}{64} \\
+& {\mathtt{i32}} & ::= & {{\mathtt{i}}}{32} \\
+& {\mathtt{i64}} & ::= & {{\mathtt{i}}}{64} \\
 & {\mathtt{f32}} & ::= & {{\mathtt{f}}}{32} \\
 & {\mathtt{f64}} & ::= & {{\mathtt{f}}}{64} \\
 \end{array}
@@ -11545,7 +11545,7 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{\mathrm{cont}}(b) & = & b - \mathtt{0x80} & \quad \mbox{if}~ (\mathtt{0x80} < b < \mathtt{0xC0}) \\
+{\mathrm{cont}}(b) & = & b - \mathtt{0x80} & \quad \mbox{if}~ \mathtt{0x80} \leq b < \mathtt{0xC0} \\
 \end{array}
 $$
 
