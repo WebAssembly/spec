@@ -15,7 +15,6 @@ spectec 0.5 generator
 == IL Validation after pass sideconditions...
 == Translating to AL...
 == Prose Generation...
-Untranslated relation Module_ok: `|-%:%->%`(module, externtype*, externtype*)
 
 
 
@@ -855,10 +854,187 @@ The external index :math:`(\mathsf{mem}~x)` is :ref:`valid <valid-val>` with the
 
 
 
-The export :math:`(\mathsf{export}~{\mathit{name}}~{\mathit{externidx}})` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{xt}}` if:
+The export :math:`(\mathsf{export}~{\mathit{name}}~{\mathit{externidx}})` is :ref:`valid <valid-val>` with the name :math:`{\mathit{name}}` and the external type :math:`{\mathit{xt}}` if:
 
 
    * The external index :math:`{\mathit{externidx}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{xt}}`.
+
+
+
+
+The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` is :ref:`valid <valid-val>` with the module type :math:`{{\mathit{ixt}}^\ast}~\rightarrow~{{\mathit{xt}}^\ast}` if:
+
+
+   * For all :math:`{\mathit{type}}` in :math:`{{\mathit{type}}^\ast}`:
+
+      * The type :math:`{\mathit{type}}` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{ft}'}`.
+
+   * :math:`{{\mathit{ft}'}^\ast}` is the concatenation of all such :math:`{\mathit{ft}'}`.
+
+   * For all :math:`{\mathit{import}}` in :math:`{{\mathit{import}}^\ast}`, and corresponding :math:`{\mathit{ixt}}` in :math:`{{\mathit{ixt}}^\ast}`:
+
+      * Under the context :math:`\{ \mathsf{types}~{{\mathit{ft}'}^\ast},\;\allowbreak \mathsf{return}~\epsilon \}`, the import :math:`{\mathit{import}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{ixt}}`.
+
+   * For all :math:`{\mathit{global}}` in :math:`{{\mathit{global}}^\ast}`:
+
+      * Under the context :math:`{C'}`, the global :math:`{\mathit{global}}` is :ref:`valid <valid-val>` with the global type :math:`{\mathit{gt}}`.
+
+   * :math:`{{\mathit{gt}}^\ast}` is the concatenation of all such :math:`{\mathit{gt}}`.
+
+   * For all :math:`{\mathit{func}}` in :math:`{{\mathit{func}}^\ast}`:
+
+      * The function :math:`{\mathit{func}}` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{ft}}`.
+
+   * :math:`{{\mathit{ft}}^\ast}` is the concatenation of all such :math:`{\mathit{ft}}`.
+
+   * For all :math:`{\mathit{table}}` in :math:`{{\mathit{table}}^\ast}`:
+
+      * The table :math:`{\mathit{table}}` is :ref:`valid <valid-val>` with the table type :math:`{\mathit{tt}}`.
+
+   * :math:`{{\mathit{tt}}^\ast}` is the concatenation of all such :math:`{\mathit{tt}}`.
+
+   * For all :math:`{\mathit{mem}}` in :math:`{{\mathit{mem}}^\ast}`:
+
+      * The memory :math:`{\mathit{mem}}` is :ref:`valid <valid-val>` with the memory type :math:`{\mathit{mt}}`.
+
+   * :math:`{{\mathit{mt}}^\ast}` is the concatenation of all such :math:`{\mathit{mt}}`.
+
+   * For all :math:`{\mathit{elem}}` in :math:`{{\mathit{elem}}^\ast}`:
+
+      * The table segment :math:`{\mathit{elem}}` is :ref:`valid <valid-val>`.
+
+   * For all :math:`{\mathit{data}}` in :math:`{{\mathit{data}}^\ast}`:
+
+      * The memory segment :math:`{\mathit{data}}` is :ref:`valid <valid-val>`.
+
+   * If :math:`{\mathit{start}}` is defined, then:
+
+      * The start function :math:`{\mathit{start}}` is :ref:`valid <valid-val>`.
+
+   * For all :math:`{\mathit{export}}` in :math:`{{\mathit{export}}^\ast}`, and corresponding :math:`{\mathit{xt}}` in :math:`{{\mathit{xt}}^\ast}`:
+
+      * The export :math:`{\mathit{export}}` is :ref:`valid <valid-val>` with the name :math:`{\mathit{nm}}` and the external type :math:`{\mathit{xt}}`.
+
+   * :math:`{{\mathit{nm}}^\ast}` is the concatenation of all such :math:`{\mathit{nm}}`.
+
+   * The length of :math:`{{\mathit{tt}}^\ast}` is less than or equal to :math:`1`.
+
+   * The length of :math:`{{\mathit{mt}}^\ast}` is less than or equal to :math:`1`.
+
+   * :math:`{{\mathit{nm}}^\ast}~{\mathrm{disjoint}}` is true.
+
+   * The context :math:`{C'}` is of the form :math:`\{ \mathsf{types}~{{\mathit{ft}'}^\ast},\;\allowbreak \mathsf{funcs}~{{\mathit{ift}}^\ast}~{{\mathit{ft}}^\ast},\;\allowbreak \mathsf{globals}~{{\mathit{igt}}^\ast},\;\allowbreak \mathsf{return}~\epsilon \}`.
+
+   * The function type sequence :math:`{{\mathit{ift}}^\ast}` is of the form :math:`{\mathrm{funcs}}({{\mathit{ixt}}^\ast})`.
+
+   * The global type sequence :math:`{{\mathit{igt}}^\ast}` is of the form :math:`{\mathrm{globals}}({{\mathit{ixt}}^\ast})`.
+
+   * The table type sequence :math:`{{\mathit{itt}}^\ast}` is of the form :math:`{\mathrm{tables}}({{\mathit{ixt}}^\ast})`.
+
+   * The memory type sequence :math:`{{\mathit{imt}}^\ast}` is of the form :math:`{\mathrm{mems}}({{\mathit{ixt}}^\ast})`.
+
+
+
+
+The external value :math:`{\mathit{externaddr}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{externtype}}` if:
+
+
+   * Either:
+
+      * The external value :math:`{\mathit{externaddr}}` is of the form :math:`(\mathsf{global}~a)`.
+
+      * The external type :math:`{\mathit{externtype}}` is of the form :math:`(\mathsf{global}~{\mathit{globalinst}}{.}\mathsf{type})`.
+
+      * The global instance :math:`s{.}\mathsf{globals}{}[a]` exists.
+
+      * The global instance :math:`s{.}\mathsf{globals}{}[a]` is of the form :math:`{\mathit{globalinst}}`.
+
+   * Or:
+
+      * The external value :math:`{\mathit{externaddr}}` is of the form :math:`(\mathsf{mem}~a)`.
+
+      * The external type :math:`{\mathit{externtype}}` is of the form :math:`(\mathsf{mem}~{\mathit{meminst}}{.}\mathsf{type})`.
+
+      * The memory instance :math:`s{.}\mathsf{mems}{}[a]` exists.
+
+      * The memory instance :math:`s{.}\mathsf{mems}{}[a]` is of the form :math:`{\mathit{meminst}}`.
+   * Or:
+
+      * The external value :math:`{\mathit{externaddr}}` is of the form :math:`(\mathsf{table}~a)`.
+
+      * The external type :math:`{\mathit{externtype}}` is of the form :math:`(\mathsf{table}~{\mathit{tableinst}}{.}\mathsf{type})`.
+
+      * The table instance :math:`s{.}\mathsf{tables}{}[a]` exists.
+
+      * The table instance :math:`s{.}\mathsf{tables}{}[a]` is of the form :math:`{\mathit{tableinst}}`.
+   * Or:
+
+      * The external value :math:`{\mathit{externaddr}}` is of the form :math:`(\mathsf{func}~a)`.
+
+      * The external type :math:`{\mathit{externtype}}` is of the form :math:`(\mathsf{func}~{\mathit{funcinst}}{.}\mathsf{type})`.
+
+      * The function instance :math:`s{.}\mathsf{funcs}{}[a]` exists.
+
+      * The function instance :math:`s{.}\mathsf{funcs}{}[a]` is of the form :math:`{\mathit{funcinst}}`.
+   * Or:
+
+      * The external value :math:`{\mathit{externaddr}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{xt}'}`.
+
+      * The external type :math:`{\mathit{externtype}}` is :ref:`valid <valid-val>`.
+
+      * The external type :math:`{\mathit{xt}'}` :ref:`matches <match>` the external type :math:`{\mathit{externtype}}`.
+
+
+
+
+The external value :math:`(\mathsf{global}~a)` is :ref:`valid <valid-val>` with the external type :math:`(\mathsf{global}~{\mathit{globalinst}}{.}\mathsf{type})` if:
+
+
+   * The global instance :math:`s{.}\mathsf{globals}{}[a]` exists.
+
+   * The global instance :math:`s{.}\mathsf{globals}{}[a]` is of the form :math:`{\mathit{globalinst}}`.
+
+
+
+
+The external value :math:`(\mathsf{mem}~a)` is :ref:`valid <valid-val>` with the external type :math:`(\mathsf{mem}~{\mathit{meminst}}{.}\mathsf{type})` if:
+
+
+   * The memory instance :math:`s{.}\mathsf{mems}{}[a]` exists.
+
+   * The memory instance :math:`s{.}\mathsf{mems}{}[a]` is of the form :math:`{\mathit{meminst}}`.
+
+
+
+
+The external value :math:`(\mathsf{table}~a)` is :ref:`valid <valid-val>` with the external type :math:`(\mathsf{table}~{\mathit{tableinst}}{.}\mathsf{type})` if:
+
+
+   * The table instance :math:`s{.}\mathsf{tables}{}[a]` exists.
+
+   * The table instance :math:`s{.}\mathsf{tables}{}[a]` is of the form :math:`{\mathit{tableinst}}`.
+
+
+
+
+The external value :math:`(\mathsf{func}~a)` is :ref:`valid <valid-val>` with the external type :math:`(\mathsf{func}~{\mathit{funcinst}}{.}\mathsf{type})` if:
+
+
+   * The function instance :math:`s{.}\mathsf{funcs}{}[a]` exists.
+
+   * The function instance :math:`s{.}\mathsf{funcs}{}[a]` is of the form :math:`{\mathit{funcinst}}`.
+
+
+
+
+The external value :math:`{\mathit{externaddr}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{xt}}` if:
+
+
+   * The external value :math:`{\mathit{externaddr}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{xt}'}`.
+
+   * The external type :math:`{\mathit{xt}}` is :ref:`valid <valid-val>`.
+
+   * The external type :math:`{\mathit{xt}'}` :ref:`matches <match>` the external type :math:`{\mathit{xt}}`.
 
 
 :math:`\mathsf{load}~t~{\mathit{ao}}`
@@ -1581,6 +1757,19 @@ The export :math:`(\mathsf{export}~{\mathit{name}}~{\mathit{externidx}})` is :re
 #. Let :math:`{w^\ast}~{{{w'}^\ast}^\ast}` be :math:`{X^\ast}`.
 
 #. Return :math:`{w^\ast}~{\mathrm{concat}}({{{w'}^\ast}^\ast})`.
+
+
+:math:`{X^\ast}~{\mathrm{disjoint}}`
+....................................
+
+
+1. If :math:`{X^\ast} = \epsilon`, then:
+
+   a. Return true.
+
+#. Let :math:`w~{{w'}^\ast}` be :math:`{X^\ast}`.
+
+#. Return :math:`w` is not contained in :math:`{{w'}^\ast}` and :math:`{{w'}^\ast}~{\mathrm{disjoint}}`.
 
 
 :math:`{\mathrm{signif}}(N)`
@@ -2864,7 +3053,23 @@ The export :math:`(\mathsf{export}~{\mathit{name}}~{\mathit{externidx}})` is :re
 ..................................................................................
 
 
-1. Let :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` be the destructuring of :math:`{\mathit{module}}`.
+1. If :math:`{\mathit{module}}` is not :ref:`valid <valid-val>`, then:
+
+   a. Fail.
+
+#. Let :math:`{{\mathit{xt}}_{\mathsf{i}}^\ast}~\rightarrow~{{\mathit{xt}}_{\mathsf{e}}^\ast}` be the destructuring of the type of :math:`{\mathit{module}}`.
+
+#. Let :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` be the destructuring of :math:`{\mathit{module}}`.
+
+#. If :math:`{|{{\mathit{externaddr}}^\ast}|} \neq {|{{\mathit{xt}}_{\mathsf{i}}^\ast}|}`, then:
+
+   a. Fail.
+
+#. For all :math:`{\mathit{externaddr}}` in :math:`{{\mathit{externaddr}}^\ast}`, and corresponding :math:`{\mathit{xt}}_{\mathsf{i}}` in :math:`{{\mathit{xt}}_{\mathsf{i}}^\ast}`:
+
+   a. If :math:`{\mathit{externaddr}}` is not :ref:`valid <valid-val>` with type :math:`{\mathit{xt}}_{\mathsf{i}}`, then:
+
+      1) Fail.
 
 #. Let :math:`{{\mathit{functype}}^\ast}` be the function type sequence :math:`\epsilon`.
 
@@ -3020,7 +3225,6 @@ spectec 0.5 generator
 == IL Validation after pass sideconditions...
 == Translating to AL...
 == Prose Generation...
-Untranslated relation Module_ok: `|-%:%->%`(module, externtype*, externtype*)
 Limits_ok
 - the limits ([ n .. m? ]) is valid with k if:
   - n is less than or equal to k.
@@ -3454,8 +3658,98 @@ Externidx_ok/mem
   - C.MEMS[x] is mt.
 
 Export_ok
-- the export (EXPORT name externidx) is valid with the external type xt if:
+- the export (EXPORT name externidx) is valid with the name name and the external type xt if:
   - the external index externidx is valid with xt.
+
+Module_ok
+- the module (MODULE type* import* func* global* table* mem* elem* data* start? export*) is valid with the module type ixt* -> xt* if:
+  - For all type in type*:
+    - the type type is valid with the function type ft'.
+  - ft'* is the concatenation of all such ft'.
+  - For all import in import*, and corresponding ixt in ixt*:
+    - Under the context { TYPES: ft'*; RETURN: ?() }, the import import is valid with the external type ixt.
+  - For all global in global*:
+    - Under the context C', the global global is valid with the global type gt.
+  - gt* is the concatenation of all such gt.
+  - For all func in func*:
+    - the function func is valid with the function type ft.
+  - ft* is the concatenation of all such ft.
+  - For all table in table*:
+    - the table table is valid with the table type tt.
+  - tt* is the concatenation of all such tt.
+  - For all mem in mem*:
+    - the memory mem is valid with the memory type mt.
+  - mt* is the concatenation of all such mt.
+  - For all elem in elem*:
+    - the table segment elem is valid.
+  - For all data in data*:
+    - the memory segment data is valid.
+  - If start is defined, then:
+    - the start function start is valid.
+  - For all export in export*, and corresponding xt in xt*:
+    - the export export is valid with the name nm and the external type xt.
+  - nm* is the concatenation of all such nm.
+  - |tt*| is less than or equal to 1.
+  - |mt*| is less than or equal to 1.
+  - $disjoint_(`name, nm*) is true.
+  - the context C' is { TYPES: ft'*; FUNCS: ift* :: ft*; GLOBALS: igt*; RETURN: ?() }.
+  - the function type sequence ift* is $funcsxt(ixt*).
+  - the global type sequence igt* is $globalsxt(ixt*).
+  - the table type sequence itt* is $tablesxt(ixt*).
+  - the memory type sequence imt* is $memsxt(ixt*).
+
+Externaddr_ok
+- the external value externaddr is valid with the external type externtype if:
+  - Either:
+    - externaddr is (GLOBAL a).
+    - externtype is (GLOBAL globalinst.TYPE).
+    - the global instance s.GLOBALS[a] exists.
+    - s.GLOBALS[a] is globalinst.
+  - Or:
+    - externaddr is (MEM a).
+    - externtype is (MEM meminst.TYPE).
+    - the memory instance s.MEMS[a] exists.
+    - s.MEMS[a] is meminst.
+  - Or:
+    - externaddr is (TABLE a).
+    - externtype is (TABLE tableinst.TYPE).
+    - the table instance s.TABLES[a] exists.
+    - s.TABLES[a] is tableinst.
+  - Or:
+    - externaddr is (FUNC a).
+    - externtype is (FUNC funcinst.TYPE).
+    - the function instance s.FUNCS[a] exists.
+    - s.FUNCS[a] is funcinst.
+  - Or:
+    - externaddr is valid with the external type xt'.
+    - externtype is valid.
+    - xt' matches externtype.
+
+Externaddr_ok/global
+- the external value (GLOBAL a) is valid with the external type (GLOBAL globalinst.TYPE) if:
+  - the global instance s.GLOBALS[a] exists.
+  - s.GLOBALS[a] is globalinst.
+
+Externaddr_ok/mem
+- the external value (MEM a) is valid with the external type (MEM meminst.TYPE) if:
+  - the memory instance s.MEMS[a] exists.
+  - s.MEMS[a] is meminst.
+
+Externaddr_ok/table
+- the external value (TABLE a) is valid with the external type (TABLE tableinst.TYPE) if:
+  - the table instance s.TABLES[a] exists.
+  - s.TABLES[a] is tableinst.
+
+Externaddr_ok/func
+- the external value (FUNC a) is valid with the external type (FUNC funcinst.TYPE) if:
+  - the function instance s.FUNCS[a] exists.
+  - s.FUNCS[a] is funcinst.
+
+Externaddr_ok/sub
+- the external value externaddr is valid with the external type xt if:
+  - externaddr is valid with the external type xt'.
+  - xt is valid.
+  - xt' matches xt.
 
 Step_read/load-num-* t ?() ao
 1. Let z be the current state.
@@ -3789,6 +4083,12 @@ concat_ `X X*
   a. Return [].
 2. Let [w*] :: w'** be X*.
 3. Return w* :: $concat_(`X, w'**).
+
+disjoint_ `X X*
+1. If (X* = []), then:
+  a. Return true.
+2. Let [w] :: w'* be X*.
+3. Return (w is not contained in w'* /\ $disjoint_(`X, w'*)).
 
 signif N
 1. If (N = 32), then:
@@ -4391,56 +4691,59 @@ initdata s moduleinst u32* byte*
   f. Return.
 
 instantiate s module externaddr*
-1. Let (MODULE type* import* func* global* table* mem* elem* data* start? export*) be module.
-2. Let functype* be [].
-3. For each type in type*, do:
+1. Let xt_I* -> xt_E* be $Module_ok(module).
+2. Let (MODULE type* import* func* global* table* mem* elem* data* start? export*) be module.
+3. If not $Externaddr_ok(externaddr, xt_I)*, then:
+  a. Fail.
+4. Let functype* be [].
+5. For each type in type*, do:
   a. Let (TYPE functype) be type.
   b. Append functype to the functype*.
-4. Let n_F be |func*|.
-5. Let b** be [].
-6. Let expr_D* be [].
-7. For each data in data*, do:
+6. Let n_F be |func*|.
+7. Let b** be [].
+8. Let expr_D* be [].
+9. For each data in data*, do:
   a. Let (DATA expr_D b*) be data.
   b. Append b* to the b**.
   c. Append expr_D to the expr_D*.
-8. Let expr_E* be [].
-9. Let x** be [].
-10. For each elem in elem*, do:
+10. Let expr_E* be [].
+11. Let x** be [].
+12. For each elem in elem*, do:
   a. Let (ELEM expr_E x*) be elem.
   b. Append expr_E to the expr_E*.
   c. Append x* to the x**.
-11. Let expr_G* be [].
-12. For each global in global*, do:
+13. Let expr_G* be [].
+14. For each global in global*, do:
   a. Let (GLOBAL globaltype expr_G) be global.
   b. Append expr_G to the expr_G*.
-13. Let moduleinst_init be { TYPES: functype*; FUNCS: $funcs(externaddr*) :: (|s.FUNCS| + i_F)^(i_F<n_F); GLOBALS: $globals(externaddr*) }.
-14. Let f_init be { MODULE: moduleinst_init }.
-15. Let z be (s, f_init).
-16. Push the frame (FRAME_ 0 { $frame(z) }) to the stack.
-17. Let i_D* be [].
-18. For each expr_D in expr_D*, do:
+15. Let moduleinst_init be { TYPES: functype*; FUNCS: $funcs(externaddr*) :: (|s.FUNCS| + i_F)^(i_F<n_F); GLOBALS: $globals(externaddr*) }.
+16. Let f_init be { MODULE: moduleinst_init }.
+17. Let z be (s, f_init).
+18. Push the frame (FRAME_ 0 { $frame(z) }) to the stack.
+19. Let i_D* be [].
+20. For each expr_D in expr_D*, do:
   a. Let [(I32.CONST i_D)] be $Eval_expr(z, expr_D).
   b. Append i_D to the i_D*.
-19. Let i_E* be [].
-20. For each expr_E in expr_E*, do:
+21. Let i_E* be [].
+22. For each expr_E in expr_E*, do:
   a. Let [(I32.CONST i_E)] be $Eval_expr(z, expr_E).
   b. Append i_E to the i_E*.
-21. Let val* be [].
-22. For each expr_G in expr_G*, do:
+23. Let val* be [].
+24. For each expr_G in expr_G*, do:
   a. Let [val] be $Eval_expr(z, expr_G).
   b. Append val to the val*.
-23. Pop the frame (FRAME_ 0 { $frame(z) }) from the stack.
-24. Let moduleinst be $allocmodule(s, module, externaddr*, val*).
-25. Let f be { MODULE: moduleinst }.
-26. Perform $initelem(s, moduleinst, i_E*, moduleinst.FUNCS[x]**).
-27. Perform $initdata(s, moduleinst, i_D*, b**).
-28. Push the frame (FRAME_ 0 { f }) to the stack.
-29. If start? is defined, then:
+25. Pop the frame (FRAME_ 0 { $frame(z) }) from the stack.
+26. Let moduleinst be $allocmodule(s, module, externaddr*, val*).
+27. Let f be { MODULE: moduleinst }.
+28. Perform $initelem(s, moduleinst, i_E*, moduleinst.FUNCS[x]**).
+29. Perform $initdata(s, moduleinst, i_D*, b**).
+30. Push the frame (FRAME_ 0 { f }) to the stack.
+31. If start? is defined, then:
   a. Let ?((START x')) be start?.
   b. Let instr_0 be (CALL x').
   c. Execute the instruction instr_0.
-30. Pop the frame (FRAME_ 0 { f }) from the stack.
-31. Return f.MODULE.
+32. Pop the frame (FRAME_ 0 { f }) from the stack.
+33. Return f.MODULE.
 
 invoke s fa val^n
 1. Let f be { MODULE: {} }.
@@ -4470,7 +4773,6 @@ spectec 0.5 generator
 == IL Validation after pass sideconditions...
 == Translating to AL...
 == Prose Generation...
-Untranslated relation Module_ok: `|-%:%->%`(module, externtype*, externtype*)
 
 
 
@@ -5886,10 +6188,187 @@ The external index :math:`(\mathsf{mem}~x)` is :ref:`valid <valid-val>` with the
 
 
 
-The export :math:`(\mathsf{export}~{\mathit{name}}~{\mathit{externidx}})` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{xt}}` if:
+The export :math:`(\mathsf{export}~{\mathit{name}}~{\mathit{externidx}})` is :ref:`valid <valid-val>` with the name :math:`{\mathit{name}}` and the external type :math:`{\mathit{xt}}` if:
 
 
    * The external index :math:`{\mathit{externidx}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{xt}}`.
+
+
+
+
+The module :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^{n}}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` is :ref:`valid <valid-val>` with the module type :math:`{{\mathit{ixt}}^\ast}~\rightarrow~{{\mathit{xt}}^\ast}` if:
+
+
+   * For all :math:`{\mathit{type}}` in :math:`{{\mathit{type}}^\ast}`:
+
+      * The type :math:`{\mathit{type}}` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{ft}'}`.
+
+   * :math:`{{\mathit{ft}'}^\ast}` is the concatenation of all such :math:`{\mathit{ft}'}`.
+
+   * For all :math:`{\mathit{import}}` in :math:`{{\mathit{import}}^\ast}`, and corresponding :math:`{\mathit{ixt}}` in :math:`{{\mathit{ixt}}^\ast}`:
+
+      * Under the context :math:`\{ \mathsf{types}~{{\mathit{ft}'}^\ast},\;\allowbreak \mathsf{return}~\epsilon \}`, the import :math:`{\mathit{import}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{ixt}}`.
+
+   * For all :math:`{\mathit{global}}` in :math:`{{\mathit{global}}^\ast}`:
+
+      * Under the context :math:`{C'}`, the global :math:`{\mathit{global}}` is :ref:`valid <valid-val>` with the global type :math:`{\mathit{gt}}`.
+
+   * :math:`{{\mathit{gt}}^\ast}` is the concatenation of all such :math:`{\mathit{gt}}`.
+
+   * For all :math:`{\mathit{table}}` in :math:`{{\mathit{table}}^\ast}`:
+
+      * Under the context :math:`{C'}`, the table :math:`{\mathit{table}}` is :ref:`valid <valid-val>` with the table type :math:`{\mathit{tt}}`.
+
+   * :math:`{{\mathit{tt}}^\ast}` is the concatenation of all such :math:`{\mathit{tt}}`.
+
+   * For all :math:`{\mathit{mem}}` in :math:`{{\mathit{mem}}^\ast}`:
+
+      * Under the context :math:`{C'}`, the memory :math:`{\mathit{mem}}` is :ref:`valid <valid-val>` with the memory type :math:`{\mathit{mt}}`.
+
+   * :math:`{{\mathit{mt}}^\ast}` is the concatenation of all such :math:`{\mathit{mt}}`.
+
+   * For all :math:`{\mathit{elem}}` in :math:`{{\mathit{elem}}^\ast}`:
+
+      * Under the context :math:`{C'}`, the table segment :math:`{\mathit{elem}}` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}}`.
+
+   * :math:`{{\mathit{rt}}^\ast}` is the concatenation of all such :math:`{\mathit{rt}}`.
+
+   * For all :math:`{\mathit{data}}` in :math:`{{\mathit{data}}^\ast}`:
+
+      * Under the context :math:`{C'}`, the memory segment :math:`{\mathit{data}}` is :ref:`valid <valid-val>`.
+
+   * For all :math:`{\mathit{func}}` in :math:`{{\mathit{func}}^\ast}`:
+
+      * The function :math:`{\mathit{func}}` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{ft}}`.
+
+   * :math:`{{\mathit{ft}}^\ast}` is the concatenation of all such :math:`{\mathit{ft}}`.
+
+   * If :math:`{\mathit{start}}` is defined, then:
+
+      * The start function :math:`{\mathit{start}}` is :ref:`valid <valid-val>`.
+
+   * For all :math:`{\mathit{export}}` in :math:`{{\mathit{export}}^\ast}`, and corresponding :math:`{\mathit{xt}}` in :math:`{{\mathit{xt}}^\ast}`:
+
+      * The export :math:`{\mathit{export}}` is :ref:`valid <valid-val>` with the name :math:`{\mathit{nm}}` and the external type :math:`{\mathit{xt}}`.
+
+   * :math:`{{\mathit{nm}}^\ast}` is the concatenation of all such :math:`{\mathit{nm}}`.
+
+   * The length of :math:`{{\mathit{mt}}^\ast}` is less than or equal to :math:`1`.
+
+   * :math:`{{\mathit{nm}}^\ast}~{\mathrm{disjoint}}` is true.
+
+   * The context :math:`{C'}` is of the form :math:`\{ \mathsf{types}~{{\mathit{ft}'}^\ast},\;\allowbreak \mathsf{funcs}~{{\mathit{ift}}^\ast}~{{\mathit{ft}}^\ast},\;\allowbreak \mathsf{globals}~{{\mathit{igt}}^\ast},\;\allowbreak \mathsf{tables}~{{\mathit{itt}}^\ast}~{{\mathit{tt}}^\ast},\;\allowbreak \mathsf{mems}~{{\mathit{imt}}^\ast}~{{\mathit{mt}}^\ast},\;\allowbreak \mathsf{return}~\epsilon \}`.
+
+   * The function type sequence :math:`{{\mathit{ift}}^\ast}` is of the form :math:`{\mathrm{funcs}}({{\mathit{ixt}}^\ast})`.
+
+   * The global type sequence :math:`{{\mathit{igt}}^\ast}` is of the form :math:`{\mathrm{globals}}({{\mathit{ixt}}^\ast})`.
+
+   * The table type sequence :math:`{{\mathit{itt}}^\ast}` is of the form :math:`{\mathrm{tables}}({{\mathit{ixt}}^\ast})`.
+
+   * The memory type sequence :math:`{{\mathit{imt}}^\ast}` is of the form :math:`{\mathrm{mems}}({{\mathit{ixt}}^\ast})`.
+
+
+
+
+The external value :math:`{\mathit{externaddr}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{externtype}}` if:
+
+
+   * Either:
+
+      * The external value :math:`{\mathit{externaddr}}` is of the form :math:`(\mathsf{global}~a)`.
+
+      * The external type :math:`{\mathit{externtype}}` is of the form :math:`(\mathsf{global}~{\mathit{globalinst}}{.}\mathsf{type})`.
+
+      * The global instance :math:`s{.}\mathsf{globals}{}[a]` exists.
+
+      * The global instance :math:`s{.}\mathsf{globals}{}[a]` is of the form :math:`{\mathit{globalinst}}`.
+
+   * Or:
+
+      * The external value :math:`{\mathit{externaddr}}` is of the form :math:`(\mathsf{mem}~a)`.
+
+      * The external type :math:`{\mathit{externtype}}` is of the form :math:`(\mathsf{mem}~{\mathit{meminst}}{.}\mathsf{type})`.
+
+      * The memory instance :math:`s{.}\mathsf{mems}{}[a]` exists.
+
+      * The memory instance :math:`s{.}\mathsf{mems}{}[a]` is of the form :math:`{\mathit{meminst}}`.
+   * Or:
+
+      * The external value :math:`{\mathit{externaddr}}` is of the form :math:`(\mathsf{table}~a)`.
+
+      * The external type :math:`{\mathit{externtype}}` is of the form :math:`(\mathsf{table}~{\mathit{tableinst}}{.}\mathsf{type})`.
+
+      * The table instance :math:`s{.}\mathsf{tables}{}[a]` exists.
+
+      * The table instance :math:`s{.}\mathsf{tables}{}[a]` is of the form :math:`{\mathit{tableinst}}`.
+   * Or:
+
+      * The external value :math:`{\mathit{externaddr}}` is of the form :math:`(\mathsf{func}~a)`.
+
+      * The external type :math:`{\mathit{externtype}}` is of the form :math:`(\mathsf{func}~{\mathit{funcinst}}{.}\mathsf{type})`.
+
+      * The function instance :math:`s{.}\mathsf{funcs}{}[a]` exists.
+
+      * The function instance :math:`s{.}\mathsf{funcs}{}[a]` is of the form :math:`{\mathit{funcinst}}`.
+   * Or:
+
+      * The external value :math:`{\mathit{externaddr}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{xt}'}`.
+
+      * The external type :math:`{\mathit{externtype}}` is :ref:`valid <valid-val>`.
+
+      * The external type :math:`{\mathit{xt}'}` :ref:`matches <match>` the external type :math:`{\mathit{externtype}}`.
+
+
+
+
+The external value :math:`(\mathsf{global}~a)` is :ref:`valid <valid-val>` with the external type :math:`(\mathsf{global}~{\mathit{globalinst}}{.}\mathsf{type})` if:
+
+
+   * The global instance :math:`s{.}\mathsf{globals}{}[a]` exists.
+
+   * The global instance :math:`s{.}\mathsf{globals}{}[a]` is of the form :math:`{\mathit{globalinst}}`.
+
+
+
+
+The external value :math:`(\mathsf{mem}~a)` is :ref:`valid <valid-val>` with the external type :math:`(\mathsf{mem}~{\mathit{meminst}}{.}\mathsf{type})` if:
+
+
+   * The memory instance :math:`s{.}\mathsf{mems}{}[a]` exists.
+
+   * The memory instance :math:`s{.}\mathsf{mems}{}[a]` is of the form :math:`{\mathit{meminst}}`.
+
+
+
+
+The external value :math:`(\mathsf{table}~a)` is :ref:`valid <valid-val>` with the external type :math:`(\mathsf{table}~{\mathit{tableinst}}{.}\mathsf{type})` if:
+
+
+   * The table instance :math:`s{.}\mathsf{tables}{}[a]` exists.
+
+   * The table instance :math:`s{.}\mathsf{tables}{}[a]` is of the form :math:`{\mathit{tableinst}}`.
+
+
+
+
+The external value :math:`(\mathsf{func}~a)` is :ref:`valid <valid-val>` with the external type :math:`(\mathsf{func}~{\mathit{funcinst}}{.}\mathsf{type})` if:
+
+
+   * The function instance :math:`s{.}\mathsf{funcs}{}[a]` exists.
+
+   * The function instance :math:`s{.}\mathsf{funcs}{}[a]` is of the form :math:`{\mathit{funcinst}}`.
+
+
+
+
+The external value :math:`{\mathit{externaddr}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{xt}}` if:
+
+
+   * The external value :math:`{\mathit{externaddr}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{xt}'}`.
+
+   * The external type :math:`{\mathit{xt}}` is :ref:`valid <valid-val>`.
+
+   * The external type :math:`{\mathit{xt}'}` :ref:`matches <match>` the external type :math:`{\mathit{xt}}`.
 
 
 :math:`\mathsf{table{.}copy}~x~y`
@@ -7784,6 +8263,19 @@ The export :math:`(\mathsf{export}~{\mathit{name}}~{\mathit{externidx}})` is :re
 #. Let :math:`{w^\ast}~{{{w'}^\ast}^\ast}` be :math:`{X^\ast}`.
 
 #. Return :math:`{w^\ast}~{\mathrm{concat}}({{{w'}^\ast}^\ast})`.
+
+
+:math:`{X^\ast}~{\mathrm{disjoint}}`
+....................................
+
+
+1. If :math:`{X^\ast} = \epsilon`, then:
+
+   a. Return true.
+
+#. Let :math:`w~{{w'}^\ast}` be :math:`{X^\ast}`.
+
+#. Return :math:`w` is not contained in :math:`{{w'}^\ast}` and :math:`{{w'}^\ast}~{\mathrm{disjoint}}`.
 
 
 :math:`{{\mathrm{setproduct{\kern-0.1em\scriptstyle 2}}}}_{X}(w_1, {X^\ast})`
@@ -10544,7 +11036,23 @@ The export :math:`(\mathsf{export}~{\mathit{name}}~{\mathit{externidx}})` is :re
 ..................................................................................
 
 
-1. Let :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` be the destructuring of :math:`{\mathit{module}}`.
+1. If :math:`{\mathit{module}}` is not :ref:`valid <valid-val>`, then:
+
+   a. Fail.
+
+#. Let :math:`{{\mathit{xt}}_{\mathsf{i}}^\ast}~\rightarrow~{{\mathit{xt}}_{\mathsf{e}}^\ast}` be the destructuring of the type of :math:`{\mathit{module}}`.
+
+#. Let :math:`(\mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^\ast}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^\ast}~{{\mathit{start}}^?}~{{\mathit{export}}^\ast})` be the destructuring of :math:`{\mathit{module}}`.
+
+#. If :math:`{|{{\mathit{externaddr}}^\ast}|} \neq {|{{\mathit{xt}}_{\mathsf{i}}^\ast}|}`, then:
+
+   a. Fail.
+
+#. For all :math:`{\mathit{externaddr}}` in :math:`{{\mathit{externaddr}}^\ast}`, and corresponding :math:`{\mathit{xt}}_{\mathsf{i}}` in :math:`{{\mathit{xt}}_{\mathsf{i}}^\ast}`:
+
+   a. If :math:`{\mathit{externaddr}}` is not :ref:`valid <valid-val>` with type :math:`{\mathit{xt}}_{\mathsf{i}}`, then:
+
+      1) Fail.
 
 #. Let :math:`{{\mathit{functype}}^\ast}` be the function type sequence :math:`\epsilon`.
 
@@ -10690,7 +11198,6 @@ spectec 0.5 generator
 == IL Validation after pass sideconditions...
 == Translating to AL...
 == Prose Generation...
-Untranslated relation Module_ok: `|-%:%->%`(module, externtype*, externtype*)
 Limits_ok
 - the limits ([ n .. m? ]) is valid with k if:
   - n is less than or equal to k.
@@ -11430,8 +11937,98 @@ Externidx_ok/mem
   - C.MEMS[x] is mt.
 
 Export_ok
-- the export (EXPORT name externidx) is valid with the external type xt if:
+- the export (EXPORT name externidx) is valid with the name name and the external type xt if:
   - the external index externidx is valid with xt.
+
+Module_ok
+- the module (MODULE type* import* func* global* table* mem* elem* data^n start? export*) is valid with the module type ixt* -> xt* if:
+  - For all type in type*:
+    - the type type is valid with the function type ft'.
+  - ft'* is the concatenation of all such ft'.
+  - For all import in import*, and corresponding ixt in ixt*:
+    - Under the context { TYPES: ft'*; RETURN: ?() }, the import import is valid with the external type ixt.
+  - For all global in global*:
+    - Under the context C', the global global is valid with the global type gt.
+  - gt* is the concatenation of all such gt.
+  - For all table in table*:
+    - Under the context C', the table table is valid with the table type tt.
+  - tt* is the concatenation of all such tt.
+  - For all mem in mem*:
+    - Under the context C', the memory mem is valid with the memory type mt.
+  - mt* is the concatenation of all such mt.
+  - For all elem in elem*:
+    - Under the context C', the table segment elem is valid with the reference type rt.
+  - rt* is the concatenation of all such rt.
+  - For all data in data*:
+    - Under the context C', the memory segment data is valid.
+  - For all func in func*:
+    - the function func is valid with the function type ft.
+  - ft* is the concatenation of all such ft.
+  - If start is defined, then:
+    - the start function start is valid.
+  - For all export in export*, and corresponding xt in xt*:
+    - the export export is valid with the name nm and the external type xt.
+  - nm* is the concatenation of all such nm.
+  - |mt*| is less than or equal to 1.
+  - $disjoint_(`name, nm*) is true.
+  - the context C' is { TYPES: ft'*; FUNCS: ift* :: ft*; GLOBALS: igt*; TABLES: itt* :: tt*; MEMS: imt* :: mt*; RETURN: ?() }.
+  - the function type sequence ift* is $funcsxt(ixt*).
+  - the global type sequence igt* is $globalsxt(ixt*).
+  - the table type sequence itt* is $tablesxt(ixt*).
+  - the memory type sequence imt* is $memsxt(ixt*).
+
+Externaddr_ok
+- the external value externaddr is valid with the external type externtype if:
+  - Either:
+    - externaddr is (GLOBAL a).
+    - externtype is (GLOBAL globalinst.TYPE).
+    - the global instance s.GLOBALS[a] exists.
+    - s.GLOBALS[a] is globalinst.
+  - Or:
+    - externaddr is (MEM a).
+    - externtype is (MEM meminst.TYPE).
+    - the memory instance s.MEMS[a] exists.
+    - s.MEMS[a] is meminst.
+  - Or:
+    - externaddr is (TABLE a).
+    - externtype is (TABLE tableinst.TYPE).
+    - the table instance s.TABLES[a] exists.
+    - s.TABLES[a] is tableinst.
+  - Or:
+    - externaddr is (FUNC a).
+    - externtype is (FUNC funcinst.TYPE).
+    - the function instance s.FUNCS[a] exists.
+    - s.FUNCS[a] is funcinst.
+  - Or:
+    - externaddr is valid with the external type xt'.
+    - externtype is valid.
+    - xt' matches externtype.
+
+Externaddr_ok/global
+- the external value (GLOBAL a) is valid with the external type (GLOBAL globalinst.TYPE) if:
+  - the global instance s.GLOBALS[a] exists.
+  - s.GLOBALS[a] is globalinst.
+
+Externaddr_ok/mem
+- the external value (MEM a) is valid with the external type (MEM meminst.TYPE) if:
+  - the memory instance s.MEMS[a] exists.
+  - s.MEMS[a] is meminst.
+
+Externaddr_ok/table
+- the external value (TABLE a) is valid with the external type (TABLE tableinst.TYPE) if:
+  - the table instance s.TABLES[a] exists.
+  - s.TABLES[a] is tableinst.
+
+Externaddr_ok/func
+- the external value (FUNC a) is valid with the external type (FUNC funcinst.TYPE) if:
+  - the function instance s.FUNCS[a] exists.
+  - s.FUNCS[a] is funcinst.
+
+Externaddr_ok/sub
+- the external value externaddr is valid with the external type xt if:
+  - externaddr is valid with the external type xt'.
+  - xt is valid.
+  - xt' matches xt.
 
 Step_read/table.copy-trap-* x y
 1. Let z be the current state.
@@ -12330,6 +12927,12 @@ concat_ `X X*
   a. Return [].
 2. Let [w*] :: w'** be X*.
 3. Return w* :: $concat_(`X, w'**).
+
+disjoint_ `X X*
+1. If (X* = []), then:
+  a. Return true.
+2. Let [w] :: w'* be X*.
+3. Return (w is not contained in w'* /\ $disjoint_(`X, w'*)).
 
 setproduct2_ `X w_1 X*
 1. If (X* = []), then:
@@ -13639,51 +14242,54 @@ rundata (DATA byte* datamode) i
 6. Return instr* :: [(I32.CONST 0), (I32.CONST n), (MEMORY.INIT i), (DATA.DROP i)].
 
 instantiate s module externaddr*
-1. Let (MODULE type* import* func* global* table* mem* elem* data* start? export*) be module.
-2. Let functype* be [].
-3. For each type in type*, do:
+1. Let xt_I* -> xt_E* be $Module_ok(module).
+2. Let (MODULE type* import* func* global* table* mem* elem* data* start? export*) be module.
+3. If not $Externaddr_ok(externaddr, xt_I)*, then:
+  a. Fail.
+4. Let functype* be [].
+5. For each type in type*, do:
   a. Let (TYPE functype) be type.
   b. Append functype to the functype*.
-4. Let n_D be |data*|.
-5. Let n_E be |elem*|.
-6. Let n_F be |func*|.
-7. Let expr_G* be [].
-8. For each global in global*, do:
+6. Let n_D be |data*|.
+7. Let n_E be |elem*|.
+8. Let n_F be |func*|.
+9. Let expr_G* be [].
+10. For each global in global*, do:
   a. Let (GLOBAL globaltype expr_G) be global.
   b. Append expr_G to the expr_G*.
-9. Let expr_E** be [].
-10. For each elem in elem*, do:
+11. Let expr_E** be [].
+12. For each elem in elem*, do:
   a. Let (ELEM reftype expr_E* elemmode) be elem.
   b. Append expr_E* to the expr_E**.
-11. Let instr_D* be $concat_(`instr, $rundata(data*[j], j)^(j<n_D)).
-12. Let instr_E* be $concat_(`instr, $runelem(elem*[i], i)^(i<n_E)).
-13. Let moduleinst_init be { TYPES: functype*; FUNCS: $funcs(externaddr*) :: (|s.FUNCS| + i_F)^(i_F<n_F); GLOBALS: $globals(externaddr*) }.
-14. Let f_init be { MODULE: moduleinst_init }.
-15. Let z be (s, f_init).
-16. Push the frame (FRAME_ 0 { $frame(z) }) to the stack.
-17. Let val* be [].
-18. For each expr_G in expr_G*, do:
+13. Let instr_D* be $concat_(`instr, $rundata(data*[j], j)^(j<n_D)).
+14. Let instr_E* be $concat_(`instr, $runelem(elem*[i], i)^(i<n_E)).
+15. Let moduleinst_init be { TYPES: functype*; FUNCS: $funcs(externaddr*) :: (|s.FUNCS| + i_F)^(i_F<n_F); GLOBALS: $globals(externaddr*) }.
+16. Let f_init be { MODULE: moduleinst_init }.
+17. Let z be (s, f_init).
+18. Push the frame (FRAME_ 0 { $frame(z) }) to the stack.
+19. Let val* be [].
+20. For each expr_G in expr_G*, do:
   a. Let [val] be $Eval_expr(z, expr_G).
   b. Append val to the val*.
-19. Let ref** be [].
-20. For each expr_E* in expr_E**, do:
+21. Let ref** be [].
+22. For each expr_E* in expr_E**, do:
   a. Let ref* be [].
   b. For each expr_E in expr_E*, do:
     1) Let [ref] be $Eval_expr(z, expr_E).
     2) Append ref to the ref*.
   c. Append ref* to the ref**.
-21. Pop the frame (FRAME_ 0 { $frame(z) }) from the stack.
-22. Let moduleinst be $allocmodule(s, module, externaddr*, val*, ref**).
-23. Let f be { MODULE: moduleinst }.
-24. Push the frame (FRAME_ 0 { f }) to the stack.
-25. Execute the sequence instr_E*.
-26. Execute the sequence instr_D*.
-27. If start? is defined, then:
+23. Pop the frame (FRAME_ 0 { $frame(z) }) from the stack.
+24. Let moduleinst be $allocmodule(s, module, externaddr*, val*, ref**).
+25. Let f be { MODULE: moduleinst }.
+26. Push the frame (FRAME_ 0 { f }) to the stack.
+27. Execute the sequence instr_E*.
+28. Execute the sequence instr_D*.
+29. If start? is defined, then:
   a. Let ?((START x)) be start?.
   b. Let instr_0 be (CALL x).
   c. Execute the instruction instr_0.
-28. Pop the frame (FRAME_ 0 { f }) from the stack.
-29. Return f.MODULE.
+30. Pop the frame (FRAME_ 0 { f }) from the stack.
+31. Return f.MODULE.
 
 invoke s fa val^n
 1. Let f be { MODULE: {} }.

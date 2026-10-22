@@ -130,6 +130,8 @@ syntax memtype hint(desc "memory type") =
   limits
 syntax externtype hint(desc "external type") =
   | FUNC functype | GLOBAL globaltype | TABLE tabletype | MEM memtype
+syntax moduletype hint(desc "module type") =
+  externtype* -> externtype*
 
 var lim : limits
 var ft : functype

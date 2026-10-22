@@ -178,6 +178,8 @@ syntax datatype hint(desc "data type") =
   OK
 syntax externtype hint(desc "external type") =
   | FUNC functype | GLOBAL globaltype | TABLE tabletype | MEM memtype
+syntax moduletype hint(desc "module type") =
+  externtype* -> externtype*
 
 
 ;; Meta variables
