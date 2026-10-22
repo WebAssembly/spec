@@ -2,12 +2,13 @@
 // META: script=/wasm/jsapi/wasm-module-builder.js
 // META: timeout=long
 
-// Static limits
+// Compile-time limits
 const kJSEmbeddingMaxTypes = 1000000;
 const kJSEmbeddingMaxFunctions = 1000000;
 const kJSEmbeddingMaxImports = 1000000;
 const kJSEmbeddingMaxExports = 1000000;
 const kJSEmbeddingMaxGlobals = 1000000;
+const kJSEmbeddingMaxTags = 1000000;
 const kJSEmbeddingMaxDataSegments = 100000;
 
 const kJSEmbeddingMaxModuleSize = 1024 * 1024 * 1024; // = 1 GiB
@@ -16,11 +17,14 @@ const kJSEmbeddingMaxFunctionLocals = 50000;
 const kJSEmbeddingMaxFunctionParams = 1000;
 const kJSEmbeddingMaxFunctionReturns = 1000;
 const kJSEmbeddingMaxElementSegments = 10000000;
+const kJSEmbeddingMaxElementsInSegment = 10000000;
 const kJSEmbeddingMaxTables = 100000;
-const kJSEmbeddingMaxMemories = 1;
+const kJSEmbeddingMaxMemories = 100;
+const kJSEmbeddingMaxStructFields = 10000;
+const kJSEmbeddingMaxSubtypeDepth = 63;
 
-// Dynamic limits
-const kJSEmbeddingMaxTableSize = 10000000;
+// Runtime limits for memories and tables are primarily tested elsewhere.
+const kJSEmbeddingMaxTable32Size = 10000000;
 
 // This function runs the {gen} function with the values {min}, {limit}, and
 // {limit+1}, assuming that values below and including the limit should
@@ -170,6 +174,39 @@ testLimit("memories", 0, kJSEmbeddingMaxMemories, (builder, count) => {
   }
 });
 
+testLimit("tags", 0, kJSEmbeddingMaxTags, (builder, count) => {
+  const type = builder.addType(kSig_v_v);
+  for (let i = 0; i < count; i++) {
+    builder.addTag(type);
+  }
+});
+
+testLimit("struct fields", 0, kJSEmbeddingMaxStructFields, (builder, count) => {
+  const fields = [];
+  for (let i = 0; i < count; i++) {
+    fields.push(makeField(kWasmI32, true));
+  }
+  builder.addStruct(fields);
+});
+
+testLimit("subtype depth", 0, kJSEmbeddingMaxSubtypeDepth, (builder, count) => {
+  // Create a chain of struct subtypes: depth 0 (no supertype),
+  // then depth 1 through count (each extending the previous).
+  builder.addStruct([makeField(kWasmI32, true)], kNoSuperType, false);
+  for (let i = 1; i <= count; i++) {
+    builder.addStruct([makeField(kWasmI32, true)], i - 1, false);
+  }
+});
+
+testLimit("elements in element segment", 0, kJSEmbeddingMaxElementsInSegment,
+          (builder, count) => {
+            const type = builder.addType(kSig_v_v);
+            builder.addFunction(undefined, type).addBody([]);
+            builder.setTableBounds(1, 1);
+            const array = new Array(count).fill(0);
+            builder.addElementSegment(0, false, false, array);
+          });
+
 const instantiationShouldFail = 1;
 const instantiationShouldSucceed = 2;
 // This function tries to compile and instantiate the module produced
@@ -197,14 +234,13 @@ function testDynamicLimit(name, instantiationResult, imports, gen) {
       assert_throws(new RangeError(),
                     () => new WebAssembly.Instance(compiled_module, imports));
     } else if (instantiationResult == instantiationShouldSucceed) {
-       const instance = new WebAssembly.Instance(compiled_module, imports);
-       assertEquals(-1, instance.exports.grow());
+      const instance = new WebAssembly.Instance(compiled_module, imports);
+      assertEquals(-1, instance.exports.grow());
     }
   }, `Instantiate ${name} over limit`);
 
   promise_test(t => {
     if (instantiationResult == instantiationShouldFail) {
-      return Promise.resolve();
       return promise_rejects(t, new RangeError(),
                              WebAssembly.instantiate(buffer, imports));
     } else if (instantiationResult == instantiationShouldSucceed) {
@@ -217,12 +253,12 @@ function testDynamicLimit(name, instantiationResult, imports, gen) {
 }
 
 testDynamicLimit("initial table size", instantiationShouldFail, {}, (builder) => {
-  builder.setTableBounds(kJSEmbeddingMaxTableSize + 1, undefined);
+  builder.setTableBounds(kJSEmbeddingMaxTable32Size + 1, undefined);
 });
 
 testDynamicLimit(
     "maximum table size", instantiationShouldSucceed, {}, (builder) => {
-      builder.setTableBounds(1, kJSEmbeddingMaxTableSize + 1);
+      builder.setTableBounds(1, kJSEmbeddingMaxTable32Size + 1);
       // table.grow requires the reference types proposal. Instead we just
       // return -1.
       builder.addFunction("grow", kSig_i_v)
@@ -231,18 +267,6 @@ testDynamicLimit(
           ])
           .exportFunc();
     });
-
-test(() => {
-  assert_throws(
-      new RangeError(),
-      () => new WebAssembly.Table(
-          {element : "anyfunc", initial : kJSEmbeddingMaxTableSize + 1}));
-
-  let memory = new WebAssembly.Table(
-      {initial : 1, maximum : kJSEmbeddingMaxTableSize + 1, element: "anyfunc"});
-  assert_throws(new RangeError(),
-                () => memory.grow(kJSEmbeddingMaxTableSize));
-}, `Grow WebAssembly.Table object beyond the embedder-defined limit`);
 
 function testModuleSizeLimit(size, expectPass) {
   // We do not use `testLimit` here to avoid OOMs due to having multiple big
