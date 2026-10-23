@@ -1363,7 +1363,7 @@ let rec render_instr env algoname index depth instr =
         match render_expr env arity with
         | "" -> ""
         | s ->
-          sprintf "\n\n%s%s Let %s be the arity of %s"
+          sprintf "\n\n%s%s Let %s be the arity of %s."
             (repeat indent depth)
             (render_order index depth)
             s
@@ -1372,7 +1372,7 @@ let rec render_instr env algoname index depth instr =
       let rendered_arg =
         match atom_name with
         | "HANDLER_" ->
-          sprintf "\n\n%s%s Let %s be the catch handler of %s"
+          sprintf "\n\n%s%s Let %s be the catch handler of %s."
             (repeat indent depth)
             (render_order index depth)
             (render_expr env arg)

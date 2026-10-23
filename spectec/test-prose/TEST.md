@@ -1207,7 +1207,7 @@ The external value :math:`{\mathit{externaddr}}` is :ref:`valid <valid-val>` wit
 
 #. Let :math:`L` be the topmost :math:`\mathsf{label}`.
 
-#. Let :math:`n` be the arity of :math:`L`
+#. Let :math:`n` be the arity of :math:`L`.
 
 #. If :math:`{n'} = 0`, then:
 
@@ -1276,7 +1276,7 @@ The external value :math:`{\mathit{externaddr}}` is :ref:`valid <valid-val>` wit
 
 1. Let :math:`f` be the topmost :math:`\mathsf{frame}`.
 
-#. Let :math:`n` be the arity of :math:`f`
+#. Let :math:`n` be the arity of :math:`f`.
 
 #. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
@@ -1299,7 +1299,7 @@ The external value :math:`{\mathit{externaddr}}` is :ref:`valid <valid-val>` wit
 
    a. Let :math:`f` be the topmost :math:`\mathsf{frame}`.
 
-   #. Let :math:`n` be the arity of :math:`f`
+   #. Let :math:`n` be the arity of :math:`f`.
 
    #. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
@@ -6718,7 +6718,7 @@ The external value :math:`{\mathit{externaddr}}` is :ref:`valid <valid-val>` wit
 
 #. Let :math:`L` be the topmost :math:`\mathsf{label}`.
 
-#. Let :math:`n` be the arity of :math:`L`
+#. Let :math:`n` be the arity of :math:`L`.
 
 #. If :math:`{n'} = 0`, then:
 
@@ -6787,7 +6787,7 @@ The external value :math:`{\mathit{externaddr}}` is :ref:`valid <valid-val>` wit
 
 1. Let :math:`f` be the topmost :math:`\mathsf{frame}`.
 
-#. Let :math:`n` be the arity of :math:`f`
+#. Let :math:`n` be the arity of :math:`f`.
 
 #. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
@@ -6810,7 +6810,7 @@ The external value :math:`{\mathit{externaddr}}` is :ref:`valid <valid-val>` wit
 
    a. Let :math:`f` be the topmost :math:`\mathsf{frame}`.
 
-   #. Let :math:`n` be the arity of :math:`f`
+   #. Let :math:`n` be the arity of :math:`f`.
 
    #. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
@@ -19074,7 +19074,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`L` be the topmost :math:`\mathsf{label}`.
 
-#. Let :math:`n` be the arity of :math:`L`
+#. Let :math:`n` be the arity of :math:`L`.
 
 #. If :math:`l = 0`, then:
 
@@ -19173,9 +19173,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`H` be the topmost :math:`\mathsf{handler}`.
 
-#. Let :math:`n` be the arity of :math:`H`
+#. Let :math:`n` be the arity of :math:`H`.
 
-#. Let :math:`{{\mathit{catch}''}^\ast}` be the catch handler of :math:`H`
+#. Let :math:`{{\mathit{catch}''}^\ast}` be the catch handler of :math:`H`.
 
 #. If :math:`{{\mathit{catch}''}^\ast} = \epsilon`, then:
 
@@ -19723,7 +19723,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    a. Let :math:`L` be the topmost :math:`\mathsf{label}`.
 
-   #. Let :math:`n` be the arity of :math:`L`
+   #. Let :math:`n` be the arity of :math:`L`.
 
    #. If :math:`l = 0`, then:
 
@@ -19860,7 +19860,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. Let :math:`f` be the topmost :math:`\mathsf{frame}`.
 
-#. Let :math:`n` be the arity of :math:`f`
+#. Let :math:`n` be the arity of :math:`f`.
 
 #. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
@@ -19883,7 +19883,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    a. Let :math:`f` be the topmost :math:`\mathsf{frame}`.
 
-   #. Let :math:`n` be the arity of :math:`f`
+   #. Let :math:`n` be the arity of :math:`f`.
 
    #. Assert: Due to validation, there are at least :math:`n` values on the top of the stack.
 
@@ -20775,9 +20775,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
          a) Let :math:`H` be the topmost :math:`\mathsf{handler}`.
 
-         #) Let :math:`n` be the arity of :math:`H`
+         #) Let :math:`n` be the arity of :math:`H`.
 
-         #) Let :math:`{{\mathit{catch}''}^\ast}` be the catch handler of :math:`H`
+         #) Let :math:`{{\mathit{catch}''}^\ast}` be the catch handler of :math:`H`.
 
          #) If :math:`{{\mathit{catch}''}^\ast} = \epsilon`, then:
 
