@@ -19554,15 +19554,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ............................
 
 
-1. Let :math:`f` be the topmost :math:`\mathsf{frame}`.
-
-#. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{ref{.}func}~a)` from the stack.
 
-#. Assert: Due to validation, :math:`a < {|(s, f){.}\mathsf{funcs}|}`.
+#. Assert: Due to validation, :math:`a < {|s{.}\mathsf{funcs}|}`.
 
-#. Let :math:`{\mathit{fi}}` be the function instance :math:`(s, f){.}\mathsf{funcs}{}[a]`.
+#. Let :math:`{\mathit{fi}}` be the function instance :math:`s{.}\mathsf{funcs}{}[a]`.
 
 #. Assert: Due to validation, :math:`{\mathit{fi}}{.}\mathsf{code}` is some :math:`\mathbb{T}`.
 
@@ -22102,9 +22100,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       #) Enter the block :math:`{{\mathit{instr}}^\ast}` with the :math:`\mathsf{label}` :math:`L`.
 
-#. If :math:`a < {|(s, f){.}\mathsf{funcs}|}`, then:
+#. If :math:`a < {|s{.}\mathsf{funcs}|}`, then:
 
-   a. Let :math:`{\mathit{fi}}` be the function instance :math:`(s, f){.}\mathsf{funcs}{}[a]`.
+   a. Let :math:`{\mathit{fi}}` be the function instance :math:`s{.}\mathsf{funcs}{}[a]`.
 
    #. If :math:`{\mathit{fi}}{.}\mathsf{code}` is some :math:`\mathbb{T}`, then:
 
@@ -27085,88 +27083,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`f`.
 
 
-:math:`(s, f){.}\mathsf{module}{.}\mathsf{tags}`
-................................................
+:math:`s`
+.........
 
 
-1. Return :math:`f{.}\mathsf{module}{.}\mathsf{tags}`.
-
-
-:math:`(s, f){.}\mathsf{module}`
-................................
-
-
-1. Return :math:`f{.}\mathsf{module}`.
-
-
-:math:`(s, f){.}\mathsf{tags}`
-..............................
-
-
-1. Return :math:`s{.}\mathsf{tags}`.
-
-
-:math:`(s, f){.}\mathsf{globals}`
-.................................
-
-
-1. Return :math:`s{.}\mathsf{globals}`.
-
-
-:math:`(s, f){.}\mathsf{mems}`
-..............................
-
-
-1. Return :math:`s{.}\mathsf{mems}`.
-
-
-:math:`(s, f){.}\mathsf{tables}`
-................................
-
-
-1. Return :math:`s{.}\mathsf{tables}`.
-
-
-:math:`(s, f){.}\mathsf{funcs}`
-...............................
-
-
-1. Return :math:`s{.}\mathsf{funcs}`.
-
-
-:math:`(s, f){.}\mathsf{datas}`
-...............................
-
-
-1. Return :math:`s{.}\mathsf{datas}`.
-
-
-:math:`(s, f){.}\mathsf{elems}`
-...............................
-
-
-1. Return :math:`s{.}\mathsf{elems}`.
-
-
-:math:`(s, f){.}\mathsf{structs}`
-.................................
-
-
-1. Return :math:`s{.}\mathsf{structs}`.
-
-
-:math:`(s, f){.}\mathsf{arrays}`
-................................
-
-
-1. Return :math:`s{.}\mathsf{arrays}`.
-
-
-:math:`(s, f){.}\mathsf{exns}`
-..............................
-
-
-1. Return :math:`s{.}\mathsf{exns}`.
+1. Return :math:`z{.}\mathsf{store}`.
 
 
 :math:`f`
@@ -27176,18 +27097,95 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`z{.}\mathsf{frame}`.
 
 
+:math:`(s, f){.}\mathsf{module}{.}\mathsf{tags}`
+................................................
+
+
+1. Return :math:`f{.}\mathsf{module}{.}\mathsf{tags}`.
+
+
+:math:`z{.}\mathsf{module}`
+...........................
+
+
+1. Return :math:`f{.}\mathsf{module}`.
+
+
+:math:`z{.}\mathsf{tags}`
+.........................
+
+
+1. Return :math:`s{.}\mathsf{tags}`.
+
+
+:math:`z{.}\mathsf{globals}`
+............................
+
+
+1. Return :math:`s{.}\mathsf{globals}`.
+
+
+:math:`z{.}\mathsf{mems}`
+.........................
+
+
+1. Return :math:`s{.}\mathsf{mems}`.
+
+
+:math:`z{.}\mathsf{tables}`
+...........................
+
+
+1. Return :math:`s{.}\mathsf{tables}`.
+
+
+:math:`z{.}\mathsf{funcs}`
+..........................
+
+
+1. Return :math:`s{.}\mathsf{funcs}`.
+
+
+:math:`z{.}\mathsf{datas}`
+..........................
+
+
+1. Return :math:`s{.}\mathsf{datas}`.
+
+
+:math:`z{.}\mathsf{elems}`
+..........................
+
+
+1. Return :math:`s{.}\mathsf{elems}`.
+
+
+:math:`z{.}\mathsf{structs}`
+............................
+
+
+1. Return :math:`s{.}\mathsf{structs}`.
+
+
+:math:`z{.}\mathsf{arrays}`
+...........................
+
+
+1. Return :math:`s{.}\mathsf{arrays}`.
+
+
+:math:`z{.}\mathsf{exns}`
+.........................
+
+
+1. Return :math:`s{.}\mathsf{exns}`.
+
+
 :math:`z{.}\mathsf{types}{}[x]`
 ...............................
 
 
 1. Return :math:`f{.}\mathsf{module}{.}\mathsf{types}{}[x]`.
-
-
-:math:`s`
-.........
-
-
-1. Return :math:`z{.}\mathsf{store}`.
 
 
 :math:`z{.}\mathsf{tags}{}[x]`
@@ -31072,22 +31070,21 @@ Step_read/memory.init-oob-* x y
   a. Trap.
 
 Step/call_ref-hostfunc-* yy
-1. Let (FRAME_ _ { f }) be the topmost FRAME_.
-2. Assert: Due to validation, a value is on the top of the stack.
-3. Pop the value (REF.FUNC_ADDR a) from the stack.
-4. Assert: Due to validation, (a < |$funcinst((s, f))|).
-5. Let fi be $funcinst((s, f))[a].
-6. Assert: Due to validation, fi.CODE is some _HOSTFUNC.
-7. Let (_HOSTFUNC hf) be fi.CODE.
-8. Assert: Due to validation, $Expand(fi.TYPE) is some ->.
-9. Let (FUNC t_1^n -> t_2^m) be $Expand(fi.TYPE).
-10. Assert: Due to validation, there are at least n values on the top of the stack.
-11. Pop the values val^n from the stack.
-12. Assert: Due to validation, (|$hostcall((_HOSTFUNC hf), s, val^n)| > 0).
-13. If an element of $hostcall((_HOSTFUNC hf), s, val^n) is some RES, then:
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop the value (REF.FUNC_ADDR a) from the stack.
+3. Assert: Due to validation, (a < |s.FUNCS|).
+4. Let fi be s.FUNCS[a].
+5. Assert: Due to validation, fi.CODE is some _HOSTFUNC.
+6. Let (_HOSTFUNC hf) be fi.CODE.
+7. Assert: Due to validation, $Expand(fi.TYPE) is some ->.
+8. Let (FUNC t_1^n -> t_2^m) be $Expand(fi.TYPE).
+9. Assert: Due to validation, there are at least n values on the top of the stack.
+10. Pop the values val^n from the stack.
+11. Assert: Due to validation, (|$hostcall((_HOSTFUNC hf), s, val^n)| > 0).
+12. If an element of $hostcall((_HOSTFUNC hf), s, val^n) is some RES, then:
   a. Let (RES s' result) be an element of $hostcall((_HOSTFUNC hf), s, val^n).
   b. Execute the sequence $lift_result(result).
-14. If BOT is contained in $hostcall((_HOSTFUNC hf), s, val^n), then:
+13. If BOT is contained in $hostcall((_HOSTFUNC hf), s, val^n), then:
   a. Push the values val^n to the stack.
   b. Push the value (REF.FUNC_ADDR a) to the stack.
   c. Execute the instruction (CALL_REF yy).
@@ -32283,8 +32280,8 @@ Step/call_ref yy
     8) Let f be { LOCALS: ?(val)^n :: $default_(t)*; MODULE: fi.MODULE }.
     9) Push the frame (FRAME_ m { f }) to the stack.
     10) Enter instr* with label (LABEL_ m { [] }).
-8. If (a < |$funcinst((s, f))|), then:
-  a. Let fi be $funcinst((s, f))[a].
+8. If (a < |s.FUNCS|), then:
+  a. Let fi be s.FUNCS[a].
   b. If fi.CODE is some _HOSTFUNC, then:
     1) Let (_HOSTFUNC hf) be fi.CODE.
     2) Assert: Due to validation, $Expand(fi.TYPE) is some ->.
@@ -34624,50 +34621,50 @@ store (s, f)
 frame (s, f)
 1. Return f.
 
-tagaddr (s, f)
-1. Return f.MODULE.TAGS.
-
-moduleinst (s, f)
-1. Return f.MODULE.
-
-taginst (s, f)
-1. Return s.TAGS.
-
-globalinst (s, f)
-1. Return s.GLOBALS.
-
-meminst (s, f)
-1. Return s.MEMS.
-
-tableinst (s, f)
-1. Return s.TABLES.
-
-funcinst (s, f)
-1. Return s.FUNCS.
-
-datainst (s, f)
-1. Return s.DATAS.
-
-eleminst (s, f)
-1. Return s.ELEMS.
-
-structinst (s, f)
-1. Return s.STRUCTS.
-
-arrayinst (s, f)
-1. Return s.ARRAYS.
-
-exninst (s, f)
-1. Return s.EXNS.
+sof z
+1. Return $store(z).
 
 fof z
 1. Return $frame(z).
 
+tagaddr (s, f)
+1. Return f.MODULE.TAGS.
+
+moduleinst z
+1. Return $fof(z).MODULE.
+
+taginst z
+1. Return $sof(z).TAGS.
+
+globalinst z
+1. Return $sof(z).GLOBALS.
+
+meminst z
+1. Return $sof(z).MEMS.
+
+tableinst z
+1. Return $sof(z).TABLES.
+
+funcinst z
+1. Return $sof(z).FUNCS.
+
+datainst z
+1. Return $sof(z).DATAS.
+
+eleminst z
+1. Return $sof(z).ELEMS.
+
+structinst z
+1. Return $sof(z).STRUCTS.
+
+arrayinst z
+1. Return $sof(z).ARRAYS.
+
+exninst z
+1. Return $sof(z).EXNS.
+
 type z x
 1. Return $fof(z).MODULE.TYPES[x].
-
-sof z
-1. Return $store(z).
 
 tag z x
 1. Return $sof(z).TAGS[$fof(z).MODULE.TAGS[x]].

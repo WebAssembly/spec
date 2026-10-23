@@ -222,6 +222,12 @@ def $frame(state) : frame             hint(show %.FRAME) hint(macro "Z%")
 def $store((s; f)) = s
 def $frame((s; f)) = f
 
+def $sof(state) : store  hint(show s)
+def $fof(state) : frame  hint(show f)
+
+def $sof(z) = $store(z)
+def $fof(z) = $frame(z)
+
 def $tagaddr(state) : tagaddr*        hint(show %.MODULE.TAGS) hint(macro "Z%")
 def $tagaddr((s; f)) = f.MODULE.TAGS
 
@@ -237,17 +243,17 @@ def $structinst(state) : structinst*  hint(show %.STRUCTS) hint(macro "Z%")
 def $arrayinst(state) : arrayinst*    hint(show %.ARRAYS)  hint(macro "Z%")
 def $exninst(state) : exninst*        hint(show %.EXNS)    hint(macro "Z%")
 
-def $moduleinst((s; f)) = f.MODULE
-def $taginst((s; f)) = s.TAGS
-def $globalinst((s; f)) = s.GLOBALS
-def $meminst((s; f)) = s.MEMS
-def $tableinst((s; f)) = s.TABLES
-def $funcinst((s; f)) = s.FUNCS
-def $datainst((s; f)) = s.DATAS
-def $eleminst((s; f)) = s.ELEMS
-def $structinst((s; f)) = s.STRUCTS
-def $arrayinst((s; f)) = s.ARRAYS
-def $exninst((s; f)) = s.EXNS
+def $moduleinst(z) = $fof(z).MODULE
+def $taginst(z) = $sof(z).TAGS
+def $globalinst(z) = $sof(z).GLOBALS
+def $meminst(z) = $sof(z).MEMS
+def $tableinst(z) = $sof(z).TABLES
+def $funcinst(z) = $sof(z).FUNCS
+def $datainst(z) = $sof(z).DATAS
+def $eleminst(z) = $sof(z).ELEMS
+def $structinst(z) = $sof(z).STRUCTS
+def $arrayinst(z) = $sof(z).ARRAYS
+def $exninst(z) = $sof(z).EXNS
 
 
 def $type(state, typeidx) : deftype         hint(show %.TYPES[%])   hint(macro "Z%")
@@ -259,12 +265,6 @@ def $func(state, funcidx) : funcinst        hint(show %.FUNCS[%])   hint(macro "
 def $data(state, dataidx) : datainst        hint(show %.DATAS[%])   hint(macro "Z%")
 def $elem(state, tableidx) : eleminst       hint(show %.ELEMS[%])   hint(macro "Z%")
 def $local(state, localidx) : val?          hint(show %.LOCALS[%])  hint(macro "Z%")
-
-def $sof(state) : store  hint(show s)
-def $fof(state) : frame  hint(show f)
-
-def $sof(z) = $store(z)
-def $fof(z) = $frame(z)
 
 def $type(z, x) = $fof(z).MODULE.TYPES[x]
 def $tag(z, x) = $sof(z).TAGS[$fof(z).MODULE.TAGS[x]]

@@ -655,6 +655,11 @@ Conventions
 
 * The following shorthands are defined for accessing a state ${:z = (s; f)}:
 
+  - ${definition: moduleinst}
+  - ${definition: funcinst}
+  - ${definition: structinst}
+  - ${definition: arrayinst}
+  - ${definition: exninst}
   - ${definition: type}
   - ${definition: tag}
   - ${definition: global}

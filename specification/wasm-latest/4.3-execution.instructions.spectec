@@ -184,7 +184,7 @@ rule Step/call_ref-func:
 rule Step/call_ref-hostfunc-res:
   s; f; val^n (REF.FUNC_ADDR a) (CALL_REF yy)  ~>  s'; f; $lift_result(result)
   ----
-  -- if $funcinst((s; f))[a] = fi
+  -- if s.FUNCS[a] = fi
   -- Expand: fi.TYPE ~~ FUNC t_1^n -> t_2^m
   -- if fi.CODE = _HOSTFUNC hf
   -- if RES s' result <- $hostcall(_HOSTFUNC hf, s, val^n)
@@ -192,7 +192,7 @@ rule Step/call_ref-hostfunc-res:
 rule Step/call_ref-hostfunc-div:
   s; f; val^n (REF.FUNC_ADDR a) (CALL_REF yy)  ~>  s; f; val^n (REF.FUNC_ADDR a) (CALL_REF yy)
   ----
-  -- if $funcinst((s; f))[a] = fi
+  -- if s.FUNCS[a] = fi
   -- Expand: fi.TYPE ~~ FUNC t_1^n -> t_2^m
   -- if fi.CODE = _HOSTFUNC hf
   -- if BOT <- $hostcall(_HOSTFUNC hf, s, val^n)
