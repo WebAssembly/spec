@@ -72,28 +72,12 @@ Module Instances
 
 $${syntax: moduleinst}
 
-.. _def-moduleinst:
-
-$${definition-prose: moduleinst}
-
-\
-
-$${definition: moduleinst}
-
 .. _syntax-funcinst:
 
 Function Instances
 ~~~~~~~~~~~~~~~~~~
 
 $${syntax: funcinst}
-
-.. _def-funcinst:
-
-$${definition-prose: funcinst}
-
-\
-
-$${definition: funcinst}
 
 .. _syntax-tableinst:
 
@@ -102,28 +86,12 @@ Table Instances
 
 $${syntax: tableinst}
 
-.. _def-tableinst:
-
-$${definition-prose: tableinst}
-
-\
-
-$${definition: tableinst}
-
 .. _syntax-meminst:
 
 Memory Instances
 ~~~~~~~~~~~~~~~~
 
 $${syntax: meminst}
-
-.. _def-meminst:
-
-$${definition-prose: meminst}
-
-\
-
-$${definition: meminst}
 
 .. _syntax-globalinst:
 
@@ -132,14 +100,6 @@ Global Instances
 
 $${syntax: globalinst}
 
-.. _def-globalinst:
-
-$${definition-prose: globalinst}
-
-\
-
-$${definition: globalinst}
-
 .. _syntax-eleminst:
 
 Element Instances
@@ -147,28 +107,12 @@ Element Instances
 
 $${syntax: eleminst}
 
-.. _def-eleminst:
-
-$${definition-prose: eleminst}
-
-\
-
-$${definition: eleminst}
-
 .. _syntax-datainst:
 
 Data Instances
 ~~~~~~~~~~~~~~
 
 $${syntax: datainst}
-
-.. _def-datainst:
-
-$${definition-prose: datainst}
-
-\
-
-$${definition: datainst}
 
 .. _syntax-exportinst:
 
@@ -231,22 +175,6 @@ $${syntax+:
   fieldval
   packval
 }
-
-.. _def-arrayinst:
-
-$${definition-prose: arrayinst}
-
-\
-
-$${definition: arrayinst}
-
-.. _def-structinst:
-
-$${definition-prose: structinst}
-
-\
-
-$${definition: structinst}
 
 .. _exec-runtime-stack:
 

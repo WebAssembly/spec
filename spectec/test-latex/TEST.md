@@ -9258,6 +9258,18 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
+z & = & z{.}\mathsf{store} \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
+z & = & z{.}\mathsf{frame} \\
+\end{array}
+$$
+
+$$
+\begin{array}[t]{@{}lcl@{}l@{}}
 s & = & z{.}\mathsf{store} \\
 \end{array}
 $$
@@ -9270,77 +9282,33 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-(s ; f){.}\mathsf{module}{.}\mathsf{tags} & = & f{.}\mathsf{module}{.}\mathsf{tags} \\
-\end{array}
-$$
-
-$$
-\begin{array}[t]{@{}lcl@{}l@{}}
 z{.}\mathsf{module} & = & f{.}\mathsf{module} \\
 \end{array}
 $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-z{.}\mathsf{tags} & = & s{.}\mathsf{tags} \\
+z{.}\mathsf{funcs}{}[a] & = & s{.}\mathsf{funcs}{}[a] \\
 \end{array}
 $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-z{.}\mathsf{globals} & = & s{.}\mathsf{globals} \\
+z{.}\mathsf{structs}{}[a] & = & s{.}\mathsf{structs}{}[a] \\
 \end{array}
 $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-z{.}\mathsf{mems} & = & s{.}\mathsf{mems} \\
+z{.}\mathsf{arrays}{}[a] & = & s{.}\mathsf{arrays}{}[a] \\
 \end{array}
 $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-z{.}\mathsf{tables} & = & s{.}\mathsf{tables} \\
+z{.}\mathsf{exns}{}[a] & = & s{.}\mathsf{exns}{}[a] \\
 \end{array}
 $$
-
-$$
-\begin{array}[t]{@{}lcl@{}l@{}}
-z{.}\mathsf{funcs} & = & s{.}\mathsf{funcs} \\
-\end{array}
-$$
-
-$$
-\begin{array}[t]{@{}lcl@{}l@{}}
-z{.}\mathsf{datas} & = & s{.}\mathsf{datas} \\
-\end{array}
-$$
-
-$$
-\begin{array}[t]{@{}lcl@{}l@{}}
-z{.}\mathsf{elems} & = & s{.}\mathsf{elems} \\
-\end{array}
-$$
-
-$$
-\begin{array}[t]{@{}lcl@{}l@{}}
-z{.}\mathsf{structs} & = & s{.}\mathsf{structs} \\
-\end{array}
-$$
-
-$$
-\begin{array}[t]{@{}lcl@{}l@{}}
-z{.}\mathsf{arrays} & = & s{.}\mathsf{arrays} \\
-\end{array}
-$$
-
-$$
-\begin{array}[t]{@{}lcl@{}l@{}}
-z{.}\mathsf{exns} & = & s{.}\mathsf{exns} \\
-\end{array}
-$$
-
-\vspace{1ex}
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
@@ -9462,19 +9430,19 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-z{}[{.}\mathsf{structs} \mathrel{{=}{\oplus}} {{\mathit{si}}^\ast}] & = & s{}[{.}\mathsf{structs} \mathrel{{=}{\oplus}} {{\mathit{si}}^\ast}] ; f \\
+z{}[{.}\mathsf{structs} \mathrel{{=}{\oplus}} {\mathit{si}}] & = & s{}[{.}\mathsf{structs} \mathrel{{=}{\oplus}} {\mathit{si}}] ; f \\
 \end{array}
 $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-z{}[{.}\mathsf{arrays} \mathrel{{=}{\oplus}} {{\mathit{ai}}^\ast}] & = & s{}[{.}\mathsf{arrays} \mathrel{{=}{\oplus}} {{\mathit{ai}}^\ast}] ; f \\
+z{}[{.}\mathsf{arrays} \mathrel{{=}{\oplus}} {\mathit{ai}}] & = & s{}[{.}\mathsf{arrays} \mathrel{{=}{\oplus}} {\mathit{ai}}] ; f \\
 \end{array}
 $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-z{}[{.}\mathsf{exns} \mathrel{{=}{\oplus}} {{\mathit{exn}}^\ast}] & = & s{}[{.}\mathsf{exns} \mathrel{{=}{\oplus}} {{\mathit{exn}}^\ast}] ; f \\
+z{}[{.}\mathsf{exns} \mathrel{{=}{\oplus}} {\mathit{exn}}] & = & s{}[{.}\mathsf{exns} \mathrel{{=}{\oplus}} {\mathit{exn}}] ; f \\
 \end{array}
 $$
 

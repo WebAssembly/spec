@@ -22155,7 +22155,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`{\mathit{exn}}` be the exception instance :math:`\{ \mathsf{tag}~z{.}\mathsf{module}{.}\mathsf{tags}{}[x],\;\allowbreak \mathsf{fields}~{{\mathit{val}}^{n}} \}`.
 
-#. Append :math:`{\mathit{exn}}` to :math:`z{.}\mathsf{exns}`.
+#. Append :math:`{\mathit{exn}}` to :math:`s{.}\mathsf{exns}`.
 
 #. Push the value :math:`(\mathsf{ref{.}exn}~a)` to the stack.
 
@@ -22354,7 +22354,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Push the value :math:`({\mathit{at}}{.}\mathsf{const}~{|z{.}\mathsf{mems}{}[x]{.}\mathsf{bytes}|} / (64 \, {\mathrm{Ki}}))` to the stack.
 
-   #. Replace :math:`z{.}\mathsf{mems}{}[x]` with :math:`{\mathit{mi}}`.
+   #. Replace :math:`s{.}\mathsf{mems}{}[x]` with :math:`{\mathit{mi}}`.
 
 #. Or:
 
@@ -22392,7 +22392,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Push the value :math:`(\mathsf{ref{.}struct}~a)` to the stack.
 
-#. Append :math:`{\mathit{si}}` to :math:`z{.}\mathsf{structs}`.
+#. Append :math:`{\mathit{si}}` to :math:`s{.}\mathsf{structs}`.
 
 
 :math:`\mathsf{struct{.}set}~x~i`
@@ -22425,7 +22425,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Assert: Due to validation, :math:`i < {|{{\mathit{zt}}^\ast}|}`.
 
-#. Replace :math:`z{.}\mathsf{structs}{}[a]{.}\mathsf{fields}{}[i]` with :math:`{{\mathrm{pack}}}_{{{\mathit{zt}}^\ast}{}[i]}({\mathit{val}})`.
+#. Replace :math:`s{.}\mathsf{structs}{}[a]{.}\mathsf{fields}{}[i]` with :math:`{{\mathrm{pack}}}_{{{\mathit{zt}}^\ast}{}[i]}({\mathit{val}})`.
 
 
 :math:`\mathsf{array{.}new\_fixed}~x~n`
@@ -22450,7 +22450,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Push the value :math:`(\mathsf{ref{.}array}~a)` to the stack.
 
-#. Append :math:`{\mathit{ai}}` to :math:`z{.}\mathsf{arrays}`.
+#. Append :math:`{\mathit{ai}}` to :math:`s{.}\mathsf{arrays}`.
 
 
 :math:`\mathsf{array{.}set}~x`
@@ -22489,7 +22489,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Let :math:`({\mathsf{mut}^?}~{\mathit{zt}})` be the destructuring of :math:`{\mathit{fieldtype}}_0`.
 
-#. Replace :math:`z{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}{}[i]` with :math:`{{\mathrm{pack}}}_{{\mathit{zt}}}({\mathit{val}})`.
+#. Replace :math:`s{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}{}[i]` with :math:`{{\mathrm{pack}}}_{{\mathit{zt}}}({\mathit{val}})`.
 
 
 :math:`{\mathrm{min}}(i, j)`
@@ -27083,6 +27083,20 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`f`.
 
 
+:math:`z`
+.........
+
+
+1. Return :math:`z{.}\mathsf{store}`.
+
+
+:math:`z`
+.........
+
+
+1. Return :math:`z{.}\mathsf{frame}`.
+
+
 :math:`s`
 .........
 
@@ -27097,13 +27111,6 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`z{.}\mathsf{frame}`.
 
 
-:math:`(s, f){.}\mathsf{module}{.}\mathsf{tags}`
-................................................
-
-
-1. Return :math:`f{.}\mathsf{module}{.}\mathsf{tags}`.
-
-
 :math:`z{.}\mathsf{module}`
 ...........................
 
@@ -27111,74 +27118,32 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`f{.}\mathsf{module}`.
 
 
-:math:`z{.}\mathsf{tags}`
-.........................
+:math:`z{.}\mathsf{funcs}{}[a]`
+...............................
 
 
-1. Return :math:`s{.}\mathsf{tags}`.
+1. Return :math:`s{.}\mathsf{funcs}{}[a]`.
 
 
-:math:`z{.}\mathsf{globals}`
-............................
+:math:`z{.}\mathsf{structs}{}[a]`
+.................................
 
 
-1. Return :math:`s{.}\mathsf{globals}`.
+1. Return :math:`s{.}\mathsf{structs}{}[a]`.
 
 
-:math:`z{.}\mathsf{mems}`
-.........................
+:math:`z{.}\mathsf{arrays}{}[a]`
+................................
 
 
-1. Return :math:`s{.}\mathsf{mems}`.
+1. Return :math:`s{.}\mathsf{arrays}{}[a]`.
 
 
-:math:`z{.}\mathsf{tables}`
-...........................
+:math:`z{.}\mathsf{exns}{}[a]`
+..............................
 
 
-1. Return :math:`s{.}\mathsf{tables}`.
-
-
-:math:`z{.}\mathsf{funcs}`
-..........................
-
-
-1. Return :math:`s{.}\mathsf{funcs}`.
-
-
-:math:`z{.}\mathsf{datas}`
-..........................
-
-
-1. Return :math:`s{.}\mathsf{datas}`.
-
-
-:math:`z{.}\mathsf{elems}`
-..........................
-
-
-1. Return :math:`s{.}\mathsf{elems}`.
-
-
-:math:`z{.}\mathsf{structs}`
-............................
-
-
-1. Return :math:`s{.}\mathsf{structs}`.
-
-
-:math:`z{.}\mathsf{arrays}`
-...........................
-
-
-1. Return :math:`s{.}\mathsf{arrays}`.
-
-
-:math:`z{.}\mathsf{exns}`
-.........................
-
-
-1. Return :math:`s{.}\mathsf{exns}`.
+1. Return :math:`s{.}\mathsf{exns}{}[a]`.
 
 
 :math:`z{.}\mathsf{types}{}[x]`
@@ -27314,25 +27279,37 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Replace :math:`s{.}\mathsf{arrays}{}[a]{.}\mathsf{fields}{}[i]` with :math:`{\mathit{fv}}`.
 
 
-:math:`z{}[{.}\mathsf{structs} \mathrel{{=}{\oplus}} {{\mathit{si}}^\ast}]`
-...........................................................................
+:math:`z{}[{.}\mathsf{structs} \mathrel{{=}{\oplus}} {\mathit{si}}]`
+....................................................................
 
 
-1. Append :math:`{{\mathit{si}}^\ast}` to :math:`s{.}\mathsf{structs}`.
+1. Let :math:`a` be the frame :math:`f`.
+
+#. Append :math:`{\mathit{si}}` to :math:`s{.}\mathsf{structs}`.
+
+#. Return :math:`a`.
 
 
-:math:`z{}[{.}\mathsf{arrays} \mathrel{{=}{\oplus}} {{\mathit{ai}}^\ast}]`
-..........................................................................
+:math:`z{}[{.}\mathsf{arrays} \mathrel{{=}{\oplus}} {\mathit{ai}}]`
+...................................................................
 
 
-1. Append :math:`{{\mathit{ai}}^\ast}` to :math:`s{.}\mathsf{arrays}`.
+1. Let :math:`a` be the frame :math:`f`.
+
+#. Append :math:`{\mathit{ai}}` to :math:`s{.}\mathsf{arrays}`.
+
+#. Return :math:`a`.
 
 
-:math:`z{}[{.}\mathsf{exns} \mathrel{{=}{\oplus}} {{\mathit{exn}}^\ast}]`
-.........................................................................
+:math:`z{}[{.}\mathsf{exns} \mathrel{{=}{\oplus}} {\mathit{exn}}]`
+..................................................................
 
 
-1. Append :math:`{{\mathit{exn}}^\ast}` to :math:`s{.}\mathsf{exns}`.
+1. Let :math:`a` be the frame :math:`f`.
+
+#. Append :math:`{\mathit{exn}}` to :math:`s{.}\mathsf{exns}`.
+
+#. Return :math:`a`.
 
 
 :math:`{\mathrm{growtable}}({\mathit{tableinst}}, n, r)`
@@ -30867,9 +30844,9 @@ Step_read/return_call_ref-frame-* yy
   a. Trap.
 6. Assert: Due to validation, val'' is some REF.FUNC_ADDR.
 7. Let (REF.FUNC_ADDR a) be val''.
-8. Assert: Due to validation, (a < |$funcinst(z)|).
-9. Assert: Due to validation, $Expand($funcinst(z)[a].TYPE) is some ->.
-10. Let (FUNC t_1^n -> t_2^m) be $Expand($funcinst(z)[a].TYPE).
+8. Assert: Due to validation, (a < |$s(z).FUNCS|).
+9. Assert: Due to validation, $Expand($s(z).FUNCS[a].TYPE) is some ->.
+10. Let (FUNC t_1^n -> t_2^m) be $Expand($s(z).FUNCS[a].TYPE).
 11. Assert: Due to validation, there are at least n values on the top of the stack.
 12. Pop the values val^n from the stack.
 13. Pop all values val'* from the top of the stack.
@@ -30896,7 +30873,7 @@ Step_read/throw_ref-handler-*
   a. Pop the handler (HANDLER_ _ { _ }) from the stack.
   b. Push the value (REF.EXN_ADDR a) to the stack.
   c. Execute the instruction THROW_REF.
-7. Else if (a >= |$exninst(z)|), then:
+7. Else if (a >= |$s(z).EXNS|), then:
   a. Let [catch_0] :: catch'* be catch''*.
   b. If catch_0 is some CATCH_ALL, then:
     1) Let (CATCH_ALL l) be catch_0.
@@ -30914,11 +30891,11 @@ Step_read/throw_ref-handler-*
     3) Push the value (REF.EXN_ADDR a) to the stack.
     4) Execute the instruction (BR l).
 8. Else:
-  a. Let val* be $exninst(z)[a].FIELDS.
+  a. Let val* be $s(z).EXNS[a].FIELDS.
   b. Let [catch_0] :: catch'* be catch''*.
   c. If catch_0 is some CATCH, then:
     1) Let (CATCH x l) be catch_0.
-    2) If ((x < |$tagaddr(z)|) /\ ($exninst(z)[a].TAG = $tagaddr(z)[x])), then:
+    2) If ((x < |$f(z).MODULE.TAGS|) /\ ($s(z).EXNS[a].TAG = $f(z).MODULE.TAGS[x])), then:
       a) Pop the handler (HANDLER_ _ { _ }) from the stack.
       b) Push the values val* to the stack.
       c) Execute the instruction (BR l).
@@ -30930,7 +30907,7 @@ Step_read/throw_ref-handler-*
       e) Execute the instruction THROW_REF.
   d. Else if catch_0 is some CATCH_REF, then:
     1) Let (CATCH_REF x l) be catch_0.
-    2) If ((x >= |$tagaddr(z)|) \/ ($exninst(z)[a].TAG =/= $tagaddr(z)[x])), then:
+    2) If ((x >= |$f(z).MODULE.TAGS|) \/ ($s(z).EXNS[a].TAG =/= $f(z).MODULE.TAGS[x])), then:
       a) Let [catch] :: catch'* be catch''*.
       b) Pop the handler (HANDLER_ _ { _ }) from the stack.
       c) Push the handler (HANDLER_ n { catch'* }) to the stack.
@@ -31575,19 +31552,19 @@ Step_read/br_on_cast_fail l rt_1 rt_2
 
 Step_read/call x
 1. Let z be the current state.
-2. Assert: Due to validation, (x < |$moduleinst(z).FUNCS|).
-3. Let a be $moduleinst(z).FUNCS[x].
-4. Assert: Due to validation, (a < |$funcinst(z)|).
+2. Assert: Due to validation, (x < |$f(z).MODULE.FUNCS|).
+3. Let a be $f(z).MODULE.FUNCS[x].
+4. Assert: Due to validation, (a < |$s(z).FUNCS|).
 5. Push the value (REF.FUNC_ADDR a) to the stack.
-6. Execute the instruction (CALL_REF $funcinst(z)[a].TYPE).
+6. Execute the instruction (CALL_REF $s(z).FUNCS[a].TYPE).
 
 Step_read/return_call x
 1. Let z be the current state.
-2. Assert: Due to validation, (x < |$moduleinst(z).FUNCS|).
-3. Let a be $moduleinst(z).FUNCS[x].
-4. Assert: Due to validation, (a < |$funcinst(z)|).
+2. Assert: Due to validation, (x < |$f(z).MODULE.FUNCS|).
+3. Let a be $f(z).MODULE.FUNCS[x].
+4. Assert: Due to validation, (a < |$s(z).FUNCS|).
 5. Push the value (REF.FUNC_ADDR a) to the stack.
-6. Execute the instruction (RETURN_CALL_REF $funcinst(z)[a].TYPE).
+6. Execute the instruction (RETURN_CALL_REF $s(z).FUNCS[a].TYPE).
 
 Step_read/return_call_ref yy
 1. Let z be the current state.
@@ -31609,9 +31586,9 @@ Step_read/return_call_ref yy
     1) Trap.
   e. Assert: Due to validation, val'' is some REF.FUNC_ADDR.
   f. Let (REF.FUNC_ADDR a) be val''.
-  g. Assert: Due to validation, (a < |$funcinst(z)|).
-  h. Assert: Due to validation, $Expand($funcinst(z)[a].TYPE) is some ->.
-  i. Let (FUNC t_1^n -> t_2^m) be $Expand($funcinst(z)[a].TYPE).
+  g. Assert: Due to validation, (a < |$s(z).FUNCS|).
+  h. Assert: Due to validation, $Expand($s(z).FUNCS[a].TYPE) is some ->.
+  i. Let (FUNC t_1^n -> t_2^m) be $Expand($s(z).FUNCS[a].TYPE).
   j. Assert: Due to validation, there are at least n values on the top of the stack.
   k. Pop the values val^n from the stack.
   l. Pop all values val'* from the top of the stack.
@@ -31648,7 +31625,7 @@ Step_read/throw_ref
       a) Pop the handler (HANDLER_ _ { _ }) from the stack.
       b) Push the value (REF.EXN_ADDR a) to the stack.
       c) Execute the instruction THROW_REF.
-    3) Else if (a >= |$exninst(z)|), then:
+    3) Else if (a >= |$s(z).EXNS|), then:
       a) Let [catch_0] :: catch'* be catch''*.
       b) If catch_0 is some CATCH_ALL, then:
         1. Let (CATCH_ALL l) be catch_0.
@@ -31666,11 +31643,11 @@ Step_read/throw_ref
         3. Push the value (REF.EXN_ADDR a) to the stack.
         4. Execute the instruction (BR l).
     4) Else:
-      a) Let val* be $exninst(z)[a].FIELDS.
+      a) Let val* be $s(z).EXNS[a].FIELDS.
       b) Let [catch_0] :: catch'* be catch''*.
       c) If catch_0 is some CATCH, then:
         1. Let (CATCH x l) be catch_0.
-        2. If ((x < |$tagaddr(z)|) /\ ($exninst(z)[a].TAG = $tagaddr(z)[x])), then:
+        2. If ((x < |$f(z).MODULE.TAGS|) /\ ($s(z).EXNS[a].TAG = $f(z).MODULE.TAGS[x])), then:
           a. Pop the handler (HANDLER_ _ { _ }) from the stack.
           b. Push the values val* to the stack.
           c. Execute the instruction (BR l).
@@ -31682,7 +31659,7 @@ Step_read/throw_ref
           e. Execute the instruction THROW_REF.
       d) Else if catch_0 is some CATCH_REF, then:
         1. Let (CATCH_REF x l) be catch_0.
-        2. If ((x >= |$tagaddr(z)|) \/ ($exninst(z)[a].TAG =/= $tagaddr(z)[x])), then:
+        2. If ((x >= |$f(z).MODULE.TAGS|) \/ ($s(z).EXNS[a].TAG =/= $f(z).MODULE.TAGS[x])), then:
           a. Let [catch] :: catch'* be catch''*.
           b. Pop the handler (HANDLER_ _ { _ }) from the stack.
           c. Push the handler (HANDLER_ n { catch'* }) to the stack.
@@ -31981,8 +31958,8 @@ Step_read/ref.null ht
 
 Step_read/ref.func x
 1. Let z be the current state.
-2. Assert: Due to validation, (x < |$moduleinst(z).FUNCS|).
-3. Push the value (REF.FUNC_ADDR $moduleinst(z).FUNCS[x]) to the stack.
+2. Assert: Due to validation, (x < |$f(z).MODULE.FUNCS|).
+3. Push the value (REF.FUNC_ADDR $f(z).MODULE.FUNCS[x]) to the stack.
 
 Step_read/ref.test rt
 1. Let (FRAME_ _ { f }) be the topmost FRAME_.
@@ -32023,13 +32000,13 @@ Step_read/struct.get sx? x i
   a. Trap.
 5. Assert: Due to validation, val is some REF.STRUCT_ADDR.
 6. Let (REF.STRUCT_ADDR a) be val.
-7. Assert: Due to validation, (i < |$structinst(z)[a].FIELDS|).
-8. Assert: Due to validation, (a < |$structinst(z)|).
+7. Assert: Due to validation, (i < |$s(z).STRUCTS[a].FIELDS|).
+8. Assert: Due to validation, (a < |$s(z).STRUCTS|).
 9. Assert: Due to validation, $Expand($type(z, x)) is some STRUCT.
 10. Let (STRUCT list_0) be $Expand($type(z, x)).
 11. Let (mut? zt)* be list_0.
 12. Assert: Due to validation, (i < |zt*|).
-13. Push the value $unpackfield_(zt*[i], sx?, $structinst(z)[a].FIELDS[i]) to the stack.
+13. Push the value $unpackfield_(zt*[i], sx?, $s(z).STRUCTS[a].FIELDS[i]) to the stack.
 
 Step_read/array.new_default x
 1. Let z be the current state.
@@ -32081,13 +32058,13 @@ Step_read/array.get sx? x
   a. Trap.
 7. Assert: Due to validation, val is some REF.ARRAY_ADDR.
 8. Let (REF.ARRAY_ADDR a) be val.
-9. Assert: Due to validation, (a < |$arrayinst(z)|).
-10. If (i >= |$arrayinst(z)[a].FIELDS|), then:
+9. Assert: Due to validation, (a < |$s(z).ARRAYS|).
+10. If (i >= |$s(z).ARRAYS[a].FIELDS|), then:
   a. Trap.
 11. Assert: Due to validation, $Expand($type(z, x)) is some ARRAY.
 12. Let (ARRAY fieldtype_0) be $Expand($type(z, x)).
 13. Let (mut? zt) be fieldtype_0.
-14. Push the value $unpackfield_(zt, sx?, $arrayinst(z)[a].FIELDS[i]) to the stack.
+14. Push the value $unpackfield_(zt, sx?, $s(z).ARRAYS[a].FIELDS[i]) to the stack.
 
 Step_read/array.len
 1. Let z be the current state.
@@ -32097,8 +32074,8 @@ Step_read/array.len
   a. Trap.
 5. Assert: Due to validation, val is some REF.ARRAY_ADDR.
 6. Let (REF.ARRAY_ADDR a) be val.
-7. Assert: Due to validation, (a < |$arrayinst(z)|).
-8. Push the value (I32.CONST |$arrayinst(z)[a].FIELDS|) to the stack.
+7. Assert: Due to validation, (a < |$s(z).ARRAYS|).
+8. Push the value (I32.CONST |$s(z).ARRAYS[a].FIELDS|) to the stack.
 
 Step_read/array.fill x
 1. Let z be the current state.
@@ -32114,9 +32091,9 @@ Step_read/array.fill x
   a. Trap.
 11. Assert: Due to validation, val' is some REF.ARRAY_ADDR.
 12. Let (REF.ARRAY_ADDR a) be val'.
-13. If (a >= |$arrayinst(z)|), then:
+13. If (a >= |$s(z).ARRAYS|), then:
   a. Do nothing.
-14. Else if ((i + n) > |$arrayinst(z)[a].FIELDS|), then:
+14. Else if ((i + n) > |$s(z).ARRAYS[a].FIELDS|), then:
   a. Trap.
 15. If (n = 0), then:
   a. Do nothing.
@@ -32150,12 +32127,12 @@ Step_read/array.copy x_1 x_2
 14. If val' is some REF.ARRAY_ADDR, then:
   a. Let (REF.ARRAY_ADDR a_1) be val'.
   b. If val is some REF.ARRAY_ADDR, then:
-    1) If ((a_1 < |$arrayinst(z)|) /\ ((i_1 + n) > |$arrayinst(z)[a_1].FIELDS|)), then:
+    1) If ((a_1 < |$s(z).ARRAYS|) /\ ((i_1 + n) > |$s(z).ARRAYS[a_1].FIELDS|)), then:
       a) Trap.
     2) Let (REF.ARRAY_ADDR a_2) be val.
-    3) If (a_2 >= |$arrayinst(z)|), then:
+    3) If (a_2 >= |$s(z).ARRAYS|), then:
       a) Do nothing.
-    4) Else if ((i_2 + n) > |$arrayinst(z)[a_2].FIELDS|), then:
+    4) Else if ((i_2 + n) > |$s(z).ARRAYS[a_2].FIELDS|), then:
       a) Trap.
     5) If (n = 0), then:
       a) Do nothing.
@@ -32202,7 +32179,7 @@ Step_read/array.init_elem x y
   a. Trap.
 11. Assert: Due to validation, val is some REF.ARRAY_ADDR.
 12. Let (REF.ARRAY_ADDR a) be val.
-13. If ((a < |$arrayinst(z)|) /\ ((i + n) > |$arrayinst(z)[a].FIELDS|)), then:
+13. If ((a < |$s(z).ARRAYS|) /\ ((i + n) > |$s(z).ARRAYS[a].FIELDS|)), then:
   a. Trap.
 14. If ((j + n) > |$elem(z, y).REFS|), then:
   a. Trap.
@@ -32234,7 +32211,7 @@ Step_read/array.init_data x y
   a. Trap.
 11. Assert: Due to validation, val is some REF.ARRAY_ADDR.
 12. Let (REF.ARRAY_ADDR a) be val.
-13. If ((a < |$arrayinst(z)|) /\ ((i + n) > |$arrayinst(z)[a].FIELDS|)), then:
+13. If ((a < |$s(z).ARRAYS|) /\ ((i + n) > |$s(z).ARRAYS[a].FIELDS|)), then:
   a. Trap.
 14. If $Expand($type(z, x)) is some ARRAY, then:
   a. Let (ARRAY fieldtype_0) be $Expand($type(z, x)).
@@ -32265,8 +32242,8 @@ Step/call_ref yy
   a. Trap.
 5. Assert: Due to validation, val' is some REF.FUNC_ADDR.
 6. Let (REF.FUNC_ADDR a) be val'.
-7. If (a < |$funcinst(z)|), then:
-  a. Let fi be $funcinst(z)[a].
+7. If (a < |$s(z).FUNCS|), then:
+  a. Let fi be $s(z).FUNCS[a].
   b. If fi.CODE is some FUNC, then:
     1) Let (FUNC x local_0* instr*) be fi.CODE.
     2) Let t* be [].
@@ -32299,15 +32276,15 @@ Step/call_ref yy
 
 Step/throw x
 1. Let z be the current state.
-2. Assert: Due to validation, (x < |$tagaddr(z)|).
+2. Assert: Due to validation, (x < |$f(z).MODULE.TAGS|).
 3. Assert: Due to validation, $Expand($as_deftype($tag(z, x).TYPE)) is some ->.
 4. Let (FUNC t^n -> resulttype_0) be $Expand($as_deftype($tag(z, x).TYPE)).
 5. Assert: Due to validation, (resulttype_0 = []).
-6. Let a be |$exninst(z)|.
+6. Let a be |$s(z).EXNS|.
 7. Assert: Due to validation, there are at least n values on the top of the stack.
 8. Pop the values val^n from the stack.
-9. Let exn be { TAG: $tagaddr(z)[x]; FIELDS: val^n }.
-10. Perform $add_exninst(z, [exn]).
+9. Let exn be { TAG: $f(z).MODULE.TAGS[x]; FIELDS: val^n }.
+10. Perform $add_exninst(z, exn).
 11. Push the value (REF.EXN_ADDR a) to the stack.
 12. Execute the instruction THROW_REF.
 
@@ -32415,12 +32392,12 @@ Step/struct.new x
 2. Assert: Due to validation, $Expand($type(z, x)) is some STRUCT.
 3. Let (STRUCT list_0) be $Expand($type(z, x)).
 4. Let (mut? zt)^n be list_0.
-5. Let a be |$structinst(z)|.
+5. Let a be |$s(z).STRUCTS|.
 6. Assert: Due to validation, there are at least n values on the top of the stack.
 7. Pop the values val^n from the stack.
 8. Let si be { TYPE: $type(z, x); FIELDS: $packfield_(zt, val)^n }.
 9. Push the value (REF.STRUCT_ADDR a) to the stack.
-10. Perform $add_structinst(z, [si]).
+10. Perform $add_structinst(z, si).
 
 Step/struct.set x i
 1. Let z be the current state.
@@ -32443,12 +32420,12 @@ Step/array.new_fixed x n
 2. Assert: Due to validation, $Expand($type(z, x)) is some ARRAY.
 3. Let (ARRAY fieldtype_0) be $Expand($type(z, x)).
 4. Let (mut? zt) be fieldtype_0.
-5. Let a be |$arrayinst(z)|.
+5. Let a be |$s(z).ARRAYS|.
 6. Assert: Due to validation, there are at least n values on the top of the stack.
 7. Pop the values val^n from the stack.
 8. Let ai be { TYPE: $type(z, x); FIELDS: $packfield_(zt, val)^n }.
 9. Push the value (REF.ARRAY_ADDR a) to the stack.
-10. Perform $add_arrayinst(z, [ai]).
+10. Perform $add_arrayinst(z, ai).
 
 Step/array.set x
 1. Let z be the current state.
@@ -32462,7 +32439,7 @@ Step/array.set x
   a. Trap.
 9. Assert: Due to validation, val' is some REF.ARRAY_ADDR.
 10. Let (REF.ARRAY_ADDR a) be val'.
-11. If ((a < |$arrayinst(z)|) /\ (i >= |$arrayinst(z)[a].FIELDS|)), then:
+11. If ((a < |$s(z).ARRAYS|) /\ (i >= |$s(z).ARRAYS[a].FIELDS|)), then:
   a. Trap.
 12. Assert: Due to validation, $Expand($type(z, x)) is some ARRAY.
 13. Let (ARRAY fieldtype_0) be $Expand($type(z, x)).
@@ -34621,47 +34598,32 @@ store (s, f)
 frame (s, f)
 1. Return f.
 
+s z
+1. Return $store(z).
+
+f z
+1. Return $frame(z).
+
 sof z
 1. Return $store(z).
 
 fof z
 1. Return $frame(z).
 
-tagaddr (s, f)
-1. Return f.MODULE.TAGS.
-
 moduleinst z
 1. Return $fof(z).MODULE.
 
-taginst z
-1. Return $sof(z).TAGS.
+funcinst z a
+1. Return $sof(z).FUNCS[a].
 
-globalinst z
-1. Return $sof(z).GLOBALS.
+structinst z a
+1. Return $sof(z).STRUCTS[a].
 
-meminst z
-1. Return $sof(z).MEMS.
+arrayinst z a
+1. Return $sof(z).ARRAYS[a].
 
-tableinst z
-1. Return $sof(z).TABLES.
-
-funcinst z
-1. Return $sof(z).FUNCS.
-
-datainst z
-1. Return $sof(z).DATAS.
-
-eleminst z
-1. Return $sof(z).ELEMS.
-
-structinst z
-1. Return $sof(z).STRUCTS.
-
-arrayinst z
-1. Return $sof(z).ARRAYS.
-
-exninst z
-1. Return $sof(z).EXNS.
+exninst z a
+1. Return $sof(z).EXNS[a].
 
 type z x
 1. Return $fof(z).MODULE.TYPES[x].
@@ -34720,14 +34682,20 @@ with_struct z a i fv
 with_array z a i fv
 1. Replace $sof(z).ARRAYS[a].FIELDS[i] with fv.
 
-add_structinst z si*
-1. Append si* to the $sof(z).STRUCTS.
+add_structinst z si
+1. Let a be $fof(z).
+2. Append si to the $sof(z).STRUCTS.
+3. Return a.
 
-add_arrayinst z ai*
-1. Append ai* to the $sof(z).ARRAYS.
+add_arrayinst z ai
+1. Let a be $fof(z).
+2. Append ai to the $sof(z).ARRAYS.
+3. Return a.
 
-add_exninst z exn*
-1. Append exn* to the $sof(z).EXNS.
+add_exninst z exn
+1. Let a be $fof(z).
+2. Append exn to the $sof(z).EXNS.
+3. Return a.
 
 growtable tableinst n r
 1. Let { TYPE: (at ([ i .. j? ]) rt); REFS: r'* } be tableinst.

@@ -5657,6 +5657,16 @@ def $frame(state : state) : frame
   def $frame{s : store, f : frame}(`%;%`_state(s, f)) = f
 
 ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
+def $s(state : state) : store
+  ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
+  def $s{z : state}(z) = $store(z)
+
+;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
+def $f(state : state) : frame
+  ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
+  def $f{z : state}(z) = $frame(z)
+
+;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
 def $sof(state : state) : store
   ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
   def $sof{z : state}(z) = $store(z)
@@ -5667,64 +5677,29 @@ def $fof(state : state) : frame
   def $fof{z : state}(z) = $frame(z)
 
 ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-def $tagaddr(state : state) : tagaddr*
-  ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-  def $tagaddr{s : store, f : frame}(`%;%`_state(s, f)) = f.MODULE_frame.TAGS_moduleinst
-
-;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
 def $moduleinst(state : state) : moduleinst
   ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
   def $moduleinst{z : state}(z) = $fof(z).MODULE_frame
 
 ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-def $taginst(state : state) : taginst*
+def $funcinst(state : state, funcaddr : funcaddr) : funcinst
   ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-  def $taginst{z : state}(z) = $sof(z).TAGS_store
+  def $funcinst{z : state, a : addr}(z, a) = $sof(z).FUNCS_store[a]
 
 ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-def $globalinst(state : state) : globalinst*
+def $structinst(state : state, structaddr : structaddr) : structinst
   ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-  def $globalinst{z : state}(z) = $sof(z).GLOBALS_store
+  def $structinst{z : state, a : addr}(z, a) = $sof(z).STRUCTS_store[a]
 
 ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-def $meminst(state : state) : meminst*
+def $arrayinst(state : state, arrayaddr : arrayaddr) : arrayinst
   ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-  def $meminst{z : state}(z) = $sof(z).MEMS_store
+  def $arrayinst{z : state, a : addr}(z, a) = $sof(z).ARRAYS_store[a]
 
 ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-def $tableinst(state : state) : tableinst*
+def $exninst(state : state, exnaddr : exnaddr) : exninst
   ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-  def $tableinst{z : state}(z) = $sof(z).TABLES_store
-
-;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-def $funcinst(state : state) : funcinst*
-  ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-  def $funcinst{z : state}(z) = $sof(z).FUNCS_store
-
-;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-def $datainst(state : state) : datainst*
-  ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-  def $datainst{z : state}(z) = $sof(z).DATAS_store
-
-;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-def $eleminst(state : state) : eleminst*
-  ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-  def $eleminst{z : state}(z) = $sof(z).ELEMS_store
-
-;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-def $structinst(state : state) : structinst*
-  ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-  def $structinst{z : state}(z) = $sof(z).STRUCTS_store
-
-;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-def $arrayinst(state : state) : arrayinst*
-  ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-  def $arrayinst{z : state}(z) = $sof(z).ARRAYS_store
-
-;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-def $exninst(state : state) : exninst*
-  ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-  def $exninst{z : state}(z) = $sof(z).EXNS_store
+  def $exninst{z : state, a : addr}(z, a) = $sof(z).EXNS_store[a]
 
 ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
 def $type(state : state, typeidx : typeidx) : deftype
@@ -5822,19 +5797,19 @@ def $with_array(state : state, arrayaddr : arrayaddr, nat : nat, fieldval : fiel
   def $with_array{z : state, a : addr, i : nat, fv : fieldval}(z, a, i, fv) = `%;%`_state($sof(z)[ARRAYS_store[a].FIELDS_arrayinst[i] = fv], $fof(z))
 
 ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-def $add_structinst(state : state, structinst*) : state
+def $add_structinst(state : state, structinst : structinst) : state
   ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-  def $add_structinst{z : state, `si*` : structinst*}(z, si*{si <- `si*`}) = `%;%`_state($sof(z)[STRUCTS_store =++ si*{si <- `si*`}], $fof(z))
+  def $add_structinst{z : state, si : structinst}(z, si) = `%;%`_state($sof(z)[STRUCTS_store =++ [si]], $fof(z))
 
 ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-def $add_arrayinst(state : state, arrayinst*) : state
+def $add_arrayinst(state : state, arrayinst : arrayinst) : state
   ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-  def $add_arrayinst{z : state, `ai*` : arrayinst*}(z, ai*{ai <- `ai*`}) = `%;%`_state($sof(z)[ARRAYS_store =++ ai*{ai <- `ai*`}], $fof(z))
+  def $add_arrayinst{z : state, ai : arrayinst}(z, ai) = `%;%`_state($sof(z)[ARRAYS_store =++ [ai]], $fof(z))
 
 ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-def $add_exninst(state : state, exninst*) : state
+def $add_exninst(state : state, exninst : exninst) : state
   ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-  def $add_exninst{z : state, `exn*` : exninst*}(z, exn*{exn <- `exn*`}) = `%;%`_state($sof(z)[EXNS_store =++ exn*{exn <- `exn*`}], $fof(z))
+  def $add_exninst{z : state, exn : exninst}(z, exn) = `%;%`_state($sof(z)[EXNS_store =++ [exn]], $fof(z))
 
 ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
 def $growtable(tableinst : tableinst, nat : nat, ref : ref) : tableinst
@@ -6453,13 +6428,13 @@ relation Step_read: `%~>%`(config, instr*)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule call{z : state, x : idx, a : addr}:
-    `%~>%`(`%;%`_config(z, [CALL_instr(x)]), [`REF.FUNC_ADDR`_instr(a) CALL_REF_instr($funcinst(z)[a].TYPE_funcinst : deftype <: typeuse)])
-    -- if ($moduleinst(z).FUNCS_moduleinst[x!`%`_idx.0] = a)
+    `%~>%`(`%;%`_config(z, [CALL_instr(x)]), [`REF.FUNC_ADDR`_instr(a) CALL_REF_instr($s(z).FUNCS_store[a].TYPE_funcinst : deftype <: typeuse)])
+    -- if ($f(z).MODULE_frame.FUNCS_moduleinst[x!`%`_idx.0] = a)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule return_call{z : state, x : idx, a : addr}:
-    `%~>%`(`%;%`_config(z, [RETURN_CALL_instr(x)]), [`REF.FUNC_ADDR`_instr(a) RETURN_CALL_REF_instr($funcinst(z)[a].TYPE_funcinst : deftype <: typeuse)])
-    -- if ($moduleinst(z).FUNCS_moduleinst[x!`%`_idx.0] = a)
+    `%~>%`(`%;%`_config(z, [RETURN_CALL_instr(x)]), [`REF.FUNC_ADDR`_instr(a) RETURN_CALL_REF_instr($s(z).FUNCS_store[a].TYPE_funcinst : deftype <: typeuse)])
+    -- if ($f(z).MODULE_frame.FUNCS_moduleinst[x!`%`_idx.0] = a)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `return_call_ref-label`{z : state, k : n, `instr'*` : instr*, `val*` : val*, yy : typeuse, `instr*` : instr*}:
@@ -6476,7 +6451,7 @@ relation Step_read: `%~>%`(config, instr*)
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `return_call_ref-frame-addr`{z : state, k : n, f : frame, `val'*` : val*, n : n, `val*` : val*, a : addr, yy : typeuse, `instr*` : instr*, `t_1*` : valtype*, m : m, `t_2*` : valtype*}:
     `%~>%`(`%;%`_config(z, [`FRAME_%{%}%`_instr(k, f, (val' : val <: instr)*{val' <- `val'*`} ++ (val : val <: instr)^n{val <- `val*`} ++ [`REF.FUNC_ADDR`_instr(a)] ++ [RETURN_CALL_REF_instr(yy)] ++ instr*{instr <- `instr*`})]), (val : val <: instr)^n{val <- `val*`} ++ [`REF.FUNC_ADDR`_instr(a) CALL_REF_instr(yy)])
-    -- Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, `FUNC%->%`_comptype(`%`_resulttype(t_1^n{t_1 <- `t_1*`},), `%`_resulttype(t_2^m{t_2 <- `t_2*`},)))
+    -- Expand: `%~~%`($s(z).FUNCS_store[a].TYPE_funcinst, `FUNC%->%`_comptype(`%`_resulttype(t_1^n{t_1 <- `t_1*`},), `%`_resulttype(t_2^m{t_2 <- `t_2*`},)))
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `throw_ref-null`{z : state}:
@@ -6502,14 +6477,14 @@ relation Step_read: `%~>%`(config, instr*)
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `throw_ref-handler-catch`{z : state, n : n, x : idx, l : labelidx, `catch'*` : catch*, a : addr, `val*` : val*}:
     `%~>%`(`%;%`_config(z, [`HANDLER_%{%}%`_instr(n, [CATCH_catch(x, l)] ++ catch'*{catch' <- `catch'*`}, [`REF.EXN_ADDR`_instr(a) THROW_REF_instr])]), (val : val <: instr)*{val <- `val*`} ++ [BR_instr(l)])
-    -- if ($exninst(z)[a].TAG_exninst = $tagaddr(z)[x!`%`_idx.0])
-    -- if (val*{val <- `val*`} = $exninst(z)[a].FIELDS_exninst)
+    -- if ($s(z).EXNS_store[a].TAG_exninst = $f(z).MODULE_frame.TAGS_moduleinst[x!`%`_idx.0])
+    -- if (val*{val <- `val*`} = $s(z).EXNS_store[a].FIELDS_exninst)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `throw_ref-handler-catch_ref`{z : state, n : n, x : idx, l : labelidx, `catch'*` : catch*, a : addr, `val*` : val*}:
     `%~>%`(`%;%`_config(z, [`HANDLER_%{%}%`_instr(n, [CATCH_REF_catch(x, l)] ++ catch'*{catch' <- `catch'*`}, [`REF.EXN_ADDR`_instr(a) THROW_REF_instr])]), (val : val <: instr)*{val <- `val*`} ++ [`REF.EXN_ADDR`_instr(a) BR_instr(l)])
-    -- if ($exninst(z)[a].TAG_exninst = $tagaddr(z)[x!`%`_idx.0])
-    -- if (val*{val <- `val*`} = $exninst(z)[a].FIELDS_exninst)
+    -- if ($s(z).EXNS_store[a].TAG_exninst = $f(z).MODULE_frame.TAGS_moduleinst[x!`%`_idx.0])
+    -- if (val*{val <- `val*`} = $s(z).EXNS_store[a].FIELDS_exninst)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `throw_ref-handler-catch_all`{z : state, n : n, l : labelidx, `catch'*` : catch*, a : addr}:
@@ -6753,7 +6728,7 @@ relation Step_read: `%~>%`(config, instr*)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `ref.func`{z : state, x : idx}:
-    `%~>%`(`%;%`_config(z, [`REF.FUNC`_instr(x)]), [`REF.FUNC_ADDR`_instr($moduleinst(z).FUNCS_moduleinst[x!`%`_idx.0])])
+    `%~>%`(`%;%`_config(z, [`REF.FUNC`_instr(x)]), [`REF.FUNC_ADDR`_instr($f(z).MODULE_frame.FUNCS_moduleinst[x!`%`_idx.0])])
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `ref.test-true`{s : store, f : frame, ref : ref, rt : reftype}:
@@ -6787,7 +6762,7 @@ relation Step_read: `%~>%`(config, instr*)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `struct.get-struct`{z : state, a : addr, `sx?` : sx?, x : idx, i : fieldidx, `zt*` : storagetype*, `mut?*` : mut?*}:
-    `%~>%`(`%;%`_config(z, [`REF.STRUCT_ADDR`_instr(a) `STRUCT.GET`_instr(sx?{sx <- `sx?`}, x, i)]), [($unpackfield_(zt*{zt <- `zt*`}[i!`%`_fieldidx.0], sx?{sx <- `sx?`}, $structinst(z)[a].FIELDS_structinst[i!`%`_fieldidx.0]) : val <: instr)])
+    `%~>%`(`%;%`_config(z, [`REF.STRUCT_ADDR`_instr(a) `STRUCT.GET`_instr(sx?{sx <- `sx?`}, x, i)]), [($unpackfield_(zt*{zt <- `zt*`}[i!`%`_fieldidx.0], sx?{sx <- `sx?`}, $s(z).STRUCTS_store[a].FIELDS_structinst[i!`%`_fieldidx.0]) : val <: instr)])
     -- Expand: `%~~%`($type(z, x), STRUCT_comptype(`%`_list(`%%`_fieldtype(mut?{mut <- `mut?`}, zt)*{`mut?` <- `mut?*`, zt <- `zt*`},)))
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
@@ -6825,11 +6800,11 @@ relation Step_read: `%~>%`(config, instr*)
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `array.get-oob`{z : state, a : addr, i : num_(I32_numtype), `sx?` : sx?, x : idx}:
     `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) `ARRAY.GET`_instr(sx?{sx <- `sx?`}, x)]), [TRAP_instr])
-    -- if (i!`%`_num_.0 >= |$arrayinst(z)[a].FIELDS_arrayinst|)
+    -- if (i!`%`_num_.0 >= |$s(z).ARRAYS_store[a].FIELDS_arrayinst|)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `array.get-array`{z : state, a : addr, i : num_(I32_numtype), `sx?` : sx?, x : idx, zt : storagetype, `mut?` : mut?}:
-    `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) `ARRAY.GET`_instr(sx?{sx <- `sx?`}, x)]), [($unpackfield_(zt, sx?{sx <- `sx?`}, $arrayinst(z)[a].FIELDS_arrayinst[i!`%`_num_.0]) : val <: instr)])
+    `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) `ARRAY.GET`_instr(sx?{sx <- `sx?`}, x)]), [($unpackfield_(zt, sx?{sx <- `sx?`}, $s(z).ARRAYS_store[a].FIELDS_arrayinst[i!`%`_num_.0]) : val <: instr)])
     -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`_fieldtype(mut?{mut <- `mut?`}, zt)))
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
@@ -6838,7 +6813,7 @@ relation Step_read: `%~>%`(config, instr*)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `array.len-array`{z : state, a : addr}:
-    `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) `ARRAY.LEN`_instr]), [CONST_instr(I32_numtype, `%`_num_(|$arrayinst(z)[a].FIELDS_arrayinst|,))])
+    `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) `ARRAY.LEN`_instr]), [CONST_instr(I32_numtype, `%`_num_(|$s(z).ARRAYS_store[a].FIELDS_arrayinst|,))])
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `array.fill-null`{z : state, i : num_(I32_numtype), val : val, n : n, x : idx}:
@@ -6847,7 +6822,7 @@ relation Step_read: `%~>%`(config, instr*)
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `array.fill-oob`{z : state, a : addr, i : num_(I32_numtype), val : val, n : n, x : idx}:
     `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) (val : val <: instr) CONST_instr(I32_numtype, `%`_num_(n,)) `ARRAY.FILL`_instr(x)]), [TRAP_instr])
-    -- if ((i!`%`_num_.0 + n) > |$arrayinst(z)[a].FIELDS_arrayinst|)
+    -- if ((i!`%`_num_.0 + n) > |$s(z).ARRAYS_store[a].FIELDS_arrayinst|)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `array.fill-zero`{z : state, a : addr, i : num_(I32_numtype), val : val, n : n, x : idx}:
@@ -6871,12 +6846,12 @@ relation Step_read: `%~>%`(config, instr*)
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `array.copy-oob1`{z : state, a_1 : addr, i_1 : num_(I32_numtype), a_2 : addr, i_2 : num_(I32_numtype), n : n, x_1 : idx, x_2 : idx}:
     `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a_1) CONST_instr(I32_numtype, i_1) `REF.ARRAY_ADDR`_instr(a_2) CONST_instr(I32_numtype, i_2) CONST_instr(I32_numtype, `%`_num_(n,)) `ARRAY.COPY`_instr(x_1, x_2)]), [TRAP_instr])
-    -- if ((i_1!`%`_num_.0 + n) > |$arrayinst(z)[a_1].FIELDS_arrayinst|)
+    -- if ((i_1!`%`_num_.0 + n) > |$s(z).ARRAYS_store[a_1].FIELDS_arrayinst|)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `array.copy-oob2`{z : state, a_1 : addr, i_1 : num_(I32_numtype), a_2 : addr, i_2 : num_(I32_numtype), n : n, x_1 : idx, x_2 : idx}:
     `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a_1) CONST_instr(I32_numtype, i_1) `REF.ARRAY_ADDR`_instr(a_2) CONST_instr(I32_numtype, i_2) CONST_instr(I32_numtype, `%`_num_(n,)) `ARRAY.COPY`_instr(x_1, x_2)]), [TRAP_instr])
-    -- if ((i_2!`%`_num_.0 + n) > |$arrayinst(z)[a_2].FIELDS_arrayinst|)
+    -- if ((i_2!`%`_num_.0 + n) > |$s(z).ARRAYS_store[a_2].FIELDS_arrayinst|)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `array.copy-zero`{z : state, a_1 : addr, i_1 : num_(I32_numtype), a_2 : addr, i_2 : num_(I32_numtype), n : n, x_1 : idx, x_2 : idx}:
@@ -6905,7 +6880,7 @@ relation Step_read: `%~>%`(config, instr*)
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `array.init_elem-oob1`{z : state, a : addr, i : num_(I32_numtype), j : num_(I32_numtype), n : n, x : idx, y : idx}:
     `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) CONST_instr(I32_numtype, j) CONST_instr(I32_numtype, `%`_num_(n,)) `ARRAY.INIT_ELEM`_instr(x, y)]), [TRAP_instr])
-    -- if ((i!`%`_num_.0 + n) > |$arrayinst(z)[a].FIELDS_arrayinst|)
+    -- if ((i!`%`_num_.0 + n) > |$s(z).ARRAYS_store[a].FIELDS_arrayinst|)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `array.init_elem-oob2`{z : state, a : addr, i : num_(I32_numtype), j : num_(I32_numtype), n : n, x : idx, y : idx}:
@@ -6931,7 +6906,7 @@ relation Step_read: `%~>%`(config, instr*)
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `array.init_data-oob1`{z : state, a : addr, i : num_(I32_numtype), j : num_(I32_numtype), n : n, x : idx, y : idx}:
     `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) CONST_instr(I32_numtype, j) CONST_instr(I32_numtype, `%`_num_(n,)) `ARRAY.INIT_DATA`_instr(x, y)]), [TRAP_instr])
-    -- if ((i!`%`_num_.0 + n) > |$arrayinst(z)[a].FIELDS_arrayinst|)
+    -- if ((i!`%`_num_.0 + n) > |$s(z).ARRAYS_store[a].FIELDS_arrayinst|)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `array.init_data-oob2`{z : state, a : addr, i : num_(I32_numtype), j : num_(I32_numtype), n : n, x : idx, y : idx, `mut?` : mut?, zt : storagetype}:
@@ -6995,7 +6970,7 @@ relation Step: `%~>%`(config, config)
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:176.1-182.61
   rule `call_ref-func`{z : state, n : n, `val*` : val*, a : addr, yy : typeuse, m : m, f : frame, `instr*` : instr*, fi : funcinst, `t_1*` : valtype*, `t_2*` : valtype*, x : idx, `t*` : valtype*}:
     `%~>%`(`%;%`_config(z, (val : val <: instr)^n{val <- `val*`} ++ [`REF.FUNC_ADDR`_instr(a) CALL_REF_instr(yy)]), `%;%`_config(z, [`FRAME_%{%}%`_instr(m, f, [`LABEL_%{%}%`_instr(m, [], instr*{instr <- `instr*`})])]))
-    -- if ($funcinst(z)[a] = fi)
+    -- if ($s(z).FUNCS_store[a] = fi)
     -- Expand: `%~~%`(fi.TYPE_funcinst, `FUNC%->%`_comptype(`%`_resulttype(t_1^n{t_1 <- `t_1*`},), `%`_resulttype(t_2^m{t_2 <- `t_2*`},)))
     -- if (fi.CODE_funcinst = FUNC_funccode(x, LOCAL_local(t)*{t <- `t*`}, instr*{instr <- `instr*`}))
     -- if (f = {LOCALS ?(val)^n{val <- `val*`} ++ $default_(t)*{t <- `t*`}, MODULE fi.MODULE_funcinst})
@@ -7016,12 +6991,12 @@ relation Step: `%~>%`(config, config)
     -- if (fi.CODE_funcinst = _HOSTFUNC_funccode(hf))
     -- if (BOT_hostcallresult <- $hostcall(_HOSTFUNC_hostfunc(hf), s, val^n{val <- `val*`}))
 
-  ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:242.1-246.49
+  ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:242.1-246.55
   rule throw{z : state, n : n, `val*` : val*, x : idx, exn : exninst, a : addr, `t*` : valtype*}:
-    `%~>%`(`%;%`_config(z, (val : val <: instr)^n{val <- `val*`} ++ [THROW_instr(x)]), `%;%`_config($add_exninst(z, [exn]), [`REF.EXN_ADDR`_instr(a) THROW_REF_instr]))
+    `%~>%`(`%;%`_config(z, (val : val <: instr)^n{val <- `val*`} ++ [THROW_instr(x)]), `%;%`_config($add_exninst(z, exn), [`REF.EXN_ADDR`_instr(a) THROW_REF_instr]))
     -- Expand: `%~~%`($as_deftype($tag(z, x).TYPE_taginst), `FUNC%->%`_comptype(`%`_resulttype(t^n{t <- `t*`},), `%`_resulttype([],)))
-    -- if (a = |$exninst(z)|)
-    -- if (exn = {TAG $tagaddr(z)[x!`%`_idx.0], FIELDS val^n{val <- `val*`}})
+    -- if (a = |$s(z).EXNS_store|)
+    -- if (exn = {TAG $f(z).MODULE_frame.TAGS_moduleinst[x!`%`_idx.0], FIELDS val^n{val <- `val*`}})
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:320.1-321.56
   rule `local.set`{z : state, val : val, x : idx}:
@@ -7111,9 +7086,9 @@ relation Step: `%~>%`(config, config)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:707.1-711.65
   rule `struct.new`{z : state, n : n, `val*` : val*, x : idx, si : structinst, a : addr, `mut?*` : mut?*, `zt*` : storagetype*}:
-    `%~>%`(`%;%`_config(z, (val : val <: instr)^n{val <- `val*`} ++ [`STRUCT.NEW`_instr(x)]), `%;%`_config($add_structinst(z, [si]), [`REF.STRUCT_ADDR`_instr(a)]))
+    `%~>%`(`%;%`_config(z, (val : val <: instr)^n{val <- `val*`} ++ [`STRUCT.NEW`_instr(x)]), `%;%`_config($add_structinst(z, si), [`REF.STRUCT_ADDR`_instr(a)]))
     -- Expand: `%~~%`($type(z, x), STRUCT_comptype(`%`_list(`%%`_fieldtype(mut?{mut <- `mut?`}, zt)^n{`mut?` <- `mut?*`, zt <- `zt*`},)))
-    -- if (a = |$structinst(z)|)
+    -- if (a = |$s(z).STRUCTS_store|)
     -- if (si = {TYPE $type(z, x), FIELDS $packfield_(zt, val)^n{val <- `val*`, zt <- `zt*`}})
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:728.1-729.55
@@ -7127,18 +7102,18 @@ relation Step: `%~>%`(config, config)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:747.1-752.65
   rule `array.new_fixed`{z : state, n : n, `val*` : val*, x : idx, ai : arrayinst, a : addr, `mut?` : mut?, zt : storagetype}:
-    `%~>%`(`%;%`_config(z, (val : val <: instr)^n{val <- `val*`} ++ [`ARRAY.NEW_FIXED`_instr(x, `%`_u32(n,))]), `%;%`_config($add_arrayinst(z, [ai]), [`REF.ARRAY_ADDR`_instr(a)]))
+    `%~>%`(`%;%`_config(z, (val : val <: instr)^n{val <- `val*`} ++ [`ARRAY.NEW_FIXED`_instr(x, `%`_u32(n,))]), `%;%`_config($add_arrayinst(z, ai), [`REF.ARRAY_ADDR`_instr(a)]))
     -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`_fieldtype(mut?{mut <- `mut?`}, zt)))
-    -- if ((a = |$arrayinst(z)|) /\ (ai = {TYPE $type(z, x), FIELDS $packfield_(zt, val)^n{val <- `val*`}}))
+    -- if ((a = |$s(z).ARRAYS_store|) /\ (ai = {TYPE $type(z, x), FIELDS $packfield_(zt, val)^n{val <- `val*`}}))
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:792.1-793.66
   rule `array.set-null`{z : state, i : num_(I32_numtype), val : val, x : idx}:
     `%~>%`(`%;%`_config(z, [`REF.NULL_ADDR`_instr CONST_instr(I32_numtype, i) (val : val <: instr) `ARRAY.SET`_instr(x)]), `%;%`_config(z, [TRAP_instr]))
 
-  ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:795.1-797.39
+  ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:795.1-797.38
   rule `array.set-oob`{z : state, a : addr, i : num_(I32_numtype), val : val, x : idx}:
     `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) (val : val <: instr) `ARRAY.SET`_instr(x)]), `%;%`_config(z, [TRAP_instr]))
-    -- if (i!`%`_num_.0 >= |$arrayinst(z)[a].FIELDS_arrayinst|)
+    -- if (i!`%`_num_.0 >= |$s(z).ARRAYS_store[a].FIELDS_arrayinst|)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:799.1-802.44
   rule `array.set-array`{z : state, a : addr, i : num_(I32_numtype), val : val, x : idx, zt : storagetype, `mut?` : mut?}:
@@ -17570,6 +17545,16 @@ def $frame(state : state) : frame
   def $frame{s : store, f : frame}(`%;%`_state(s, f)) = f
 
 ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
+def $s(state : state) : store
+  ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
+  def $s{z : state}(z) = $store(z)
+
+;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
+def $f(state : state) : frame
+  ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
+  def $f{z : state}(z) = $frame(z)
+
+;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
 def $sof(state : state) : store
   ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
   def $sof{z : state}(z) = $store(z)
@@ -17580,64 +17565,29 @@ def $fof(state : state) : frame
   def $fof{z : state}(z) = $frame(z)
 
 ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-def $tagaddr(state : state) : tagaddr*
-  ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-  def $tagaddr{s : store, f : frame}(`%;%`_state(s, f)) = f.MODULE_frame.TAGS_moduleinst
-
-;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
 def $moduleinst(state : state) : moduleinst
   ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
   def $moduleinst{z : state}(z) = $fof(z).MODULE_frame
 
 ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-def $taginst(state : state) : taginst*
+def $funcinst(state : state, funcaddr : funcaddr) : funcinst
   ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-  def $taginst{z : state}(z) = $sof(z).TAGS_store
+  def $funcinst{z : state, a : addr}(z, a) = $sof(z).FUNCS_store[a]
 
 ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-def $globalinst(state : state) : globalinst*
+def $structinst(state : state, structaddr : structaddr) : structinst
   ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-  def $globalinst{z : state}(z) = $sof(z).GLOBALS_store
+  def $structinst{z : state, a : addr}(z, a) = $sof(z).STRUCTS_store[a]
 
 ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-def $meminst(state : state) : meminst*
+def $arrayinst(state : state, arrayaddr : arrayaddr) : arrayinst
   ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-  def $meminst{z : state}(z) = $sof(z).MEMS_store
+  def $arrayinst{z : state, a : addr}(z, a) = $sof(z).ARRAYS_store[a]
 
 ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-def $tableinst(state : state) : tableinst*
+def $exninst(state : state, exnaddr : exnaddr) : exninst
   ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-  def $tableinst{z : state}(z) = $sof(z).TABLES_store
-
-;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-def $funcinst(state : state) : funcinst*
-  ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-  def $funcinst{z : state}(z) = $sof(z).FUNCS_store
-
-;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-def $datainst(state : state) : datainst*
-  ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-  def $datainst{z : state}(z) = $sof(z).DATAS_store
-
-;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-def $eleminst(state : state) : eleminst*
-  ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-  def $eleminst{z : state}(z) = $sof(z).ELEMS_store
-
-;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-def $structinst(state : state) : structinst*
-  ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-  def $structinst{z : state}(z) = $sof(z).STRUCTS_store
-
-;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-def $arrayinst(state : state) : arrayinst*
-  ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-  def $arrayinst{z : state}(z) = $sof(z).ARRAYS_store
-
-;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-def $exninst(state : state) : exninst*
-  ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-  def $exninst{z : state}(z) = $sof(z).EXNS_store
+  def $exninst{z : state, a : addr}(z, a) = $sof(z).EXNS_store[a]
 
 ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
 def $type(state : state, typeidx : typeidx) : deftype
@@ -17735,19 +17685,19 @@ def $with_array(state : state, arrayaddr : arrayaddr, nat : nat, fieldval : fiel
   def $with_array{z : state, a : addr, i : nat, fv : fieldval}(z, a, i, fv) = `%;%`_state($sof(z)[ARRAYS_store[a].FIELDS_arrayinst[i] = fv], $fof(z))
 
 ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-def $add_structinst(state : state, structinst*) : state
+def $add_structinst(state : state, structinst : structinst) : state
   ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-  def $add_structinst{z : state, `si*` : structinst*}(z, si*{si <- `si*`}) = `%;%`_state($sof(z)[STRUCTS_store =++ si*{si <- `si*`}], $fof(z))
+  def $add_structinst{z : state, si : structinst}(z, si) = `%;%`_state($sof(z)[STRUCTS_store =++ [si]], $fof(z))
 
 ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-def $add_arrayinst(state : state, arrayinst*) : state
+def $add_arrayinst(state : state, arrayinst : arrayinst) : state
   ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-  def $add_arrayinst{z : state, `ai*` : arrayinst*}(z, ai*{ai <- `ai*`}) = `%;%`_state($sof(z)[ARRAYS_store =++ ai*{ai <- `ai*`}], $fof(z))
+  def $add_arrayinst{z : state, ai : arrayinst}(z, ai) = `%;%`_state($sof(z)[ARRAYS_store =++ [ai]], $fof(z))
 
 ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-def $add_exninst(state : state, exninst*) : state
+def $add_exninst(state : state, exninst : exninst) : state
   ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-  def $add_exninst{z : state, `exn*` : exninst*}(z, exn*{exn <- `exn*`}) = `%;%`_state($sof(z)[EXNS_store =++ exn*{exn <- `exn*`}], $fof(z))
+  def $add_exninst{z : state, exn : exninst}(z, exn) = `%;%`_state($sof(z)[EXNS_store =++ [exn]], $fof(z))
 
 ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
 def $growtable(tableinst : tableinst, nat : nat, ref : ref) : tableinst?
@@ -18368,13 +18318,13 @@ relation Step_read: `%~>%`(config, instr*)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule call{z : state, x : idx, a : addr}:
-    `%~>%`(`%;%`_config(z, [CALL_instr(x)]), [`REF.FUNC_ADDR`_instr(a) CALL_REF_instr($funcinst(z)[a].TYPE_funcinst : deftype <: typeuse)])
-    -- if ($moduleinst(z).FUNCS_moduleinst[x!`%`_idx.0] = a)
+    `%~>%`(`%;%`_config(z, [CALL_instr(x)]), [`REF.FUNC_ADDR`_instr(a) CALL_REF_instr($s(z).FUNCS_store[a].TYPE_funcinst : deftype <: typeuse)])
+    -- if ($f(z).MODULE_frame.FUNCS_moduleinst[x!`%`_idx.0] = a)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule return_call{z : state, x : idx, a : addr}:
-    `%~>%`(`%;%`_config(z, [RETURN_CALL_instr(x)]), [`REF.FUNC_ADDR`_instr(a) RETURN_CALL_REF_instr($funcinst(z)[a].TYPE_funcinst : deftype <: typeuse)])
-    -- if ($moduleinst(z).FUNCS_moduleinst[x!`%`_idx.0] = a)
+    `%~>%`(`%;%`_config(z, [RETURN_CALL_instr(x)]), [`REF.FUNC_ADDR`_instr(a) RETURN_CALL_REF_instr($s(z).FUNCS_store[a].TYPE_funcinst : deftype <: typeuse)])
+    -- if ($f(z).MODULE_frame.FUNCS_moduleinst[x!`%`_idx.0] = a)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `return_call_ref-label`{z : state, k : n, `instr'*` : instr*, `val*` : val*, yy : typeuse, `instr*` : instr*}:
@@ -18391,7 +18341,7 @@ relation Step_read: `%~>%`(config, instr*)
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `return_call_ref-frame-addr`{z : state, k : n, f : frame, `val'*` : val*, n : n, `val*` : val*, a : addr, yy : typeuse, `instr*` : instr*, `t_1*` : valtype*, m : m, `t_2*` : valtype*}:
     `%~>%`(`%;%`_config(z, [`FRAME_%{%}%`_instr(k, f, (val' : val <: instr)*{val' <- `val'*`} ++ (val : val <: instr)^n{val <- `val*`} ++ [`REF.FUNC_ADDR`_instr(a)] ++ [RETURN_CALL_REF_instr(yy)] ++ instr*{instr <- `instr*`})]), (val : val <: instr)^n{val <- `val*`} ++ [`REF.FUNC_ADDR`_instr(a) CALL_REF_instr(yy)])
-    -- Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, `FUNC%->%`_comptype(`%`_resulttype(t_1^n{t_1 <- `t_1*`},), `%`_resulttype(t_2^m{t_2 <- `t_2*`},)))
+    -- Expand: `%~~%`($s(z).FUNCS_store[a].TYPE_funcinst, `FUNC%->%`_comptype(`%`_resulttype(t_1^n{t_1 <- `t_1*`},), `%`_resulttype(t_2^m{t_2 <- `t_2*`},)))
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `throw_ref-null`{z : state}:
@@ -18417,14 +18367,14 @@ relation Step_read: `%~>%`(config, instr*)
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `throw_ref-handler-catch`{z : state, n : n, x : idx, l : labelidx, `catch'*` : catch*, a : addr, `val*` : val*}:
     `%~>%`(`%;%`_config(z, [`HANDLER_%{%}%`_instr(n, [CATCH_catch(x, l)] ++ catch'*{catch' <- `catch'*`}, [`REF.EXN_ADDR`_instr(a) THROW_REF_instr])]), (val : val <: instr)*{val <- `val*`} ++ [BR_instr(l)])
-    -- if ($exninst(z)[a].TAG_exninst = $tagaddr(z)[x!`%`_idx.0])
-    -- if (val*{val <- `val*`} = $exninst(z)[a].FIELDS_exninst)
+    -- if ($s(z).EXNS_store[a].TAG_exninst = $f(z).MODULE_frame.TAGS_moduleinst[x!`%`_idx.0])
+    -- if (val*{val <- `val*`} = $s(z).EXNS_store[a].FIELDS_exninst)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `throw_ref-handler-catch_ref`{z : state, n : n, x : idx, l : labelidx, `catch'*` : catch*, a : addr, `val*` : val*}:
     `%~>%`(`%;%`_config(z, [`HANDLER_%{%}%`_instr(n, [CATCH_REF_catch(x, l)] ++ catch'*{catch' <- `catch'*`}, [`REF.EXN_ADDR`_instr(a) THROW_REF_instr])]), (val : val <: instr)*{val <- `val*`} ++ [`REF.EXN_ADDR`_instr(a) BR_instr(l)])
-    -- if ($exninst(z)[a].TAG_exninst = $tagaddr(z)[x!`%`_idx.0])
-    -- if (val*{val <- `val*`} = $exninst(z)[a].FIELDS_exninst)
+    -- if ($s(z).EXNS_store[a].TAG_exninst = $f(z).MODULE_frame.TAGS_moduleinst[x!`%`_idx.0])
+    -- if (val*{val <- `val*`} = $s(z).EXNS_store[a].FIELDS_exninst)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `throw_ref-handler-catch_all`{z : state, n : n, l : labelidx, `catch'*` : catch*, a : addr}:
@@ -18668,7 +18618,7 @@ relation Step_read: `%~>%`(config, instr*)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `ref.func`{z : state, x : idx}:
-    `%~>%`(`%;%`_config(z, [`REF.FUNC`_instr(x)]), [`REF.FUNC_ADDR`_instr($moduleinst(z).FUNCS_moduleinst[x!`%`_idx.0])])
+    `%~>%`(`%;%`_config(z, [`REF.FUNC`_instr(x)]), [`REF.FUNC_ADDR`_instr($f(z).MODULE_frame.FUNCS_moduleinst[x!`%`_idx.0])])
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `ref.test-true`{s : store, f : frame, ref : ref, rt : reftype}:
@@ -18702,7 +18652,7 @@ relation Step_read: `%~>%`(config, instr*)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `struct.get-struct`{z : state, a : addr, `sx?` : sx?, x : idx, i : fieldidx, `zt*` : storagetype*, `mut?*` : mut?*}:
-    `%~>%`(`%;%`_config(z, [`REF.STRUCT_ADDR`_instr(a) `STRUCT.GET`_instr(sx?{sx <- `sx?`}, x, i)]), [($unpackfield_(zt*{zt <- `zt*`}[i!`%`_fieldidx.0], sx?{sx <- `sx?`}, $structinst(z)[a].FIELDS_structinst[i!`%`_fieldidx.0]) : val <: instr)])
+    `%~>%`(`%;%`_config(z, [`REF.STRUCT_ADDR`_instr(a) `STRUCT.GET`_instr(sx?{sx <- `sx?`}, x, i)]), [($unpackfield_(zt*{zt <- `zt*`}[i!`%`_fieldidx.0], sx?{sx <- `sx?`}, $s(z).STRUCTS_store[a].FIELDS_structinst[i!`%`_fieldidx.0]) : val <: instr)])
     -- Expand: `%~~%`($type(z, x), STRUCT_comptype(`%`_list(`%%`_fieldtype(mut?{mut <- `mut?`}, zt)*{`mut?` <- `mut?*`, zt <- `zt*`},)))
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
@@ -18740,11 +18690,11 @@ relation Step_read: `%~>%`(config, instr*)
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `array.get-oob`{z : state, a : addr, i : num_(I32_numtype), `sx?` : sx?, x : idx}:
     `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) `ARRAY.GET`_instr(sx?{sx <- `sx?`}, x)]), [TRAP_instr])
-    -- if (i!`%`_num_.0 >= |$arrayinst(z)[a].FIELDS_arrayinst|)
+    -- if (i!`%`_num_.0 >= |$s(z).ARRAYS_store[a].FIELDS_arrayinst|)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `array.get-array`{z : state, a : addr, i : num_(I32_numtype), `sx?` : sx?, x : idx, zt : storagetype, `mut?` : mut?}:
-    `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) `ARRAY.GET`_instr(sx?{sx <- `sx?`}, x)]), [($unpackfield_(zt, sx?{sx <- `sx?`}, $arrayinst(z)[a].FIELDS_arrayinst[i!`%`_num_.0]) : val <: instr)])
+    `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) `ARRAY.GET`_instr(sx?{sx <- `sx?`}, x)]), [($unpackfield_(zt, sx?{sx <- `sx?`}, $s(z).ARRAYS_store[a].FIELDS_arrayinst[i!`%`_num_.0]) : val <: instr)])
     -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`_fieldtype(mut?{mut <- `mut?`}, zt)))
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
@@ -18753,7 +18703,7 @@ relation Step_read: `%~>%`(config, instr*)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `array.len-array`{z : state, a : addr}:
-    `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) `ARRAY.LEN`_instr]), [CONST_instr(I32_numtype, `%`_num_(|$arrayinst(z)[a].FIELDS_arrayinst|,))])
+    `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) `ARRAY.LEN`_instr]), [CONST_instr(I32_numtype, `%`_num_(|$s(z).ARRAYS_store[a].FIELDS_arrayinst|,))])
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `array.fill-null`{z : state, i : num_(I32_numtype), val : val, n : n, x : idx}:
@@ -18762,7 +18712,7 @@ relation Step_read: `%~>%`(config, instr*)
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `array.fill-oob`{z : state, a : addr, i : num_(I32_numtype), val : val, n : n, x : idx}:
     `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) (val : val <: instr) CONST_instr(I32_numtype, `%`_num_(n,)) `ARRAY.FILL`_instr(x)]), [TRAP_instr])
-    -- if ((i!`%`_num_.0 + n) > |$arrayinst(z)[a].FIELDS_arrayinst|)
+    -- if ((i!`%`_num_.0 + n) > |$s(z).ARRAYS_store[a].FIELDS_arrayinst|)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `array.fill-zero`{z : state, a : addr, i : num_(I32_numtype), val : val, n : n, x : idx}:
@@ -18786,12 +18736,12 @@ relation Step_read: `%~>%`(config, instr*)
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `array.copy-oob1`{z : state, a_1 : addr, i_1 : num_(I32_numtype), a_2 : addr, i_2 : num_(I32_numtype), n : n, x_1 : idx, x_2 : idx}:
     `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a_1) CONST_instr(I32_numtype, i_1) `REF.ARRAY_ADDR`_instr(a_2) CONST_instr(I32_numtype, i_2) CONST_instr(I32_numtype, `%`_num_(n,)) `ARRAY.COPY`_instr(x_1, x_2)]), [TRAP_instr])
-    -- if ((i_1!`%`_num_.0 + n) > |$arrayinst(z)[a_1].FIELDS_arrayinst|)
+    -- if ((i_1!`%`_num_.0 + n) > |$s(z).ARRAYS_store[a_1].FIELDS_arrayinst|)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `array.copy-oob2`{z : state, a_1 : addr, i_1 : num_(I32_numtype), a_2 : addr, i_2 : num_(I32_numtype), n : n, x_1 : idx, x_2 : idx}:
     `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a_1) CONST_instr(I32_numtype, i_1) `REF.ARRAY_ADDR`_instr(a_2) CONST_instr(I32_numtype, i_2) CONST_instr(I32_numtype, `%`_num_(n,)) `ARRAY.COPY`_instr(x_1, x_2)]), [TRAP_instr])
-    -- if ((i_2!`%`_num_.0 + n) > |$arrayinst(z)[a_2].FIELDS_arrayinst|)
+    -- if ((i_2!`%`_num_.0 + n) > |$s(z).ARRAYS_store[a_2].FIELDS_arrayinst|)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `array.copy-zero`{z : state, a_1 : addr, i_1 : num_(I32_numtype), a_2 : addr, i_2 : num_(I32_numtype), n : n, x_1 : idx, x_2 : idx}:
@@ -18820,7 +18770,7 @@ relation Step_read: `%~>%`(config, instr*)
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `array.init_elem-oob1`{z : state, a : addr, i : num_(I32_numtype), j : num_(I32_numtype), n : n, x : idx, y : idx}:
     `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) CONST_instr(I32_numtype, j) CONST_instr(I32_numtype, `%`_num_(n,)) `ARRAY.INIT_ELEM`_instr(x, y)]), [TRAP_instr])
-    -- if ((i!`%`_num_.0 + n) > |$arrayinst(z)[a].FIELDS_arrayinst|)
+    -- if ((i!`%`_num_.0 + n) > |$s(z).ARRAYS_store[a].FIELDS_arrayinst|)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `array.init_elem-oob2`{z : state, a : addr, i : num_(I32_numtype), j : num_(I32_numtype), n : n, x : idx, y : idx}:
@@ -18846,7 +18796,7 @@ relation Step_read: `%~>%`(config, instr*)
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `array.init_data-oob1`{z : state, a : addr, i : num_(I32_numtype), j : num_(I32_numtype), n : n, x : idx, y : idx}:
     `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) CONST_instr(I32_numtype, j) CONST_instr(I32_numtype, `%`_num_(n,)) `ARRAY.INIT_DATA`_instr(x, y)]), [TRAP_instr])
-    -- if ((i!`%`_num_.0 + n) > |$arrayinst(z)[a].FIELDS_arrayinst|)
+    -- if ((i!`%`_num_.0 + n) > |$s(z).ARRAYS_store[a].FIELDS_arrayinst|)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `array.init_data-oob2`{z : state, a : addr, i : num_(I32_numtype), j : num_(I32_numtype), n : n, x : idx, y : idx, `mut?` : mut?, zt : storagetype}:
@@ -18910,7 +18860,7 @@ relation Step: `%~>%`(config, config)
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:176.1-182.61
   rule `call_ref-func`{z : state, n : n, `val*` : val*, a : addr, yy : typeuse, m : m, f : frame, `instr*` : instr*, fi : funcinst, `t_1*` : valtype*, `t_2*` : valtype*, x : idx, `t*` : valtype*}:
     `%~>%`(`%;%`_config(z, (val : val <: instr)^n{val <- `val*`} ++ [`REF.FUNC_ADDR`_instr(a) CALL_REF_instr(yy)]), `%;%`_config(z, [`FRAME_%{%}%`_instr(m, f, [`LABEL_%{%}%`_instr(m, [], instr*{instr <- `instr*`})])]))
-    -- if ($funcinst(z)[a] = fi)
+    -- if ($s(z).FUNCS_store[a] = fi)
     -- Expand: `%~~%`(fi.TYPE_funcinst, `FUNC%->%`_comptype(`%`_resulttype(t_1^n{t_1 <- `t_1*`},), `%`_resulttype(t_2^m{t_2 <- `t_2*`},)))
     -- if (fi.CODE_funcinst = FUNC_funccode(x, LOCAL_local(t)*{t <- `t*`}, instr*{instr <- `instr*`}))
     -- if (f = {LOCALS ?(val)^n{val <- `val*`} ++ $default_(t)*{t <- `t*`}, MODULE fi.MODULE_funcinst})
@@ -18931,12 +18881,12 @@ relation Step: `%~>%`(config, config)
     -- if (fi.CODE_funcinst = _HOSTFUNC_funccode(hf))
     -- if (BOT_hostcallresult <- $hostcall(_HOSTFUNC_hostfunc(hf), s, val^n{val <- `val*`}))
 
-  ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:242.1-246.49
+  ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:242.1-246.55
   rule throw{z : state, n : n, `val*` : val*, x : idx, exn : exninst, a : addr, `t*` : valtype*}:
-    `%~>%`(`%;%`_config(z, (val : val <: instr)^n{val <- `val*`} ++ [THROW_instr(x)]), `%;%`_config($add_exninst(z, [exn]), [`REF.EXN_ADDR`_instr(a) THROW_REF_instr]))
+    `%~>%`(`%;%`_config(z, (val : val <: instr)^n{val <- `val*`} ++ [THROW_instr(x)]), `%;%`_config($add_exninst(z, exn), [`REF.EXN_ADDR`_instr(a) THROW_REF_instr]))
     -- Expand: `%~~%`($as_deftype($tag(z, x).TYPE_taginst), `FUNC%->%`_comptype(`%`_resulttype(t^n{t <- `t*`},), `%`_resulttype([],)))
-    -- if (a = |$exninst(z)|)
-    -- if (exn = {TAG $tagaddr(z)[x!`%`_idx.0], FIELDS val^n{val <- `val*`}})
+    -- if (a = |$s(z).EXNS_store|)
+    -- if (exn = {TAG $f(z).MODULE_frame.TAGS_moduleinst[x!`%`_idx.0], FIELDS val^n{val <- `val*`}})
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:320.1-321.56
   rule `local.set`{z : state, val : val, x : idx}:
@@ -19026,9 +18976,9 @@ relation Step: `%~>%`(config, config)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:707.1-711.65
   rule `struct.new`{z : state, n : n, `val*` : val*, x : idx, si : structinst, a : addr, `mut?*` : mut?*, `zt*` : storagetype*}:
-    `%~>%`(`%;%`_config(z, (val : val <: instr)^n{val <- `val*`} ++ [`STRUCT.NEW`_instr(x)]), `%;%`_config($add_structinst(z, [si]), [`REF.STRUCT_ADDR`_instr(a)]))
+    `%~>%`(`%;%`_config(z, (val : val <: instr)^n{val <- `val*`} ++ [`STRUCT.NEW`_instr(x)]), `%;%`_config($add_structinst(z, si), [`REF.STRUCT_ADDR`_instr(a)]))
     -- Expand: `%~~%`($type(z, x), STRUCT_comptype(`%`_list(`%%`_fieldtype(mut?{mut <- `mut?`}, zt)^n{`mut?` <- `mut?*`, zt <- `zt*`},)))
-    -- if (a = |$structinst(z)|)
+    -- if (a = |$s(z).STRUCTS_store|)
     -- if (si = {TYPE $type(z, x), FIELDS $packfield_(zt, val)^n{val <- `val*`, zt <- `zt*`}})
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:728.1-729.55
@@ -19042,18 +18992,18 @@ relation Step: `%~>%`(config, config)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:747.1-752.65
   rule `array.new_fixed`{z : state, n : n, `val*` : val*, x : idx, ai : arrayinst, a : addr, `mut?` : mut?, zt : storagetype}:
-    `%~>%`(`%;%`_config(z, (val : val <: instr)^n{val <- `val*`} ++ [`ARRAY.NEW_FIXED`_instr(x, `%`_u32(n,))]), `%;%`_config($add_arrayinst(z, [ai]), [`REF.ARRAY_ADDR`_instr(a)]))
+    `%~>%`(`%;%`_config(z, (val : val <: instr)^n{val <- `val*`} ++ [`ARRAY.NEW_FIXED`_instr(x, `%`_u32(n,))]), `%;%`_config($add_arrayinst(z, ai), [`REF.ARRAY_ADDR`_instr(a)]))
     -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`_fieldtype(mut?{mut <- `mut?`}, zt)))
-    -- if ((a = |$arrayinst(z)|) /\ (ai = {TYPE $type(z, x), FIELDS $packfield_(zt, val)^n{val <- `val*`}}))
+    -- if ((a = |$s(z).ARRAYS_store|) /\ (ai = {TYPE $type(z, x), FIELDS $packfield_(zt, val)^n{val <- `val*`}}))
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:792.1-793.66
   rule `array.set-null`{z : state, i : num_(I32_numtype), val : val, x : idx}:
     `%~>%`(`%;%`_config(z, [`REF.NULL_ADDR`_instr CONST_instr(I32_numtype, i) (val : val <: instr) `ARRAY.SET`_instr(x)]), `%;%`_config(z, [TRAP_instr]))
 
-  ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:795.1-797.39
+  ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:795.1-797.38
   rule `array.set-oob`{z : state, a : addr, i : num_(I32_numtype), val : val, x : idx}:
     `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) (val : val <: instr) `ARRAY.SET`_instr(x)]), `%;%`_config(z, [TRAP_instr]))
-    -- if (i!`%`_num_.0 >= |$arrayinst(z)[a].FIELDS_arrayinst|)
+    -- if (i!`%`_num_.0 >= |$s(z).ARRAYS_store[a].FIELDS_arrayinst|)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:799.1-802.44
   rule `array.set-array`{z : state, a : addr, i : num_(I32_numtype), val : val, x : idx, zt : storagetype, `mut?` : mut?}:
@@ -29612,6 +29562,16 @@ def $frame(state : state) : frame
   def $frame{s : store, f : frame}(`%;%`_state(s, f)) = f
 
 ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
+def $s(state : state) : store
+  ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
+  def $s{z : state}(z) = $store(z)
+
+;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
+def $f(state : state) : frame
+  ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
+  def $f{z : state}(z) = $frame(z)
+
+;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
 def $sof(state : state) : store
   ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
   def $sof{z : state}(z) = $store(z)
@@ -29622,64 +29582,29 @@ def $fof(state : state) : frame
   def $fof{z : state}(z) = $frame(z)
 
 ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-def $tagaddr(state : state) : tagaddr*
-  ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-  def $tagaddr{s : store, f : frame}(`%;%`_state(s, f)) = f.MODULE_frame.TAGS_moduleinst
-
-;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
 def $moduleinst(state : state) : moduleinst
   ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
   def $moduleinst{z : state}(z) = $fof(z).MODULE_frame
 
 ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-def $taginst(state : state) : taginst*
+def $funcinst(state : state, funcaddr : funcaddr) : funcinst
   ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-  def $taginst{z : state}(z) = $sof(z).TAGS_store
+  def $funcinst{z : state, a : addr}(z, a) = $sof(z).FUNCS_store[a]
 
 ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-def $globalinst(state : state) : globalinst*
+def $structinst(state : state, structaddr : structaddr) : structinst
   ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-  def $globalinst{z : state}(z) = $sof(z).GLOBALS_store
+  def $structinst{z : state, a : addr}(z, a) = $sof(z).STRUCTS_store[a]
 
 ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-def $meminst(state : state) : meminst*
+def $arrayinst(state : state, arrayaddr : arrayaddr) : arrayinst
   ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-  def $meminst{z : state}(z) = $sof(z).MEMS_store
+  def $arrayinst{z : state, a : addr}(z, a) = $sof(z).ARRAYS_store[a]
 
 ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-def $tableinst(state : state) : tableinst*
+def $exninst(state : state, exnaddr : exnaddr) : exninst
   ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-  def $tableinst{z : state}(z) = $sof(z).TABLES_store
-
-;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-def $funcinst(state : state) : funcinst*
-  ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-  def $funcinst{z : state}(z) = $sof(z).FUNCS_store
-
-;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-def $datainst(state : state) : datainst*
-  ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-  def $datainst{z : state}(z) = $sof(z).DATAS_store
-
-;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-def $eleminst(state : state) : eleminst*
-  ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-  def $eleminst{z : state}(z) = $sof(z).ELEMS_store
-
-;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-def $structinst(state : state) : structinst*
-  ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-  def $structinst{z : state}(z) = $sof(z).STRUCTS_store
-
-;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-def $arrayinst(state : state) : arrayinst*
-  ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-  def $arrayinst{z : state}(z) = $sof(z).ARRAYS_store
-
-;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-def $exninst(state : state) : exninst*
-  ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-  def $exninst{z : state}(z) = $sof(z).EXNS_store
+  def $exninst{z : state, a : addr}(z, a) = $sof(z).EXNS_store[a]
 
 ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
 def $type(state : state, typeidx : typeidx) : deftype
@@ -29777,19 +29702,19 @@ def $with_array(state : state, arrayaddr : arrayaddr, nat : nat, fieldval : fiel
   def $with_array{z : state, a : addr, i : nat, fv : fieldval}(z, a, i, fv) = `%;%`_state($sof(z)[ARRAYS_store[a].FIELDS_arrayinst[i] = fv], $fof(z))
 
 ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-def $add_structinst(state : state, structinst*) : state
+def $add_structinst(state : state, structinst : structinst) : state
   ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-  def $add_structinst{z : state, `si*` : structinst*}(z, si*{si <- `si*`}) = `%;%`_state($sof(z)[STRUCTS_store =++ si*{si <- `si*`}], $fof(z))
+  def $add_structinst{z : state, si : structinst}(z, si) = `%;%`_state($sof(z)[STRUCTS_store =++ [si]], $fof(z))
 
 ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-def $add_arrayinst(state : state, arrayinst*) : state
+def $add_arrayinst(state : state, arrayinst : arrayinst) : state
   ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-  def $add_arrayinst{z : state, `ai*` : arrayinst*}(z, ai*{ai <- `ai*`}) = `%;%`_state($sof(z)[ARRAYS_store =++ ai*{ai <- `ai*`}], $fof(z))
+  def $add_arrayinst{z : state, ai : arrayinst}(z, ai) = `%;%`_state($sof(z)[ARRAYS_store =++ [ai]], $fof(z))
 
 ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-def $add_exninst(state : state, exninst*) : state
+def $add_exninst(state : state, exninst : exninst) : state
   ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
-  def $add_exninst{z : state, `exn*` : exninst*}(z, exn*{exn <- `exn*`}) = `%;%`_state($sof(z)[EXNS_store =++ exn*{exn <- `exn*`}], $fof(z))
+  def $add_exninst{z : state, exn : exninst}(z, exn) = `%;%`_state($sof(z)[EXNS_store =++ [exn]], $fof(z))
 
 ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
 def $growtable(tableinst : tableinst, nat : nat, ref : ref) : tableinst?
@@ -30430,17 +30355,17 @@ relation Step_read: `%~>%`(config, instr*)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule call{z : state, x : idx, a : addr}:
-    `%~>%`(`%;%`_config(z, [CALL_instr(x)]), [`REF.FUNC_ADDR`_instr(a) CALL_REF_instr($funcinst(z)[a].TYPE_funcinst : deftype <: typeuse)])
-    -- if (a < |$funcinst(z)|)
-    -- if (x!`%`_idx.0 < |$moduleinst(z).FUNCS_moduleinst|)
-    -- if ($moduleinst(z).FUNCS_moduleinst[x!`%`_idx.0] = a)
+    `%~>%`(`%;%`_config(z, [CALL_instr(x)]), [`REF.FUNC_ADDR`_instr(a) CALL_REF_instr($s(z).FUNCS_store[a].TYPE_funcinst : deftype <: typeuse)])
+    -- if (a < |$s(z).FUNCS_store|)
+    -- if (x!`%`_idx.0 < |$f(z).MODULE_frame.FUNCS_moduleinst|)
+    -- if ($f(z).MODULE_frame.FUNCS_moduleinst[x!`%`_idx.0] = a)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule return_call{z : state, x : idx, a : addr}:
-    `%~>%`(`%;%`_config(z, [RETURN_CALL_instr(x)]), [`REF.FUNC_ADDR`_instr(a) RETURN_CALL_REF_instr($funcinst(z)[a].TYPE_funcinst : deftype <: typeuse)])
-    -- if (a < |$funcinst(z)|)
-    -- if (x!`%`_idx.0 < |$moduleinst(z).FUNCS_moduleinst|)
-    -- if ($moduleinst(z).FUNCS_moduleinst[x!`%`_idx.0] = a)
+    `%~>%`(`%;%`_config(z, [RETURN_CALL_instr(x)]), [`REF.FUNC_ADDR`_instr(a) RETURN_CALL_REF_instr($s(z).FUNCS_store[a].TYPE_funcinst : deftype <: typeuse)])
+    -- if (a < |$s(z).FUNCS_store|)
+    -- if (x!`%`_idx.0 < |$f(z).MODULE_frame.FUNCS_moduleinst|)
+    -- if ($f(z).MODULE_frame.FUNCS_moduleinst[x!`%`_idx.0] = a)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `return_call_ref-label`{z : state, k : n, `instr'*` : instr*, `val*` : val*, yy : typeuse, `instr*` : instr*}:
@@ -30457,8 +30382,8 @@ relation Step_read: `%~>%`(config, instr*)
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `return_call_ref-frame-addr`{z : state, k : n, f : frame, `val'*` : val*, n : n, `val*` : val*, a : addr, yy : typeuse, `instr*` : instr*, `t_1*` : valtype*, m : m, `t_2*` : valtype*}:
     `%~>%`(`%;%`_config(z, [`FRAME_%{%}%`_instr(k, f, (val' : val <: instr)*{val' <- `val'*`} ++ (val : val <: instr)^n{val <- `val*`} ++ [`REF.FUNC_ADDR`_instr(a)] ++ [RETURN_CALL_REF_instr(yy)] ++ instr*{instr <- `instr*`})]), (val : val <: instr)^n{val <- `val*`} ++ [`REF.FUNC_ADDR`_instr(a) CALL_REF_instr(yy)])
-    -- if (a < |$funcinst(z)|)
-    -- Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, `FUNC%->%`_comptype(`%`_resulttype(t_1^n{t_1 <- `t_1*`},), `%`_resulttype(t_2^m{t_2 <- `t_2*`},)))
+    -- if (a < |$s(z).FUNCS_store|)
+    -- Expand: `%~~%`($s(z).FUNCS_store[a].TYPE_funcinst, `FUNC%->%`_comptype(`%`_resulttype(t_1^n{t_1 <- `t_1*`},), `%`_resulttype(t_2^m{t_2 <- `t_2*`},)))
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `throw_ref-null`{z : state}:
@@ -30484,18 +30409,18 @@ relation Step_read: `%~>%`(config, instr*)
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `throw_ref-handler-catch`{z : state, n : n, x : idx, l : labelidx, `catch'*` : catch*, a : addr, `val*` : val*}:
     `%~>%`(`%;%`_config(z, [`HANDLER_%{%}%`_instr(n, [CATCH_catch(x, l)] ++ catch'*{catch' <- `catch'*`}, [`REF.EXN_ADDR`_instr(a) THROW_REF_instr])]), (val : val <: instr)*{val <- `val*`} ++ [BR_instr(l)])
-    -- if (a < |$exninst(z)|)
-    -- if (x!`%`_idx.0 < |$tagaddr(z)|)
-    -- if ($exninst(z)[a].TAG_exninst = $tagaddr(z)[x!`%`_idx.0])
-    -- if (val*{val <- `val*`} = $exninst(z)[a].FIELDS_exninst)
+    -- if (a < |$s(z).EXNS_store|)
+    -- if (x!`%`_idx.0 < |$f(z).MODULE_frame.TAGS_moduleinst|)
+    -- if ($s(z).EXNS_store[a].TAG_exninst = $f(z).MODULE_frame.TAGS_moduleinst[x!`%`_idx.0])
+    -- if (val*{val <- `val*`} = $s(z).EXNS_store[a].FIELDS_exninst)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `throw_ref-handler-catch_ref`{z : state, n : n, x : idx, l : labelidx, `catch'*` : catch*, a : addr, `val*` : val*}:
     `%~>%`(`%;%`_config(z, [`HANDLER_%{%}%`_instr(n, [CATCH_REF_catch(x, l)] ++ catch'*{catch' <- `catch'*`}, [`REF.EXN_ADDR`_instr(a) THROW_REF_instr])]), (val : val <: instr)*{val <- `val*`} ++ [`REF.EXN_ADDR`_instr(a) BR_instr(l)])
-    -- if (a < |$exninst(z)|)
-    -- if (x!`%`_idx.0 < |$tagaddr(z)|)
-    -- if ($exninst(z)[a].TAG_exninst = $tagaddr(z)[x!`%`_idx.0])
-    -- if (val*{val <- `val*`} = $exninst(z)[a].FIELDS_exninst)
+    -- if (a < |$s(z).EXNS_store|)
+    -- if (x!`%`_idx.0 < |$f(z).MODULE_frame.TAGS_moduleinst|)
+    -- if ($s(z).EXNS_store[a].TAG_exninst = $f(z).MODULE_frame.TAGS_moduleinst[x!`%`_idx.0])
+    -- if (val*{val <- `val*`} = $s(z).EXNS_store[a].FIELDS_exninst)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `throw_ref-handler-catch_all`{z : state, n : n, l : labelidx, `catch'*` : catch*, a : addr}:
@@ -30741,8 +30666,8 @@ relation Step_read: `%~>%`(config, instr*)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `ref.func`{z : state, x : idx}:
-    `%~>%`(`%;%`_config(z, [`REF.FUNC`_instr(x)]), [`REF.FUNC_ADDR`_instr($moduleinst(z).FUNCS_moduleinst[x!`%`_idx.0])])
-    -- if (x!`%`_idx.0 < |$moduleinst(z).FUNCS_moduleinst|)
+    `%~>%`(`%;%`_config(z, [`REF.FUNC`_instr(x)]), [`REF.FUNC_ADDR`_instr($f(z).MODULE_frame.FUNCS_moduleinst[x!`%`_idx.0])])
+    -- if (x!`%`_idx.0 < |$f(z).MODULE_frame.FUNCS_moduleinst|)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `ref.test-true`{s : store, f : frame, ref : ref, rt : reftype}:
@@ -30777,10 +30702,10 @@ relation Step_read: `%~>%`(config, instr*)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `struct.get-struct`{z : state, a : addr, `sx?` : sx?, x : idx, i : fieldidx, `zt*` : storagetype*, `mut?*` : mut?*}:
-    `%~>%`(`%;%`_config(z, [`REF.STRUCT_ADDR`_instr(a) `STRUCT.GET`_instr(sx?{sx <- `sx?`}, x, i)]), [($unpackfield_(zt*{zt <- `zt*`}[i!`%`_fieldidx.0], sx?{sx <- `sx?`}, $structinst(z)[a].FIELDS_structinst[i!`%`_fieldidx.0]) : val <: instr)])
+    `%~>%`(`%;%`_config(z, [`REF.STRUCT_ADDR`_instr(a) `STRUCT.GET`_instr(sx?{sx <- `sx?`}, x, i)]), [($unpackfield_(zt*{zt <- `zt*`}[i!`%`_fieldidx.0], sx?{sx <- `sx?`}, $s(z).STRUCTS_store[a].FIELDS_structinst[i!`%`_fieldidx.0]) : val <: instr)])
     -- if (i!`%`_fieldidx.0 < |zt*{zt <- `zt*`}|)
-    -- if (i!`%`_fieldidx.0 < |$structinst(z)[a].FIELDS_structinst|)
-    -- if (a < |$structinst(z)|)
+    -- if (i!`%`_fieldidx.0 < |$s(z).STRUCTS_store[a].FIELDS_structinst|)
+    -- if (a < |$s(z).STRUCTS_store|)
     -- Expand: `%~~%`($type(z, x), STRUCT_comptype(`%`_list(`%%`_fieldtype(mut?{mut <- `mut?`}, zt)*{`mut?` <- `mut?*`, zt <- `zt*`},)))
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
@@ -30819,14 +30744,14 @@ relation Step_read: `%~>%`(config, instr*)
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `array.get-oob`{z : state, a : addr, i : num_(I32_numtype), `sx?` : sx?, x : idx}:
     `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) `ARRAY.GET`_instr(sx?{sx <- `sx?`}, x)]), [TRAP_instr])
-    -- if (a < |$arrayinst(z)|)
-    -- if (i!`%`_num_.0 >= |$arrayinst(z)[a].FIELDS_arrayinst|)
+    -- if (a < |$s(z).ARRAYS_store|)
+    -- if (i!`%`_num_.0 >= |$s(z).ARRAYS_store[a].FIELDS_arrayinst|)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `array.get-array`{z : state, a : addr, i : num_(I32_numtype), `sx?` : sx?, x : idx, zt : storagetype, `mut?` : mut?}:
-    `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) `ARRAY.GET`_instr(sx?{sx <- `sx?`}, x)]), [($unpackfield_(zt, sx?{sx <- `sx?`}, $arrayinst(z)[a].FIELDS_arrayinst[i!`%`_num_.0]) : val <: instr)])
-    -- if (i!`%`_num_.0 < |$arrayinst(z)[a].FIELDS_arrayinst|)
-    -- if (a < |$arrayinst(z)|)
+    `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) `ARRAY.GET`_instr(sx?{sx <- `sx?`}, x)]), [($unpackfield_(zt, sx?{sx <- `sx?`}, $s(z).ARRAYS_store[a].FIELDS_arrayinst[i!`%`_num_.0]) : val <: instr)])
+    -- if (i!`%`_num_.0 < |$s(z).ARRAYS_store[a].FIELDS_arrayinst|)
+    -- if (a < |$s(z).ARRAYS_store|)
     -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`_fieldtype(mut?{mut <- `mut?`}, zt)))
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
@@ -30835,8 +30760,8 @@ relation Step_read: `%~>%`(config, instr*)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `array.len-array`{z : state, a : addr}:
-    `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) `ARRAY.LEN`_instr]), [CONST_instr(I32_numtype, `%`_num_(|$arrayinst(z)[a].FIELDS_arrayinst|,))])
-    -- if (a < |$arrayinst(z)|)
+    `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) `ARRAY.LEN`_instr]), [CONST_instr(I32_numtype, `%`_num_(|$s(z).ARRAYS_store[a].FIELDS_arrayinst|,))])
+    -- if (a < |$s(z).ARRAYS_store|)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `array.fill-null`{z : state, i : num_(I32_numtype), val : val, n : n, x : idx}:
@@ -30845,8 +30770,8 @@ relation Step_read: `%~>%`(config, instr*)
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `array.fill-oob`{z : state, a : addr, i : num_(I32_numtype), val : val, n : n, x : idx}:
     `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) (val : val <: instr) CONST_instr(I32_numtype, `%`_num_(n,)) `ARRAY.FILL`_instr(x)]), [TRAP_instr])
-    -- if (a < |$arrayinst(z)|)
-    -- if ((i!`%`_num_.0 + n) > |$arrayinst(z)[a].FIELDS_arrayinst|)
+    -- if (a < |$s(z).ARRAYS_store|)
+    -- if ((i!`%`_num_.0 + n) > |$s(z).ARRAYS_store[a].FIELDS_arrayinst|)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `array.fill-zero`{z : state, a : addr, i : num_(I32_numtype), val : val, n : n, x : idx}:
@@ -30870,14 +30795,14 @@ relation Step_read: `%~>%`(config, instr*)
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `array.copy-oob1`{z : state, a_1 : addr, i_1 : num_(I32_numtype), a_2 : addr, i_2 : num_(I32_numtype), n : n, x_1 : idx, x_2 : idx}:
     `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a_1) CONST_instr(I32_numtype, i_1) `REF.ARRAY_ADDR`_instr(a_2) CONST_instr(I32_numtype, i_2) CONST_instr(I32_numtype, `%`_num_(n,)) `ARRAY.COPY`_instr(x_1, x_2)]), [TRAP_instr])
-    -- if (a_1 < |$arrayinst(z)|)
-    -- if ((i_1!`%`_num_.0 + n) > |$arrayinst(z)[a_1].FIELDS_arrayinst|)
+    -- if (a_1 < |$s(z).ARRAYS_store|)
+    -- if ((i_1!`%`_num_.0 + n) > |$s(z).ARRAYS_store[a_1].FIELDS_arrayinst|)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `array.copy-oob2`{z : state, a_1 : addr, i_1 : num_(I32_numtype), a_2 : addr, i_2 : num_(I32_numtype), n : n, x_1 : idx, x_2 : idx}:
     `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a_1) CONST_instr(I32_numtype, i_1) `REF.ARRAY_ADDR`_instr(a_2) CONST_instr(I32_numtype, i_2) CONST_instr(I32_numtype, `%`_num_(n,)) `ARRAY.COPY`_instr(x_1, x_2)]), [TRAP_instr])
-    -- if (a_2 < |$arrayinst(z)|)
-    -- if ((i_2!`%`_num_.0 + n) > |$arrayinst(z)[a_2].FIELDS_arrayinst|)
+    -- if (a_2 < |$s(z).ARRAYS_store|)
+    -- if ((i_2!`%`_num_.0 + n) > |$s(z).ARRAYS_store[a_2].FIELDS_arrayinst|)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `array.copy-zero`{z : state, a_1 : addr, i_1 : num_(I32_numtype), a_2 : addr, i_2 : num_(I32_numtype), n : n, x_1 : idx, x_2 : idx}:
@@ -30906,8 +30831,8 @@ relation Step_read: `%~>%`(config, instr*)
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `array.init_elem-oob1`{z : state, a : addr, i : num_(I32_numtype), j : num_(I32_numtype), n : n, x : idx, y : idx}:
     `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) CONST_instr(I32_numtype, j) CONST_instr(I32_numtype, `%`_num_(n,)) `ARRAY.INIT_ELEM`_instr(x, y)]), [TRAP_instr])
-    -- if (a < |$arrayinst(z)|)
-    -- if ((i!`%`_num_.0 + n) > |$arrayinst(z)[a].FIELDS_arrayinst|)
+    -- if (a < |$s(z).ARRAYS_store|)
+    -- if ((i!`%`_num_.0 + n) > |$s(z).ARRAYS_store[a].FIELDS_arrayinst|)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `array.init_elem-oob2`{z : state, a : addr, i : num_(I32_numtype), j : num_(I32_numtype), n : n, x : idx, y : idx}:
@@ -30934,8 +30859,8 @@ relation Step_read: `%~>%`(config, instr*)
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `array.init_data-oob1`{z : state, a : addr, i : num_(I32_numtype), j : num_(I32_numtype), n : n, x : idx, y : idx}:
     `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) CONST_instr(I32_numtype, j) CONST_instr(I32_numtype, `%`_num_(n,)) `ARRAY.INIT_DATA`_instr(x, y)]), [TRAP_instr])
-    -- if (a < |$arrayinst(z)|)
-    -- if ((i!`%`_num_.0 + n) > |$arrayinst(z)[a].FIELDS_arrayinst|)
+    -- if (a < |$s(z).ARRAYS_store|)
+    -- if ((i!`%`_num_.0 + n) > |$s(z).ARRAYS_store[a].FIELDS_arrayinst|)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec
   rule `array.init_data-oob2`{z : state, a : addr, i : num_(I32_numtype), j : num_(I32_numtype), n : n, x : idx, y : idx, `mut?` : mut?, zt : storagetype}:
@@ -31000,8 +30925,8 @@ relation Step: `%~>%`(config, config)
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:176.1-182.61
   rule `call_ref-func`{z : state, n : n, `val*` : val*, a : addr, yy : typeuse, m : m, f : frame, `instr*` : instr*, fi : funcinst, `t_1*` : valtype*, `t_2*` : valtype*, x : idx, `t*` : valtype*}:
     `%~>%`(`%;%`_config(z, (val : val <: instr)^n{val <- `val*`} ++ [`REF.FUNC_ADDR`_instr(a) CALL_REF_instr(yy)]), `%;%`_config(z, [`FRAME_%{%}%`_instr(m, f, [`LABEL_%{%}%`_instr(m, [], instr*{instr <- `instr*`})])]))
-    -- if (a < |$funcinst(z)|)
-    -- if ($funcinst(z)[a] = fi)
+    -- if (a < |$s(z).FUNCS_store|)
+    -- if ($s(z).FUNCS_store[a] = fi)
     -- Expand: `%~~%`(fi.TYPE_funcinst, `FUNC%->%`_comptype(`%`_resulttype(t_1^n{t_1 <- `t_1*`},), `%`_resulttype(t_2^m{t_2 <- `t_2*`},)))
     -- if (fi.CODE_funcinst = FUNC_funccode(x, LOCAL_local(t)*{t <- `t*`}, instr*{instr <- `instr*`}))
     -- if (f = {LOCALS ?(val)^n{val <- `val*`} ++ $default_(t)*{t <- `t*`}, MODULE fi.MODULE_funcinst})
@@ -31026,13 +30951,13 @@ relation Step: `%~>%`(config, config)
     -- if (|$hostcall(_HOSTFUNC_hostfunc(hf), s, val^n{val <- `val*`})| > 0)
     -- if (BOT_hostcallresult <- $hostcall(_HOSTFUNC_hostfunc(hf), s, val^n{val <- `val*`}))
 
-  ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:242.1-246.49
+  ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:242.1-246.55
   rule throw{z : state, n : n, `val*` : val*, x : idx, exn : exninst, a : addr, `t*` : valtype*}:
-    `%~>%`(`%;%`_config(z, (val : val <: instr)^n{val <- `val*`} ++ [THROW_instr(x)]), `%;%`_config($add_exninst(z, [exn]), [`REF.EXN_ADDR`_instr(a) THROW_REF_instr]))
+    `%~>%`(`%;%`_config(z, (val : val <: instr)^n{val <- `val*`} ++ [THROW_instr(x)]), `%;%`_config($add_exninst(z, exn), [`REF.EXN_ADDR`_instr(a) THROW_REF_instr]))
     -- Expand: `%~~%`($as_deftype($tag(z, x).TYPE_taginst), `FUNC%->%`_comptype(`%`_resulttype(t^n{t <- `t*`},), `%`_resulttype([],)))
-    -- if (a = |$exninst(z)|)
-    -- if (x!`%`_idx.0 < |$tagaddr(z)|)
-    -- if (exn = {TAG $tagaddr(z)[x!`%`_idx.0], FIELDS val^n{val <- `val*`}})
+    -- if (a = |$s(z).EXNS_store|)
+    -- if (x!`%`_idx.0 < |$f(z).MODULE_frame.TAGS_moduleinst|)
+    -- if (exn = {TAG $f(z).MODULE_frame.TAGS_moduleinst[x!`%`_idx.0], FIELDS val^n{val <- `val*`}})
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:320.1-321.56
   rule `local.set`{z : state, val : val, x : idx}:
@@ -31125,9 +31050,9 @@ relation Step: `%~>%`(config, config)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:707.1-711.65
   rule `struct.new`{z : state, n : n, `val*` : val*, x : idx, si : structinst, a : addr, `mut?*` : mut?*, `zt*` : storagetype*}:
-    `%~>%`(`%;%`_config(z, (val : val <: instr)^n{val <- `val*`} ++ [`STRUCT.NEW`_instr(x)]), `%;%`_config($add_structinst(z, [si]), [`REF.STRUCT_ADDR`_instr(a)]))
+    `%~>%`(`%;%`_config(z, (val : val <: instr)^n{val <- `val*`} ++ [`STRUCT.NEW`_instr(x)]), `%;%`_config($add_structinst(z, si), [`REF.STRUCT_ADDR`_instr(a)]))
     -- Expand: `%~~%`($type(z, x), STRUCT_comptype(`%`_list(`%%`_fieldtype(mut?{mut <- `mut?`}, zt)^n{`mut?` <- `mut?*`, zt <- `zt*`},)))
-    -- if (a = |$structinst(z)|)
+    -- if (a = |$s(z).STRUCTS_store|)
     -- if (si = {TYPE $type(z, x), FIELDS $packfield_(zt, val)^n{val <- `val*`, zt <- `zt*`}})
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:728.1-729.55
@@ -31142,19 +31067,19 @@ relation Step: `%~>%`(config, config)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:747.1-752.65
   rule `array.new_fixed`{z : state, n : n, `val*` : val*, x : idx, ai : arrayinst, a : addr, `mut?` : mut?, zt : storagetype}:
-    `%~>%`(`%;%`_config(z, (val : val <: instr)^n{val <- `val*`} ++ [`ARRAY.NEW_FIXED`_instr(x, `%`_u32(n,))]), `%;%`_config($add_arrayinst(z, [ai]), [`REF.ARRAY_ADDR`_instr(a)]))
+    `%~>%`(`%;%`_config(z, (val : val <: instr)^n{val <- `val*`} ++ [`ARRAY.NEW_FIXED`_instr(x, `%`_u32(n,))]), `%;%`_config($add_arrayinst(z, ai), [`REF.ARRAY_ADDR`_instr(a)]))
     -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`_fieldtype(mut?{mut <- `mut?`}, zt)))
-    -- if ((a = |$arrayinst(z)|) /\ (ai = {TYPE $type(z, x), FIELDS $packfield_(zt, val)^n{val <- `val*`}}))
+    -- if ((a = |$s(z).ARRAYS_store|) /\ (ai = {TYPE $type(z, x), FIELDS $packfield_(zt, val)^n{val <- `val*`}}))
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:792.1-793.66
   rule `array.set-null`{z : state, i : num_(I32_numtype), val : val, x : idx}:
     `%~>%`(`%;%`_config(z, [`REF.NULL_ADDR`_instr CONST_instr(I32_numtype, i) (val : val <: instr) `ARRAY.SET`_instr(x)]), `%;%`_config(z, [TRAP_instr]))
 
-  ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:795.1-797.39
+  ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:795.1-797.38
   rule `array.set-oob`{z : state, a : addr, i : num_(I32_numtype), val : val, x : idx}:
     `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) (val : val <: instr) `ARRAY.SET`_instr(x)]), `%;%`_config(z, [TRAP_instr]))
-    -- if (a < |$arrayinst(z)|)
-    -- if (i!`%`_num_.0 >= |$arrayinst(z)[a].FIELDS_arrayinst|)
+    -- if (a < |$s(z).ARRAYS_store|)
+    -- if (i!`%`_num_.0 >= |$s(z).ARRAYS_store[a].FIELDS_arrayinst|)
 
   ;; ../../../../specification/wasm-latest/4.3-execution.instructions.spectec:799.1-802.44
   rule `array.set-array`{z : state, a : addr, i : num_(I32_numtype), val : val, x : idx, zt : storagetype, `mut?` : mut?}:
