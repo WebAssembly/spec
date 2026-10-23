@@ -611,6 +611,11 @@ but configurations with multiple threads may be supported in the future.</p>
 <li><p>The meta variable <span class="math notranslate nohighlight">\(z\)</span> ranges over frame states where clear from context.</p></li>
 <li><p>The following shorthands are defined for accessing a state <span class="math notranslate nohighlight">\(z = (s ; f)\)</span>:</p>
 <ul>
+<li><p><span class="math notranslate nohighlight">\(\begin{array}[t]{&#64;{}l&#64;{~}c&#64;{~}l&#64;{}l&#64;{}} z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{module}} &amp; = &amp; f{.}\href{../exec/runtime.html#syntax-frame}{\mathsf{module}} \\ \end{array}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\begin{array}[t]{&#64;{}l&#64;{~}c&#64;{~}l&#64;{}l&#64;{}} z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{funcs}} &amp; = &amp; s{.}\href{../exec/runtime.html#syntax-store}{\mathsf{funcs}} \\ \end{array}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\begin{array}[t]{&#64;{}l&#64;{~}c&#64;{~}l&#64;{}l&#64;{}} z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{structs}} &amp; = &amp; s{.}\href{../exec/runtime.html#syntax-store}{\mathsf{structs}} \\ \end{array}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\begin{array}[t]{&#64;{}l&#64;{~}c&#64;{~}l&#64;{}l&#64;{}} z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{arrays}} &amp; = &amp; s{.}\href{../exec/runtime.html#syntax-store}{\mathsf{arrays}} \\ \end{array}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\begin{array}[t]{&#64;{}l&#64;{~}c&#64;{~}l&#64;{}l&#64;{}} z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{exns}} &amp; = &amp; s{.}\href{../exec/runtime.html#syntax-store}{\mathsf{exns}} \\ \end{array}\)</span></p></li>
 <li><p><span class="math notranslate nohighlight">\(\begin{array}[t]{&#64;{}l&#64;{~}c&#64;{~}l&#64;{}l&#64;{}} z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{types}}{}[x] &amp; = &amp; f{.}\href{../exec/runtime.html#syntax-frame}{\mathsf{module}}{.}\href{../exec/runtime.html#syntax-moduleinst}{\mathsf{types}}{}[x] \\ \end{array}\)</span></p></li>
 <li><p><span class="math notranslate nohighlight">\(\begin{array}[t]{&#64;{}l&#64;{~}c&#64;{~}l&#64;{}l&#64;{}} z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{tags}}{}[x] &amp; = &amp; s{.}\href{../exec/runtime.html#syntax-store}{\mathsf{tags}}{}[f{.}\href{../exec/runtime.html#syntax-frame}{\mathsf{module}}{.}\href{../exec/runtime.html#syntax-moduleinst}{\mathsf{tags}}{}[x]] \\ \end{array}\)</span></p></li>
 <li><p><span class="math notranslate nohighlight">\(\begin{array}[t]{&#64;{}l&#64;{~}c&#64;{~}l&#64;{}l&#64;{}} z{.}\href{../exec/runtime.html#syntax-state}{\mathsf{globals}}{}[x] &amp; = &amp; s{.}\href{../exec/runtime.html#syntax-store}{\mathsf{globals}}{}[f{.}\href{../exec/runtime.html#syntax-frame}{\mathsf{module}}{.}\href{../exec/runtime.html#syntax-moduleinst}{\mathsf{globals}}{}[x]] \\ \end{array}\)</span></p></li>
@@ -632,6 +637,25 @@ but configurations with multiple threads may be supported in the future.</p>
 </li>
 </ul>
 </section>
+</section>
+<section id="contextual-rules">
+<span id="exec-ctxt"></span><span id="index-20"></span><h2>Contextual Rules<a class="headerlink" href="#contextual-rules" title="Link to this heading">¶</a></h2>
+<p>The next <a class="reference internal" href="../syntax/instructions.html#syntax-instr"><span class="std std-ref">instruction</span></a> to <a class="reference internal" href="instructions.html#exec-instr"><span class="std std-ref">execute</span></a> as well as the current <a class="reference internal" href="#syntax-frame"><span class="std std-ref">frame</span></a> is determined according to the following <em>contextual</em> reduction rules.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{array}[t]{&#64;{}l&#64;{}rcl&#64;{}l&#64;{}}
+&amp; z ; {{\href{../exec/runtime.html#syntax-val}{\mathit{val}}}^\ast}~{{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}}^\ast}~{{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}}_1^\ast} &amp; \href{../exec/conventions.html#exec-notation}{\hookrightarrow} &amp; {z'} ; {{\href{../exec/runtime.html#syntax-val}{\mathit{val}}}^\ast}~{{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}'}^\ast}~{{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}}_1^\ast} &amp; \quad
+\begin{array}[t]{&#64;{}l&#64;{}}
+\mbox{if}~ z ; {{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}}^\ast} \href{../exec/conventions.html#exec-notation}{\hookrightarrow} {z'} ; {{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}'}^\ast} \\
+{\land}~ {{\href{../exec/runtime.html#syntax-val}{\mathit{val}}}^\ast} \neq \epsilon \lor {{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}}_1^\ast} \neq \epsilon \\
+\end{array} \\[0.8ex]
+&amp; z ; ({{\href{../exec/runtime.html#syntax-label}{\mathsf{label}}}_{n}}{\{ {{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}}_0^\ast} \}}~{{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}}^\ast}) &amp; \href{../exec/conventions.html#exec-notation}{\hookrightarrow} &amp; {z'} ; ({{\href{../exec/runtime.html#syntax-label}{\mathsf{label}}}_{n}}{\{ {{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}}_0^\ast} \}}~{{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}'}^\ast}) &amp; \quad \mbox{if}~ z ; {{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}}^\ast} \href{../exec/conventions.html#exec-notation}{\hookrightarrow} {z'} ; {{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}'}^\ast} \\[0.8ex]
+&amp; z ; ({{\href{../exec/runtime.html#syntax-handler}{\mathsf{handler}}}_{n}}{\{ {{\href{../syntax/instructions.html#syntax-catch}{\mathit{catch}}}^\ast} \}}~{{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}}^\ast}) &amp; \href{../exec/conventions.html#exec-notation}{\hookrightarrow} &amp; {z'} ; ({{\href{../exec/runtime.html#syntax-handler}{\mathsf{handler}}}_{n}}{\{ {{\href{../syntax/instructions.html#syntax-catch}{\mathit{catch}}}^\ast} \}}~{{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}'}^\ast}) &amp; \quad \mbox{if}~ z ; {{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}}^\ast} \href{../exec/conventions.html#exec-notation}{\hookrightarrow} {z'} ; {{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}'}^\ast} \\[0.8ex]
+&amp; s ; f ; ({{\href{../exec/runtime.html#syntax-frame}{\mathsf{frame}}}_{n}}{\{ {f'} \}}~{{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}}^\ast}) &amp; \href{../exec/conventions.html#exec-notation}{\hookrightarrow} &amp; {s'} ; f ; ({{\href{../exec/runtime.html#syntax-frame}{\mathsf{frame}}}_{n}}{\{ {f''} \}}~{{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}'}^\ast}) &amp; \quad \mbox{if}~ s ; {f'} ; {{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}}^\ast} \href{../exec/conventions.html#exec-notation}{\hookrightarrow} {s'} ; {f''} ; {{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}'}^\ast} \\
+\end{array}\end{split}\]</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In the prose formulation, the current instruction pointer and the current frame are implicit.</p>
+</div>
 </section>
 </section>
 
