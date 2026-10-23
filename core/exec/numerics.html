@@ -5,11 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Numerics &#8212; WebAssembly 3.0 (2026-10-22)</title>
+    <title>Numerics &#8212; WebAssembly 3.0 (2026-10-23)</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=686e5160" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=057308f9" />
-    <script src="../_static/documentation_options.js?v=a0e10279"></script>
+    <script src="../_static/documentation_options.js?v=d1344820"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>window.MathJax = {"tex": {"maxBuffer": 30720, "macros": {"multicolumn": ["", 2]}}, "options": {"menuOptions": {"settings": {"enrich": false}}}}</script>
@@ -979,6 +979,8 @@ then its sign is non-deterministic and the <a class="reference internal" href=".
 <li><p>Else if both <span class="math notranslate nohighlight">\(z_1\)</span> and <span class="math notranslate nohighlight">\(z_2\)</span> are infinities of opposite sign, then return negative infinity.</p></li>
 <li><p>Else if either <span class="math notranslate nohighlight">\(z_1\)</span> or <span class="math notranslate nohighlight">\(z_2\)</span> is an infinity and the other a value with equal sign, then return positive infinity.</p></li>
 <li><p>Else if either <span class="math notranslate nohighlight">\(z_1\)</span> or <span class="math notranslate nohighlight">\(z_2\)</span> is an infinity and the other a value with opposite sign, then return negative infinity.</p></li>
+<li><p>Else if either <span class="math notranslate nohighlight">\(z_1\)</span> or <span class="math notranslate nohighlight">\(z_2\)</span> is a zero and the other a value with the same sign, then return positive infinity.</p></li>
+<li><p>Else if either <span class="math notranslate nohighlight">\(z_1\)</span> or <span class="math notranslate nohighlight">\(z_2\)</span> is a zero and the other a value with opposite sign, then return negative infinity.</p></li>
 <li><p>Else if both <span class="math notranslate nohighlight">\(z_1\)</span> and <span class="math notranslate nohighlight">\(z_2\)</span> are zeroes of equal sign, then return positive zero.</p></li>
 <li><p>Else if both <span class="math notranslate nohighlight">\(z_1\)</span> and <span class="math notranslate nohighlight">\(z_2\)</span> are zeroes of opposite sign, then return negative zero.</p></li>
 <li><p>Else return the result of multiplying <span class="math notranslate nohighlight">\(z_1\)</span> and <span class="math notranslate nohighlight">\(z_2\)</span>, <a class="reference internal" href="#aux-ieee"><span class="std std-ref">rounded</span></a> to the nearest representable value.</p></li>
@@ -997,8 +999,10 @@ then its sign is non-deterministic and the <a class="reference internal" href=".
 \href{../exec/numerics.html#op-fmul}{\mathrm{fmul}}_N(\pm q_1, \mp \infty) &amp;=&amp; -\infty \\
 \href{../exec/numerics.html#op-fmul}{\mathrm{fmul}}_N(\pm \infty, \pm q_2) &amp;=&amp; +\infty \\
 \href{../exec/numerics.html#op-fmul}{\mathrm{fmul}}_N(\pm \infty, \mp q_2) &amp;=&amp; -\infty \\
-\href{../exec/numerics.html#op-fmul}{\mathrm{fmul}}_N(\pm 0, \pm 0) &amp;=&amp; + 0 \\
-\href{../exec/numerics.html#op-fmul}{\mathrm{fmul}}_N(\pm 0, \mp 0) &amp;=&amp; - 0 \\
+\href{../exec/numerics.html#op-fmul}{\mathrm{fmul}}_N(\pm 0, \pm q_2) &amp;=&amp; +0 \\
+\href{../exec/numerics.html#op-fmul}{\mathrm{fmul}}_N(\pm 0, \mp q_2) &amp;=&amp; -0 \\
+\href{../exec/numerics.html#op-fmul}{\mathrm{fmul}}_N(\pm q_1, \pm 0) &amp;=&amp; +0 \\
+\href{../exec/numerics.html#op-fmul}{\mathrm{fmul}}_N(\pm q_1, \mp 0) &amp;=&amp; -0 \\
 \href{../exec/numerics.html#op-fmul}{\mathrm{fmul}}_N(z_1, z_2) &amp;=&amp; \href{../exec/numerics.html#aux-ieee}{\mathrm{float}}_N(z_1 \cdot z_2) \\
 \end{array}\end{split}\]</div>
 </section>
