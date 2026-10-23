@@ -676,3 +676,17 @@ Conventions
   - ${definition: with_mem}
   - ${definition: with_table}
   - ${definition: with_local}
+
+
+.. index:: ! contextual rules, execution
+.. _exec-ctxt:
+
+Contextual Rules
+~~~~~~~~~~~~~~~~
+
+The next :ref:`instruction <syntax-instr>` to :ref:`execute <exec-instr>` as well as the current :ref:`frame <syntax-frame>` is determined according to the following *contextual* reduction rules.
+
+$${rule: Step/ctxt-*}
+
+.. note::
+   In the prose formulation, the current instruction pointer and the current frame are implicit.
