@@ -1183,3 +1183,17 @@ $${rule-ignore: Eval_expr}
 Expression evaluation iterates single-step reduction until reaching a sequence of resulting :ref:`values <syntax-val>`.
 
 Expressions constituting :ref:`function <syntax-func>` bodies are executed during function :ref:`invocation <exec-invoke>`.
+
+
+.. index:: ! contextual rules, execution
+.. _exec-ctxt:
+
+Contextual Rules
+~~~~~~~~~~~~~~~~
+
+The next :ref:`instruction <syntax-instr>` to :ref:`execute <exec-instr>` as well as the current :ref:`frame <syntax-frame>` is determined according to the following *contextual* reduction rules.
+
+$${rule: Step/ctxt-*}
+
+.. note::
+   In the prose formulation, the current instruction pointer and the current frame are implicit.
