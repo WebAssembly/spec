@@ -32,7 +32,7 @@ rule Steps/trans:
 rule Step/ctxt-instrs:
   z; val* instr* instr_1*  ~>  z'; val* instr'* instr_1*
   -- Step: z; instr* ~> z'; instr'*
-  -- if val* =/= eps \/ instr_1* =/= eps
+  -- if (val* =/= eps \/ instr_1* =/= eps)
 
 rule Step/ctxt-label:
   z; (LABEL_ n `{instr_0*} instr*)  ~>  z'; (LABEL_ n `{instr_0*} instr'*)

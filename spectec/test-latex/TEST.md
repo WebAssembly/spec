@@ -9871,7 +9871,7 @@ $$
 {[\textsc{\scriptsize E{-}ctxt{-}instrs}]} \quad & z ; {{\mathit{val}}^\ast}~{{\mathit{instr}}^\ast}~{{\mathit{instr}}_1^\ast} & \hookrightarrow & {z'} ; {{\mathit{val}}^\ast}~{{\mathit{instr}'}^\ast}~{{\mathit{instr}}_1^\ast} & \quad
 \begin{array}[t]{@{}l@{}}
 \mbox{if}~ z ; {{\mathit{instr}}^\ast} \hookrightarrow {z'} ; {{\mathit{instr}'}^\ast} \\
-{\land}~ {{\mathit{val}}^\ast} \neq \epsilon \lor {{\mathit{instr}}_1^\ast} \neq \epsilon \\
+{\land}~ ({{\mathit{val}}^\ast} \neq \epsilon \lor {{\mathit{instr}}_1^\ast} \neq \epsilon) \\
 \end{array} \\
 {[\textsc{\scriptsize E{-}ctxt{-}label}]} \quad & z ; ({{\mathsf{label}}_{n}}{\{ {{\mathit{instr}}_0^\ast} \}}~{{\mathit{instr}}^\ast}) & \hookrightarrow & {z'} ; ({{\mathsf{label}}_{n}}{\{ {{\mathit{instr}}_0^\ast} \}}~{{\mathit{instr}'}^\ast}) & \quad \mbox{if}~ z ; {{\mathit{instr}}^\ast} \hookrightarrow {z'} ; {{\mathit{instr}'}^\ast} \\
 {[\textsc{\scriptsize E{-}ctxt{-}handler}]} \quad & z ; ({{\mathsf{handler}}_{n}}{\{ {{\mathit{catch}}^\ast} \}}~{{\mathit{instr}}^\ast}) & \hookrightarrow & {z'} ; ({{\mathsf{handler}}_{n}}{\{ {{\mathit{catch}}^\ast} \}}~{{\mathit{instr}'}^\ast}) & \quad \mbox{if}~ z ; {{\mathit{instr}}^\ast} \hookrightarrow {z'} ; {{\mathit{instr}'}^\ast} \\
