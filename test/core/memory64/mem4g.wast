@@ -1,0 +1,192 @@
+;; 64-bit, 4GB + 64KB memory 
+(module
+  (memory i64 65537 65537)
+
+  (func (export "size") (result i64) (memory.size))
+
+  (func (export "i32.store8") (param i64 i32)		(i32.store8 (local.get 0) (local.get 1)))
+  (func (export "i32.store16") (param i64 i32)		(i32.store16 (local.get 0) (local.get 1)))
+  (func (export "i32.store") (param i64 i32)		(i32.store (local.get 0) (local.get 1)))
+  (func (export "i64.store8") (param i64 i64)		(i64.store8 (local.get 0) (local.get 1)))
+  (func (export "i64.store16") (param i64 i64)		(i64.store16 (local.get 0) (local.get 1)))
+  (func (export "i64.store32") (param i64 i64)		(i64.store32 (local.get 0) (local.get 1)))
+  (func (export "i64.store") (param i64 i64)		(i64.store (local.get 0) (local.get 1)))
+  (func (export "f32.store") (param i64 f32)		(f32.store (local.get 0) (local.get 1)))
+  (func (export "f64.store") (param i64 f64)		(f64.store (local.get 0) (local.get 1)))
+  (func (export "v128.store") (param i64 v128)		(v128.store (local.get 0) (local.get 1)))
+
+  (func (export "i32.store8_offset") (param i64 i32)		(i32.store8 offset=0x1_0000_0000 (local.get 0) (local.get 1)))
+  (func (export "i32.store16_offset") (param i64 i32)		(i32.store16 offset=0x1_0000_0000 (local.get 0) (local.get 1)))
+  (func (export "i32.store_offset") (param i64 i32)		(i32.store offset=0x1_0000_0000 (local.get 0) (local.get 1)))
+  (func (export "i64.store8_offset") (param i64 i64)		(i64.store8 offset=0x1_0000_0000 (local.get 0) (local.get 1)))
+  (func (export "i64.store16_offset") (param i64 i64)		(i64.store16 offset=0x1_0000_0000 (local.get 0) (local.get 1)))
+  (func (export "i64.store32_offset") (param i64 i64)		(i64.store32 offset=0x1_0000_0000 (local.get 0) (local.get 1)))
+  (func (export "i64.store_offset") (param i64 i64)		(i64.store offset=0x1_0000_0000 (local.get 0) (local.get 1)))
+  (func (export "f32.store_offset") (param i64 f32)		(f32.store offset=0x1_0000_0000 (local.get 0) (local.get 1)))
+  (func (export "f64.store_offset") (param i64 f64)		(f64.store offset=0x1_0000_0000 (local.get 0) (local.get 1)))
+  (func (export "v128.store_offset") (param i64 v128)		(v128.store offset=0x1_0000_0000 (local.get 0) (local.get 1)))
+
+  (func (export "i32.load") (param i64) (result i32)		(i32.load (local.get 0)))
+  (func (export "i32.load8_u") (param i64) (result i32) 	(i32.load8_u (local.get 0)))
+  (func (export "i32.load8_s") (param i64) (result i32) 	(i32.load8_s (local.get 0)))
+  (func (export "i32.load16_u") (param i64) (result i32) 	(i32.load16_u (local.get 0)))
+  (func (export "i32.load16_s") (param i64) (result i32) 	(i32.load16_s (local.get 0)))
+  (func (export "i64.load") (param i64) (result i64) 		(i64.load (local.get 0)))
+  (func (export "i64.load8_u") (param i64) (result i64) 	(i64.load8_u (local.get 0)))
+  (func (export "i64.load8_s") (param i64) (result i64) 	(i64.load8_s (local.get 0)))
+  (func (export "i64.load16_u") (param i64) (result i64) 	(i64.load16_u (local.get 0)))
+  (func (export "i64.load16_s") (param i64) (result i64) 	(i64.load16_s (local.get 0)))
+  (func (export "i64.load32_u") (param i64) (result i64) 	(i64.load32_u (local.get 0)))
+  (func (export "i64.load32_s") (param i64) (result i64) 	(i64.load32_s (local.get 0)))
+  (func (export "f32.load") (param i64) (result f32) 		(f32.load (local.get 0)))
+  (func (export "f64.load") (param i64) (result f64) 		(f64.load (local.get 0)))
+  (func (export "v128.load") (param i64) (result v128) 		(v128.load (local.get 0)))
+
+  (func (export "i32.load_offset") (param i64) (result i32)		(i32.load offset=0xFF00_0000 (local.get 0)))
+  (func (export "i32.load8_u_offset") (param i64) (result i32) 		(i32.load8_u offset=0xFF00_0000 (local.get 0)))
+  (func (export "i32.load8_s_offset") (param i64) (result i32) 		(i32.load8_s offset=0xFF00_0000 (local.get 0)))
+  (func (export "i32.load16_u_offset") (param i64) (result i32) 	(i32.load16_u offset=0xFF00_0000 (local.get 0)))
+  (func (export "i32.load16_s_offset") (param i64) (result i32) 	(i32.load16_s offset=0xFF00_0000 (local.get 0)))
+  (func (export "i64.load8_u_offset") (param i64) (result i64)		(i64.load8_u offset=0xFF00_0000 (local.get 0)))
+  (func (export "i64.load8_s_offset") (param i64) (result i64) 		(i64.load8_s offset=0xFF00_0000 (local.get 0)))
+  (func (export "i64.load16_u_offset") (param i64) (result i64) 	(i64.load16_u offset=0xFF00_0000 (local.get 0)))
+  (func (export "i64.load16_s_offset") (param i64) (result i64) 	(i64.load16_s offset=0xFF00_0000 (local.get 0)))
+  (func (export "i64.load32_u_offset") (param i64) (result i64) 	(i64.load32_u offset=0xFF00_0000 (local.get 0)))
+  (func (export "i64.load32_s_offset") (param i64) (result i64) 	(i64.load32_s offset=0xFF00_0000 (local.get 0)))
+  (func (export "i64.load_offset") (param i64) (result i64) 		(i64.load offset=0xFF00_0000 (local.get 0)))
+  (func (export "f32.load_offset") (param i64) (result f32) 		(f32.load offset=0xFF00_0000 (local.get 0)))
+  (func (export "f64.load_offset") (param i64) (result f64) 		(f64.load offset=0xFF00_0000 (local.get 0)))
+  (func (export "v128.load_offset") (param i64) (result v128) 		(v128.load offset=0xFF00_0000 (local.get 0)))
+)
+
+(assert_return (invoke "size") (i64.const 65537))
+(assert_return (invoke "i64.store" (i64.const 0x1_0000_0000) (i64.const 0x8877_6655_4433_2211)))
+(assert_return (invoke "i64.store_offset" (i64.const 8) (i64.const 0x9988_7766_5544_3322)))
+
+;; test multiple cases of i32.load
+(assert_return (invoke "i32.load" (i64.const 0)) (i32.const 0))
+(assert_return (invoke "i32.load" (i64.const 0x1_0000_0000)) (i32.const 0x44332211))
+(assert_return (invoke "i32.load" (i64.const 0x1_0000_0004)) (i32.const 0x88776655))
+(assert_return (invoke "i32.load" (i64.const 0x1_0000_0008)) (i32.const 0x55443322))
+(assert_return (invoke "i32.load" (i64.const 0x1_0000_000C)) (i32.const 0x99887766))
+(assert_return (invoke "i32.load" (i64.const 0x1_0000_0010)) (i32.const 0))
+
+;; test loads from above 4GB
+(assert_return (invoke "i32.load8_u" (i64.const 2)) (i32.const 0))
+(assert_return (invoke "i32.load8_u" (i64.const 0x1_0000_0002)) (i32.const 0x33))
+
+(assert_return (invoke "i32.load8_s" (i64.const 0xF)) (i32.const 0))
+(assert_return (invoke "i32.load8_s" (i64.const 0x1_0000_000F)) (i32.const 0xFFFFFF99))
+
+(assert_return (invoke "i32.load16_u" (i64.const 0x4)) (i32.const 0))
+(assert_return (invoke "i32.load16_u" (i64.const 0x1_0000_0004)) (i32.const 0x6655))
+
+(assert_return (invoke "i32.load16_s" (i64.const 0xE)) (i32.const 0))
+(assert_return (invoke "i32.load16_s" (i64.const 0x1_0000_000E)) (i32.const 0xFFFF9988))
+
+(assert_return (invoke "i64.load" (i64.const 0x2)) (i64.const 0))
+(assert_return (invoke "i64.load" (i64.const 0x1_0000_0002)) (i64.const 0x3322_8877_6655_4433))
+
+(assert_return (invoke "i64.load8_u" (i64.const 0x2)) (i64.const 0))
+(assert_return (invoke "i64.load8_u" (i64.const 0x1_0000_0002)) (i64.const 0x33))
+
+(assert_return (invoke "i64.load8_s" (i64.const 0xF)) (i64.const 0))
+(assert_return (invoke "i64.load8_s" (i64.const 0x1_0000_000F)) (i64.const 0xFFFFFFFF_FFFFFF99))
+
+(assert_return (invoke "i64.load16_u" (i64.const 0x6)) (i64.const 0))
+(assert_return (invoke "i64.load16_u" (i64.const 0x1_0000_0006)) (i64.const 0x8877))
+
+(assert_return (invoke "i64.load16_s" (i64.const 0x6)) (i64.const 0))
+(assert_return (invoke "i64.load16_s" (i64.const 0x1_0000_0006)) (i64.const 0xFFFFFFFF_FFFF8877))
+
+(assert_return (invoke "i64.load32_u" (i64.const 0xA)) (i64.const 0))
+(assert_return (invoke "i64.load32_u" (i64.const 0x1_0000_000A)) (i64.const 0x7766_5544))
+
+(assert_return (invoke "i64.load32_s" (i64.const 0xC)) (i64.const 0))
+(assert_return (invoke "i64.load32_s" (i64.const 0x1_0000_000C)) (i64.const 0xFFFFFFFF_99887766))
+
+(assert_return (invoke "f32.load" (i64.const 0x2)) (f32.const 0))
+(assert_return (invoke "f32.load" (i64.const 0x1_0000_0002)) (f32.const 2.517_805_285_963_856_5e+23))
+
+(assert_return (invoke "f64.load" (i64.const 0x2)) (f64.const 0))
+(assert_return (invoke "f64.load" (i64.const 0x1_0000_0002)) (f64.const 2.252_570_108_416_556_7e-62))
+
+(assert_return (invoke "v128.load" (i64.const 0x0)) (v128.const i32x4 0 0 0 0))
+(assert_return (invoke "v128.load" (i64.const 0x1_0000_0000)) (v128.const i8x16 0x11 0x22 0x33 0x44 0x55 0x66 0x77 0x88 0x22 0x33 0x44 0x55 0x66 0x77 0x88 0x99))
+
+;; overwrite old values
+(assert_return (invoke "i64.store" (i64.const 0x1_0000_0000) (i64.const 0xAAAA_AAAA_AAAA_AAAA)))
+(assert_return (invoke "i64.store" (i64.const 0x1_0000_0008) (i64.const 0xAAAA_AAAA_AAAA_AAAA)))
+(assert_return (invoke "i64.load" (i64.const 0x1_0000_0000)) (i64.const 0xAAAA_AAAA_AAAA_AAAA))
+(assert_return (invoke "i64.load" (i64.const 0x1_0000_0008)) (i64.const 0xAAAA_AAAA_AAAA_AAAA))
+
+;; write new values in slightly different area
+(assert_return (invoke "i64.store" (i64.const 0x1_0000_A000) (i64.const 0x8877_6655_4433_2211)))
+(assert_return (invoke "i64.store" (i64.const 0x1_0000_A008) (i64.const 0x9988_7766_5544_3322)))
+
+;; test loads with offsets
+(assert_return (invoke "i32.load_offset" (i64.const 0x0100_A004)) (i32.const 0x88776655))
+(assert_return (invoke "i32.load8_u_offset" (i64.const 0x0100_A002)) (i32.const 0x33))
+(assert_return (invoke "i32.load8_s_offset" (i64.const 0x0100_A00F)) (i32.const 0xFFFFFF99))
+(assert_return (invoke "i32.load16_u_offset" (i64.const 0x0100_A004)) (i32.const 0x6655))
+(assert_return (invoke "i32.load16_s_offset" (i64.const 0x0100_A00E)) (i32.const 0xFFFF9988))
+(assert_return (invoke "i64.load_offset" (i64.const 0x0100_A002)) (i64.const 0x3322_8877_6655_4433))
+(assert_return (invoke "f32.load_offset" (i64.const 0x0100_A002)) (f32.const 2.517_805_285_963_856_5e+23))
+(assert_return (invoke "f64.load_offset" (i64.const 0x0100_A002)) (f64.const 2.252_570_108_416_556_7e-62))
+(assert_return (invoke "v128.load_offset" (i64.const 0x0100_A000)) (v128.const i8x16 0x11 0x22 0x33 0x44 0x55 0x66 0x77 0x88 0x22 0x33 0x44 0x55 0x66 0x77 0x88 0x99))
+
+;; check for OOB
+(assert_trap (invoke "i32.load" (i64.const 0x1_0001_0004)) "out of bounds memory access")
+(assert_trap (invoke "i32.load8_u" (i64.const 0x1_0001_0002)) "out of bounds memory access")
+(assert_trap (invoke "i32.load8_s" (i64.const 0x1_0001_000F)) "out of bounds memory access")
+(assert_trap (invoke "i32.load16_u" (i64.const 0x1_0001_0004)) "out of bounds memory access")
+(assert_trap (invoke "i32.load16_s" (i64.const 0x1_0001_000E)) "out of bounds memory access")
+(assert_trap (invoke "i64.load" (i64.const 0x1_0001_0002)) "out of bounds memory access")
+(assert_trap (invoke "i64.load8_u" (i64.const 0x1_0001_0002)) "out of bounds memory access")
+(assert_trap (invoke "i64.load8_s" (i64.const 0x1_0001_000F)) "out of bounds memory access")
+(assert_trap (invoke "i64.load16_u" (i64.const 0x1_0001_0004)) "out of bounds memory access")
+(assert_trap (invoke "i64.load16_s" (i64.const 0x1_0001_000E)) "out of bounds memory access")
+(assert_trap (invoke "i64.load32_u" (i64.const 0x1_0001_0004)) "out of bounds memory access")
+(assert_trap (invoke "i64.load32_s" (i64.const 0x1_0001_000E)) "out of bounds memory access")
+(assert_trap (invoke "f32.load" (i64.const 0x1_0001_0002)) "out of bounds memory access")
+(assert_trap (invoke "f64.load" (i64.const 0x1_0001_0002)) "out of bounds memory access")
+(assert_trap (invoke "v128.load" (i64.const 0x1_0001_0000)) "out of bounds memory access")
+
+(assert_trap (invoke "i32.load_offset" (i64.const 0x0101_0004)) "out of bounds memory access")
+(assert_trap (invoke "i32.load8_u_offset" (i64.const 0x0101_0002)) "out of bounds memory access")
+(assert_trap (invoke "i32.load8_s_offset" (i64.const 0x0101_000F)) "out of bounds memory access")
+(assert_trap (invoke "i32.load16_u_offset" (i64.const 0x0101_0004)) "out of bounds memory access")
+(assert_trap (invoke "i32.load16_s_offset" (i64.const 0x0101_000E)) "out of bounds memory access")
+(assert_trap (invoke "i64.load_offset" (i64.const 0x0101_0002)) "out of bounds memory access")
+(assert_trap (invoke "i64.load8_u_offset" (i64.const 0x0101_0002)) "out of bounds memory access")
+(assert_trap (invoke "i64.load8_s_offset" (i64.const 0x0101_000F)) "out of bounds memory access")
+(assert_trap (invoke "i64.load16_u_offset" (i64.const 0x0101_0004)) "out of bounds memory access")
+(assert_trap (invoke "i64.load16_s_offset" (i64.const 0x0101_000E)) "out of bounds memory access")
+(assert_trap (invoke "i64.load32_u_offset" (i64.const 0x0101_0004)) "out of bounds memory access")
+(assert_trap (invoke "i64.load32_s_offset" (i64.const 0x0101_000E)) "out of bounds memory access")
+(assert_trap (invoke "f32.load_offset" (i64.const 0x0101_0002)) "out of bounds memory access")
+(assert_trap (invoke "f64.load_offset" (i64.const 0x0101_0002)) "out of bounds memory access")
+(assert_trap (invoke "v128.load_offset" (i64.const 0x0101_0000)) "out of bounds memory access")
+
+(assert_trap (invoke "i32.store" (i64.const 0x1_0001_0004) (i32.const 0)) "out of bounds memory access")
+(assert_trap (invoke "i32.store8" (i64.const 0x1_0001_0002) (i32.const 0)) "out of bounds memory access")
+(assert_trap (invoke "i32.store16" (i64.const 0x1_0001_0004) (i32.const 0)) "out of bounds memory access")
+(assert_trap (invoke "i64.store" (i64.const 0x1_0001_0002) (i64.const 0)) "out of bounds memory access")
+(assert_trap (invoke "i64.store8" (i64.const 0x1_0001_0002) (i64.const 0)) "out of bounds memory access")
+(assert_trap (invoke "i64.store16" (i64.const 0x1_0001_0004) (i64.const 0)) "out of bounds memory access")
+(assert_trap (invoke "i64.store32" (i64.const 0x1_0001_0004) (i64.const 0)) "out of bounds memory access")
+(assert_trap (invoke "f32.store" (i64.const 0x1_0001_0002) (f32.const 0)) "out of bounds memory access")
+(assert_trap (invoke "f64.store" (i64.const 0x1_0001_0002) (f64.const 0)) "out of bounds memory access")
+(assert_trap (invoke "v128.store" (i64.const 0x1_0001_0000) (v128.const i64x2 0 0)) "out of bounds memory access")
+
+(assert_trap (invoke "i32.store_offset" (i64.const 0x0101_0004) (i32.const 0)) "out of bounds memory access")
+(assert_trap (invoke "i32.store8_offset" (i64.const 0x0101_0002) (i32.const 0)) "out of bounds memory access")
+(assert_trap (invoke "i32.store16_offset" (i64.const 0x0101_0004) (i32.const 0)) "out of bounds memory access")
+(assert_trap (invoke "i64.store_offset" (i64.const 0x0101_0002) (i64.const 0)) "out of bounds memory access")
+(assert_trap (invoke "i64.store8_offset" (i64.const 0x0101_0002) (i64.const 0)) "out of bounds memory access")
+(assert_trap (invoke "i64.store16_offset" (i64.const 0x0101_0004) (i64.const 0)) "out of bounds memory access")
+(assert_trap (invoke "i64.store32_offset" (i64.const 0x0101_0004) (i64.const 0)) "out of bounds memory access")
+(assert_trap (invoke "f32.store_offset" (i64.const 0x0101_0002) (f32.const 0)) "out of bounds memory access")
+(assert_trap (invoke "f64.store_offset" (i64.const 0x0101_0002) (f64.const 0)) "out of bounds memory access")
+(assert_trap (invoke "v128.store_offset" (i64.const 0x0101_0000) (v128.const i64x2 0 0)) "out of bounds memory access")
+
