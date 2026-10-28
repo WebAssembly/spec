@@ -4929,7 +4929,7 @@ def $inv_signed_(N : N, int : int) : nat
 ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
 def $sx(storagetype : storagetype) : sx?
   ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
-  def $sx{consttype : consttype}((consttype : consttype <: storagetype)) = ?()
+  def $sx{valtype : valtype}((valtype : valtype <: storagetype)) = ?()
   ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
   def $sx{packtype : packtype}((packtype : packtype <: storagetype)) = ?(S_sx)
 

@@ -8161,7 +8161,7 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{\mathrm{sx}}({\mathit{consttype}}) & = & \epsilon \\
+{\mathrm{sx}}({\mathit{valtype}}) & = & \epsilon \\
 {\mathrm{sx}}({\mathit{packtype}}) & = & \mathsf{s} \\
 \end{array}
 $$
