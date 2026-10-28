@@ -3,6 +3,9 @@
 
 print_origin("generate_table_copy.js");
 
+const addrtype = INDEX_TYPE;
+const decltype = addrtype == 'i64' ? ' i64' : '';
+
 // This module "a" exports 5 functions ...
 
 function emit_a() {
@@ -36,16 +39,16 @@ function emit_b(insn, t0, t1) {
   (import "a" "ef2" (func (result i32)))
   (import "a" "ef3" (func (result i32)))
   (import "a" "ef4" (func (result i32)))    ;; index 4
-  (table $t0 30 30 funcref)
-  (table $t1 30 30 funcref)
-  (elem (table $t${t0}) (i32.const 2) func 3 1 4 1)
+  (table $t0${decltype} 30 30 funcref)
+  (table $t1${decltype} 30 30 funcref)
+  (elem (table $t${t0}) (${addrtype}.const 2) func 3 1 4 1)
   (elem funcref
     (ref.func 2) (ref.func 7) (ref.func 1) (ref.func 8))
-  (elem (table $t${t0}) (i32.const 12) func 7 5 2 3 6)
+  (elem (table $t${t0}) (${addrtype}.const 12) func 7 5 2 3 6)
   (elem funcref
     (ref.func 5) (ref.func 9) (ref.func 2) (ref.func 7) (ref.func 6))
-  (elem (table $t${t1}) (i32.const 3) func 1 3 1 4)
-  (elem (table $t${t1}) (i32.const 11) func 6 3 2 5 7)
+  (elem (table $t${t1}) (${addrtype}.const 3) func 1 3 1 4)
+  (elem (table $t${t1}) (${addrtype}.const 11) func 6 3 2 5 7)
   (func (result i32) (i32.const 5))  ;; index 5
   (func (result i32) (i32.const 6))
   (func (result i32) (i32.const 7))
@@ -53,9 +56,9 @@ function emit_b(insn, t0, t1) {
   (func (result i32) (i32.const 9))  ;; index 9
   (func (export "test")
     ${insn})
-  (func (export "check_t0") (param i32) (result i32)
+  (func (export "check_t0") (param ${addrtype}) (result i32)
     (call_indirect $t${t0} (type 0) (local.get 0)))
-  (func (export "check_t1") (param i32) (result i32)
+  (func (export "check_t1") (param ${addrtype}) (result i32)
     (call_indirect $t${t1} (type 0) (local.get 0)))
 )
 `);
@@ -77,17 +80,17 @@ function tab_test(args, t0, t1, dest_table, expected_t0, expected_t1) {
     for (let i = 0; i < expected_t0.length; i++) {
         let expected = expected_t0[i];
         if (expected === undefined) {
-            print(`(assert_trap (invoke "check_t0" (i32.const ${i})) "uninitialized element")`);
+            print(`(assert_trap (invoke "check_t0" (${addrtype}.const ${i})) "uninitialized element")`);
         } else {
-            print(`(assert_return (invoke "check_t0" (i32.const ${i})) (i32.const ${expected}))`);
+            print(`(assert_return (invoke "check_t0" (${addrtype}.const ${i})) (i32.const ${expected}))`);
         }
     }
     for (let i = 0; i < expected_t1.length; i++) {
         let expected = expected_t1[i];
         if (expected === undefined) {
-            print(`(assert_trap (invoke "check_t1" (i32.const ${i})) "uninitialized element")`);
+            print(`(assert_trap (invoke "check_t1" (${addrtype}.const ${i})) "uninitialized element")`);
         } else {
-            print(`(assert_return (invoke "check_t1" (i32.const ${i})) (i32.const ${expected}))`);
+            print(`(assert_return (invoke "check_t1" (${addrtype}.const ${i})) (i32.const ${expected}))`);
         }
     }
 }
@@ -110,44 +113,44 @@ for ( let table of [0,1] ) {
              [e,e,e,1,3, 1,4,e,e,e, e,6,3,2,5, 7,e,e,e,e, e,e,e,e,e, e,e,e,e,e]);
 
     // Copy non-null over non-null
-    tab_test("(i32.const 13) (i32.const 2) (i32.const 3)", table, other_table, table,
+    tab_test(`(${addrtype}.const 13) (${addrtype}.const 2) (${addrtype}.const 3)`, table, other_table, table,
              [e,e,3,1,4, 1,e,e,e,e, e,e,7,3,1, 4,6,e,e,e, e,e,e,e,e, e,e,e,e,e],
              [e,e,e,1,3, 1,4,e,e,e, e,6,3,2,5, 7,e,e,e,e, e,e,e,e,e, e,e,e,e,e]);
 
     // Copy non-null over null
-    tab_test("(i32.const 25) (i32.const 15) (i32.const 2)", table, other_table, table,
+    tab_test(`(${addrtype}.const 25) (${addrtype}.const 15) (${addrtype}.const 2)`, table, other_table, table,
              [e,e,3,1,4, 1,e,e,e,e, e,e,7,5,2, 3,6,e,e,e, e,e,e,e,e, 3,6,e,e,e],
              [e,e,e,1,3, 1,4,e,e,e, e,6,3,2,5, 7,e,e,e,e, e,e,e,e,e, e,e,e,e,e]);
 
     // Copy null over non-null
-    tab_test("(i32.const 13) (i32.const 25) (i32.const 3)", table, other_table, table,
+    tab_test(`(${addrtype}.const 13) (${addrtype}.const 25) (${addrtype}.const 3)`, table, other_table, table,
              [e,e,3,1,4, 1,e,e,e,e, e,e,7,e,e, e,6,e,e,e, e,e,e,e,e, e,e,e,e,e],
              [e,e,e,1,3, 1,4,e,e,e, e,6,3,2,5, 7,e,e,e,e, e,e,e,e,e, e,e,e,e,e]);
 
     // Copy null over null
-    tab_test("(i32.const 20) (i32.const 22) (i32.const 4)", table, other_table, table,
+    tab_test(`(${addrtype}.const 20) (${addrtype}.const 22) (${addrtype}.const 4)`, table, other_table, table,
              [e,e,3,1,4, 1,e,e,e,e, e,e,7,5,2, 3,6,e,e,e, e,e,e,e,e, e,e,e,e,e],
              [e,e,e,1,3, 1,4,e,e,e, e,6,3,2,5, 7,e,e,e,e, e,e,e,e,e, e,e,e,e,e]);
 
     // Copy null and non-null entries, non overlapping
-    tab_test("(i32.const 25) (i32.const 1) (i32.const 3)", table, other_table, table,
+    tab_test(`(${addrtype}.const 25) (${addrtype}.const 1) (${addrtype}.const 3)`, table, other_table, table,
              [e,e,3,1,4, 1,e,e,e,e, e,e,7,5,2, 3,6,e,e,e, e,e,e,e,e, e,3,1,e,e],
              [e,e,e,1,3, 1,4,e,e,e, e,6,3,2,5, 7,e,e,e,e, e,e,e,e,e, e,e,e,e,e]);
 
     // Copy null and non-null entries, overlapping, backwards
-    tab_test("(i32.const 10) (i32.const 12) (i32.const 7)", table, other_table, table,
+    tab_test(`(${addrtype}.const 10) (${addrtype}.const 12) (${addrtype}.const 7)`, table, other_table, table,
              [e,e,3,1,4, 1,e,e,e,e, 7,5,2,3,6, e,e,e,e,e, e,e,e,e,e, e,e,e,e,e],
              [e,e,e,1,3, 1,4,e,e,e, e,6,3,2,5, 7,e,e,e,e, e,e,e,e,e, e,e,e,e,e]);
 
     // Copy null and non-null entries, overlapping, forwards
-    tab_test("(i32.const 12) (i32.const 10) (i32.const 7)", table, other_table, table,
+    tab_test(`(${addrtype}.const 12) (${addrtype}.const 10) (${addrtype}.const 7)`, table, other_table, table,
              [e,e,3,1,4, 1,e,e,e,e, e,e,e,e,7, 5,2,3,6,e, e,e,e,e,e, e,e,e,e,e],
              [e,e,e,1,3, 1,4,e,e,e, e,6,3,2,5, 7,e,e,e,e, e,e,e,e,e, e,e,e,e,e]);
 
     // Tests for copying from one table to the other.  Here, overlap and copy
     // direction don't matter.
 
-    tab_test("(i32.const 10) (i32.const 0) (i32.const 20)", table, other_table, other_table,
+    tab_test(`(${addrtype}.const 10) (${addrtype}.const 0) (${addrtype}.const 20)`, table, other_table, other_table,
              [e,e,3,1,4, 1,e,e,e,e, e,e,7,5,2, 3,6,e,e,e, e,e,e,e,e, e,e,e,e,e],
              [e,e,e,1,3, 1,4,e,e,e, e,e,3,1,4, 1,e,e,e,e, e,e,7,5,2, 3,6,e,e,e]);
 }
@@ -291,8 +294,8 @@ function tbl_copy(min, max, srcOffs, targetOffs, len) {
         `
 (module
   (type (func (result i32)))
-  (table ${min} ${max} funcref)
-  (elem (i32.const ${srcOffs})
+  (table${decltype} ${min} ${max} funcref)
+  (elem (${addrtype}.const ${srcOffs})
         ${(function () {
              var s = "";
              for (let i=srcOffs, j=0; i < srcLim; i++, j++)
@@ -315,25 +318,25 @@ function tbl_copy(min, max, srcOffs, targetOffs, len) {
   (func $f13 (export "f13") (result i32) (i32.const 13))
   (func $f14 (export "f14") (result i32) (i32.const 14))
   (func $f15 (export "f15") (result i32) (i32.const 15))
-  (func (export "test") (param $n i32) (result i32)
+  (func (export "test") (param $n ${addrtype}) (result i32)
     (call_indirect (type 0) (local.get $n)))
-  (func (export "run") (param $targetOffs i32) (param $srcOffs i32) (param $len i32)
+  (func (export "run") (param $targetOffs ${addrtype}) (param $srcOffs ${addrtype}) (param $len ${addrtype})
     (table.copy (local.get $targetOffs) (local.get $srcOffs) (local.get $len))))
 `);
 
     let immediateOOB = copyDown && (srcOffs + len > tblLength || targetOffs + len > tblLength);
 
-    print(`(assert_trap (invoke "run" (i32.const ${targetOffs}) (i32.const ${srcOffs}) (i32.const ${len}))
+    print(`(assert_trap (invoke "run" (${addrtype}.const ${targetOffs}) (${addrtype}.const ${srcOffs}) (${addrtype}.const ${len}))
              "out of bounds table access")`);
 
     var s = 0;
     var i = 0;
     for (i=0; i < tblLength; i++ ) {
         if (i >= srcOffs && i < srcLim) {
-            print(`(assert_return (invoke "test" (i32.const ${i})) (i32.const ${s++}))`);
+            print(`(assert_return (invoke "test" (${addrtype}.const ${i})) (i32.const ${s++}))`);
             continue;
         }
-        print(`(assert_trap (invoke "test" (i32.const ${i})) "uninitialized element")`);
+        print(`(assert_trap (invoke "test" (${addrtype}.const ${i})) "uninitialized element")`);
     }
 }
 
