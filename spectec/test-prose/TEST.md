@@ -25322,7 +25322,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 .............................................
 
 
-1. If :math:`{\mathit{storagetype}}` is constant type, then:
+1. If :math:`{\mathit{storagetype}}` is value type, then:
 
    a. Return :math:`\epsilon`.
 
@@ -33761,7 +33761,7 @@ inv_signed_ N i
 4. Return (i + (2 ^ N)).
 
 sx storagetype
-1. If storagetype is consttype, then:
+1. If storagetype is valtype, then:
   a. Return ?().
 2. Assert: Due to validation, storagetype is packtype.
 3. Return ?(S).
