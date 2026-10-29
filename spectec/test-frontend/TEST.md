@@ -4843,6 +4843,9 @@ def $R_fmax : relaxed4
 def $R_idot : relaxed2
 
 ;; ../../../../specification/wasm-latest/3.0-numerics.relaxed.spectec
+def $R_idot_add : relaxed2
+
+;; ../../../../specification/wasm-latest/3.0-numerics.relaxed.spectec
 def $R_iq15mulr : relaxed2
 
 ;; ../../../../specification/wasm-latest/3.0-numerics.relaxed.spectec
@@ -5894,12 +5897,16 @@ def $vextbinop__(ishape_1 : ishape, ishape_2 : ishape, vextbinop__ : vextbinop__
 ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
 def $vextternop__(ishape_1 : ishape, ishape_2 : ishape, vextternop__ : vextternop__(ishape_1, ishape_2), vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn), vec_ : vec_(V128_Vnn)) : vec_(V128_Vnn)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vextternop__{Jnn_1 : Jnn, M_1 : M, Jnn_2 : Jnn, M_2 : M, c_1 : vec_(V128_Vnn), c_2 : vec_(V128_Vnn), c_3 : vec_(V128_Vnn), c : vec_(V128_Vnn), Jnn : Jnn, M : M, c' : vec_(V128_Vnn), c'' : vec_(V128_Vnn)}(`%`_ishape(`%X%`_shape((Jnn_1 : Jnn <: lanetype), M_1),), `%`_ishape(`%X%`_shape((Jnn_2 : Jnn <: lanetype), M_2),), RELAXED_DOT_ADDS_vextternop__, c_1, c_2, c_3) = c
-    -- if ($jsizenn(Jnn) = (2 * $lsizenn1((Jnn_1 : Jnn <: lanetype))))
-    -- if (M!`%`_M.0 = (2 * M_2!`%`_M.0))
-    -- if (c' = $vextbinop__(`%`_ishape(`%X%`_shape((Jnn_1 : Jnn <: lanetype), M_1),), `%`_ishape(`%X%`_shape((Jnn : Jnn <: lanetype), M),), RELAXED_DOTS_vextbinop__, c_1, c_2))
-    -- if (c'' = $vextunop__(`%`_ishape(`%X%`_shape((Jnn : Jnn <: lanetype), M),), `%`_ishape(`%X%`_shape((Jnn_2 : Jnn <: lanetype), M_2),), EXTADD_PAIRWISE_vextunop__(S_sx), c'))
-    -- if (c <- $vbinop_(`%X%`_shape((Jnn_2 : Jnn <: lanetype), M_2), ADD_vbinop_, c'', c_3))
+  def $vextternop__{Jnn_1 : Jnn, M_1 : M, Jnn_2 : Jnn, M_2 : M, v_1 : vec_(V128_Vnn), v_2 : vec_(V128_Vnn), v_3 : vec_(V128_Vnn), v : vec_(V128_Vnn), N : N, `c_1*` : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), M_1)))*, `c_2*` : lane_($lanetype(`%X%`_shape((Jnn_1 : Jnn <: lanetype), M_1)))*, `c'_1*` : iN(N)*, `c'_2*` : iN(N)*, `c*` : iN(N)*, `c'*` : iN($lsizenn2((Jnn_2 : Jnn <: lanetype)))*, v' : vec_(V128_Vnn)}(`%`_ishape(`%X%`_shape((Jnn_1 : Jnn <: lanetype), M_1),), `%`_ishape(`%X%`_shape((Jnn_2 : Jnn <: lanetype), M_2),), RELAXED_DOT_ADDS_vextternop__, v_1, v_2, v_3) = v
+    -- if (N = $relaxed2($R_idot_add, syntax nat, (2 * $lsizenn1((Jnn_1 : Jnn <: lanetype))), $lsizenn2((Jnn_2 : Jnn <: lanetype))))
+    -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Jnn_1 : Jnn <: lanetype), M_1), v_1))
+    -- if (c_2*{c_2 <- `c_2*`} = $lanes_(`%X%`_shape((Jnn_1 : Jnn <: lanetype), M_1), v_2))
+    -- if (c'_1*{c'_1 <- `c'_1*`} = $extend__($lsizenn1((Jnn_1 : Jnn <: lanetype)), N, S_sx, c_1)*{c_1 <- `c_1*`})
+    -- if (c'_2*{c'_2 <- `c'_2*`} = $extend__($lsizenn1((Jnn_1 : Jnn <: lanetype)), N, $relaxed2($R_idot, syntax sx, S_sx, U_sx), c_2)*{c_2 <- `c_2*`})
+    -- if (c*{c <- `c*`} = $ivrelaxed_dot_(N, c'_1*{c'_1 <- `c'_1*`}, c'_2*{c'_2 <- `c'_2*`}))
+    -- if (c'*{c' <- `c'*`} = $extend__(N, $lsizenn2((Jnn_2 : Jnn <: lanetype)), S_sx, c)*{c <- `c*`})
+    -- if (v' = $inv_lanes_(`%X%`_shape((Jnn_2 : Jnn <: lanetype), M_2), $ivadd_pairwise_($lsizenn2((Jnn_2 : Jnn <: lanetype)), c'*{c' <- `c'*`})))
+    -- if (v <- $vbinop_(`%X%`_shape((Jnn_2 : Jnn <: lanetype), M_2), ADD_vbinop_, v', v_3))
 
 ;; ../../../../specification/wasm-latest/4.0-execution.configurations.spectec
 syntax num =

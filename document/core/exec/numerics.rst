@@ -2244,13 +2244,20 @@ where :math:`f`, :math:`\sx_1`, :math:`\sx_2`, :math:`h`, and :math:`k` are inst
    \VRELAXEDDOTADD{\K\_}\S_{\K{i}N_1\K{x}M_1, \K{i}N_2\K{x}M_2}(c_1, c_2, c_3) &=& c
      & (
        \begin{array}[t]{@{}l}
-       \iff N = 2\cdot N_1 \\
-       \land~M = 2\cdot M_2 \\
-       \land~c' = \VRELAXEDDOT{\K\_}\S_{\K{i}N_1\K{x}M_1, \K{i}N\K{x}M}(c_1, c_2) \\
-       \land~c'' = \VEXTADDPAIRWISE{\K\_}\S_{\K{i}N\K{x}M, \K{i}N_2\K{x}M_2}(c') \\
-       \land~c \in \VADD_{\K{i}N_2\K{x}M_2}(c'', c_3) \\
+       \iff N = \relaxed(R_{\F{idot\_add}})[2\cdot N_1, N_2] \\
+       \land~i_1^\ast = \lanes_{\K{i}N_1\K{x}M_1}(c_1) \\
+       \land~i_2^\ast = \lanes_{\K{i}N_1\K{x}M_1}(c_2) \\
+       \land~{i'_1}^\ast = \extend^{\S}_{N_1, N}(i_1)^\ast \\
+       \land~{i'_2}^\ast = \extend^{\relaxed(R_{\F{idot}})[\S, \U]}_{N_1, N}(i_2)^\ast \\
+       \land~j^\ast = \ivrelaxeddot_N({i'_1}^\ast, {i'_2}^\ast) \\
+       \land~{j'}^\ast = \extend^{\S}_{N, N_2}(j)^\ast \\
+       \land~c' = \lanes^{-1}_{\K{i}N_2\K{x}M_2}(\ivaddpairwise_{N_2}({j'}^\ast)) \\
+       \land~c \in \VADD_{\K{i}N_2\K{x}M_2}(c', c_3) \\
        \end{array}
    \end{array}
+
+.. note::
+   Relaxed operations and the parameters :math:`R_{\F{idot}}` and :math:`R_{\F{idot\_add}}` are introduced :ref:`below <relaxed-ops>`.
 
 
 .. _op-vnarrow:
@@ -2546,7 +2553,8 @@ where:
 ...........................................
 
 The implementation-specific behaviour of this operation is determined by the global parameter :math:`R_{\F{idot}} \in \{0, 1\}`.
-It also affects the behaviour of :math:`\VRELAXEDDOT` and :math:`\VRELAXEDDOTADD` specified :ref:`above <op-vextbinop>`.
+It also affects the behaviour of :math:`\VRELAXEDDOT` specified :ref:`above <op-vextbinop>`,
+and of :math:`\VRELAXEDDOTADD` specified :ref:`above <op-vextternop>`, which additionally depends on the global parameter :math:`R_{\F{idot\_add}} \in \{0, 1\}`.
 
 * Return :math:`\relaxed(R_{\F{idot}})[ \ivdot_N(i_1^{2m}, i_2^{2m}), \ivdotsat_N(i_1^{2m}, i_2^{2m}) ]`.
 
