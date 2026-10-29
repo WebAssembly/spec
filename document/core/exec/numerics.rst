@@ -1169,9 +1169,9 @@ The non-deterministic result is expressed by the following auxiliary function pr
 
 * Else if either :math:`z_1` or :math:`z_2` is an infinity and the other a value with opposite sign, then return negative infinity.
 
-* Else if either :math:`z_1` or :math:`z_2` is a zero and the other a value with the same sign, then return positive infinity.
+* Else if either :math:`z_1` or :math:`z_2` is a zero and the other a value with the same sign, then return positive zero.
 
-* Else if either :math:`z_1` or :math:`z_2` is a zero and the other a value with opposite sign, then return negative infinity.
+* Else if either :math:`z_1` or :math:`z_2` is a zero and the other a value with opposite sign, then return negative zero.
 
 * Else if both :math:`z_1` and :math:`z_2` are zeroes of equal sign, then return positive zero.
 
