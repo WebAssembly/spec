@@ -24153,11 +24153,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 1. Return :math:`{\mathrm{free}}_{\mathit{rectype}}({\mathit{rectype}})`.
 
 
-:math:`{\mathrm{free}}_{\mathit{tagtype}}({\mathit{deftype}})`
+:math:`{\mathrm{free}}_{\mathit{tagtype}}({\mathit{typeuse}})`
 ..............................................................
 
 
-1. Return :math:`{\mathrm{free}}_{\mathit{deftype}}({\mathit{deftype}})`.
+1. Return :math:`{\mathrm{free}}_{\mathit{typeuse}}({\mathit{typeuse}})`.
 
 
 :math:`{\mathrm{free}}_{\mathit{globaltype}}({\mathsf{mut}^?}~{\mathit{valtype}})`
@@ -24486,7 +24486,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    a. Let :math:`(\mathsf{try\_table}~{\mathit{blocktype}}~{{\mathit{catch}}^\ast}~{{\mathit{instr}}^\ast})` be the destructuring of :math:`{\mathit{instr}'}`.
 
-   #. Return `$free_blocktype(blocktype) ++ $free_list($free_catch(catch)*{catch <- catch*}) ++ $free_list($free_instr(instr)*{instr <- instr*})`.
+   #. Return `$free_blocktype(blocktype) ++ $free_list($free_catch(catch)*{catch <- catch*}) ++ $free_block(instr*{instr <- instr*})`.
 
 #. If :math:`{\mathit{instr}'}` is some :math:`{\mathit{numtype}}{.}\mathsf{const}~{{\mathit{num}}}_{{\mathit{numtype}}}`, then:
 
@@ -33204,8 +33204,8 @@ free_rectype (REC subtype*)
 free_deftype (_DEF rectype n)
 1. Return $free_rectype(rectype).
 
-free_tagtype deftype
-1. Return $free_deftype(deftype).
+free_tagtype typeuse
+1. Return $free_typeuse(typeuse).
 
 free_globaltype (mut? valtype)
 1. Return $free_valtype(valtype).
@@ -33361,7 +33361,7 @@ free_instr instr'
   a. Return {}.
 24. If instr' is some TRY_TABLE, then:
   a. Let (TRY_TABLE blocktype catch* instr*) be instr'.
-  b. Return $free_blocktype(blocktype) ++ $free_list($free_catch(catch)*) ++ $free_list($free_instr(instr)*).
+  b. Return $free_blocktype(blocktype) ++ $free_list($free_catch(catch)*) ++ $free_block(instr*).
 25. If instr' is some CONST, then:
   a. Let (numtype.CONST numlit) be instr'.
   b. Return $free_numtype(numtype).

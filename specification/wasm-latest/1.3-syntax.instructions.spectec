@@ -467,7 +467,7 @@ def $free_instr(RETURN_CALL_INDIRECT tableidx typeuse) =
 def $free_instr(THROW tagidx) = $free_tagidx(tagidx)
 def $free_instr(THROW_REF) = {}
 def $free_instr(TRY_TABLE blocktype catch* instr*) =
-  $free_blocktype(blocktype) ++ $free_list($free_catch(catch)*) ++ $free_list($free_instr(instr)*)
+  $free_blocktype(blocktype) ++ $free_list($free_catch(catch)*) ++ $free_block(instr*)
 
 def $free_instr(CONST numtype numlit) = $free_numtype(numtype)
 def $free_instr(UNOP numtype unop) = $free_numtype(numtype)
