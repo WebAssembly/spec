@@ -3671,7 +3671,7 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{\mathrm{free}}_{\mathit{tagtype}}({\mathit{deftype}}) & = & {\mathrm{free}}_{\mathit{deftype}}({\mathit{deftype}}) \\
+{\mathrm{free}}_{\mathit{tagtype}}({\mathit{typeuse}}) & = & {\mathrm{free}}_{\mathit{typeuse}}({\mathit{typeuse}}) \\
 \end{array}
 $$
 
@@ -4214,7 +4214,7 @@ $$
 {\mathrm{free}}_{\mathit{instr}}(\mathsf{try\_table}~{\mathit{blocktype}}~{{\mathit{catch}}^\ast}~{{\mathit{instr}}^\ast}) & = & & \\
  \multicolumn{4}{@{}l@{}}{\quad
 \begin{array}[t]{@{}l@{}}
-{\mathrm{free}}_{\mathit{blocktype}}({\mathit{blocktype}}) \oplus {\mathrm{free}}_{\mathit{list}}({{\mathrm{free}}_{\mathit{catch}}({\mathit{catch}})^\ast}) \oplus {\mathrm{free}}_{\mathit{list}}({{\mathrm{free}}_{\mathit{instr}}({\mathit{instr}})^\ast}) \\
+{\mathrm{free}}_{\mathit{blocktype}}({\mathit{blocktype}}) \oplus {\mathrm{free}}_{\mathit{list}}({{\mathrm{free}}_{\mathit{catch}}({\mathit{catch}})^\ast}) \oplus {\mathrm{free}}_{\mathit{block}}({{\mathit{instr}}^\ast}) \\
 \end{array}
 } \\
 {\mathrm{free}}_{\mathit{instr}}({\mathit{numtype}}{.}\mathsf{const}~{\mathit{numlit}}) & = & {\mathrm{free}}_{\mathit{numtype}}({\mathit{numtype}}) \\
