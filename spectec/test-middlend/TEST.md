@@ -2160,8 +2160,8 @@ syntax instr =
     -- if (($lsize($lanetype(ishape_2!`%`_ishape.0)) = (2 * $lsize($lanetype(ishape_1!`%`_ishape.0)))) /\ ((2 * $lsize($lanetype(ishape_1!`%`_ishape.0))) <= 32))
   | VCVTOP(shape_1 : shape, shape_2 : shape, vcvtop__(shape_2, shape_1))
   | VSPLAT(shape)
-  | VEXTRACT_LANE(shape : shape, `sx?` : sx?, laneidx : laneidx) {numtype : numtype}
-    -- if ((sx?{sx <- `sx?`} = ?()) <=> ($lanetype(shape) = (numtype : numtype <: lanetype)))
+  | VEXTRACT_LANE(shape : shape, `sx?` : sx?, laneidx : laneidx)
+    -- if ((sx?{sx <- `sx?`} =/= ?()) <=> ($lanetype(shape) =/= ($lunpack($lanetype(shape)) : numtype <: lanetype)))
   | VREPLACE_LANE(shape : shape, laneidx : laneidx)
   | `REF.I31_NUM`(u31)
   | `REF.NULL_ADDR`
@@ -14048,8 +14048,8 @@ syntax instr =
     -- if (($lsize($lanetype(ishape_2!`%`_ishape.0)) = (2 * $lsize($lanetype(ishape_1!`%`_ishape.0)))) /\ ((2 * $lsize($lanetype(ishape_1!`%`_ishape.0))) <= 32))
   | VCVTOP(shape_1 : shape, shape_2 : shape, vcvtop__(shape_2, shape_1))
   | VSPLAT(shape)
-  | VEXTRACT_LANE(shape : shape, `sx?` : sx?, laneidx : laneidx) {numtype : numtype}
-    -- if ((sx?{sx <- `sx?`} = ?()) <=> ($lanetype(shape) = (numtype : numtype <: lanetype)))
+  | VEXTRACT_LANE(shape : shape, `sx?` : sx?, laneidx : laneidx)
+    -- if ((sx?{sx <- `sx?`} =/= ?()) <=> ($lanetype(shape) =/= ($lunpack($lanetype(shape)) : numtype <: lanetype)))
   | VREPLACE_LANE(shape : shape, laneidx : laneidx)
   | `REF.I31_NUM`(u31)
   | `REF.NULL_ADDR`
@@ -25938,8 +25938,8 @@ syntax instr =
     -- if (($lsize($lanetype(ishape_2!`%`_ishape.0)) = (2 * $lsize($lanetype(ishape_1!`%`_ishape.0)))) /\ ((2 * $lsize($lanetype(ishape_1!`%`_ishape.0))) <= 32))
   | VCVTOP(shape_1 : shape, shape_2 : shape, vcvtop__(shape_2, shape_1))
   | VSPLAT(shape)
-  | VEXTRACT_LANE(shape : shape, `sx?` : sx?, laneidx : laneidx) {numtype : numtype}
-    -- if ((sx?{sx <- `sx?`} = ?()) <=> ($lanetype(shape) = (numtype : numtype <: lanetype)))
+  | VEXTRACT_LANE(shape : shape, `sx?` : sx?, laneidx : laneidx)
+    -- if ((sx?{sx <- `sx?`} =/= ?()) <=> ($lanetype(shape) =/= ($lunpack($lanetype(shape)) : numtype <: lanetype)))
   | VREPLACE_LANE(shape : shape, laneidx : laneidx)
   | `REF.I31_NUM`(u31)
   | `REF.NULL_ADDR`
