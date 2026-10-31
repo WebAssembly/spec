@@ -1197,6 +1197,7 @@ warning: rule `Instrs_ok/instr` was never spliced
 warning: rule `Instrs_ok/sub` was never spliced
 warning: rule `Instrs_ok/frame` was spliced more than once
 warning: rule `Instrs_ok2/empty` was never spliced
+warning: rule `Instrs_ok2/instr` was never spliced
 warning: rule `Instrs_ok2/seq` was never spliced
 warning: rule `Instrs_ok2/sub` was never spliced
 warning: rule `Instrs_ok2/frame` was never spliced
@@ -2219,6 +2220,7 @@ warning: rule prose `Instrs_ok/sub` was never spliced
 warning: rule prose `Instrs_ok2` was never spliced
 warning: rule prose `Instrs_ok2/empty` was never spliced
 warning: rule prose `Instrs_ok2/frame` was never spliced
+warning: rule prose `Instrs_ok2/instr` was never spliced
 warning: rule prose `Instrs_ok2/seq` was never spliced
 warning: rule prose `Instrs_ok2/sub` was never spliced
 warning: rule prose `Instrtype_ok` was never spliced
