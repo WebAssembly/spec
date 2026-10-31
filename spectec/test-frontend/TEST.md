@@ -11053,7 +11053,8 @@ grammar Talign_(N : N) : u32
   prod{n : n, m : m} {{"align="} {`%`_u64(m,):Tu64}} => `%`_u32(n,)
     -- if (m = (2 ^ n))
   ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
-  prod eps => `%`_u32(N,)
+  prod{n : n} eps => `%`_u32(n,)
+    -- if (N = (2 ^ n))
 
 ;; ../../../../specification/wasm-latest/6.3-text.instructions.spectec
 grammar Toffset : u64
