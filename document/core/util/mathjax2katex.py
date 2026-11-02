@@ -153,7 +153,7 @@ def Main():
 
   def ExtractMath(match):
     fixups.append(
-        (match.group(1), match.group(2), match.group(3), match.group(4),
+        (match.group(1), match.group(2), match.group(3), match.group(4), match.group(5),
          match.start(), match.end()))
     return 'x' * len(match.group())
 
@@ -216,7 +216,7 @@ def Main():
 
   # Pull out math fragments.
   data = re.sub(
-      'class="([^"]*)math([^"]*)"[^>]*>'
+      'class="([^"]*)math([^"]*)"([^>]*)>'
       '((?:[ \n]*<span[^>]*>[^<]*</span>)*)([^<]*)<',
       ExtractMath, data)
 
@@ -228,9 +228,9 @@ def Main():
   def Worker():
     nonlocal success
     while True:
-      cls_before, cls_after, spans, mth, start, end = q.get()
+      cls_before, cls_after, attrs, spans, mth, start, end = q.get()
       try:
-        fixed = ('class="' + cls_before + ' ' + cls_after + '">' +
+        fixed = ('class="' + cls_before + ' ' + cls_after + '"' + attrs + '>' +
                  spans + ReplaceMath(cache, mth) + '<')
         done_fixups.append((start, end, fixed))
       except Exception as inst:
