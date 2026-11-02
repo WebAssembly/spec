@@ -183,7 +183,7 @@ grammar Toffset : u64 =
 
 grammar Talign_(N) : u32 =
   | "align=" m:Tu64 => n  -- if $(m = 2^n)
-  | eps => N
+  | eps => n  -- if $(N = 2^n)
 
 grammar Tlaneidx : laneidx =
   | i:Tu8 => i
