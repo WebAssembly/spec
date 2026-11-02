@@ -1258,13 +1258,13 @@ The non-deterministic result is expressed by the following auxiliary function pr
 The function :math:`\fma` is the same as *fusedMultiplyAdd* defined by |IEEE754|_ (Section 5.4.1).
 It computes :math:`(z_1 \cdot z_2) + z_3` as if with unbounded range and precision, rounding only once for the final result.
 
-* If either :math:`z_1` or :math:`z_2` or :math:`z_3` is a NaN, return an element of :math:`\nans_N{z_1, z_2, z_3}`.
+* If either :math:`z_1` or :math:`z_2` or :math:`z_3` is a NaN, return an element of :math:`\nans_N\{z_1, z_2, z_3\}`.
 
 * Else if either :math:`z_1` or :math:`z_2` is a zero and the other is an infinity, then return an element of :math:`\nans_N\{\}`.
 
-* Else if both :math:`z_1` or :math:`z_2` are infinities of equal sign, and :math:`z_3` is a negative infinity, then return an element of :math:`\nans_N\{\}`.
+* Else if both :math:`z_1` and :math:`z_2` are infinities of equal sign, and :math:`z_3` is a negative infinity, then return an element of :math:`\nans_N\{\}`.
 
-* Else if both :math:`z_1` or :math:`z_2` are infinities of opposite sign, and :math:`z_3` is a positive infinity, then return an element of :math:`\nans_N\{\}`.
+* Else if both :math:`z_1` and :math:`z_2` are infinities of opposite sign, and :math:`z_3` is a positive infinity, then return an element of :math:`\nans_N\{\}`.
 
 * Else if either :math:`z_1` or :math:`z_2` is an infinity and the other is a value of the same sign, and :math:`z_3` is a negative infinity, then return an element of :math:`\nans_N\{\}`.
 
@@ -1276,7 +1276,7 @@ It computes :math:`(z_1 \cdot z_2) + z_3` as if with unbounded range and precisi
 
 * Else if both :math:`z_1` and :math:`z_2` are zeroes of the opposite sign and :math:`z_3` is a negative zero, then return negative zero.
 
-* Else return the result of multiplying :math:`z_1` and :math:`z_2`, adding :math:`z_3` to the intermediate, and the final result ref:`rounded <aux-ieee>` to the nearest representable value.
+* Else return the result of multiplying :math:`z_1` and :math:`z_2`, adding :math:`z_3` to the intermediate, and the final result :ref:`rounded <aux-ieee>` to the nearest representable value.
 
 .. math::
    \begin{array}{@{}llcll}
