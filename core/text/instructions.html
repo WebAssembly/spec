@@ -273,7 +273,7 @@ Lexically, an <span class="math notranslate nohighlight">\({\href{../text/instru
 &amp; {\href{../text/instructions.html#text-memarg}{\mathtt{offset}}} &amp; ::= &amp; \mbox{‘\texttt{offset{=}}’}~~m{:}{\href{../text/values.html#text-int}{\mathtt{u64}}} &amp; \quad\Rightarrow\quad{} &amp; m \\
 &amp; &amp; | &amp; \epsilon &amp; \quad\Rightarrow\quad{} &amp; 0 \\
 &amp; {{\href{../text/instructions.html#text-memarg}{\mathtt{align}}}}_{N} &amp; ::= &amp; \mbox{‘\texttt{align{=}}’}~~m{:}{\href{../text/values.html#text-int}{\mathtt{u64}}} &amp; \quad\Rightarrow\quad{} &amp; n &amp; \quad \mbox{if}~ m = {2^{n}} \\
-&amp; &amp; | &amp; \epsilon &amp; \quad\Rightarrow\quad{} &amp; N \\
+&amp; &amp; | &amp; \epsilon &amp; \quad\Rightarrow\quad{} &amp; n &amp; \quad \mbox{if}~ N = {2^{n}} \\
 &amp; {\href{../text/instructions.html#text-laneidx}{\mathtt{laneidx}}} &amp; ::= &amp; i{:}{\href{../text/values.html#text-int}{\mathtt{u8}}} &amp; \quad\Rightarrow\quad{} &amp; i \\
 \end{array}\end{split}\]</div>
 <div class="math notranslate nohighlight">
