@@ -552,7 +552,7 @@ def $free_subtype(SUB final? typeuse* comptype) =
 
 def $free_rectype(REC subtype*) = $free_list($free_subtype(subtype)*)
 
-def $free_tagtype(deftype) = $free_deftype(deftype)
+def $free_tagtype(typeuse) = $free_typeuse(typeuse)
 
 def $free_globaltype(mut? valtype) = $free_valtype(valtype)
 
