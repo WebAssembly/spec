@@ -8389,6 +8389,19 @@ The external value :math:`{\mathit{externaddr}}` is :ref:`valid <valid-val>` wit
 1. Return :math:`{\mathsf{i}}{n}`.
 
 
+:math:`{\mathrm{unpack}}({\mathit{lanetype}})`
+..............................................
+
+
+1. If :math:`{\mathit{lanetype}}` is number type, then:
+
+   a. Return :math:`{\mathit{lanetype}}`.
+
+#. Assert: Due to validation, :math:`{\mathit{lanetype}}` is packed type.
+
+#. Return :math:`\mathsf{i{\scriptstyle 32}}`.
+
+
 :math:`{|{\mathit{valtype}}|}`
 ..............................
 
@@ -8596,19 +8609,6 @@ The external value :math:`{\mathit{externaddr}}` is :ref:`valid <valid-val>` wit
 #. Let :math:`{b^\ast}~{{{b'}^\ast}^\ast}` be :math:`{{\mathit{byte}}^\ast}`.
 
 #. Return :math:`{b^\ast}~{\mathrm{concat}}({{{b'}^\ast}^\ast})`.
-
-
-:math:`{\mathrm{unpack}}({\mathit{lanetype}})`
-..............................................
-
-
-1. If :math:`{\mathit{lanetype}}` is number type, then:
-
-   a. Return :math:`{\mathit{lanetype}}`.
-
-#. Assert: Due to validation, :math:`{\mathit{lanetype}}` is packed type.
-
-#. Return :math:`\mathsf{i{\scriptstyle 32}}`.
 
 
 :math:`{\mathrm{unpack}}({{\mathsf{i}}{n}}{\mathsf{x}}{N})`
@@ -12984,6 +12984,12 @@ canon_ N
 lanetype Lnn X N
 1. Return Lnn.
 
+unpack lanetype
+1. If lanetype is numtype, then:
+  a. Return lanetype.
+2. Assert: Due to validation, lanetype is packtype.
+3. Return I32.
+
 size valtype
 1. If (valtype = I32), then:
   a. Return 32.
@@ -13078,12 +13084,6 @@ concat_bytes byte*
   a. Return [].
 2. Let [b*] :: b'** be byte*.
 3. Return b* :: $concat_bytes(b'**).
-
-unpack lanetype
-1. If lanetype is numtype, then:
-  a. Return lanetype.
-2. Assert: Due to validation, lanetype is packtype.
-3. Return I32.
 
 shunpack Lnn X N
 1. Return $unpack(Lnn).

@@ -206,6 +206,7 @@ var xt : externtype
 ;; Constants
 
 def $lanetype(shape) : lanetype
+def $unpack(lanetype) : numtype
 
 def $size(valtype) : nat      hint(show |%|) hint(partial)
 def $psize(packtype) : nat    hint(show |%|)
@@ -459,7 +460,7 @@ syntax instr/vec hint(desc "vector instruction") = ...
     -- if ishape = I8 X `16 /\ |laneidx*| = 16
   | VSPLAT shape                        hint(show %.SPLAT)
   | VEXTRACT_LANE shape sx? laneidx     hint(show %.EXTRACT_LANE_#% %)
-    -- if $lanetype(shape) = numtype <=> sx? = eps
+    -- if sx? =/= eps <=> $lanetype(shape) =/= $unpack($lanetype(shape))
   | VREPLACE_LANE shape laneidx         hint(show %.REPLACE_LANE %)
   | VEXTUNOP ishape_1 ishape_2 vextunop_(ishape_1)
     hint(show %1.%3#_#%2#_#%4)
