@@ -25,7 +25,7 @@ def $concat_bytes((b*) (b'*)*) = b* $concat_bytes((b'*)*)
 
 ;; Unpacking
 
-def $unpack(lanetype) : numtype
+;;def $unpack(lanetype) : numtype
 def $unpack(numtype) = numtype
 def $unpack(packtype) = I32
 
