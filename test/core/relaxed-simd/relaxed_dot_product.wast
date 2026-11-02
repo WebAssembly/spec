@@ -28,14 +28,12 @@
 
 ;; signed * unsigned   : -128 *  129 * 2 = -33,024 saturated to -32,768
 ;; signed * signed     : -128 * -127 * 2 =  32,512
-;; unsigned * unsigned :  128 *  129 * 2 =  33,024
 (assert_return (invoke "i16x8.relaxed_dot_i8x16_i7x16_s"
                        (v128.const i8x16 -128 -128 0 0 0 0 0 0 0 0 0 0 0 0 0 0)
                        (v128.const i8x16 -127 -127 0 0 0 0 0 0 0 0 0 0 0 0 0 0))
                (either
                  (v128.const i16x8 -32768 0 0 0 0 0 0 0)
-                 (v128.const i16x8  32512 0 0 0 0 0 0 0)
-                 (v128.const i16x8  33024 0 0 0 0 0 0 0)))
+                 (v128.const i16x8  32512 0 0 0 0 0 0 0)))
 
 ;; Repeat 4 corner cases in both 64-bit halves (i16x8 lanes 0..3 and 4..7):
 ;;   lanes 0, 4 (a = -128, b = -128 or 128):

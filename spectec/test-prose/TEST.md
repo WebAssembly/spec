@@ -26900,47 +26900,47 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 #. Return :math:`{{\mathrm{ivextbinop}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}({\mathrm{ivrelaxed}}_{{\mathit{dot}}}, \mathsf{s}, {{\mathrm{relaxed}}({\mathrm{R}}_{\mathit{idot}})}{{}[ \mathsf{s}, \mathsf{u} ]}, 0, M_1, v_1, v_2)`.
 
 
-:math:`{}{{}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}(v_1, v_2, v_3)}`
+:math:`{}{{}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}(c_1, c_2, c_3)}`
 ..............................................................................................................
 
 
 1. Let :math:`N` be :math:`{{\mathrm{relaxed}}({{\mathrm{R}}}_{{\mathit{idot\_add}}})}{{}[ 2 \cdot N_1, N_2 ]}`.
 
-#. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}}(v_1)`.
+#. Let :math:`{{\mathit{ci}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}}(c_1)`.
 
-#. Let :math:`{c_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}}(v_2)`.
+#. Let :math:`{{\mathit{ci}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_1}{\mathsf{x}}{M_1}}(c_2)`.
 
-#. Let :math:`{{c'}_1^\ast}` be :math:`\epsilon`.
+#. Let :math:`{{\mathit{ci}'}_1^\ast}` be :math:`\epsilon`.
 
-#. For each :math:`c_1` in :math:`{c_1^\ast}`, do:
+#. For each :math:`{\mathit{ci}}_1` in :math:`{{\mathit{ci}}_1^\ast}`, do:
 
-   a. Let :math:`{c'}_1` be :math:`{{{{\mathrm{extend}}}_{N_1, N}^{\mathsf{s}}}}{(c_1)}`.
+   a. Let :math:`{\mathit{ci}'}_1` be :math:`{{{{\mathrm{extend}}}_{N_1, N}^{\mathsf{s}}}}{({\mathit{ci}}_1)}`.
 
-   #. Append :math:`{c'}_1` to :math:`{{c'}_1^\ast}`.
+   #. Append :math:`{\mathit{ci}'}_1` to :math:`{{\mathit{ci}'}_1^\ast}`.
 
-#. Let :math:`{{c'}_2^\ast}` be :math:`\epsilon`.
+#. Let :math:`{{\mathit{ci}'}_2^\ast}` be :math:`\epsilon`.
 
-#. For each :math:`c_2` in :math:`{c_2^\ast}`, do:
+#. For each :math:`{\mathit{ci}}_2` in :math:`{{\mathit{ci}}_2^\ast}`, do:
 
-   a. Let :math:`{c'}_2` be :math:`{{{{\mathrm{extend}}}_{N_1, N}^{{{\mathrm{relaxed}}({\mathrm{R}}_{\mathit{idot}})}{{}[ \mathsf{s}, \mathsf{u} ]}}}}{(c_2)}`.
+   a. Let :math:`{\mathit{ci}'}_2` be :math:`{{{{\mathrm{extend}}}_{N_1, N}^{{{\mathrm{relaxed}}({\mathrm{R}}_{\mathit{idot}})}{{}[ \mathsf{s}, \mathsf{u} ]}}}}{({\mathit{ci}}_2)}`.
 
-   #. Append :math:`{c'}_2` to :math:`{{c'}_2^\ast}`.
+   #. Append :math:`{\mathit{ci}'}_2` to :math:`{{\mathit{ci}'}_2^\ast}`.
 
-#. Let :math:`{c^\ast}` be :math:`{{\mathrm{ivrelaxed\_dot}}}_{N}({{c'}_1^\ast}, {{c'}_2^\ast})`.
+#. Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{ivrelaxed\_dot}}}_{N}({{\mathit{ci}'}_1^\ast}, {{\mathit{ci}'}_2^\ast})`.
 
-#. Let :math:`{{c'}^\ast}` be :math:`\epsilon`.
+#. Let :math:`{{\mathit{ci}'}^\ast}` be :math:`\epsilon`.
 
-#. For each :math:`c` in :math:`{c^\ast}`, do:
+#. For each :math:`{\mathit{ci}}` in :math:`{{\mathit{ci}}^\ast}`, do:
 
-   a. Let :math:`{c'}` be :math:`{{{{\mathrm{extend}}}_{N, N_2}^{\mathsf{s}}}}{(c)}`.
+   a. Let :math:`{\mathit{ci}'}` be :math:`{{{{\mathrm{extend}}}_{N, N_2}^{\mathsf{s}}}}{({\mathit{ci}})}`.
 
-   #. Append :math:`{c'}` to :math:`{{c'}^\ast}`.
+   #. Append :math:`{\mathit{ci}'}` to :math:`{{\mathit{ci}'}^\ast}`.
 
-#. Let :math:`{v'}` be :math:`{{{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}^{{-1}}}}{({{\mathrm{ivadd\_pairwise}}}_{N_2}({{c'}^\ast}))}`.
+#. Let :math:`{c'}` be :math:`{{{{\mathrm{lanes}}}_{{{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}^{{-1}}}}{({{\mathrm{ivadd\_pairwise}}}_{N_2}({{\mathit{ci}'}^\ast}))}`.
 
-#. Let :math:`v` be an element of :math:`{\mathsf{add}}{{}_{{{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}({v'}, v_3)}`.
+#. Let :math:`c` be an element of :math:`{\mathsf{add}}{{}_{{{{\mathsf{i}}{N}}_2}{\mathsf{x}}{M_2}}({c'}, c_3)}`.
 
-#. Return :math:`v`.
+#. Return :math:`c`.
 
 
 :math:`{\mathrm{Ki}}`
@@ -34538,26 +34538,26 @@ vextbinop__ Jnn_1 X M_1 Jnn_2 X M_2 vextbinop__ v_1 v_2
 3. Assert: Due to validation, (vextbinop__ = RELAXED_DOTS).
 4. Return $ivextbinop__(Jnn_1 X M_1, Jnn_2 X M_2, $ivrelaxed_dot_, S, $relaxed2($R_idot(), `sx, S, U), 0, M_1, v_1, v_2).
 
-vextternop__ Jnn_1 X M_1 Jnn_2 X M_2 RELAXED_DOT_ADDS v_1 v_2 v_3
+vextternop__ Jnn_1 X M_1 Jnn_2 X M_2 RELAXED_DOT_ADDS c_1 c_2 c_3
 1. Let N be $relaxed2($R_idot_add(), `nat, (2 * $lsizenn1(Jnn_1)), $lsizenn2(Jnn_2)).
-2. Let c_1* be $lanes_(Jnn_1 X M_1, v_1).
-3. Let c_2* be $lanes_(Jnn_1 X M_1, v_2).
-4. Let c'_1* be [].
-5. For each c_1 in c_1*, do:
-  a. Let c'_1 be $extend__($lsizenn1(Jnn_1), N, S, c_1).
-  b. Append c'_1 to the c'_1*.
-6. Let c'_2* be [].
-7. For each c_2 in c_2*, do:
-  a. Let c'_2 be $extend__($lsizenn1(Jnn_1), N, $relaxed2($R_idot(), `sx, S, U), c_2).
-  b. Append c'_2 to the c'_2*.
-8. Let c* be $ivrelaxed_dot_(N, c'_1*, c'_2*).
-9. Let c'* be [].
-10. For each c in c*, do:
-  a. Let c' be $extend__(N, $lsizenn2(Jnn_2), S, c).
-  b. Append c' to the c'*.
-11. Let v' be $inv_lanes_(Jnn_2 X M_2, $ivadd_pairwise_($lsizenn2(Jnn_2), c'*)).
-12. Let v be an element of $vbinop_(Jnn_2 X M_2, ADD, v', v_3).
-13. Return v.
+2. Let ci_1* be $lanes_(Jnn_1 X M_1, c_1).
+3. Let ci_2* be $lanes_(Jnn_1 X M_1, c_2).
+4. Let ci'_1* be [].
+5. For each ci_1 in ci_1*, do:
+  a. Let ci'_1 be $extend__($lsizenn1(Jnn_1), N, S, ci_1).
+  b. Append ci'_1 to the ci'_1*.
+6. Let ci'_2* be [].
+7. For each ci_2 in ci_2*, do:
+  a. Let ci'_2 be $extend__($lsizenn1(Jnn_1), N, $relaxed2($R_idot(), `sx, S, U), ci_2).
+  b. Append ci'_2 to the ci'_2*.
+8. Let ci* be $ivrelaxed_dot_(N, ci'_1*, ci'_2*).
+9. Let ci'* be [].
+10. For each ci in ci*, do:
+  a. Let ci' be $extend__(N, $lsizenn2(Jnn_2), S, ci).
+  b. Append ci' to the ci'*.
+11. Let c' be $inv_lanes_(Jnn_2 X M_2, $ivadd_pairwise_($lsizenn2(Jnn_2), ci'*)).
+12. Let c be an element of $vbinop_(Jnn_2 X M_2, ADD, c', c_3).
+13. Return c.
 
 Ki
 1. Return 1024.
