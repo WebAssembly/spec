@@ -18736,11 +18736,18 @@ The frame :math:`\{ \mathsf{locals}~{({{\mathit{val}}^?})^\ast},\;\allowbreak \m
 
    * Or:
 
-      * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is of the form :math:`{\mathit{instr}}_1~{{\mathit{instr}}_2^\ast}`.
+      * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is of the form :math:`{\mathit{instr}'}`.
+
+      * The instruction type :math:`{\mathit{it}}` is of the form :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}`.
+
+      * :math:`{\mathit{instr}'}` is valid with :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}`.
+   * Or:
+
+      * The instruction sequence :math:`{{\mathit{instr}}^\ast}` is of the form :math:`{{\mathit{instr}}_1^\ast}~{{\mathit{instr}}_2^\ast}`.
 
       * The instruction type :math:`{\mathit{it}}` is of the form :math:`{t_1^\ast}~{\rightarrow}_{{x_1^\ast}~{x_2^\ast}}\,{t_3^\ast}`.
 
-      * :math:`{\mathit{instr}}_1` is valid with :math:`{t_1^\ast}~{\rightarrow}_{{x_1^\ast}}\,{t_2^\ast}`.
+      * :math:`{{\mathit{instr}}_1^\ast}` is valid with :math:`{t_1^\ast}~{\rightarrow}_{{x_1^\ast}}\,{t_2^\ast}`.
 
       * For all :math:`x_1` in :math:`{x_1^\ast}`:
 
@@ -18772,10 +18779,18 @@ The frame :math:`\{ \mathsf{locals}~{({{\mathit{val}}^?})^\ast},\;\allowbreak \m
 
 
 
-:math:`{\mathit{instr}}_1~{{\mathit{instr}}_2^\ast}` is valid with :math:`{t_1^\ast}~{\rightarrow}_{{x_1^\ast}~{x_2^\ast}}\,{t_3^\ast}` if:
+:math:`{\mathit{instr}}` is valid with :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}` if:
 
 
-   * :math:`{\mathit{instr}}_1` is valid with :math:`{t_1^\ast}~{\rightarrow}_{{x_1^\ast}}\,{t_2^\ast}`.
+   * :math:`{\mathit{instr}}` is valid with :math:`{t_1^\ast}~{\rightarrow}_{{x^\ast}}\,{t_2^\ast}`.
+
+
+
+
+:math:`{{\mathit{instr}}_1^\ast}~{{\mathit{instr}}_2^\ast}` is valid with :math:`{t_1^\ast}~{\rightarrow}_{{x_1^\ast}~{x_2^\ast}}\,{t_3^\ast}` if:
+
+
+   * :math:`{{\mathit{instr}}_1^\ast}` is valid with :math:`{t_1^\ast}~{\rightarrow}_{{x_1^\ast}}\,{t_2^\ast}`.
 
    * For all :math:`x_1` in :math:`{x_1^\ast}`:
 
@@ -30651,9 +30666,13 @@ Instrs_ok2
     - the instruction sequence instr* is [].
     - the instruction type it is [] -> [].
   - Or:
-    - instr* is [instr_1] :: instr_2*.
+    - instr* is [instr'].
+    - it is t_1* ->_ x* t_2*.
+    - instr' is valid with t_1* ->_ x* t_2*.
+  - Or:
+    - instr* is instr_1* :: instr_2*.
     - it is t_1* ->_ x_1* :: x_2* t_3*.
-    - instr_1 is valid with t_1* ->_ x_1* t_2*.
+    - instr_1* is valid with t_1* ->_ x_1* t_2*.
     - For all x_1 in x_1*:
       - the local C.LOCALS[x_1] exists.
       - C.LOCALS[x_1] is (init t).
@@ -30670,9 +30689,13 @@ Instrs_ok2
 Instrs_ok2/empty
 - [] is valid with [] -> [].
 
+Instrs_ok2/instr
+- [instr] is valid with t_1* ->_ x* t_2* if:
+  - instr is valid with t_1* ->_ x* t_2*.
+
 Instrs_ok2/seq
-- [instr_1] :: instr_2* is valid with t_1* ->_ x_1* :: x_2* t_3* if:
-  - instr_1 is valid with t_1* ->_ x_1* t_2*.
+- instr_1* :: instr_2* is valid with t_1* ->_ x_1* :: x_2* t_3* if:
+  - instr_1* is valid with t_1* ->_ x_1* t_2*.
   - For all x_1 in x_1*:
     - the local C.LOCALS[x_1] exists.
     - C.LOCALS[x_1] is (init t).

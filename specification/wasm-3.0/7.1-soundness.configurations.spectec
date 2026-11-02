@@ -54,9 +54,13 @@ rule Instr_ok2/trap:
 rule Instrs_ok2/empty:
   s; C |- eps : eps -> eps
 
+rule Instrs_ok2/instr:
+  s; C |- instr : t_1* ->_(x*) t_2*
+  -- Instr_ok2: s; C |- instr : t_1* ->_(x*) t_2*
+
 rule Instrs_ok2/seq:
-  s; C |- instr_1 instr_2* : t_1* ->_(x_1* x_2*) t_3*
-  -- Instr_ok2: s; C |- instr_1 : t_1* ->_(x_1*) t_2*
+  s; C |- instr_1* instr_2* : t_1* ->_(x_1* x_2*) t_3*
+  -- Instrs_ok2: s; C |- instr_1* : t_1* ->_(x_1*) t_2*
   -- (if C.LOCALS[x_1] = init t)*
   -- Instrs_ok2: s; $with_locals(C, x_1*, (SET t)*) |- instr_2* : t_2* ->_(x_2*) t_3*
 
