@@ -1528,6 +1528,7 @@ warning: definition `R_fmadd` was never spliced
 warning: definition `R_fmax` was never spliced
 warning: definition `R_fmin` was never spliced
 warning: definition `R_idot` was never spliced
+warning: definition `R_idot_add` was never spliced
 warning: definition `R_iq15mulr` was never spliced
 warning: definition `R_laneselect` was never spliced
 warning: definition `R_swizzle` was never spliced
