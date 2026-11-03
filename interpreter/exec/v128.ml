@@ -420,7 +420,7 @@ struct
     let rec dot xs ys =
       match xs, ys with
       | x1::x2::xss, y1::y2::yss ->
-        Int32.(I32.add_sat_s (mul x1 y1) (mul x2 y2)) :: dot xss yss
+        Int32.(add (mul x1 y1) (mul x2 y2)) :: dot xss yss
       | [], [] -> []
       | _, _ -> assert false
     in I32x4.of_lanes (dot xs ys)
