@@ -278,3 +278,13 @@ test(() => {
   const argument = { "element": "i32", "initial": 3n, "maximum": 10 };
   assert_throws_js(TypeError, () => new WebAssembly.Table(argument));
 }, "initialize table with a wrong maximum type (i64)");
+
+test(() => {
+  const table = new WebAssembly.Table({element: "funcref", initial: 1});
+  assert_equals(table.get(0), null);
+}, "funcref table with default value");
+
+test(() => {
+  const table = new WebAssembly.Table({element: "anyref", initial: 1});
+  assert_equals(table.get(0), null);
+}, "anyref table with default value");
