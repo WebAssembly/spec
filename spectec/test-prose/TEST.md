@@ -26735,13 +26735,13 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 1. If :math:`{\mathit{vshiftop}} = \mathsf{shl}`, then:
 
-   a. Return :math:`{{\mathrm{ivshiftop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{ishl}}, v, i)`.
+   a. Return :math:`{{\mathrm{ivshiftop}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{ishl}}, v, i \mathbin{\mathrm{mod}} N)`.
 
 #. Assert: Due to validation, :math:`{\mathit{vshiftop}}` is some :math:`{\mathsf{shr}}{\mathsf{\_}}{{\mathit{sx}}}`.
 
 #. Let :math:`({\mathsf{shr}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{vshiftop}}`.
 
-#. Return :math:`{{\mathrm{ivshiftopsx}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{ishr}}, {\mathit{sx}}, v, i)`.
+#. Return :math:`{{\mathrm{ivshiftopsx}}}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}({\mathrm{ishr}}, {\mathit{sx}}, v, i \mathbin{\mathrm{mod}} N)`.
 
 
 :math:`{\mathsf{vbitmask}}{{}_{{{\mathsf{i}}{N}}{\mathsf{x}}{M}}(v)}`
@@ -34477,10 +34477,10 @@ vcvtop__ Lnn_1 X M Lnn_2 X M' vcvtop v_1
 
 vshiftop_ Jnn X M vshiftop_ v i
 1. If (vshiftop_ = SHL), then:
-  a. Return $ivshiftop_(Jnn X M, $ishl_, v, i).
+  a. Return $ivshiftop_(Jnn X M, $ishl_, v, (i \ $lsizenn(Jnn))).
 2. Assert: Due to validation, vshiftop_ is some SHR.
 3. Let (SHR sx) be vshiftop_.
-4. Return $ivshiftopsx_(Jnn X M, $ishr_, sx, v, i).
+4. Return $ivshiftopsx_(Jnn X M, $ishr_, sx, v, (i \ $lsizenn(Jnn))).
 
 vbitmaskop_ Jnn X M v
 1. Return $ivbitmaskop_(Jnn X M, v).
