@@ -4646,10 +4646,10 @@ def $ior_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
 def $ixor_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
 
 ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
-def $ishl_(N : N, iN : iN(N), u32 : u32) : iN(N)
+def $ishl_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
 
 ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
-def $ishr_(N : N, sx : sx, iN : iN(N), u32 : u32) : iN(N)
+def $ishr_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : iN(N)
 
 ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
 def $irotl_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
@@ -4891,9 +4891,9 @@ def $binop_(numtype : numtype, binop_ : binop_(numtype), num_ : num_(numtype), n
   ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
   def $binop_{Inn : Inn, i_1 : num_((Inn : Inn <: numtype)), i_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), XOR_binop_, i_1, i_2) = [$ixor_($sizenn((Inn : Inn <: numtype)), i_1, i_2)]
   ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
-  def $binop_{Inn : Inn, i_1 : num_((Inn : Inn <: numtype)), i_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), SHL_binop_, i_1, i_2) = [$ishl_($sizenn((Inn : Inn <: numtype)), i_1, `%`_u32(i_2!`%`_num_.0,))]
+  def $binop_{Inn : Inn, i_1 : num_((Inn : Inn <: numtype)), i_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), SHL_binop_, i_1, i_2) = [$ishl_($sizenn((Inn : Inn <: numtype)), i_1, i_2)]
   ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
-  def $binop_{Inn : Inn, sx : sx, i_1 : num_((Inn : Inn <: numtype)), i_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), SHR_binop_(sx), i_1, i_2) = [$ishr_($sizenn((Inn : Inn <: numtype)), sx, i_1, `%`_u32(i_2!`%`_num_.0,))]
+  def $binop_{Inn : Inn, sx : sx, i_1 : num_((Inn : Inn <: numtype)), i_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), SHR_binop_(sx), i_1, i_2) = [$ishr_($sizenn((Inn : Inn <: numtype)), sx, i_1, i_2)]
   ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
   def $binop_{Inn : Inn, i_1 : num_((Inn : Inn <: numtype)), i_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), ROTL_binop_, i_1, i_2) = [$irotl_($sizenn((Inn : Inn <: numtype)), i_1, i_2)]
   ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
@@ -5122,18 +5122,18 @@ def $fvrelop_(shape : shape, def $f_(N : N, fN : fN(N), fN : fN(N)) : u32, vec_ 
     -- if ($isize(Inn) = $fsize(Fnn))
 
 ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-def $ivshiftop_(shape : shape, def $f_(N : N, iN : iN(N), u32 : u32) : iN(N), vec_ : vec_(V128_Vnn), u32 : u32) : vec_(V128_Vnn)
+def $ivshiftop_(shape : shape, def $f_(N : N, iN : iN(N), iN : iN(N)) : iN(N), vec_ : vec_(V128_Vnn), u32 : u32) : vec_(V128_Vnn)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $ivshiftop_{Jnn : Jnn, M : M, def $f_(N : N, iN : iN(N), u32 : u32) : iN(N), v_1 : vec_(V128_Vnn), i : u32, `c*` : iN($lsizenn((Jnn : Jnn <: lanetype)))*, `c_1*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), M)))*}(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $f_, v_1, i) = $inv_lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), M), c*{c <- `c*`})
+  def $ivshiftop_{Jnn : Jnn, M : M, def $f_(N : N, iN : iN(N), iN : iN(N)) : iN(N), v_1 : vec_(V128_Vnn), i : u32, `c*` : iN($lsizenn((Jnn : Jnn <: lanetype)))*, `c_1*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), M)))*}(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $f_, v_1, i) = $inv_lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), M), c*{c <- `c*`})
     -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), M), v_1))
-    -- if (c*{c <- `c*`} = $f_($lsizenn((Jnn : Jnn <: lanetype)), c_1, i)*{c_1 <- `c_1*`})
+    -- if (c*{c <- `c*`} = $f_($lsizenn((Jnn : Jnn <: lanetype)), c_1, `%`_iN(i!`%`_u32.0,))*{c_1 <- `c_1*`})
 
 ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-def $ivshiftopsx_(shape : shape, def $f_(N : N, sx : sx, iN : iN(N), u32 : u32) : iN(N), sx : sx, vec_ : vec_(V128_Vnn), u32 : u32) : vec_(V128_Vnn)
+def $ivshiftopsx_(shape : shape, def $f_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : iN(N), sx : sx, vec_ : vec_(V128_Vnn), u32 : u32) : vec_(V128_Vnn)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $ivshiftopsx_{Jnn : Jnn, M : M, def $f_(N : N, sx : sx, iN : iN(N), u32 : u32) : iN(N), sx : sx, v_1 : vec_(V128_Vnn), i : u32, `c*` : iN($lsizenn((Jnn : Jnn <: lanetype)))*, `c_1*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), M)))*}(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $f_, sx, v_1, i) = $inv_lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), M), c*{c <- `c*`})
+  def $ivshiftopsx_{Jnn : Jnn, M : M, def $f_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : iN(N), sx : sx, v_1 : vec_(V128_Vnn), i : u32, `c*` : iN($lsizenn((Jnn : Jnn <: lanetype)))*, `c_1*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), M)))*}(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $f_, sx, v_1, i) = $inv_lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), M), c*{c <- `c*`})
     -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), M), v_1))
-    -- if (c*{c <- `c*`} = $f_($lsizenn((Jnn : Jnn <: lanetype)), sx, c_1, i)*{c_1 <- `c_1*`})
+    -- if (c*{c <- `c*`} = $f_($lsizenn((Jnn : Jnn <: lanetype)), sx, c_1, `%`_iN(i!`%`_u32.0,))*{c_1 <- `c_1*`})
 
 ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
 def $ivbitmaskop_(shape : shape, vec_ : vec_(V128_Vnn)) : u32
@@ -5326,9 +5326,9 @@ def $vcvtop__(shape_1 : shape, shape_2 : shape, vcvtop__ : vcvtop__(shape_1, sha
 ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
 def $vshiftop_(ishape : ishape, vshiftop_ : vshiftop_(ishape), vec_ : vec_(V128_Vnn), u32 : u32) : vec_(V128_Vnn)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vshiftop_{Jnn : Jnn, M : M, v : vec_(V128_Vnn), i : u32}(`%`_ishape(`%X%`_shape((Jnn : Jnn <: lanetype), M),), SHL_vshiftop_, v, i) = $ivshiftop_(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $ishl_, v, i)
+  def $vshiftop_{Jnn : Jnn, M : M, v : vec_(V128_Vnn), i : u32}(`%`_ishape(`%X%`_shape((Jnn : Jnn <: lanetype), M),), SHL_vshiftop_, v, i) = $ivshiftop_(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $ishl_, v, `%`_u32((i!`%`_u32.0 \ $lsizenn((Jnn : Jnn <: lanetype))),))
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vshiftop_{Jnn : Jnn, M : M, sx : sx, v : vec_(V128_Vnn), i : u32}(`%`_ishape(`%X%`_shape((Jnn : Jnn <: lanetype), M),), SHR_vshiftop_(sx), v, i) = $ivshiftopsx_(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $ishr_, sx, v, i)
+  def $vshiftop_{Jnn : Jnn, M : M, sx : sx, v : vec_(V128_Vnn), i : u32}(`%`_ishape(`%X%`_shape((Jnn : Jnn <: lanetype), M),), SHR_vshiftop_(sx), v, i) = $ivshiftopsx_(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $ishr_, sx, v, `%`_u32((i!`%`_u32.0 \ $lsizenn((Jnn : Jnn <: lanetype))),))
 
 ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
 def $vbitmaskop_(ishape : ishape, vec_ : vec_(V128_Vnn)) : u32
@@ -16547,10 +16547,10 @@ def $ior_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
 def $ixor_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
 
 ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
-def $ishl_(N : N, iN : iN(N), u32 : u32) : iN(N)
+def $ishl_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
 
 ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
-def $ishr_(N : N, sx : sx, iN : iN(N), u32 : u32) : iN(N)
+def $ishr_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : iN(N)
 
 ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
 def $irotl_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
@@ -16792,9 +16792,9 @@ def $binop_(numtype : numtype, binop_ : binop_(numtype), num_ : num_(numtype), n
   ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
   def $binop_{Inn : Inn, i_1 : num_((Inn : Inn <: numtype)), i_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), XOR_binop_, i_1, i_2) = [$ixor_($sizenn((Inn : Inn <: numtype)), i_1, i_2)]
   ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
-  def $binop_{Inn : Inn, i_1 : num_((Inn : Inn <: numtype)), i_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), SHL_binop_, i_1, i_2) = [$ishl_($sizenn((Inn : Inn <: numtype)), i_1, `%`_u32(i_2!`%`_num_.0,))]
+  def $binop_{Inn : Inn, i_1 : num_((Inn : Inn <: numtype)), i_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), SHL_binop_, i_1, i_2) = [$ishl_($sizenn((Inn : Inn <: numtype)), i_1, i_2)]
   ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
-  def $binop_{Inn : Inn, sx : sx, i_1 : num_((Inn : Inn <: numtype)), i_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), SHR_binop_(sx), i_1, i_2) = [$ishr_($sizenn((Inn : Inn <: numtype)), sx, i_1, `%`_u32(i_2!`%`_num_.0,))]
+  def $binop_{Inn : Inn, sx : sx, i_1 : num_((Inn : Inn <: numtype)), i_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), SHR_binop_(sx), i_1, i_2) = [$ishr_($sizenn((Inn : Inn <: numtype)), sx, i_1, i_2)]
   ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
   def $binop_{Inn : Inn, i_1 : num_((Inn : Inn <: numtype)), i_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), ROTL_binop_, i_1, i_2) = [$irotl_($sizenn((Inn : Inn <: numtype)), i_1, i_2)]
   ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
@@ -17023,18 +17023,18 @@ def $fvrelop_(shape : shape, def $f_(N : N, fN : fN(N), fN : fN(N)) : u32, vec_ 
     -- if ($isize(Inn) = $fsize(Fnn))
 
 ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-def $ivshiftop_(shape : shape, def $f_(N : N, iN : iN(N), u32 : u32) : iN(N), vec_ : vec_(V128_Vnn), u32 : u32) : vec_(V128_Vnn)
+def $ivshiftop_(shape : shape, def $f_(N : N, iN : iN(N), iN : iN(N)) : iN(N), vec_ : vec_(V128_Vnn), u32 : u32) : vec_(V128_Vnn)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $ivshiftop_{Jnn : Jnn, M : M, def $f_(N : N, iN : iN(N), u32 : u32) : iN(N), v_1 : vec_(V128_Vnn), i : u32, `c*` : iN($lsizenn((Jnn : Jnn <: lanetype)))*, `c_1*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), M)))*}(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $f_, v_1, i) = $inv_lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), M), c*{c <- `c*`})
+  def $ivshiftop_{Jnn : Jnn, M : M, def $f_(N : N, iN : iN(N), iN : iN(N)) : iN(N), v_1 : vec_(V128_Vnn), i : u32, `c*` : iN($lsizenn((Jnn : Jnn <: lanetype)))*, `c_1*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), M)))*}(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $f_, v_1, i) = $inv_lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), M), c*{c <- `c*`})
     -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), M), v_1))
-    -- if (c*{c <- `c*`} = $f_($lsizenn((Jnn : Jnn <: lanetype)), c_1, i)*{c_1 <- `c_1*`})
+    -- if (c*{c <- `c*`} = $f_($lsizenn((Jnn : Jnn <: lanetype)), c_1, `%`_iN(i!`%`_u32.0,))*{c_1 <- `c_1*`})
 
 ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-def $ivshiftopsx_(shape : shape, def $f_(N : N, sx : sx, iN : iN(N), u32 : u32) : iN(N), sx : sx, vec_ : vec_(V128_Vnn), u32 : u32) : vec_(V128_Vnn)
+def $ivshiftopsx_(shape : shape, def $f_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : iN(N), sx : sx, vec_ : vec_(V128_Vnn), u32 : u32) : vec_(V128_Vnn)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $ivshiftopsx_{Jnn : Jnn, M : M, def $f_(N : N, sx : sx, iN : iN(N), u32 : u32) : iN(N), sx : sx, v_1 : vec_(V128_Vnn), i : u32, `c*` : iN($lsizenn((Jnn : Jnn <: lanetype)))*, `c_1*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), M)))*}(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $f_, sx, v_1, i) = $inv_lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), M), c*{c <- `c*`})
+  def $ivshiftopsx_{Jnn : Jnn, M : M, def $f_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : iN(N), sx : sx, v_1 : vec_(V128_Vnn), i : u32, `c*` : iN($lsizenn((Jnn : Jnn <: lanetype)))*, `c_1*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), M)))*}(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $f_, sx, v_1, i) = $inv_lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), M), c*{c <- `c*`})
     -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), M), v_1))
-    -- if (c*{c <- `c*`} = $f_($lsizenn((Jnn : Jnn <: lanetype)), sx, c_1, i)*{c_1 <- `c_1*`})
+    -- if (c*{c <- `c*`} = $f_($lsizenn((Jnn : Jnn <: lanetype)), sx, c_1, `%`_iN(i!`%`_u32.0,))*{c_1 <- `c_1*`})
 
 ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
 def $ivbitmaskop_(shape : shape, vec_ : vec_(V128_Vnn)) : u32
@@ -17227,9 +17227,9 @@ def $vcvtop__(shape_1 : shape, shape_2 : shape, vcvtop__ : vcvtop__(shape_1, sha
 ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
 def $vshiftop_(ishape : ishape, vshiftop_ : vshiftop_(ishape), vec_ : vec_(V128_Vnn), u32 : u32) : vec_(V128_Vnn)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vshiftop_{Jnn : Jnn, M : M, v : vec_(V128_Vnn), i : u32}(`%`_ishape(`%X%`_shape((Jnn : Jnn <: lanetype), M),), SHL_vshiftop_, v, i) = $ivshiftop_(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $ishl_, v, i)
+  def $vshiftop_{Jnn : Jnn, M : M, v : vec_(V128_Vnn), i : u32}(`%`_ishape(`%X%`_shape((Jnn : Jnn <: lanetype), M),), SHL_vshiftop_, v, i) = $ivshiftop_(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $ishl_, v, `%`_u32((i!`%`_u32.0 \ $lsizenn((Jnn : Jnn <: lanetype))),))
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vshiftop_{Jnn : Jnn, M : M, sx : sx, v : vec_(V128_Vnn), i : u32}(`%`_ishape(`%X%`_shape((Jnn : Jnn <: lanetype), M),), SHR_vshiftop_(sx), v, i) = $ivshiftopsx_(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $ishr_, sx, v, i)
+  def $vshiftop_{Jnn : Jnn, M : M, sx : sx, v : vec_(V128_Vnn), i : u32}(`%`_ishape(`%X%`_shape((Jnn : Jnn <: lanetype), M),), SHR_vshiftop_(sx), v, i) = $ivshiftopsx_(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $ishr_, sx, v, `%`_u32((i!`%`_u32.0 \ $lsizenn((Jnn : Jnn <: lanetype))),))
 
 ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
 def $vbitmaskop_(ishape : ishape, vec_ : vec_(V128_Vnn)) : u32
@@ -28577,10 +28577,10 @@ def $ior_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
 def $ixor_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
 
 ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
-def $ishl_(N : N, iN : iN(N), u32 : u32) : iN(N)
+def $ishl_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
 
 ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
-def $ishr_(N : N, sx : sx, iN : iN(N), u32 : u32) : iN(N)
+def $ishr_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : iN(N)
 
 ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
 def $irotl_(N : N, iN : iN(N), iN : iN(N)) : iN(N)
@@ -28822,9 +28822,9 @@ def $binop_(numtype : numtype, binop_ : binop_(numtype), num_ : num_(numtype), n
   ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
   def $binop_{Inn : Inn, i_1 : num_((Inn : Inn <: numtype)), i_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), XOR_binop_, i_1, i_2) = [$ixor_($sizenn((Inn : Inn <: numtype)), i_1, i_2)]
   ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
-  def $binop_{Inn : Inn, i_1 : num_((Inn : Inn <: numtype)), i_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), SHL_binop_, i_1, i_2) = [$ishl_($sizenn((Inn : Inn <: numtype)), i_1, `%`_u32(i_2!`%`_num_.0,))]
+  def $binop_{Inn : Inn, i_1 : num_((Inn : Inn <: numtype)), i_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), SHL_binop_, i_1, i_2) = [$ishl_($sizenn((Inn : Inn <: numtype)), i_1, i_2)]
   ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
-  def $binop_{Inn : Inn, sx : sx, i_1 : num_((Inn : Inn <: numtype)), i_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), SHR_binop_(sx), i_1, i_2) = [$ishr_($sizenn((Inn : Inn <: numtype)), sx, i_1, `%`_u32(i_2!`%`_num_.0,))]
+  def $binop_{Inn : Inn, sx : sx, i_1 : num_((Inn : Inn <: numtype)), i_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), SHR_binop_(sx), i_1, i_2) = [$ishr_($sizenn((Inn : Inn <: numtype)), sx, i_1, i_2)]
   ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
   def $binop_{Inn : Inn, i_1 : num_((Inn : Inn <: numtype)), i_2 : num_((Inn : Inn <: numtype))}((Inn : Inn <: numtype), ROTL_binop_, i_1, i_2) = [$irotl_($sizenn((Inn : Inn <: numtype)), i_1, i_2)]
   ;; ../../../../specification/wasm-latest/3.1-numerics.scalar.spectec
@@ -29053,18 +29053,18 @@ def $fvrelop_(shape : shape, def $f_(N : N, fN : fN(N), fN : fN(N)) : u32, vec_ 
     -- if ($isize(Inn) = $fsize(Fnn))
 
 ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-def $ivshiftop_(shape : shape, def $f_(N : N, iN : iN(N), u32 : u32) : iN(N), vec_ : vec_(V128_Vnn), u32 : u32) : vec_(V128_Vnn)
+def $ivshiftop_(shape : shape, def $f_(N : N, iN : iN(N), iN : iN(N)) : iN(N), vec_ : vec_(V128_Vnn), u32 : u32) : vec_(V128_Vnn)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $ivshiftop_{Jnn : Jnn, M : M, def $f_(N : N, iN : iN(N), u32 : u32) : iN(N), v_1 : vec_(V128_Vnn), i : u32, `c*` : iN($lsizenn((Jnn : Jnn <: lanetype)))*, `c_1*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), M)))*}(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $f_, v_1, i) = $inv_lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), M), c*{c <- `c*`})
+  def $ivshiftop_{Jnn : Jnn, M : M, def $f_(N : N, iN : iN(N), iN : iN(N)) : iN(N), v_1 : vec_(V128_Vnn), i : u32, `c*` : iN($lsizenn((Jnn : Jnn <: lanetype)))*, `c_1*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), M)))*}(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $f_, v_1, i) = $inv_lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), M), c*{c <- `c*`})
     -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), M), v_1))
-    -- if (c*{c <- `c*`} = $f_($lsizenn((Jnn : Jnn <: lanetype)), c_1, i)*{c_1 <- `c_1*`})
+    -- if (c*{c <- `c*`} = $f_($lsizenn((Jnn : Jnn <: lanetype)), c_1, `%`_iN(i!`%`_u32.0,))*{c_1 <- `c_1*`})
 
 ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-def $ivshiftopsx_(shape : shape, def $f_(N : N, sx : sx, iN : iN(N), u32 : u32) : iN(N), sx : sx, vec_ : vec_(V128_Vnn), u32 : u32) : vec_(V128_Vnn)
+def $ivshiftopsx_(shape : shape, def $f_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : iN(N), sx : sx, vec_ : vec_(V128_Vnn), u32 : u32) : vec_(V128_Vnn)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $ivshiftopsx_{Jnn : Jnn, M : M, def $f_(N : N, sx : sx, iN : iN(N), u32 : u32) : iN(N), sx : sx, v_1 : vec_(V128_Vnn), i : u32, `c*` : iN($lsizenn((Jnn : Jnn <: lanetype)))*, `c_1*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), M)))*}(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $f_, sx, v_1, i) = $inv_lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), M), c*{c <- `c*`})
+  def $ivshiftopsx_{Jnn : Jnn, M : M, def $f_(N : N, sx : sx, iN : iN(N), iN : iN(N)) : iN(N), sx : sx, v_1 : vec_(V128_Vnn), i : u32, `c*` : iN($lsizenn((Jnn : Jnn <: lanetype)))*, `c_1*` : lane_($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), M)))*}(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $f_, sx, v_1, i) = $inv_lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), M), c*{c <- `c*`})
     -- if (c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), M), v_1))
-    -- if (c*{c <- `c*`} = $f_($lsizenn((Jnn : Jnn <: lanetype)), sx, c_1, i)*{c_1 <- `c_1*`})
+    -- if (c*{c <- `c*`} = $f_($lsizenn((Jnn : Jnn <: lanetype)), sx, c_1, `%`_iN(i!`%`_u32.0,))*{c_1 <- `c_1*`})
 
 ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
 def $ivbitmaskop_(shape : shape, vec_ : vec_(V128_Vnn)) : u32
@@ -29257,9 +29257,9 @@ def $vcvtop__(shape_1 : shape, shape_2 : shape, vcvtop__ : vcvtop__(shape_1, sha
 ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
 def $vshiftop_(ishape : ishape, vshiftop_ : vshiftop_(ishape), vec_ : vec_(V128_Vnn), u32 : u32) : vec_(V128_Vnn)
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vshiftop_{Jnn : Jnn, M : M, v : vec_(V128_Vnn), i : u32}(`%`_ishape(`%X%`_shape((Jnn : Jnn <: lanetype), M),), SHL_vshiftop_, v, i) = $ivshiftop_(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $ishl_, v, i)
+  def $vshiftop_{Jnn : Jnn, M : M, v : vec_(V128_Vnn), i : u32}(`%`_ishape(`%X%`_shape((Jnn : Jnn <: lanetype), M),), SHL_vshiftop_, v, i) = $ivshiftop_(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $ishl_, v, `%`_u32((i!`%`_u32.0 \ $lsizenn((Jnn : Jnn <: lanetype))),))
   ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
-  def $vshiftop_{Jnn : Jnn, M : M, sx : sx, v : vec_(V128_Vnn), i : u32}(`%`_ishape(`%X%`_shape((Jnn : Jnn <: lanetype), M),), SHR_vshiftop_(sx), v, i) = $ivshiftopsx_(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $ishr_, sx, v, i)
+  def $vshiftop_{Jnn : Jnn, M : M, sx : sx, v : vec_(V128_Vnn), i : u32}(`%`_ishape(`%X%`_shape((Jnn : Jnn <: lanetype), M),), SHR_vshiftop_(sx), v, i) = $ivshiftopsx_(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $ishr_, sx, v, `%`_u32((i!`%`_u32.0 \ $lsizenn((Jnn : Jnn <: lanetype))),))
 
 ;; ../../../../specification/wasm-latest/3.2-numerics.vector.spectec
 def $vbitmaskop_(ishape : ishape, vec_ : vec_(V128_Vnn)) : u32

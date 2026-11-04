@@ -66,8 +66,8 @@ def $ivrelop_(shape, def $f_(N, iN(N), iN(N)) : u32, vec_(V128), vec_(V128)) : v
 def $ivrelopsx_(shape, def $f_(N, sx, iN(N), iN(N)) : u32, sx, vec_(V128), vec_(V128)) : vec_(V128)
 def $fvrelop_(shape, def $f_(N, fN(N), fN(N)) : u32, vec_(V128), vec_(V128)) : vec_(V128)
 
-def $ivshiftop_(shape, def $f_(N, iN(N), u32) : iN(N), vec_(V128), u32) : vec_(V128)
-def $ivshiftopsx_(shape, def $f_(N, sx, iN(N), u32) : iN(N), sx, vec_(V128), u32) : vec_(V128)
+def $ivshiftop_(shape, def $f_(N, iN(N), iN(N)) : iN(N), vec_(V128), u32) : vec_(V128)
+def $ivshiftopsx_(shape, def $f_(N, sx, iN(N), iN(N)) : iN(N), sx, vec_(V128), u32) : vec_(V128)
 
 def $ivbitmaskop_(shape, vec_(V128)) : u32
 def $ivswizzlop_(shape, def $f_(N, iN(N)*, iN(N)) : iN(N), vec_(V128), vec_(V128)) : vec_(V128)
@@ -265,8 +265,8 @@ def $vrelop_(Fnn X M, GT, v_1, v_2) = $fvrelop_(Fnn X M, $fgt_, v_1, v_2)
 def $vrelop_(Fnn X M, LE, v_1, v_2) = $fvrelop_(Fnn X M, $fle_, v_1, v_2)
 def $vrelop_(Fnn X M, GE, v_1, v_2) = $fvrelop_(Fnn X M, $fge_, v_1, v_2)
 
-def $vshiftop_(Jnn X M, SHL, v, i) = $ivshiftop_(Jnn X M, $ishl_, v, i)
-def $vshiftop_(Jnn X M, SHR sx, v, i) = $ivshiftopsx_(Jnn X M, $ishr_, sx, v, i)
+def $vshiftop_(Jnn X M, SHL, v, i) = $ivshiftop_(Jnn X M, $ishl_, v, $(i \ $lsizenn(Jnn)))
+def $vshiftop_(Jnn X M, SHR sx, v, i) = $ivshiftopsx_(Jnn X M, $ishr_, sx, v, $(i \ $lsizenn(Jnn)))
 
 def $vbitmaskop_(Jnn X M, v) = $ivbitmaskop_(Jnn X M, v)
 
