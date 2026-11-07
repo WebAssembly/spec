@@ -5443,7 +5443,7 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C{.}\mathsf{recs}{}[i] = \mathsf{sub}~{\mathsf{final}^?}~(\mathsf{struct}~{{\mathit{fieldtype}}^\ast})
+C{.}\mathsf{recs}{}[i] = \mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~(\mathsf{struct}~{{\mathit{fieldtype}}^\ast})
 }{
 C \vdash \mathsf{rec} {.} i \leq \mathsf{struct}
 } \, {[\textsc{\scriptsize S{-}heap{-}rec{-}struct}]}
@@ -5454,7 +5454,7 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C{.}\mathsf{recs}{}[i] = \mathsf{sub}~{\mathsf{final}^?}~(\mathsf{array}~{\mathit{fieldtype}})
+C{.}\mathsf{recs}{}[i] = \mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~(\mathsf{array}~{\mathit{fieldtype}})
 }{
 C \vdash \mathsf{rec} {.} i \leq \mathsf{array}
 } \, {[\textsc{\scriptsize S{-}heap{-}rec{-}array}]}
@@ -5465,7 +5465,7 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-C{.}\mathsf{recs}{}[i] = \mathsf{sub}~{\mathsf{final}^?}~(\mathsf{func}~{t_1^\ast} \rightarrow {t_2^\ast})
+C{.}\mathsf{recs}{}[i] = \mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~(\mathsf{func}~{t_1^\ast} \rightarrow {t_2^\ast})
 }{
 C \vdash \mathsf{rec} {.} i \leq \mathsf{func}
 } \, {[\textsc{\scriptsize S{-}heap{-}rec{-}func}]}

@@ -64,15 +64,15 @@ rule Heaptype_sub/typeidx-r:
 
 rule Heaptype_sub/rec-struct:
   C |- REC i <: STRUCT
-  -- if C.RECS[i] = SUB final? (STRUCT fieldtype*)
+  -- if C.RECS[i] = SUB final? typeuse* (STRUCT fieldtype*)
 
 rule Heaptype_sub/rec-array:
   C |- REC i <: ARRAY
-  -- if C.RECS[i] = SUB final? (ARRAY fieldtype)
+  -- if C.RECS[i] = SUB final? typeuse* (ARRAY fieldtype)
 
 rule Heaptype_sub/rec-func:
   C |- REC i <: FUNC
-  -- if C.RECS[i] = SUB final? (FUNC t_1* -> t_2*)
+  -- if C.RECS[i] = SUB final? typeuse* (FUNC t_1* -> t_2*)
 
 rule Heaptype_sub/rec-sub:
   C |- REC i <: typeuse*[j]

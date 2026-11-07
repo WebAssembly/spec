@@ -2986,20 +2986,20 @@ relation Heaptype_sub: `%|-%<:%`(context, heaptype, heaptype)
     `%|-%<:%`(C, heaptype, _IDX_heaptype(typeidx))
     -- Heaptype_sub: `%|-%<:%`(C, heaptype, (C.TYPES_context[typeidx!`%`_typeidx.0] : deftype <: heaptype))
 
-  ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:65.1-67.51
-  rule `rec-struct`{C : context, i : n, `final?` : final?, `fieldtype*` : fieldtype*}:
+  ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:65.1-67.60
+  rule `rec-struct`{C : context, i : n, `final?` : final?, `typeuse*` : typeuse*, `fieldtype*` : fieldtype*}:
     `%|-%<:%`(C, REC_heaptype(i), STRUCT_heaptype)
-    -- if (C.RECS_context[i] = SUB_subtype(final?{final <- `final?`}, [], STRUCT_comptype(`%`_list(fieldtype*{fieldtype <- `fieldtype*`},))))
+    -- if (C.RECS_context[i] = SUB_subtype(final?{final <- `final?`}, typeuse*{typeuse <- `typeuse*`}, STRUCT_comptype(`%`_list(fieldtype*{fieldtype <- `fieldtype*`},))))
 
-  ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:69.1-71.49
-  rule `rec-array`{C : context, i : n, `final?` : final?, fieldtype : fieldtype}:
+  ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:69.1-71.58
+  rule `rec-array`{C : context, i : n, `final?` : final?, `typeuse*` : typeuse*, fieldtype : fieldtype}:
     `%|-%<:%`(C, REC_heaptype(i), ARRAY_heaptype)
-    -- if (C.RECS_context[i] = SUB_subtype(final?{final <- `final?`}, [], ARRAY_comptype(fieldtype)))
+    -- if (C.RECS_context[i] = SUB_subtype(final?{final <- `final?`}, typeuse*{typeuse <- `typeuse*`}, ARRAY_comptype(fieldtype)))
 
-  ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:73.1-75.51
-  rule `rec-func`{C : context, i : n, `final?` : final?, `t_1*` : valtype*, `t_2*` : valtype*}:
+  ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:73.1-75.60
+  rule `rec-func`{C : context, i : n, `final?` : final?, `typeuse*` : typeuse*, `t_1*` : valtype*, `t_2*` : valtype*}:
     `%|-%<:%`(C, REC_heaptype(i), FUNC_heaptype)
-    -- if (C.RECS_context[i] = SUB_subtype(final?{final <- `final?`}, [], `FUNC%->%`_comptype(`%`_resulttype(t_1*{t_1 <- `t_1*`},), `%`_resulttype(t_2*{t_2 <- `t_2*`},))))
+    -- if (C.RECS_context[i] = SUB_subtype(final?{final <- `final?`}, typeuse*{typeuse <- `typeuse*`}, `FUNC%->%`_comptype(`%`_resulttype(t_1*{t_1 <- `t_1*`},), `%`_resulttype(t_2*{t_2 <- `t_2*`},))))
 
   ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:77.1-79.43
   rule `rec-sub`{C : context, i : n, `typeuse*` : typeuse*, j : nat, `final?` : final?, ct : comptype}:
@@ -14874,20 +14874,20 @@ relation Heaptype_sub: `%|-%<:%`(context, heaptype, heaptype)
     `%|-%<:%`(C, heaptype, _IDX_heaptype(typeidx))
     -- Heaptype_sub: `%|-%<:%`(C, heaptype, (C.TYPES_context[typeidx!`%`_typeidx.0] : deftype <: heaptype))
 
-  ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:65.1-67.51
-  rule `rec-struct`{C : context, i : n, `final?` : final?, `fieldtype*` : fieldtype*}:
+  ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:65.1-67.60
+  rule `rec-struct`{C : context, i : n, `final?` : final?, `typeuse*` : typeuse*, `fieldtype*` : fieldtype*}:
     `%|-%<:%`(C, REC_heaptype(i), STRUCT_heaptype)
-    -- if (C.RECS_context[i] = SUB_subtype(final?{final <- `final?`}, [], STRUCT_comptype(`%`_list(fieldtype*{fieldtype <- `fieldtype*`},))))
+    -- if (C.RECS_context[i] = SUB_subtype(final?{final <- `final?`}, typeuse*{typeuse <- `typeuse*`}, STRUCT_comptype(`%`_list(fieldtype*{fieldtype <- `fieldtype*`},))))
 
-  ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:69.1-71.49
-  rule `rec-array`{C : context, i : n, `final?` : final?, fieldtype : fieldtype}:
+  ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:69.1-71.58
+  rule `rec-array`{C : context, i : n, `final?` : final?, `typeuse*` : typeuse*, fieldtype : fieldtype}:
     `%|-%<:%`(C, REC_heaptype(i), ARRAY_heaptype)
-    -- if (C.RECS_context[i] = SUB_subtype(final?{final <- `final?`}, [], ARRAY_comptype(fieldtype)))
+    -- if (C.RECS_context[i] = SUB_subtype(final?{final <- `final?`}, typeuse*{typeuse <- `typeuse*`}, ARRAY_comptype(fieldtype)))
 
-  ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:73.1-75.51
-  rule `rec-func`{C : context, i : n, `final?` : final?, `t_1*` : valtype*, `t_2*` : valtype*}:
+  ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:73.1-75.60
+  rule `rec-func`{C : context, i : n, `final?` : final?, `typeuse*` : typeuse*, `t_1*` : valtype*, `t_2*` : valtype*}:
     `%|-%<:%`(C, REC_heaptype(i), FUNC_heaptype)
-    -- if (C.RECS_context[i] = SUB_subtype(final?{final <- `final?`}, [], `FUNC%->%`_comptype(`%`_resulttype(t_1*{t_1 <- `t_1*`},), `%`_resulttype(t_2*{t_2 <- `t_2*`},))))
+    -- if (C.RECS_context[i] = SUB_subtype(final?{final <- `final?`}, typeuse*{typeuse <- `typeuse*`}, `FUNC%->%`_comptype(`%`_resulttype(t_1*{t_1 <- `t_1*`},), `%`_resulttype(t_2*{t_2 <- `t_2*`},))))
 
   ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:77.1-79.43
   rule `rec-sub`{C : context, i : n, `typeuse*` : typeuse*, j : nat, `final?` : final?, ct : comptype}:
@@ -26772,23 +26772,23 @@ relation Heaptype_sub: `%|-%<:%`(context, heaptype, heaptype)
     -- if (typeidx!`%`_typeidx.0 < |C.TYPES_context|)
     -- Heaptype_sub: `%|-%<:%`(C, heaptype, (C.TYPES_context[typeidx!`%`_typeidx.0] : deftype <: heaptype))
 
-  ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:65.1-67.51
-  rule `rec-struct`{C : context, i : n, `final?` : final?, `fieldtype*` : fieldtype*}:
+  ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:65.1-67.60
+  rule `rec-struct`{C : context, i : n, `final?` : final?, `typeuse*` : typeuse*, `fieldtype*` : fieldtype*}:
     `%|-%<:%`(C, REC_heaptype(i), STRUCT_heaptype)
     -- if (i < |C.RECS_context|)
-    -- if (C.RECS_context[i] = SUB_subtype(final?{final <- `final?`}, [], STRUCT_comptype(`%`_list(fieldtype*{fieldtype <- `fieldtype*`},))))
+    -- if (C.RECS_context[i] = SUB_subtype(final?{final <- `final?`}, typeuse*{typeuse <- `typeuse*`}, STRUCT_comptype(`%`_list(fieldtype*{fieldtype <- `fieldtype*`},))))
 
-  ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:69.1-71.49
-  rule `rec-array`{C : context, i : n, `final?` : final?, fieldtype : fieldtype}:
+  ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:69.1-71.58
+  rule `rec-array`{C : context, i : n, `final?` : final?, `typeuse*` : typeuse*, fieldtype : fieldtype}:
     `%|-%<:%`(C, REC_heaptype(i), ARRAY_heaptype)
     -- if (i < |C.RECS_context|)
-    -- if (C.RECS_context[i] = SUB_subtype(final?{final <- `final?`}, [], ARRAY_comptype(fieldtype)))
+    -- if (C.RECS_context[i] = SUB_subtype(final?{final <- `final?`}, typeuse*{typeuse <- `typeuse*`}, ARRAY_comptype(fieldtype)))
 
-  ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:73.1-75.51
-  rule `rec-func`{C : context, i : n, `final?` : final?, `t_1*` : valtype*, `t_2*` : valtype*}:
+  ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:73.1-75.60
+  rule `rec-func`{C : context, i : n, `final?` : final?, `typeuse*` : typeuse*, `t_1*` : valtype*, `t_2*` : valtype*}:
     `%|-%<:%`(C, REC_heaptype(i), FUNC_heaptype)
     -- if (i < |C.RECS_context|)
-    -- if (C.RECS_context[i] = SUB_subtype(final?{final <- `final?`}, [], `FUNC%->%`_comptype(`%`_resulttype(t_1*{t_1 <- `t_1*`},), `%`_resulttype(t_2*{t_2 <- `t_2*`},))))
+    -- if (C.RECS_context[i] = SUB_subtype(final?{final <- `final?`}, typeuse*{typeuse <- `typeuse*`}, `FUNC%->%`_comptype(`%`_resulttype(t_1*{t_1 <- `t_1*`},), `%`_resulttype(t_2*{t_2 <- `t_2*`},))))
 
   ;; ../../../../specification/wasm-latest/2.2-validation.subtyping.spectec:77.1-79.43
   rule `rec-sub`{C : context, i : n, `typeuse*` : typeuse*, j : nat, `final?` : final?, ct : comptype}:

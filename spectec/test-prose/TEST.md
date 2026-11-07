@@ -14911,7 +14911,7 @@ The heap type :math:`{\mathit{heaptype}}_1` :ref:`matches <match>` the heap type
 
       * The recursive type :math:`C{.}\mathsf{recs}{}[i]` exists.
 
-      * The recursive type :math:`C{.}\mathsf{recs}{}[i]` is of the form :math:`(\mathsf{sub}~{\mathsf{final}^?}~(\mathsf{struct}~{{\mathit{fieldtype}}^\ast}))`.
+      * The recursive type :math:`C{.}\mathsf{recs}{}[i]` is of the form :math:`(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~(\mathsf{struct}~{{\mathit{fieldtype}}^\ast}))`.
    * Or:
 
       * The heap type :math:`{\mathit{heaptype}}_1` is of the form :math:`(\mathsf{rec} {.} i)`.
@@ -14920,7 +14920,7 @@ The heap type :math:`{\mathit{heaptype}}_1` :ref:`matches <match>` the heap type
 
       * The recursive type :math:`C{.}\mathsf{recs}{}[i]` exists.
 
-      * The recursive type :math:`C{.}\mathsf{recs}{}[i]` is of the form :math:`(\mathsf{sub}~{\mathsf{final}^?}~(\mathsf{array}~{\mathit{fieldtype}}))`.
+      * The recursive type :math:`C{.}\mathsf{recs}{}[i]` is of the form :math:`(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~(\mathsf{array}~{\mathit{fieldtype}}))`.
    * Or:
 
       * The heap type :math:`{\mathit{heaptype}}_1` is of the form :math:`(\mathsf{rec} {.} i)`.
@@ -14929,7 +14929,7 @@ The heap type :math:`{\mathit{heaptype}}_1` :ref:`matches <match>` the heap type
 
       * The recursive type :math:`C{.}\mathsf{recs}{}[i]` exists.
 
-      * The recursive type :math:`C{.}\mathsf{recs}{}[i]` is of the form :math:`(\mathsf{sub}~{\mathsf{final}^?}~(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast}))`.
+      * The recursive type :math:`C{.}\mathsf{recs}{}[i]` is of the form :math:`(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast}))`.
    * Or:
 
       * The heap type :math:`{\mathit{heaptype}}_1` is of the form :math:`(\mathsf{rec} {.} i)`.
@@ -15070,7 +15070,7 @@ The heap type :math:`(\mathsf{rec} {.} i)` :ref:`matches <match>` the heap type 
 
    * The recursive type :math:`C{.}\mathsf{recs}{}[i]` exists.
 
-   * The recursive type :math:`C{.}\mathsf{recs}{}[i]` is of the form :math:`(\mathsf{sub}~{\mathsf{final}^?}~(\mathsf{struct}~{{\mathit{fieldtype}}^\ast}))`.
+   * The recursive type :math:`C{.}\mathsf{recs}{}[i]` is of the form :math:`(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~(\mathsf{struct}~{{\mathit{fieldtype}}^\ast}))`.
 
 
 
@@ -15080,7 +15080,7 @@ The heap type :math:`(\mathsf{rec} {.} i)` :ref:`matches <match>` the heap type 
 
    * The recursive type :math:`C{.}\mathsf{recs}{}[i]` exists.
 
-   * The recursive type :math:`C{.}\mathsf{recs}{}[i]` is of the form :math:`(\mathsf{sub}~{\mathsf{final}^?}~(\mathsf{array}~{\mathit{fieldtype}}))`.
+   * The recursive type :math:`C{.}\mathsf{recs}{}[i]` is of the form :math:`(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~(\mathsf{array}~{\mathit{fieldtype}}))`.
 
 
 
@@ -15090,7 +15090,7 @@ The heap type :math:`(\mathsf{rec} {.} i)` :ref:`matches <match>` the heap type 
 
    * The recursive type :math:`C{.}\mathsf{recs}{}[i]` exists.
 
-   * The recursive type :math:`C{.}\mathsf{recs}{}[i]` is of the form :math:`(\mathsf{sub}~{\mathsf{final}^?}~(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast}))`.
+   * The recursive type :math:`C{.}\mathsf{recs}{}[i]` is of the form :math:`(\mathsf{sub}~{\mathsf{final}^?}~{{\mathit{typeuse}}^\ast}~(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast}))`.
 
 
 
@@ -28679,17 +28679,17 @@ Heaptype_sub
     - heaptype_1 is (REC i).
     - heaptype_2 is STRUCT.
     - the recursive type C.RECS[i] exists.
-    - C.RECS[i] is (SUB final? [] (STRUCT fieldtype*)).
+    - C.RECS[i] is (SUB final? typeuse* (STRUCT fieldtype*)).
   - Or:
     - heaptype_1 is (REC i).
     - heaptype_2 is ARRAY.
     - C.RECS[i] exists.
-    - C.RECS[i] is (SUB final? [] (ARRAY fieldtype)).
+    - C.RECS[i] is (SUB final? typeuse* (ARRAY fieldtype)).
   - Or:
     - heaptype_1 is (REC i).
     - heaptype_2 is FUNC.
     - C.RECS[i] exists.
-    - C.RECS[i] is (SUB final? [] (FUNC t_1* -> t_2*)).
+    - C.RECS[i] is (SUB final? typeuse* (FUNC t_1* -> t_2*)).
   - Or:
     - heaptype_1 is (REC i).
     - |typeuse*| is greater than j.
@@ -28765,17 +28765,17 @@ Heaptype_sub/typeidx
 Heaptype_sub/rec
 - the heap type (REC i) matches the heap type STRUCT if:
   - the recursive type C.RECS[i] exists.
-  - C.RECS[i] is (SUB final? [] (STRUCT fieldtype*)).
+  - C.RECS[i] is (SUB final? typeuse* (STRUCT fieldtype*)).
 
 Heaptype_sub/rec
 - the heap type (REC i) matches the heap type ARRAY if:
   - the recursive type C.RECS[i] exists.
-  - C.RECS[i] is (SUB final? [] (ARRAY fieldtype)).
+  - C.RECS[i] is (SUB final? typeuse* (ARRAY fieldtype)).
 
 Heaptype_sub/rec
 - the heap type (REC i) matches the heap type FUNC if:
   - the recursive type C.RECS[i] exists.
-  - C.RECS[i] is (SUB final? [] (FUNC t_1* -> t_2*)).
+  - C.RECS[i] is (SUB final? typeuse* (FUNC t_1* -> t_2*)).
 
 Heaptype_sub/rec
 - the heap type (REC i) matches the type use typeuse*[j] if:
