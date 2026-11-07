@@ -2135,7 +2135,7 @@ When this builtin is invoked with parameters |string|, |start|, and |end|, the f
 1. Let |length| be the [=string/length=] of |string|.
 1. If |start| > |end| or |start| > |length|,
     1. Return the empty string.
-1. Return [=!=] [$Call$]([=String.prototype.substring=], |string|, « [=ToJSValue=](|start|), [=ToJSValue=](|end|) »).
+1. Return [=!=] [$Call$]([=String.prototype.substring=], |string|, « [=𝔽=](|start|), [=𝔽=](|end|) »).
 
 </div>
 
