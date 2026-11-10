@@ -354,7 +354,8 @@ Each [=agent=] is associated with the following [=ordered map=]s:
     * The <dfn>Memory object cache</dfn>, mapping [=memory address=]es to {{Memory}} objects.
     * The <dfn>Table object cache</dfn>, mapping [=table address=]es to {{Table}} objects.
     * The <dfn>Exported Function cache</dfn>, mapping [=function address=]es to [=Exported Function=] objects.
-    * The <dfn>Exported GC Object cache</dfn>, mapping [=struct address=]es and [=array address=]es to [=Exported GC Object=] objects.
+    * The <dfn>Exported struct cache</dfn>, mapping [=struct address=]es to [=Exported GC Object=] objects.
+    * The <dfn>Exported array cache</dfn>, mapping [=array address=]es to [=Exported GC Object=] objects.
     * The <dfn>Global object cache</dfn>, mapping [=global address=]es to {{Global}} objects.
     * The <dfn>Tag object cache</dfn>, mapping [=tag address=]es to {{Tag}} objects.
     * The <dfn>Exception object cache</dfn>, mapping [=exception address=]es to {{Exception}} objects.
@@ -1661,7 +1662,7 @@ The internal methods of an [=Exported GC Object=] use the following implementati
   To create <dfn>a new Exported GC Object</dfn> from a WebAssembly [=object address=] |objectaddr| and a string |objectkind|, perform the following steps:
 
     1. Assert: |objectkind| is either "array" or "struct".
-    1. Let |map| be the [=surrounding agent=]'s associated [=exported GC object cache=].
+    1. If |objectkind| is "array", let |map| be the [=surrounding agent=]'s associated [=Exported array cache=]; otherwise, let |map| be the [=surrounding agent=]'s associated [=Exported struct cache=].
     1. If |map|[|objectaddr|] [=map/exists=],
         1. Return |map|[|objectaddr|].
     1. Let |object| be [=MakeBasicObject=](« \[[ObjectAddress]], \[[ObjectKind]] »).
