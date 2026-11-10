@@ -100,7 +100,6 @@ let rec sN n s =
   then (if b land 0x40 = 0 then x else Int64.(logor x (logxor (-1L) 0x7fL)))
   else Int64.(logor x (shift_left (sN (n - 7) s) 7))
 
-let u8 s = I8.of_int_u (I64.to_int_u (uN 8 s))
 let u32 s = I32.of_int_u (I64.to_int_u (uN 32 s))
 let u64 s = uN 64 s
 let s7 s = I64.to_int_s (sN 7 s)
@@ -150,7 +149,7 @@ open Types
 let zero s = expect 0x00 s "zero byte expected"
 let idx s = u32 s
 let idx32 s = Convert.I64_.extend_i32_u (idx s)
-let laneidx s = u8 s
+let laneidx s = I8.of_int_u (byte s)
 
 let mutability s =
   match byte s with
