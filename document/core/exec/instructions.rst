@@ -384,7 +384,7 @@ When the end of a function is reached without a jump (including through |RETURN|
 $${rule: Step_pure/frame-vals}
 
 
-.. index:: host function, store
+.. index:: host function, store, non-determinism
 .. _exec-invoke-host:
 
 Host Functions
@@ -404,7 +404,8 @@ $${rule: {Step/call_ref-hostfunc-*}}
 Here, ${:$hostcall(_HOSTFUNC hf, s, val^n)} denotes the implementation-defined execution of host function ${:hf} in current store ${:s} with arguments ${:val^n}.
 It yields a set of possible outcomes, where each element is either a pair of a modified store ${:s'} and a :ref:`result <syntax-result>`
 or the special value ${hostcallresult:BOT} indicating divergence.
-A host function is non-deterministic if there is at least one argument for which the set of outcomes is not singular.
+This set must not be empty.
+A host function is *non-deterministic* if there is at least one argument pair for which the set of outcomes is not singular.
 
 For a WebAssembly implementation to be :ref:`sound <soundness>` in the presence of host functions,
 every :ref:`host function instance <syntax-funcinst>` must be :ref:`valid <valid-hostfuncinst>`,
