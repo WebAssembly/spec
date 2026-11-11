@@ -245,8 +245,8 @@ let unwrap_natv v =
 
 let unwrap_intv v =
   match unwrap_numv v with
-  | `Int i -> i
-  | n -> fail_value "unwrap_natv" (NumV n)
+  | `Int i | `Nat i -> i
+  | n -> fail_value "unwrap_intv" (NumV n)
 
 let unwrap_natv_to_int (v: value): int = unwrap_natv v |> Z.to_int
 

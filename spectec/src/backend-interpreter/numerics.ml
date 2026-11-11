@@ -88,7 +88,7 @@ let inv_signed =
     name = "inv_signed";
     f =
       (function
-      | [ NumV (`Nat z); NumV (`Int n) ] ->
+      | [ NumV (`Nat z); NumV (`Nat n | `Int n) ] ->
         let z = Z.to_int z in
         (if Z.(geq n zero) then n else Z.(add n (shift_left one z))) |> al_of_z_nat
       | vs -> error_values "inv_signed" vs
@@ -111,14 +111,14 @@ let sat : numerics =
     name = "sat";
     f =
       (function
-      | [ NumV (`Nat z); CaseV ("U", []); NumV (`Int i) ] ->
+      | [ NumV (`Nat z); CaseV ("U", []); NumV (`Nat i | `Int i) ] ->
         if Z.(gt i (shift_left one (Z.to_int z) |> pred)) then
           NumV (`Nat Z.(shift_left one (Z.to_int z) |> pred))
         else if Z.(lt i zero) then
           NumV (`Nat Z.zero)
         else
           NumV (`Nat i)
-      | [ NumV (`Nat z); CaseV ("S", []); NumV (`Int i) ] ->
+      | [ NumV (`Nat z); CaseV ("S", []); NumV (`Nat i | `Int i) ] ->
         let n = Z.to_int z - 1 in
         let j =
           if Z.(lt i (shift_left one n |> neg)) then
