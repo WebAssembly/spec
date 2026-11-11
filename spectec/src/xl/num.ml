@@ -171,6 +171,9 @@ let rec bin (op : binop) num1 num2 : num option =
     )
   | `PowOp, `Real r1, `Real r2 -> Some (`Real Float.(pow r1 r2))
 
+  | _, _, _ when to_typ num1 <> to_typ num2 ->
+    let num1', num2' = widen num1 num2 in
+    bin op num1' num2'
   | _, _, _ -> None
 
 let zero = function
@@ -274,7 +277,7 @@ let bin_partial (op : binop) arg1 arg2 of_ to_ : 'a option option =
 
   | _, _, _ -> None
 
-let cmp (op : cmpop) num1 num2 : bool option =
+let rec cmp (op : cmpop) num1 num2 : bool option =
   Util.Debug_log.(log "xl.num.cmp"
     (fun _ -> to_string num1 ^ " " ^ string_of_cmpop op ^ " " ^ to_string num2)
     (function None -> "?" | Some b -> Bool.to_string b)
@@ -300,4 +303,7 @@ let cmp (op : cmpop) num1 num2 : bool option =
   | `GeOp, `Rat q1, `Rat q2 -> Some Q.(q1 >= q2)
   | `GeOp, `Real r1, `Real r2 -> Some (r1 >= r2)
 
+  | _, _, _ when to_typ num1 <> to_typ num2 ->
+    let num1', num2' = widen num1 num2 in
+    cmp op num1' num2'
   | _, _, _ -> None
