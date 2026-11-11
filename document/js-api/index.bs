@@ -2031,7 +2031,7 @@ When this builtin is invoked with parameters |string|, |array|, and |start|, the
 1. Let |i| be 0.
 1. While |i| < |stringLength|:
     1. Let |charCode| be [$CharCodeAt$](|string|, |i|).
-    1. Set the element at index |start| + |i| in |array| to [=ToWebAssemblyValue=](|charCode|, [=i32=]).
+    1. Set the element at index |start| + |i| in |array| to [=!=] [=ToWebAssemblyValue=](|charCode|, [=i32=]).
     1. Set |i| to |i| + 1.
 1. Return |stringLength|.
 
@@ -2052,7 +2052,7 @@ When this builtin is invoked with parameter |v|, the following steps must be run
 
 <h4 id="js-string-fromCodePoint">fromCodePoint</h4>
 
-The |funcType| of this builtin is `(rec (type (func (param i32) (result externref)))).0`.
+The |funcType| of this builtin is `(rec (type (func (param i32) (result (ref extern))))).0`.
 
 <div algorithm="js-string-fromCodePoint">
 
@@ -2066,7 +2066,7 @@ When this builtin is invoked with parameter |v|, the following steps must be run
 
 <h4 id="js-string-charCodeAt">charCodeAt</h4>
 
-The type of this function is `(rec (type (func (param externref i32) (result i32)))).0`.
+The |funcType| of this builtin is `(rec (type (func (param externref i32) (result i32)))).0`.
 
 <div algorithm="js-string-charCodeAt">
 
@@ -2082,7 +2082,7 @@ When this builtin is invoked with parameters |string| and |index|, the following
 
 <h4 id="js-string-codePointAt">codePointAt</h4>
 
-The type of this function is `(rec (type (func (param externref i32) (result i32)))).0`.
+The |funcType| of this builtin is `(rec (type (func (param externref i32) (result i32)))).0`.
 
 <div algorithm="js-string-codePointAt">
 
