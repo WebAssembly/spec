@@ -113,16 +113,29 @@ test(() => {
 test(() => {
   const struct = functions.makeStruct();
   const array = functions.makeArray();
-  assert_throws_js(TypeError, () => Object.preventExtensions(struct));
-  assert_throws_js(TypeError, () => Object.preventExtensions(array));
+  assert_true(Reflect.preventExtensions(struct));
+  assert_true(Reflect.preventExtensions(array));
+  assert_equals(Object.preventExtensions(struct), struct);
+  assert_equals(Object.preventExtensions(array), array);
 }, "preventExtensions");
 
 test(() => {
   const struct = functions.makeStruct();
   const array = functions.makeArray();
-  assert_throws_js(TypeError, () => Object.seal(struct));
-  assert_throws_js(TypeError, () => Object.seal(array));
+  assert_true(Object.isSealed(struct));
+  assert_true(Object.isSealed(array));
+  assert_equals(Object.seal(struct), struct);
+  assert_equals(Object.seal(array), array);
 }, "sealing");
+
+test(() => {
+  const struct = functions.makeStruct();
+  const array = functions.makeArray();
+  assert_true(Object.isFrozen(struct));
+  assert_true(Object.isFrozen(array));
+  assert_equals(Object.freeze(struct), struct);
+  assert_equals(Object.freeze(array), array);
+}, "freezing");
 
 test(() => {
   const struct = functions.makeStruct();
