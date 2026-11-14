@@ -107,6 +107,8 @@ Finally, the following function computes the least precise supertype of a given 
          return Func
        case (Extern | Noextern)
          return Extern
+       case (Exn | Noexn)
+         return Exn
        case (Def(dt))
          switch (dt.rec.types[dt.proj].body)
            case (Struct(_) | Array(_))
@@ -336,7 +338,7 @@ Other instructions are checked in a similar manner.
 
        case (ref.test rt)
          validate_ref_type(rt)
-         pop_val(Ref(top_heap_type(rt), true))
+         pop_val(Ref(top_heap_type(rt.heap), true))
          push_val(I32)
 
        case (local.get x)
