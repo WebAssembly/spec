@@ -50,7 +50,7 @@ Numeric operators are lifted to input sequences by applying the operator element
 
    .. math::
       \begin{array}{lll@{\qquad}l}
-      \fabs_N(z^n) &=& \fabs_N(z[0])~\dots~\fabs_N(z[n])
+      \fabs_N(z^n) &=& \fabs_N(z[0])~\dots~\fabs_N(z[n-1])
       \end{array}
 
    The binary operator |iadd|, when given two sequences of integers of the same length, :math:`n`, return a sequence of integer results:
