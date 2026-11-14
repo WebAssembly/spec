@@ -64,8 +64,8 @@ Similarly, :ref:`defined types <syntax-deftype>` :code:`def_type` can be represe
    type def_type = Def(rec : rec_type, proj : int32)
 
    func unpack_field(t : field_type) : val_type =
-     if (it = I8 || t = I16) return I32
-     return t
+     if (t.val = I8 || t.val = I16) return I32
+     return t.val
 
    func expand_def(t : def_type) : comp_type =
      return t.rec.types[t.proj].body
@@ -437,13 +437,15 @@ Other instructions are checked in a similar manner.
          error_if(not is_struct(t))
          for (ti in reverse(t.fields))
            pop_val(unpack_field(ti))
-         push_val(Ref(Def(types[x])))
+         push_val(Ref(Def(types[x]), false))
 
        case (struct.set x n)
          let t = expand_def(types[x])
          error_if(not is_struct(t) || n >= t.fields.len())
-         pop_val(Ref(Def(types[x])))
-         pop_val(unpack_field(st.fields[n]))
+         let field = t.fields[n]
+         error_if(not field.mut)
+         pop_val(unpack_field(field))
+         pop_val(Ref(Def(types[x]), true))
 
        case (throw x)
           pop_vals(tags[x].type.params)
