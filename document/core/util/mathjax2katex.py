@@ -9,6 +9,7 @@ import shelve
 import subprocess
 import sys
 import threading
+from html.parser import HTMLParser
 
 
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
@@ -34,28 +35,38 @@ def FindMatching(data, prefix):
   return (start, end)
 
 
-def HasBalancedTags(s):
-  tt = re.findall(r'(</?\w+|/>)', s)
-  tags = []
-  for tag in tt:
-    if tag == '/>':
-      # self-closing tag.
-      tags.pop
-    elif tag[0] == '</':
-      # closing tag
-      tag = tag[2:]
-      if len(tags) == 0 or tag != tags[-1]:
-        expected = '"%s"' % tags[-1] if len(tags) else 'empty tag stack'
-        sys.stderr.write('expected %s, got "%s"\n' % (expected, tag))
-        sys.stderr.write('tags: %s\n' % tt)
-        sys.stderr.write('tag stack: %s\n' % tags)
-        sys.stderr.write('string: %s\n' % s)
-        return False
+class TagBalanceParser(HTMLParser):
+  VOID_TAGS = {
+      'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link',
+      'meta', 'param', 'source', 'track', 'wbr',
+  }
 
-      tags.pop()
+  def __init__(self):
+    super().__init__()
+    self.tags = []
+    self.mismatched = False
+
+  def handle_starttag(self, tag, attrs):
+    if tag not in self.VOID_TAGS:
+      self.tags.append(tag)
+
+  def handle_startendtag(self, tag, attrs):
+    pass
+
+  def handle_endtag(self, tag):
+    if not self.tags or self.tags[-1] != tag:
+      self.mismatched = True
     else:
-      # opening tag
-      tags.append(tag[1:])
+      self.tags.pop()
+
+
+def HasBalancedTags(s):
+  parser = TagBalanceParser()
+  parser.feed(s)
+  parser.close()
+  if parser.mismatched or parser.tags:
+    sys.stderr.write('Unbalanced math fragment: %s\n' % s)
+    return False
   return True
 
 
