@@ -137,8 +137,8 @@ Consequently, it can be integrated directly into a decoder.</p>
 <span class="k">type</span> <span class="nf">def_type</span> = Def(<span class="nf">rec</span> : rec_type, <span class="nf">proj</span> : int32)
 
 <span class="k">func</span> <span class="nf">unpack_field</span>(<span class="nf">t</span> : field_type) : val_type =
-  <span class="k">if</span> (t.val = I8 || t.val = I16) <span class="k">return</span> I32
-  <span class="k">return</span> t.val
+  <span class="k">if</span> (it = I8 || t = I16) <span class="k">return</span> I32
+  <span class="k">return</span> t
 
 <span class="k">func</span> <span class="nf">expand_def</span>(<span class="nf">t</span> : def_type) : comp_type =
   <span class="k">return</span> t.rec.types[t.proj].body
@@ -190,7 +190,7 @@ In the graph representation, all recursive types are effectively infinitely <a c
 <h3>Context<a class="headerlink" href="#context" title="Link to this heading">¶</a></h3>
 <p>Validation requires a <a class="reference internal" href="../valid/conventions.html#context"><span class="std std-ref">context</span></a> for checking uses of <a class="reference internal" href="../syntax/modules.html#syntax-index"><span class="std std-ref">indices</span></a>.
 For the purpose of presenting the algorithm, it is maintained in a set of global variables:</p>
-<div class="highlight-pseudo notranslate"><div class="highlight"><pre><span></span><span class="k">var</span> <span class="nf">return_types</span> : list(val_type)
+<div class="highlight-pseudo notranslate"><div class="highlight"><pre><span></span><span class="k">var</span> <span class="nf">return_type</span> : list(val_type)
 <span class="k">var</span> <span class="nf">types</span> : array(def_type)
 <span class="k">var</span> <span class="nf">locals</span> : array(val_type)
 <span class="k">var</span> <span class="nf">locals_init</span> : array(bool)
@@ -457,15 +457,15 @@ Other instructions are checked in a similar manner.</p>
     <span class="k">case</span> (call_ref x)
       <span class="k">let</span> <span class="nf">t</span> = expand_def(types[x])
       error_if(not is_func(t))
-      pop_val(Ref(Def(types[x]), true))
       pop_vals(t.params)
+      pop_val(Ref(Def(types[x])))
       push_vals(t.results)
 
     <span class="k">case</span> (return_call_ref x)
       <span class="k">let</span> <span class="nf">t</span> = expand_def(types[x])
       error_if(not is_func(t))
-      pop_val(Ref(Def(types[x]), true))
       pop_vals(t.params)
+      pop_val(Ref(Def(types[x])))
       error_if(t.results.len() =/= return_types.len())
       push_vals(t.results)
       pop_vals(return_types)
@@ -476,15 +476,13 @@ Other instructions are checked in a similar manner.</p>
       error_if(not is_struct(t))
       for (ti <span class="k">in</span> reverse(t.fields))
         pop_val(unpack_field(ti))
-      push_val(Ref(Def(types[x]), false))
+      push_val(Ref(Def(types[x])))
 
     <span class="k">case</span> (struct.set x n)
       <span class="k">let</span> <span class="nf">t</span> = expand_def(types[x])
       error_if(not is_struct(t) || n &gt;= t.fields.len())
-      <span class="k">let</span> <span class="nf">field</span> = t.fields[n]
-      error_if(not field.mut)
-      pop_val(unpack_field(field))
-      pop_val(Ref(Def(types[x]), true))
+      pop_val(Ref(Def(types[x])))
+      pop_val(unpack_field(st.fields[n]))
 
     <span class="k">case</span> (throw x)
        pop_vals(tags[x].<span class="k">type</span>.params)
