@@ -175,6 +175,8 @@ In the graph representation, all recursive types are effectively infinitely <a c
       <span class="k">return</span> Func
     <span class="k">case</span> (Extern | Noextern)
       <span class="k">return</span> Extern
+    <span class="k">case</span> (Exn | Noexn)
+      <span class="k">return</span> Exn
     <span class="k">case</span> (Def(dt))
       <span class="k">switch</span> (dt.rec.types[dt.proj].body)
         <span class="k">case</span> (Struct(_) | Array(_))
@@ -375,7 +377,7 @@ Other instructions are checked in a similar manner.</p>
 
     <span class="k">case</span> (ref.test rt)
       validate_ref_type(rt)
-      pop_val(Ref(top_heap_type(rt), true))
+      pop_val(Ref(top_heap_type(rt.heap), true))
       push_val(I32)
 
     <span class="k">case</span> (local.get x)
