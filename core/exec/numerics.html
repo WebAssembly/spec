@@ -124,7 +124,7 @@ op(c_1^n, \dots, c_k^n) &amp;=&amp; op(c_1^n[0], \dots, c_k^n[0])~\dots~op(c_1^n
 <p>For example, the unary operator <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#op-fabs}{\mathrm{fabs}}\)</span>, when given a sequence of floating-point values, return a sequence of floating-point results:</p>
 <div class="math notranslate nohighlight">
 \[\begin{array}{lll&#64;{\qquad}l}
-\href{../exec/numerics.html#op-fabs}{\mathrm{fabs}}_N(z^n) &amp;=&amp; \href{../exec/numerics.html#op-fabs}{\mathrm{fabs}}_N(z[0])~\dots~\href{../exec/numerics.html#op-fabs}{\mathrm{fabs}}_N(z[n])
+\href{../exec/numerics.html#op-fabs}{\mathrm{fabs}}_N(z^n) &amp;=&amp; \href{../exec/numerics.html#op-fabs}{\mathrm{fabs}}_N(z[0])~\dots~\href{../exec/numerics.html#op-fabs}{\mathrm{fabs}}_N(z[n-1])
 \end{array}\]</div>
 <p>The binary operator <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#op-iadd}{\mathrm{iadd}}\)</span>, when given two sequences of integers of the same length, <span class="math notranslate nohighlight">\(n\)</span>, return a sequence of integer results:</p>
 <div class="math notranslate nohighlight">
