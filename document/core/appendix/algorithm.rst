@@ -125,7 +125,7 @@ For the purpose of presenting the algorithm, it is maintained in a set of global
 
 .. code-block:: pseudo
 
-   var return_type : list(val_type)
+   var return_types : list(val_type)
    var types : array(def_type)
    var locals : array(val_type)
    var locals_init : array(bool)
@@ -418,15 +418,15 @@ Other instructions are checked in a similar manner.
        case (call_ref x)
          let t = expand_def(types[x])
          error_if(not is_func(t))
+         pop_val(Ref(Def(types[x]), true))
          pop_vals(t.params)
-         pop_val(Ref(Def(types[x])))
          push_vals(t.results)
 
        case (return_call_ref x)
          let t = expand_def(types[x])
          error_if(not is_func(t))
+         pop_val(Ref(Def(types[x]), true))
          pop_vals(t.params)
-         pop_val(Ref(Def(types[x])))
          error_if(t.results.len() =/= return_types.len())
          push_vals(t.results)
          pop_vals(return_types)
