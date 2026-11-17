@@ -20016,11 +20016,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
 #. Pop the value :math:`{\mathit{ref}}_1` from the stack.
 
-#. If :math:`{\mathit{ref}}_1 = \mathsf{ref{.}null}` and :math:`{\mathit{ref}}_2 = \mathsf{ref{.}null}`, then:
-
-   a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~1)` to the stack.
-
-#. Else if :math:`{\mathit{ref}}_1 = {\mathit{ref}}_2`, then:
+#. If :math:`{\mathit{ref}}_1 = {\mathit{ref}}_2`, then:
 
    a. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~1)` to the stack.
 
@@ -31305,11 +31301,9 @@ Step_pure/ref.eq
 2. Pop the value ref_2 from the stack.
 3. Assert: Due to validation, a value of value type ref is on the top of the stack.
 4. Pop the value ref_1 from the stack.
-5. If ((ref_1 = REF.NULL_ADDR) /\ (ref_2 = REF.NULL_ADDR)), then:
+5. If (ref_1 = ref_2), then:
   a. Push the value (I32.CONST 1) to the stack.
-6. Else if (ref_1 = ref_2), then:
-  a. Push the value (I32.CONST 1) to the stack.
-7. Else:
+6. Else:
   a. Push the value (I32.CONST 0) to the stack.
 
 Step_pure/i31.get sx
