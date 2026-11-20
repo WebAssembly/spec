@@ -30,6 +30,12 @@ Date: now
     "title": "WebAssembly Web API Specification",
     "publisher": "W3C WebAssembly Community Group",
     "status": "Draft"
+  },
+  "CSP": {
+    "href" : "https://www.w3.org/TR/CSP3/#wasm-integration",
+    "title" : ""Content Security Policy level 3",
+    "publisher" : "W3C Web Application Security Working Group",
+    "status" : "Draft"
   }
 }
 </pre>
@@ -424,8 +430,8 @@ To <dfn>validate builtins and imported string for a WebAssembly module</dfn> fro
 <div algorithm>
   The <dfn method for="WebAssembly">validate(|bytes|, |options|)</dfn> method, when invoked, performs the following steps:
     1. Let |stableBytes| be a [=get a copy of the buffer source|copy of the bytes held by the buffer=] |bytes|.
-    1. [=Compile a WebAssembly module|Compile=] |stableBytes| as a WebAssembly module and store the results as |module|.
-    1. If |module| is [=error=], return false.
+    1. Let |module| be [=module_decode=](|stableBytes|). If |module| is [=error=], return [=error=].
+    1. If [=module_validate=](|module|) is [=error=], return false.
     1. Let |builtinSetNames| be |options|["builtins"].
     1. Let |importedStringModule| be |options|["importedStringConstants"].
     1. If [=validate builtins and imported string for a WebAssembly module|validating builtins and imported strings=] for |module| with |builtinSetNames| and |importedStringModule| returns false, return false.
@@ -452,7 +458,6 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
 
 <div algorithm>
   To <dfn>asynchronously compile a WebAssembly module</dfn> from source bytes |bytes| and {{WebAssemblyCompileOptions}} |options| using optional [=task source=] |taskSource|, perform the following steps:
-
     1. Let |promise| be [=a new promise=].
     1. Run the following steps [=in parallel=]:
         1. [=compile a WebAssembly module|Compile the WebAssembly module=] |bytes| and store the result as |module|.
@@ -469,6 +474,8 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
 
 <div algorithm>
     The <dfn method for="WebAssembly">compile(|bytes|, |options|)</dfn> method, when invoked, performs the following steps:
+    1. Perform [=?=] [$HostEnsureCanCompileWasmBytes(|realm|)$], where |realm| is the [=current Realm=].
+        Note: This operation terminates with a {{CompileError}} exception if the operation is not permitted.
     1. Let |stableBytes| be a [=get a copy of the buffer source|copy of the bytes held by the buffer=] |bytes|.
     1. [=Asynchronously compile a WebAssembly module=] from |stableBytes| using |options| and return the result.
 </div>
@@ -618,6 +625,8 @@ The verification of WebAssembly type requirements is deferred to the
 
 <div algorithm>
   To <dfn>asynchronously instantiate a WebAssembly module</dfn> from a {{Module}} |moduleObject| and imports |importObject|, perform the following steps:
+    1. Perform [=?=] [$HostEnsureCanCompileWasmBytes(|realm|)$], where |realm| is the [=current Realm=].
+        Note: This operation terminates with a {{CompileError}} exception if the operation is not permitted.
     1. Let |promise| be [=a new promise=].
     1. Let |module| be |moduleObject|.\[[Module]].
     1. Let |builtinSetNames| be |moduleObject|.\[[BuiltinSets]].
@@ -657,7 +666,10 @@ The verification of WebAssembly type requirements is deferred to the
 <div algorithm>
   The <dfn method for="WebAssembly">instantiate(|bytes|, |importObject|, |options|)</dfn> method, when invoked, performs the following steps:
     1. Let |stableBytes| be a [=get a copy of the buffer source|copy of the bytes held by the buffer=] |bytes|.
+    1. Perform [=?=] [$HostEnsureCanCompileWasmBytes(|realm|)$], where |realm| is the [=current Realm=].
+        Note: This operation terminates with a {{CompileError}} exception if the operation is not permitted.
     1. [=Asynchronously compile a WebAssembly module=] from |stableBytes| using |options| and let |promiseOfModule| be the result.
+       1. If this operation throws a {{TypeError}}, catch it, and throw a {{LinkError}} exception.
     1. [=Instantiate a promise of a module|Instantiate=] |promiseOfModule| with imports |importObject| and return the result.
 </div>
 
@@ -764,7 +776,8 @@ interface Module {
 
 <div algorithm>
     The <dfn constructor for="Module">Module(|bytes|, |options|)</dfn> constructor, when invoked, performs the following steps:
-
+    1. Perform [=?=] [$HostEnsureCanCompileWasmBytes(|realm|)$], where |realm| is the [=current Realm=].
+        Note: This operation terminates with a {{CompileError}} exception if the operation is not permitted.
     1. Let |stableBytes| be a [=get a copy of the buffer source|copy of the bytes held by the buffer=] |bytes|.
     1. [=Compile a WebAssembly module|Compile the WebAssembly module=] |stableBytes| and store the result as |module|.
     1. If |module| is [=error=], throw a {{CompileError}} exception.
@@ -2219,6 +2232,21 @@ Note: ECMAScript doesn't specify any sort of behavior on out-of-memory condition
     See [Issue 879](https://github.com/WebAssembly/spec/issues/879) for further discussion.
 </div>
 
+<h2 id="host-defined-operations">Host-defined Operations</h2>
+
+<h3 id="host-ensure-can-compile-wasm-bytes">HostEnsureCanCompileWasmBytes(realm)</h3>
+
+<dfn abstract-op>HostEnsureCanCompileWasmBytes(realm)</dfn> is a host-defined abstract operation
+that allows host environments to block certain WebAssembly functions which
+compile bytes into WebAssembly code. The |realm| argument allows the host environment to constrain the
+check to be within the given |realm|.
+
+An implementation of HostEnsureCanCompileWasmBytes may complete normally or
+abruptly. Any abrupt completions will be propagated to its callers. The default
+implementation of HostEnsureCanCompileWasmBytes is to unconditionally return an
+empty normal completion.
+
+HostEnsureCanCompileWasmBytes is referenced by the Content Security Policy [[CSP]] specification to implement policy constraints on the execution of WebAssembly in browsers.
 
 <h2 id="limits">Implementation-defined Limits</h2>
 
