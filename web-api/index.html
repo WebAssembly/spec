@@ -4,9 +4,9 @@
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <title>WebAssembly Web API</title>
   <meta content="ED" name="w3c-status">
-  <meta content="Bikeshed version e0b165ae4, updated Mon Nov 2 15:16:49 2026 -0800" name="generator">
+  <meta content="Bikeshed version a035d7dc6, updated Fri Nov 20 03:13:55 2026 +0000" name="generator">
   <link href="https://www.w3.org/TR/wasm-web-api-2/" rel="canonical">
-  <meta content="d0b2e8d5544d2049fba0521922c436e3f0fcaebe" name="revision">
+  <meta content="8968213ffc954c72a00ad2452616a2b2a7edab3f" name="revision">
   <meta content="dark light" name="color-scheme">
 <style>/* Boilerplate: style-autolinks */
 .css.css, .property.property, .descriptor.descriptor {
@@ -582,150 +582,81 @@ a.self-link::before            { content: "¶"; }
 .heading > a.self-link::before { content: "§"; }
 dfn > a.self-link::before      { content: "#"; }
 </style>
-<style>/* Boilerplate: style-syntax-highlighting */
-code.highlight { padding: .1em; border-radius: .3em; }
-pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em 0; overflow: auto; border-radius: 0; }
+<style>/* Boilerplate: style-syntax-theme-monokai */
+/* Reference: VS Code Monokai (MIT; Monokai by Wimer Hazenberg) — https://github.com/microsoft/vscode/blob/main/extensions/theme-monokai/themes/monokai-color-theme.json */
+:root {
+  --syntax-background: light-dark(#ffffff, #272822);
+  --syntax-foreground: light-dark(#272822, #f8f8f2);
+  --syntax-comment: light-dark(#75715e, #75715e);
+  --syntax-keyword: light-dark(#c6004f, #f92672);
+  --syntax-operator: light-dark(#c6004f, #f92672);
+  --syntax-string: light-dark(#8a7b00, #e6db74);
+  --syntax-constant: light-dark(#7040b0, #ae81ff);
+  --syntax-function: light-dark(#668900, #a6e22e);
+  --syntax-type: light-dark(#007f87, #66d9ef);
+  --syntax-variable: light-dark(#272822, #f8f8f2);
+  --syntax-property: light-dark(#668900, #a6e22e);
+  --syntax-tag: light-dark(#c6004f, #f92672);
+  --syntax-selector: light-dark(#668900, #a6e22e);
+  --syntax-inserted: light-dark(#8a7b00, #e6db74);
+  --syntax-deleted: light-dark(#c6004f, #f92672);
 
-.highlight:not(.idl) { background: rgba(0, 0, 0, .03); }
-c-[a] { color: #990055 } /* Keyword.Declaration */
-c-[b] { color: #990055 } /* Keyword.Type */
-c-[c] { color: #708090 } /* Comment */
-c-[d] { color: #708090 } /* Comment.Multiline */
-c-[e] { color: #0077aa } /* Name.Attribute */
-c-[f] { color: #669900 } /* Name.Tag */
-c-[g] { color: #222222 } /* Name.Variable */
-c-[k] { color: #990055 } /* Keyword */
-c-[l] { color: #000000 } /* Literal */
-c-[m] { color: #000000 } /* Literal.Number */
-c-[n] { color: #0077aa } /* Name */
-c-[o] { color: #999999 } /* Operator */
-c-[p] { color: #999999 } /* Punctuation */
-c-[s] { color: #a67f59 } /* Literal.String */
-c-[t] { color: #a67f59 } /* Literal.String.Single */
-c-[u] { color: #a67f59 } /* Literal.String.Double */
-c-[cp] { color: #708090 } /* Comment.Preproc */
-c-[c1] { color: #708090 } /* Comment.Single */
-c-[cs] { color: #708090 } /* Comment.Special */
-c-[kc] { color: #990055 } /* Keyword.Constant */
-c-[kn] { color: #990055 } /* Keyword.Namespace */
-c-[kp] { color: #990055 } /* Keyword.Pseudo */
-c-[kr] { color: #990055 } /* Keyword.Reserved */
-c-[ld] { color: #000000 } /* Literal.Date */
-c-[nc] { color: #0077aa } /* Name.Class */
-c-[no] { color: #0077aa } /* Name.Constant */
-c-[nd] { color: #0077aa } /* Name.Decorator */
-c-[ni] { color: #0077aa } /* Name.Entity */
-c-[ne] { color: #0077aa } /* Name.Exception */
-c-[nf] { color: #0077aa } /* Name.Function */
-c-[nl] { color: #0077aa } /* Name.Label */
-c-[nn] { color: #0077aa } /* Name.Namespace */
-c-[py] { color: #0077aa } /* Name.Property */
-c-[ow] { color: #999999 } /* Operator.Word */
-c-[mb] { color: #000000 } /* Literal.Number.Bin */
-c-[mf] { color: #000000 } /* Literal.Number.Float */
-c-[mh] { color: #000000 } /* Literal.Number.Hex */
-c-[mi] { color: #000000 } /* Literal.Number.Integer */
-c-[mo] { color: #000000 } /* Literal.Number.Oct */
-c-[sb] { color: #a67f59 } /* Literal.String.Backtick */
-c-[sc] { color: #a67f59 } /* Literal.String.Char */
-c-[sd] { color: #a67f59 } /* Literal.String.Doc */
-c-[se] { color: #a67f59 } /* Literal.String.Escape */
-c-[sh] { color: #a67f59 } /* Literal.String.Heredoc */
-c-[si] { color: #a67f59 } /* Literal.String.Interpol */
-c-[sx] { color: #a67f59 } /* Literal.String.Other */
-c-[sr] { color: #a67f59 } /* Literal.String.Regex */
-c-[ss] { color: #a67f59 } /* Literal.String.Symbol */
-c-[vc] { color: #0077aa } /* Name.Variable.Class */
-c-[vg] { color: #0077aa } /* Name.Variable.Global */
-c-[vi] { color: #0077aa } /* Name.Variable.Instance */
-c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
-
-@media (prefers-color-scheme: dark) {
-    .highlight:not(.idl) { background: rgba(255, 255, 255, .05); }
-
-    c-[a] { color: #d33682 } /* Keyword.Declaration */
-    c-[b] { color: #d33682 } /* Keyword.Type */
-    c-[c] { color: #2aa198 } /* Comment */
-    c-[d] { color: #2aa198 } /* Comment.Multiline */
-    c-[e] { color: #268bd2 } /* Name.Attribute */
-    c-[f] { color: #b58900 } /* Name.Tag */
-    c-[g] { color: #cb4b16 } /* Name.Variable */
-    c-[k] { color: #d33682 } /* Keyword */
-    c-[l] { color: #657b83 } /* Literal */
-    c-[m] { color: #657b83 } /* Literal.Number */
-    c-[n] { color: #268bd2 } /* Name */
-    c-[o] { color: #657b83 } /* Operator */
-    c-[p] { color: #657b83 } /* Punctuation */
-    c-[s] { color: #6c71c4 } /* Literal.String */
-    c-[t] { color: #6c71c4 } /* Literal.String.Single */
-    c-[u] { color: #6c71c4 } /* Literal.String.Double */
-    c-[ch] { color: #2aa198 } /* Comment.Hashbang */
-    c-[cp] { color: #2aa198 } /* Comment.Preproc */
-    c-[cpf] { color: #2aa198 } /* Comment.PreprocFile */
-    c-[c1] { color: #2aa198 } /* Comment.Single */
-    c-[cs] { color: #2aa198 } /* Comment.Special */
-    c-[kc] { color: #d33682 } /* Keyword.Constant */
-    c-[kn] { color: #d33682 } /* Keyword.Namespace */
-    c-[kp] { color: #d33682 } /* Keyword.Pseudo */
-    c-[kr] { color: #d33682 } /* Keyword.Reserved */
-    c-[ld] { color: #657b83 } /* Literal.Date */
-    c-[nc] { color: #268bd2 } /* Name.Class */
-    c-[no] { color: #268bd2 } /* Name.Constant */
-    c-[nd] { color: #268bd2 } /* Name.Decorator */
-    c-[ni] { color: #268bd2 } /* Name.Entity */
-    c-[ne] { color: #268bd2 } /* Name.Exception */
-    c-[nf] { color: #268bd2 } /* Name.Function */
-    c-[nl] { color: #268bd2 } /* Name.Label */
-    c-[nn] { color: #268bd2 } /* Name.Namespace */
-    c-[py] { color: #268bd2 } /* Name.Property */
-    c-[ow] { color: #657b83 } /* Operator.Word */
-    c-[mb] { color: #657b83 } /* Literal.Number.Bin */
-    c-[mf] { color: #657b83 } /* Literal.Number.Float */
-    c-[mh] { color: #657b83 } /* Literal.Number.Hex */
-    c-[mi] { color: #657b83 } /* Literal.Number.Integer */
-    c-[mo] { color: #657b83 } /* Literal.Number.Oct */
-    c-[sa] { color: #6c71c4 } /* Literal.String.Affix */
-    c-[sb] { color: #6c71c4 } /* Literal.String.Backtick */
-    c-[sc] { color: #6c71c4 } /* Literal.String.Char */
-    c-[dl] { color: #6c71c4 } /* Literal.String.Delimiter */
-    c-[sd] { color: #6c71c4 } /* Literal.String.Doc */
-    c-[se] { color: #6c71c4 } /* Literal.String.Escape */
-    c-[sh] { color: #6c71c4 } /* Literal.String.Heredoc */
-    c-[si] { color: #6c71c4 } /* Literal.String.Interpol */
-    c-[sx] { color: #6c71c4 } /* Literal.String.Other */
-    c-[sr] { color: #6c71c4 } /* Literal.String.Regex */
-    c-[ss] { color: #6c71c4 } /* Literal.String.Symbol */
-    c-[fm] { color: #268bd2 } /* Name.Function.Magic */
-    c-[vc] { color: #cb4b16 } /* Name.Variable.Class */
-    c-[vg] { color: #cb4b16 } /* Name.Variable.Global */
-    c-[vi] { color: #cb4b16 } /* Name.Variable.Instance */
-    c-[vm] { color: #cb4b16 } /* Name.Variable.Magic */
-    c-[il] { color: #657b83 } /* Literal.Number.Integer.Long */
+  color-scheme: light dark;
 }
 
-@media print {
-    /* Darken colors for print that would otherwise print too faintly */
-    c-[c]  { color: #555555 } /* Comment */
-    c-[d]  { color: #555555 } /* Comment.Multiline */
-    c-[cp] { color: #555555 } /* Comment.Preproc */
-    c-[c1] { color: #555555 } /* Comment.Single */
-    c-[cs] { color: #555555 } /* Comment.Special */
-    c-[o]  { color: #222222 } /* Operator */
-    c-[p]  { color: #222222 } /* Punctuation */
-    c-[ow] { color: #222222 } /* Operator.Word */
-    c-[s]  { color: #664400 } /* Literal.String */
-    c-[t]  { color: #664400 } /* Literal.String.Single */
-    c-[u]  { color: #664400 } /* Literal.String.Double */
-    c-[sb] { color: #664400 } /* Literal.String.Backtick */
-    c-[sc] { color: #664400 } /* Literal.String.Char */
-    c-[sd] { color: #664400 } /* Literal.String.Doc */
-    c-[se] { color: #664400 } /* Literal.String.Escape */
-    c-[sh] { color: #664400 } /* Literal.String.Heredoc */
-    c-[si] { color: #664400 } /* Literal.String.Interpol */
-    c-[sx] { color: #664400 } /* Literal.String.Other */
-    c-[sr] { color: #664400 } /* Literal.String.Regex */
-    c-[ss] { color: #664400 } /* Literal.String.Symbol */
+pre[highlight], pre.highlight {
+  background-color: var(--syntax-background);
+  color: var(--syntax-foreground);
 }
+
+::highlight(comment),
+::highlight(quote) { color: var(--syntax-comment); }
+
+::highlight(keyword),
+::highlight(storage),
+::highlight(at-rule),
+::highlight(doctype),
+::highlight(important),
+::highlight(section) { color: var(--syntax-keyword); }
+
+::highlight(operator),
+::highlight(punctuation) { color: var(--syntax-operator); }
+
+::highlight(string),
+::highlight(regexp),
+::highlight(attribute-value),
+::highlight(link),
+::highlight(raw) { color: var(--syntax-string); }
+
+::highlight(numeric),
+::highlight(boolean),
+::highlight(constant),
+::highlight(symbol),
+::highlight(character-entity),
+::highlight(anchor),
+::highlight(entity) { color: var(--syntax-constant); }
+
+::highlight(function),
+::highlight(decorator),
+::highlight(animation) { color: var(--syntax-function); }
+
+::highlight(type),
+::highlight(support) { color: var(--syntax-type); }
+
+::highlight(variable),
+::highlight(interpolation) { color: var(--syntax-variable); }
+
+::highlight(property),
+::highlight(key),
+::highlight(attribute-name) { color: var(--syntax-property); }
+
+::highlight(tag) { color: var(--syntax-tag); }
+
+::highlight(selector) { color: var(--syntax-selector); }
+
+::highlight(inserted) { color: var(--syntax-inserted); }
+
+::highlight(deleted) { color: var(--syntax-deleted); }
 </style>
 <style>/* Boilerplate: style-var-click-highlighting */
 /*
@@ -780,7 +711,7 @@ var[data-var-color="6"] { --var-vg: #FFBCF2; }
 </p>
    <h1 class="no-ref p-name" id="title">WebAssembly Web API</h1>
    <p id="w3c-state"><a href="https://www.w3.org/standards/types/#ED">Editor’s Draft</a>,
-    <time class="dt-updated" datetime="2026-11-16">16 November 2026</time></p>
+    <time class="dt-updated" datetime="2026-11-20">20 November 2026</time></p>
    <details open>
     <summary>More details about this document</summary>
     <div data-fill-with="spec-metadata">
@@ -904,11 +835,11 @@ additional APIs that are implemented by Web user agents but are outside the scop
 
 
    <h2 class="heading settled" data-level="2" id="streaming-modules"><span class="secno">2. </span><span class="content">Streaming Module Compilation and Instantiation</span><a class="self-link" href="#streaming-modules"></a></h2>
-<pre class="def highlight idl">[<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#Exposed" id="ref-for-Exposed"><c- g>Exposed</c-></a>=(<c- n>Window</c->,<c- n>Worker</c->)]
-<c- b>partial</c-> <c- b>namespace</c-> <a class="idl-code" data-link-type="namespace" href="https://webassembly.github.io/spec/js-api/#namespacedef-webassembly" id="ref-for-namespacedef-webassembly"><c- g>WebAssembly</c-></a> {
-  <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-promise" id="ref-for-idl-promise"><c- b>Promise</c-></a>&lt;<a data-link-type="idl-name" href="https://webassembly.github.io/spec/js-api/#module" id="ref-for-module"><c- n>Module</c-></a>> <a class="idl-code" data-link-type="method" href="#dom-webassembly-compilestreaming" id="ref-for-dom-webassembly-compilestreaming"><c- g>compileStreaming</c-></a>(<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-promise" id="ref-for-idl-promise①"><c- b>Promise</c-></a>&lt;<a data-link-type="idl-name" href="https://fetch.spec.whatwg.org/#response" id="ref-for-response"><c- n>Response</c-></a>> <dfn class="dfn-paneled idl-code" data-dfn-for="WebAssembly/compileStreaming(source, options), WebAssembly/compileStreaming(source)" data-dfn-type="argument" data-export id="dom-webassembly-compilestreaming-source-options-source"><code><c- g>source</c-></code></dfn>, <c- b>optional</c-> <a data-link-type="idl-name" href="https://webassembly.github.io/spec/js-api/#dictdef-webassemblycompileoptions" id="ref-for-dictdef-webassemblycompileoptions"><c- n>WebAssemblyCompileOptions</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="WebAssembly/compileStreaming(source, options), WebAssembly/compileStreaming(source)" data-dfn-type="argument" data-export id="dom-webassembly-compilestreaming-source-options-options"><code><c- g>options</c-></code></dfn> = {});
-  <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-promise" id="ref-for-idl-promise②"><c- b>Promise</c-></a>&lt;<a data-link-type="idl-name" href="https://webassembly.github.io/spec/js-api/#dictdef-webassemblyinstantiatedsource" id="ref-for-dictdef-webassemblyinstantiatedsource"><c- n>WebAssemblyInstantiatedSource</c-></a>> <a class="idl-code" data-link-type="method" href="#dom-webassembly-instantiatestreaming" id="ref-for-dom-webassembly-instantiatestreaming"><c- g>instantiateStreaming</c-></a>(
-      <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-promise" id="ref-for-idl-promise③"><c- b>Promise</c-></a>&lt;<a data-link-type="idl-name" href="https://fetch.spec.whatwg.org/#response" id="ref-for-response①"><c- n>Response</c-></a>> <dfn class="dfn-paneled idl-code" data-dfn-for="WebAssembly/instantiateStreaming(source, importObject, options), WebAssembly/instantiateStreaming(source, importObject), WebAssembly/instantiateStreaming(source)" data-dfn-type="argument" data-export id="dom-webassembly-instantiatestreaming-source-importobject-options-source"><code><c- g>source</c-></code></dfn>, <c- b>optional</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-object" id="ref-for-idl-object"><c- b>object</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="WebAssembly/instantiateStreaming(source, importObject, options), WebAssembly/instantiateStreaming(source, importObject), WebAssembly/instantiateStreaming(source)" data-dfn-type="argument" data-export id="dom-webassembly-instantiatestreaming-source-importobject-options-importobject"><code><c- g>importObject</c-></code></dfn>, <c- b>optional</c-> <a data-link-type="idl-name" href="https://webassembly.github.io/spec/js-api/#dictdef-webassemblycompileoptions" id="ref-for-dictdef-webassemblycompileoptions①"><c- n>WebAssemblyCompileOptions</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="WebAssembly/instantiateStreaming(source, importObject, options), WebAssembly/instantiateStreaming(source, importObject), WebAssembly/instantiateStreaming(source)" data-dfn-type="argument" data-export id="dom-webassembly-instantiatestreaming-source-importobject-options-options"><code><c- g>options</c-></code></dfn> = {});
+<pre class="def highlight idl" data-language="webidl">[<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#Exposed" id="ref-for-Exposed">Exposed</a>=(Window,Worker)]
+partial namespace <a class="idl-code" data-link-type="namespace" href="https://webassembly.github.io/spec/js-api/#namespacedef-webassembly" id="ref-for-namespacedef-webassembly">WebAssembly</a> {
+  <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-promise" id="ref-for-idl-promise">Promise</a>&lt;<a data-link-type="idl-name" href="https://webassembly.github.io/spec/js-api/#module" id="ref-for-module">Module</a>> <a class="idl-code" data-link-type="method" href="#dom-webassembly-compilestreaming" id="ref-for-dom-webassembly-compilestreaming">compileStreaming</a>(<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-promise" id="ref-for-idl-promise①">Promise</a>&lt;<a data-link-type="idl-name" href="https://fetch.spec.whatwg.org/#response" id="ref-for-response">Response</a>> <dfn class="dfn-paneled idl-code" data-dfn-for="WebAssembly/compileStreaming(source, options), WebAssembly/compileStreaming(source)" data-dfn-type="argument" data-export id="dom-webassembly-compilestreaming-source-options-source"><code>source</code></dfn>, optional <a data-link-type="idl-name" href="https://webassembly.github.io/spec/js-api/#dictdef-webassemblycompileoptions" id="ref-for-dictdef-webassemblycompileoptions">WebAssemblyCompileOptions</a> <dfn class="dfn-paneled idl-code" data-dfn-for="WebAssembly/compileStreaming(source, options), WebAssembly/compileStreaming(source)" data-dfn-type="argument" data-export id="dom-webassembly-compilestreaming-source-options-options"><code>options</code></dfn> = {});
+  <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-promise" id="ref-for-idl-promise②">Promise</a>&lt;<a data-link-type="idl-name" href="https://webassembly.github.io/spec/js-api/#dictdef-webassemblyinstantiatedsource" id="ref-for-dictdef-webassemblyinstantiatedsource">WebAssemblyInstantiatedSource</a>> <a class="idl-code" data-link-type="method" href="#dom-webassembly-instantiatestreaming" id="ref-for-dom-webassembly-instantiatestreaming">instantiateStreaming</a>(
+      <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-promise" id="ref-for-idl-promise③">Promise</a>&lt;<a data-link-type="idl-name" href="https://fetch.spec.whatwg.org/#response" id="ref-for-response①">Response</a>> <dfn class="dfn-paneled idl-code" data-dfn-for="WebAssembly/instantiateStreaming(source, importObject, options), WebAssembly/instantiateStreaming(source, importObject), WebAssembly/instantiateStreaming(source)" data-dfn-type="argument" data-export id="dom-webassembly-instantiatestreaming-source-importobject-options-source"><code>source</code></dfn>, optional <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-object" id="ref-for-idl-object">object</a> <dfn class="dfn-paneled idl-code" data-dfn-for="WebAssembly/instantiateStreaming(source, importObject, options), WebAssembly/instantiateStreaming(source, importObject), WebAssembly/instantiateStreaming(source)" data-dfn-type="argument" data-export id="dom-webassembly-instantiatestreaming-source-importobject-options-importobject"><code>importObject</code></dfn>, optional <a data-link-type="idl-name" href="https://webassembly.github.io/spec/js-api/#dictdef-webassemblycompileoptions" id="ref-for-dictdef-webassemblycompileoptions①">WebAssemblyCompileOptions</a> <dfn class="dfn-paneled idl-code" data-dfn-for="WebAssembly/instantiateStreaming(source, importObject, options), WebAssembly/instantiateStreaming(source, importObject), WebAssembly/instantiateStreaming(source)" data-dfn-type="argument" data-export id="dom-webassembly-instantiatestreaming-source-importobject-options-options"><code>options</code></dfn> = {});
 };
 </pre>
    <div class="algorithm" data-algorithm="compileStreaming(source, options)" data-algorithm-for="WebAssembly">
@@ -1362,11 +1293,11 @@ The registration for the <code>application/wasm</code> media type has been succe
    <dd><a href="https://www.iana.org/assignments/media-types/"><cite>Media Types</cite></a>. URL: <a href="https://www.iana.org/assignments/media-types/">https://www.iana.org/assignments/media-types/</a>
   </dl>
   <h2 class="heading no-num no-ref settled" id="idl-index"><span class="content">IDL Index</span><a class="self-link" href="#idl-index"></a></h2>
-<pre class="def highlight idl">[<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#Exposed"><c- g>Exposed</c-></a>=(<c- n>Window</c->,<c- n>Worker</c->)]
-<c- b>partial</c-> <c- b>namespace</c-> <a class="idl-code" data-link-type="namespace" href="https://webassembly.github.io/spec/js-api/#namespacedef-webassembly"><c- g>WebAssembly</c-></a> {
-  <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-promise"><c- b>Promise</c-></a>&lt;<a data-link-type="idl-name" href="https://webassembly.github.io/spec/js-api/#module"><c- n>Module</c-></a>> <a class="idl-code" data-link-type="method" href="#dom-webassembly-compilestreaming"><c- g>compileStreaming</c-></a>(<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-promise"><c- b>Promise</c-></a>&lt;<a data-link-type="idl-name" href="https://fetch.spec.whatwg.org/#response"><c- n>Response</c-></a>> <a href="#dom-webassembly-compilestreaming-source-options-source"><code><c- g>source</c-></code></a>, <c- b>optional</c-> <a data-link-type="idl-name" href="https://webassembly.github.io/spec/js-api/#dictdef-webassemblycompileoptions"><c- n>WebAssemblyCompileOptions</c-></a> <a href="#dom-webassembly-compilestreaming-source-options-options"><code><c- g>options</c-></code></a> = {});
-  <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-promise"><c- b>Promise</c-></a>&lt;<a data-link-type="idl-name" href="https://webassembly.github.io/spec/js-api/#dictdef-webassemblyinstantiatedsource"><c- n>WebAssemblyInstantiatedSource</c-></a>> <a class="idl-code" data-link-type="method" href="#dom-webassembly-instantiatestreaming"><c- g>instantiateStreaming</c-></a>(
-      <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-promise"><c- b>Promise</c-></a>&lt;<a data-link-type="idl-name" href="https://fetch.spec.whatwg.org/#response"><c- n>Response</c-></a>> <a href="#dom-webassembly-instantiatestreaming-source-importobject-options-source"><code><c- g>source</c-></code></a>, <c- b>optional</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-object"><c- b>object</c-></a> <a href="#dom-webassembly-instantiatestreaming-source-importobject-options-importobject"><code><c- g>importObject</c-></code></a>, <c- b>optional</c-> <a data-link-type="idl-name" href="https://webassembly.github.io/spec/js-api/#dictdef-webassemblycompileoptions"><c- n>WebAssemblyCompileOptions</c-></a> <a href="#dom-webassembly-instantiatestreaming-source-importobject-options-options"><code><c- g>options</c-></code></a> = {});
+<pre class="def highlight idl" data-language="webidl">[<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#Exposed">Exposed</a>=(Window,Worker)]
+partial namespace <a class="idl-code" data-link-type="namespace" href="https://webassembly.github.io/spec/js-api/#namespacedef-webassembly">WebAssembly</a> {
+  <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-promise">Promise</a>&lt;<a data-link-type="idl-name" href="https://webassembly.github.io/spec/js-api/#module">Module</a>> <a class="idl-code" data-link-type="method" href="#dom-webassembly-compilestreaming">compileStreaming</a>(<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-promise">Promise</a>&lt;<a data-link-type="idl-name" href="https://fetch.spec.whatwg.org/#response">Response</a>> <a href="#dom-webassembly-compilestreaming-source-options-source"><code>source</code></a>, optional <a data-link-type="idl-name" href="https://webassembly.github.io/spec/js-api/#dictdef-webassemblycompileoptions">WebAssemblyCompileOptions</a> <a href="#dom-webassembly-compilestreaming-source-options-options"><code>options</code></a> = {});
+  <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-promise">Promise</a>&lt;<a data-link-type="idl-name" href="https://webassembly.github.io/spec/js-api/#dictdef-webassemblyinstantiatedsource">WebAssemblyInstantiatedSource</a>> <a class="idl-code" data-link-type="method" href="#dom-webassembly-instantiatestreaming">instantiateStreaming</a>(
+      <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-promise">Promise</a>&lt;<a data-link-type="idl-name" href="https://fetch.spec.whatwg.org/#response">Response</a>> <a href="#dom-webassembly-instantiatestreaming-source-importobject-options-source"><code>source</code></a>, optional <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-object">object</a> <a href="#dom-webassembly-instantiatestreaming-source-importobject-options-importobject"><code>importObject</code></a>, optional <a data-link-type="idl-name" href="https://webassembly.github.io/spec/js-api/#dictdef-webassemblycompileoptions">WebAssemblyCompileOptions</a> <a href="#dom-webassembly-instantiatestreaming-source-importobject-options-options"><code>options</code></a> = {});
 };
 
 </pre>
@@ -1908,6 +1839,574 @@ function genLinkingSyntaxes(dfn) {
 }
 }
 </script>
+<script>/* Boilerplate: script-microlighter */
+"use strict";
+{
+let highlightGrammars = {
+"webidl": {"patterns":[{"include":"#comments"},{"include":"#extended-attribute-list"},{"include":"#definitions"},{"include":"#members"},{"include":"#types"},{"include":"#literals"},{"include":"#punctuation"},{"include":"#identifier"}],"repository":{"argument":{"begin":"(?=\\s*(?:optional|\\.\\.\\.|\\(|[?A-Za-z_]))","end":"(?=,|\\))","name":"meta.argument.webidl","patterns":[{"match":"\\boptional\\b","name":"storage.modifier.optional.webidl"},{"match":"\\.\\.\\.","name":"keyword.operator.variadic.webidl"},{"include":"#types"},{"include":"#default-value"},{"match":"\\b[_A-Za-z][_A-Za-z0-9]*\\b","name":"variable.parameter.webidl"}]},"argument-list":{"begin":"\\(","beginCaptures":{"0":{"name":"punctuation.definition.parameters.begin.webidl"}},"end":"\\)","endCaptures":{"0":{"name":"punctuation.definition.parameters.end.webidl"}},"name":"meta.arguments.webidl","patterns":[{"include":"#argument"},{"include":"#comments"},{"match":",","name":"punctuation.separator.comma.webidl"}]},"attribute-member":{"begin":"\\b(?:(readonly)\\s+)?(attribute)\\b","beginCaptures":{"1":{"name":"storage.modifier.readonly.webidl"},"2":{"name":"storage.type.attribute.webidl"}},"end":";","endCaptures":{"0":{"name":"punctuation.terminator.statement.webidl"}},"name":"meta.member.attribute.webidl","patterns":[{"include":"#types"},{"match":"\\b[_A-Za-z][_A-Za-z0-9]*\\b","name":"variable.other.member.attribute.webidl"}]},"buffer-type":{"match":"\\b(ArrayBuffer|DataView|Int8Array|Int16Array|Int32Array|Uint8Array|Uint16Array|Uint32Array|Uint8ClampedArray|BigInt64Array|BigUint64Array|Float16Array|Float32Array|Float64Array)\\b","name":"support.type.buffer.webidl"},"callback-function-definition":{"begin":"\\b(callback)\\s+([_A-Za-z][_A-Za-z0-9]*)\\s*(=)","beginCaptures":{"1":{"name":"storage.modifier.callback.webidl"},"2":{"name":"entity.name.function.callback.webidl"},"3":{"name":"keyword.operator.assignment.webidl"}},"end":";","endCaptures":{"0":{"name":"punctuation.terminator.statement.webidl"}},"name":"meta.definition.callback.function.webidl","patterns":[{"include":"#types"},{"include":"#argument-list"},{"include":"#comments"}]},"callback-interface-definition":{"begin":"\\b(callback)\\s+(interface)\\s+([_A-Za-z][_A-Za-z0-9]*)","beginCaptures":{"1":{"name":"storage.modifier.callback.webidl"},"2":{"name":"storage.type.interface.webidl"},"3":{"name":"entity.name.type.callback-interface.webidl"}},"end":";","endCaptures":{"0":{"name":"punctuation.terminator.statement.webidl"}},"name":"meta.definition.callback.interface.webidl","patterns":[{"include":"#inheritance"},{"include":"#definition-block"},{"include":"#comments"}]},"comments":{"patterns":[{"begin":"/\\*\\*","beginCaptures":{"0":{"name":"punctuation.definition.comment.begin.webidl"}},"end":"\\*/","endCaptures":{"0":{"name":"punctuation.definition.comment.end.webidl"}},"name":"comment.block.documentation.webidl"},{"begin":"/\\*","beginCaptures":{"0":{"name":"punctuation.definition.comment.begin.webidl"}},"end":"\\*/","endCaptures":{"0":{"name":"punctuation.definition.comment.end.webidl"}},"name":"comment.block.webidl"},{"match":"\\*/","name":"invalid.illegal.stray-comment-end.webidl"},{"begin":"//","beginCaptures":{"0":{"name":"punctuation.definition.comment.webidl"}},"end":"$\\n?","name":"comment.line.double-slash.webidl"}]},"const-member":{"begin":"\\b(const)\\b","beginCaptures":{"1":{"name":"storage.modifier.const.webidl"}},"end":";","endCaptures":{"0":{"name":"punctuation.terminator.statement.webidl"}},"name":"meta.member.const.webidl","patterns":[{"include":"#types"},{"include":"#literals"},{"match":"=","name":"keyword.operator.assignment.webidl"},{"match":"\\b[_A-Za-z][_A-Za-z0-9]*\\b","name":"variable.other.constant.webidl"}]},"constructor-member":{"begin":"\\b(constructor)\\s*(\\()","beginCaptures":{"1":{"name":"entity.name.function.constructor.webidl"},"2":{"name":"punctuation.definition.parameters.begin.webidl"}},"end":"\\)\\s*(;)","endCaptures":{"0":{"name":"punctuation.definition.parameters.end.webidl"},"1":{"name":"punctuation.terminator.statement.webidl"}},"name":"meta.member.constructor.webidl","patterns":[{"include":"#argument"},{"include":"#comments"},{"match":",","name":"punctuation.separator.comma.webidl"}]},"default-value":{"patterns":[{"match":"=","name":"keyword.operator.assignment.default.webidl"},{"include":"#literals"},{"match":"\\[\\s*\\]","name":"constant.language.empty-sequence.webidl"},{"match":"\\{\\s*\\}","name":"constant.language.empty-object.webidl"}]},"definition-block":{"begin":"\\{","beginCaptures":{"0":{"name":"punctuation.definition.block.begin.webidl"}},"end":"\\}","endCaptures":{"0":{"name":"punctuation.definition.block.end.webidl"}},"name":"meta.block.definition.webidl","patterns":[{"include":"#comments"},{"include":"#extended-attribute-list"},{"include":"#members"},{"include":"#types"},{"include":"#literals"},{"include":"#punctuation"}]},"definitions":{"patterns":[{"include":"#partial-definition"},{"include":"#callback-interface-definition"},{"include":"#callback-function-definition"},{"include":"#interface-mixin-definition"},{"include":"#interface-definition"},{"include":"#namespace-definition"},{"include":"#dictionary-definition"},{"include":"#enum-definition"},{"include":"#typedef-definition"},{"include":"#includes-statement"}]},"dictionary-block":{"begin":"\\{","beginCaptures":{"0":{"name":"punctuation.definition.block.begin.webidl"}},"end":"\\}","endCaptures":{"0":{"name":"punctuation.definition.block.end.webidl"}},"name":"meta.block.dictionary.webidl","patterns":[{"include":"#comments"},{"include":"#extended-attribute-list"},{"begin":"\\b(required)\\b","beginCaptures":{"1":{"name":"storage.modifier.required.webidl"}},"end":";","endCaptures":{"0":{"name":"punctuation.terminator.statement.webidl"}},"name":"meta.dictionary.member.webidl","patterns":[{"include":"#types"},{"include":"#default-value"},{"match":"\\b[_A-Za-z][_A-Za-z0-9]*\\b","name":"variable.other.member.dictionary.webidl"}]},{"begin":"(?=\\s*(?:\\(|[?A-Za-z_]))","end":";","endCaptures":{"0":{"name":"punctuation.terminator.statement.webidl"}},"name":"meta.dictionary.member.webidl","patterns":[{"include":"#types"},{"include":"#default-value"},{"match":"\\b[_A-Za-z][_A-Za-z0-9]*\\b","name":"variable.other.member.dictionary.webidl"}]}]},"dictionary-definition":{"begin":"\\b(dictionary)\\s+([_A-Za-z][_A-Za-z0-9]*)","beginCaptures":{"1":{"name":"storage.type.dictionary.webidl"},"2":{"name":"entity.name.type.dictionary.webidl"}},"end":";","endCaptures":{"0":{"name":"punctuation.terminator.statement.webidl"}},"name":"meta.definition.dictionary.webidl","patterns":[{"include":"#inheritance"},{"include":"#dictionary-block"},{"include":"#comments"}]},"enum-definition":{"begin":"\\b(enum)\\s+([_A-Za-z][_A-Za-z0-9]*)\\s*(\\{)","beginCaptures":{"1":{"name":"storage.type.enum.webidl"},"2":{"name":"entity.name.type.enum.webidl"},"3":{"name":"punctuation.definition.block.begin.webidl"}},"end":"\\}","endCaptures":{"0":{"name":"punctuation.definition.block.end.webidl"}},"name":"meta.definition.enum.webidl","patterns":[{"include":"#comments"},{"begin":"\"","beginCaptures":{"0":{"name":"punctuation.definition.string.begin.webidl"}},"end":"\"","endCaptures":{"0":{"name":"punctuation.definition.string.end.webidl"}},"name":"string.quoted.double.enum.webidl","patterns":[{"include":"#string-escapes"}]},{"match":",","name":"punctuation.separator.comma.webidl"}]},"extended-attribute":{"patterns":[{"match":"\\b(CrossOriginIsolated|Exposed|Global|LegacyFactoryFunction|LegacyNoInterfaceObject|LegacyOverrideBuiltIns|LegacyWindowAlias|SecureContext|LegacyLenientSetter|LegacyLenientThis|LenientFloat|PutForwards|Replaceable|SameObject|Unforgeable|CEReactions|HTMLConstructor|NewObject|LegacyUnforgeable|LegacyNullToEmptyString|Clamp|EnforceRange|AllowShared|Serializable|Transferable|LegacyTreatNonObjectAsNull|LegacyNamespace|LegacyWindowAlias|LegacyDefaultToJSONOperation|LegacyArrayClass)\\b","name":"support.type.extended-attribute.known.webidl"},{"match":"\\b[_A-Za-z][_A-Za-z0-9]*\\b","name":"entity.other.attribute-name.extended.webidl"},{"begin":"\\(","beginCaptures":{"0":{"name":"punctuation.definition.parameters.begin.webidl"}},"end":"\\)","endCaptures":{"0":{"name":"punctuation.definition.parameters.end.webidl"}},"name":"meta.extended-attribute.arguments.webidl","patterns":[{"include":"#argument"},{"include":"#types"},{"include":"#literals"},{"match":",","name":"punctuation.separator.comma.webidl"},{"match":"\\b[_A-Za-z][_A-Za-z0-9]*\\b","name":"entity.other.attribute-name.extended.webidl"}]}]},"extended-attribute-list":{"begin":"\\[","beginCaptures":{"0":{"name":"punctuation.definition.metadata.begin.webidl"}},"end":"\\]","endCaptures":{"0":{"name":"punctuation.definition.metadata.end.webidl"}},"name":"meta.extended-attribute-list.webidl","patterns":[{"include":"#comments"},{"include":"#extended-attribute"},{"include":"#literals"},{"match":",","name":"punctuation.separator.comma.webidl"},{"match":"=","name":"keyword.operator.assignment.webidl"}]},"generic-type":{"patterns":[{"begin":"\\b(async_sequence|sequence|record|FrozenArray|ObservableArray|Promise)\\s*(<)","beginCaptures":{"1":{"name":"support.type.generic.webidl"},"2":{"name":"punctuation.definition.generic.begin.webidl"}},"end":">","endCaptures":{"0":{"name":"punctuation.definition.generic.end.webidl"}},"name":"meta.type.generic.webidl","patterns":[{"include":"#types"},{"match":",","name":"punctuation.separator.comma.webidl"},{"include":"#comments"}]}]},"identifier":{"match":"\\b[_A-Za-z][_A-Za-z0-9]*\\b","name":"variable.other.identifier.webidl"},"identifier-type":{"match":"\\b[_A-Za-z][_A-Za-z0-9]*\\b","name":"entity.name.type.identifier.webidl"},"includes-statement":{"captures":{"1":{"name":"entity.name.type.interface.webidl"},"2":{"name":"keyword.operator.includes.webidl"},"3":{"name":"entity.name.type.mixin.webidl"},"4":{"name":"punctuation.terminator.statement.webidl"}},"match":"\\b([_A-Za-z][_A-Za-z0-9]*)\\s+(includes)\\s+([_A-Za-z][_A-Za-z0-9]*)\\s*(;)","name":"meta.definition.includes.webidl"},"inheritance":{"captures":{"1":{"name":"punctuation.separator.inheritance.webidl"},"2":{"name":"entity.other.inherited-class.webidl"}},"match":"(:)\\s*([_A-Za-z][_A-Za-z0-9]*)","name":"meta.inheritance.webidl"},"interface-definition":{"begin":"\\b(interface)\\s+([_A-Za-z][_A-Za-z0-9]*)","beginCaptures":{"1":{"name":"storage.type.interface.webidl"},"2":{"name":"entity.name.type.interface.webidl"}},"end":";","endCaptures":{"0":{"name":"punctuation.terminator.statement.webidl"}},"name":"meta.definition.interface.webidl","patterns":[{"include":"#inheritance"},{"include":"#definition-block"},{"include":"#comments"}]},"interface-mixin-definition":{"begin":"\\b(interface)\\s+(mixin)\\s+([_A-Za-z][_A-Za-z0-9]*)","beginCaptures":{"1":{"name":"storage.type.interface.webidl"},"2":{"name":"storage.modifier.mixin.webidl"},"3":{"name":"entity.name.type.mixin.webidl"}},"end":";","endCaptures":{"0":{"name":"punctuation.terminator.statement.webidl"}},"name":"meta.definition.interface.mixin.webidl","patterns":[{"include":"#definition-block"},{"include":"#comments"}]},"iterable-member":{"begin":"\\b(?:(async)\\s+)?(iterable)\\s*(<)","beginCaptures":{"1":{"name":"storage.modifier.async.webidl"},"2":{"name":"storage.type.iterable.webidl"},"3":{"name":"punctuation.definition.generic.begin.webidl"}},"end":">\\s*(;)","endCaptures":{"0":{"name":"punctuation.definition.generic.end.webidl"},"1":{"name":"punctuation.terminator.statement.webidl"}},"name":"meta.member.iterable.webidl","patterns":[{"include":"#types"},{"match":",","name":"punctuation.separator.comma.webidl"}]},"literals":{"patterns":[{"include":"#string"},{"match":"\\b(true|false)\\b","name":"constant.language.boolean.webidl"},{"match":"\\bnull\\b","name":"constant.language.null.webidl"},{"match":"[-+]?\\bInfinity\\b","name":"constant.language.infinity.webidl"},{"match":"[-+]?\\bNaN\\b","name":"constant.language.nan.webidl"},{"match":"[-+]?0[xX][0-9a-fA-F]+","name":"constant.numeric.hex.webidl"},{"match":"[-+]?((?:[0-9]+\\.[0-9]*|\\.[0-9]+)(?:[eE][-+]?[0-9]+)?|[0-9]+[eE][-+]?[0-9]+)","name":"constant.numeric.float.webidl"},{"match":"[-+]?[0-9]+","name":"constant.numeric.integer.webidl"}]},"maplike-member":{"begin":"\\b(?:(readonly)\\s+)?(maplike)\\s*(<)","beginCaptures":{"1":{"name":"storage.modifier.readonly.webidl"},"2":{"name":"storage.type.maplike.webidl"},"3":{"name":"punctuation.definition.generic.begin.webidl"}},"end":">\\s*(;)","endCaptures":{"0":{"name":"punctuation.definition.generic.end.webidl"},"1":{"name":"punctuation.terminator.statement.webidl"}},"name":"meta.member.maplike.webidl","patterns":[{"include":"#types"},{"match":",","name":"punctuation.separator.comma.webidl"}]},"members":{"patterns":[{"include":"#const-member"},{"include":"#attribute-member"},{"include":"#constructor-member"},{"include":"#stringifier-member"},{"include":"#iterable-member"},{"include":"#maplike-member"},{"include":"#setlike-member"},{"include":"#operation-member"}]},"namespace-definition":{"begin":"\\b(namespace)\\s+([_A-Za-z][_A-Za-z0-9]*)","beginCaptures":{"1":{"name":"storage.type.namespace.webidl"},"2":{"name":"entity.name.type.namespace.webidl"}},"end":";","endCaptures":{"0":{"name":"punctuation.terminator.statement.webidl"}},"name":"meta.definition.namespace.webidl","patterns":[{"include":"#definition-block"},{"include":"#comments"}]},"operation-member":{"begin":"(?=\\b(?:getter|setter|deleter|static|legacycaller|stringifier|undefined|boolean|byte|octet|bigint|float|double|short|long|unsigned|unrestricted|object|symbol|any|void|DOMString|ByteString|USVString|sequence|record|FrozenArray|ObservableArray|Promise|ArrayBuffer|DataView|Int8Array|Int16Array|Int32Array|Uint8Array|Uint16Array|Uint32Array|Uint8ClampedArray|BigInt64Array|BigUint64Array|Float16Array|Float32Array|Float64Array|[_A-Za-z])|\\()","end":";","endCaptures":{"0":{"name":"punctuation.terminator.statement.webidl"}},"name":"meta.member.operation.webidl","patterns":[{"include":"#operation-qualifiers"},{"include":"#operation-signature"},{"include":"#types"},{"include":"#comments"}]},"operation-qualifiers":{"patterns":[{"match":"\\b(getter|setter|deleter|static|legacycaller)\\b","name":"storage.modifier.operation.special.webidl"}]},"operation-signature":{"patterns":[{"begin":"\\b([_A-Za-z][_A-Za-z0-9]*)?\\s*(\\()","beginCaptures":{"1":{"name":"entity.name.function.operation.webidl"},"2":{"name":"punctuation.definition.parameters.begin.webidl"}},"end":"\\)","endCaptures":{"0":{"name":"punctuation.definition.parameters.end.webidl"}},"name":"meta.operation.signature.webidl","patterns":[{"include":"#argument"},{"include":"#comments"},{"match":",","name":"punctuation.separator.comma.webidl"}]}]},"partial-definition":{"begin":"\\b(partial)\\s+(?:(interface)\\s+(mixin)\\s+|(interface|dictionary|namespace)\\s+)([_A-Za-z][_A-Za-z0-9]*)","beginCaptures":{"1":{"name":"storage.modifier.partial.webidl"},"2":{"name":"storage.type.interface.webidl"},"3":{"name":"storage.modifier.mixin.webidl"},"4":{"name":"storage.type.definition.webidl"},"5":{"name":"entity.name.type.webidl"}},"end":";","endCaptures":{"0":{"name":"punctuation.terminator.statement.webidl"}},"name":"meta.definition.partial.webidl","patterns":[{"include":"#inheritance"},{"include":"#definition-block"},{"include":"#comments"}]},"primitive-type":{"patterns":[{"match":"\\bunsigned\\b","name":"storage.modifier.unsigned.webidl"},{"match":"\\bunrestricted\\b","name":"storage.modifier.unrestricted.webidl"},{"match":"\\b(undefined|boolean|byte|octet|bigint|float|double|short|long|object|symbol|any|void)\\b","name":"support.type.primitive.webidl"}]},"punctuation":{"patterns":[{"match":";","name":"punctuation.terminator.statement.webidl"},{"match":",","name":"punctuation.separator.comma.webidl"},{"match":"=","name":"keyword.operator.assignment.webidl"},{"match":"\\.\\.\\.","name":"keyword.operator.variadic.webidl"},{"match":"<","name":"punctuation.definition.generic.begin.webidl"},{"match":">","name":"punctuation.definition.generic.end.webidl"},{"match":"\\(","name":"punctuation.definition.parameters.begin.webidl"},{"match":"\\)","name":"punctuation.definition.parameters.end.webidl"},{"match":"\\{","name":"punctuation.definition.block.begin.webidl"},{"match":"\\}","name":"punctuation.definition.block.end.webidl"}]},"setlike-member":{"begin":"\\b(?:(readonly)\\s+)?(setlike)\\s*(<)","beginCaptures":{"1":{"name":"storage.modifier.readonly.webidl"},"2":{"name":"storage.type.setlike.webidl"},"3":{"name":"punctuation.definition.generic.begin.webidl"}},"end":">\\s*(;)","endCaptures":{"0":{"name":"punctuation.definition.generic.end.webidl"},"1":{"name":"punctuation.terminator.statement.webidl"}},"name":"meta.member.setlike.webidl","patterns":[{"include":"#types"}]},"special-type":{"match":"\\b(BufferSource|AllowSharedBufferSource|ArrayBufferView)\\b","name":"support.type.special.webidl"},"string":{"begin":"\"","beginCaptures":{"0":{"name":"punctuation.definition.string.begin.webidl"}},"end":"\"","endCaptures":{"0":{"name":"punctuation.definition.string.end.webidl"}},"name":"string.quoted.double.webidl","patterns":[{"include":"#string-escapes"}]},"string-escapes":{"patterns":[{"match":"\\\\(?:[\"'\\\\bfnrtv]|0|x[0-9A-Fa-f]{2}|u[0-9A-Fa-f]{4}|U[0-9A-Fa-f]{8})","name":"constant.character.escape.webidl"},{"match":"\\\\.","name":"invalid.illegal.unknown-escape.webidl"}]},"string-type":{"match":"\\b(DOMString|ByteString|USVString)\\b","name":"support.type.string.webidl"},"stringifier-member":{"begin":"\\b(stringifier)\\b","beginCaptures":{"1":{"name":"storage.modifier.stringifier.webidl"}},"end":";","endCaptures":{"0":{"name":"punctuation.terminator.statement.webidl"}},"name":"meta.member.stringifier.webidl","patterns":[{"include":"#attribute-member"},{"include":"#operation-signature"},{"include":"#types"}]},"typedef-definition":{"begin":"\\b(typedef)\\b","beginCaptures":{"1":{"name":"storage.type.typedef.webidl"}},"end":";","endCaptures":{"0":{"name":"punctuation.terminator.statement.webidl"}},"name":"meta.definition.typedef.webidl","patterns":[{"include":"#types"},{"match":"\\b[_A-Za-z][_A-Za-z0-9]*\\b","name":"entity.name.type.typedef.webidl"},{"include":"#comments"}]},"types":{"patterns":[{"include":"#union-type"},{"include":"#generic-type"},{"include":"#primitive-type"},{"include":"#string-type"},{"include":"#buffer-type"},{"include":"#special-type"},{"include":"#identifier-type"},{"match":"\\?","name":"keyword.operator.nullable.webidl"}]},"union-type":{"begin":"\\(","beginCaptures":{"0":{"name":"punctuation.definition.union.begin.webidl"}},"end":"\\)","endCaptures":{"0":{"name":"punctuation.definition.union.end.webidl"}},"name":"meta.type.union.webidl","patterns":[{"include":"#types"},{"match":"\\bor\\b","name":"keyword.operator.union.or.webidl"},{"include":"#comments"}]}},"scopeName":"source.webidl"},
+};
+
+/*
+Microlighter
+MIT License
+Copyright (c) 2026 Dave Rupert
+https://github.com/davatron5000/microlighter
+*/
+
+const languageAliases = {
+  "1c": "bsl",
+  "1c-query": "sdbl",
+  actionscript: "actionscript-3",
+  adoc: "asciidoc",
+  ahk1: "ahk",
+  as3: "actionscript-3",
+  asm: "assembly",
+  batch: "bat",
+  be: "berry",
+  bison: "yacc",
+  "c#": "csharp",
+  "c++": "cpp",
+  cdc: "cadence",
+  chpl: "chapel",
+  clj: "clojure",
+  "closure-templates": "soy",
+  cmd: "bat",
+  coffeescript: "coffee",
+  console: "shellsession",
+  cql: "cypher",
+  diff: "git-diff",
+  docker: "dockerfile",
+  elisp: "emacs-lisp",
+  erl: "erlang",
+  f: "fortran-fixed-form",
+  "f#": "fsharp",
+  f03: "fortran-free-form",
+  f08: "fortran-free-form",
+  f18: "fortran-free-form",
+  f77: "fortran-fixed-form",
+  f90: "fortran-free-form",
+  f95: "fortran-free-form",
+  flex: "lex",
+  for: "fortran-fixed-form",
+  fs: "fsharp",
+  fsl: "jssm",
+  ftl: "fluent",
+  gd: "gdscript",
+  gjs: "glimmer-js",
+  golang: "go",
+  gql: "graphql",
+  grm: "gold",
+  gts: "glimmer-ts",
+  hbs: "handlebars",
+  hs: "haskell",
+  idl: "webidl",
+  jade: "pug",
+  jl: "julia",
+  js: "javascript",
+  jsx: "javascript",
+  justfile: "just",
+  lean4: "lean",
+  lisp: "common-lisp",
+  makefile: "make",
+  markup: "html",
+  mbt: "moonbit",
+  mbti: "moonbit",
+  md: "markdown",
+  mediawiki: "wikitext",
+  mmd: "mermaid",
+  nar: "narrat",
+  nf: "nextflow",
+  nu: "nushell",
+  peggy: "pegjs",
+  perl6: "raku",
+  protobuf: "proto",
+  py: "python",
+  ql: "codeql",
+  rb: "ruby",
+  regex: "regexp",
+  "ruby-signature": "rbs",
+  sass: "scss",
+  scad: "openscad",
+  sh: "bash",
+  shader: "shaderlab",
+  shell: "bash",
+  shellscript: "bash",
+  spl: "splunk",
+  styl: "stylus",
+  surql: "surrealql",
+  svg: "html",
+  talon: "talonscript",
+  tres: "gdresource",
+  ts: "typescript",
+  tscn: "gdresource",
+  tsp: "typespec",
+  typ: "typst",
+  vim: "viml",
+  vimscript: "viml",
+  vy: "vyper",
+  wiki: "wikitext",
+  wl: "wolfram",
+  yml: "yaml",
+  zsh: "bash",
+  "文言": "wenyan"
+};
+
+const normalizeLanguage = (language, aliases = {}) =>
+  aliases[language] || languageAliases[language] || language;
+
+const getExternalLanguages = value => {
+  const languages = new Set();
+  const visit = item => {
+    if (Array.isArray(item)) {
+      item.forEach(visit);
+    } else if (item && typeof item === "object") {
+      if (typeof item.include === "string" && !/^[#$]/.test(item.include)) {
+        const scope = item.include.split("#")[0];
+        const match = scope.match(/^(?:source|text)\.([a-z0-9_-]+)/);
+        if (match) languages.add(match[1]);
+      }
+      Object.values(item).forEach(visit);
+    }
+  };
+  visit(value);
+  return languages;
+};
+
+const inlinedGrammars = typeof highlightGrammars !== "undefined" ? highlightGrammars : {};
+
+const getGrammar = language => Promise.resolve(inlinedGrammars[language] || null);
+
+const createGrammarLoader = (importLanguage = getGrammar) => {
+  const loadingLanguages = new Map();
+  const grammars = {
+    languages: {},
+    scopes: new Map()
+  };
+
+  for (const [lang, grammar] of Object.entries(inlinedGrammars)) {
+    if (grammar && grammar.scopeName) {
+      grammars.languages[lang] = grammar;
+      grammars.scopes.set(grammar.scopeName, grammar);
+    }
+  }
+
+  const loadGrammar = language => {
+    if (!loadingLanguages.has(language)) {
+      const grammarModule = importLanguage(language).then(grammar => {
+        if (grammar) {
+          grammars.languages[language] = grammar;
+          grammars.scopes.set(grammar.scopeName, grammar);
+        }
+        return grammar;
+      });
+      loadingLanguages.set(language, grammarModule);
+    }
+
+    return loadingLanguages.get(language);
+  };
+
+  return async languages => {
+    const visited = new Set();
+    let pending = [...new Set(languages)]
+      .filter(language => /^[a-z0-9_-]+$/.test(language));
+
+    while (pending.length) {
+      pending.forEach(language => visited.add(language));
+      const loaded = (await Promise.all(pending.map(loadGrammar))).filter(Boolean);
+      pending = [...new Set(loaded.flatMap(grammar =>
+        grammar.dependencies || [...getExternalLanguages(grammar)]
+      ))].map(language => normalizeLanguage(language)).filter(language => !visited.has(language));
+    }
+
+    return grammars;
+  };
+};
+
+const getLanguageClass = element => [...element.classList]
+  .find(className => className.startsWith("language-") || className.startsWith("lang-"))
+  ?.replace(/^(?:language|lang)-/, "");
+
+const getLanguage = codeBlock => {
+  const pre = codeBlock.parentElement;
+  const language = codeBlock.dataset.language
+    || getLanguageClass(codeBlock)
+    || pre?.dataset.language
+    || (pre ? getLanguageClass(pre) : "")
+    || "";
+
+  return language.toLowerCase();
+};
+
+const loadGrammars = createGrammarLoader();
+const highlights = new Map();
+const noMatch = { indices: [[Infinity, Infinity]] };
+
+const themeCategories = new Set([
+  "anchor", "animation", "at-rule", "attribute-name", "attribute-value",
+  "boolean", "character-entity", "comment", "constant", "decorator",
+  "deleted", "doctype", "entity", "function", "important", "inserted",
+  "interpolation", "key", "keyword", "link", "numeric", "operator",
+  "property", "punctuation", "quote", "raw", "regexp", "section",
+  "selector", "storage", "string", "support", "symbol", "tag", "type",
+  "variable"
+]);
+
+const entityNameAliases = {
+  class: "type", struct: "type", interface: "type", enum: "type",
+  trait: "type", module: "type", namespace: "type", record: "type",
+  alias: "type", method: "function", macro: "function",
+  constructor: "function", command: "function", label: "constant",
+  "goto-label": "constant", filename: "string", field: "property",
+  member: "property"
+};
+
+const getScopeCategory = scope => {
+  const parts = scope.split(".");
+  const [first, second, third] = parts;
+
+  if (first === "markup") {
+    if (["quote", "inserted", "deleted", "raw"].includes(second)) return second;
+    if (second === "heading") return "section";
+    if (second === "code" || second === "inline") return "raw";
+    if (second === "underline" || second === "link") return "link";
+    if (second === "bold" || second === "italic") return "keyword";
+    if (second === "list") return "punctuation";
+  }
+  if (first === "entity" && second === "name") {
+    if (themeCategories.has(third)) return third;
+    return entityNameAliases[third] || "type";
+  }
+  if (first === "entity" && second === "other") {
+    if (third === "attribute-name") return "attribute-name";
+    if (third === "inherited-class") return "type";
+  }
+  if (scope.startsWith("constant.character.entity")) return "character-entity";
+  if (parts.includes("numeric")) return "numeric";
+  if (first === "support") {
+    if (second === "function") return "function";
+    if (second === "constant") return "constant";
+    if (second === "variable") return "variable";
+    if (scope.startsWith("support.type.property-name")) return "property";
+    return "support";
+  }
+  if (parts.includes("attribute-value")) return "attribute-value";
+  if (scope.startsWith("string.other.link")) return "link";
+  if (parts.includes("preprocessor")) return "keyword";
+
+  for (const part of [
+    "doctype", "at-rule", "important", "regexp", "boolean",
+    "symbol", "operator", "attribute-name"
+  ]) {
+    if (parts.includes(part)) return part;
+  }
+
+  if ([
+    "comment", "string", "constant", "storage", "keyword",
+    "variable", "punctuation", "entity", "support"
+  ].includes(first)) return first;
+};
+
+const getCategory = scope => {
+  if (!scope) return;
+  if (!scope.includes(" ")) return getScopeCategory(scope);
+  const tokens = scope.split(/\s+/);
+  for (let i = tokens.length - 1; i >= 0; i--) {
+    const cat = getScopeCategory(tokens[i]);
+    if (cat) return cat;
+  }
+};
+
+const findNode = (textNodes, offset, isEnd) => {
+  let low = 0;
+  let high = textNodes.length - 1;
+  while (low <= high) {
+    const mid = (low + high) >> 1;
+    const item = textNodes[mid];
+    if (isEnd ? (offset > item.start && offset <= item.end) : (offset >= item.start && offset < item.end)) {
+      return [item.node, offset - item.start];
+    }
+    if (offset <= item.start) {
+      high = mid - 1;
+    } else {
+      low = mid + 1;
+    }
+  }
+  const fallback = isEnd ? textNodes.at(-1) : textNodes[0];
+  return [fallback.node, isEnd ? fallback.node.data.length : 0];
+};
+
+const addRange = (textNodes, start, end, scope) => {
+  const category = getCategory(scope);
+  if (!category || start === end) return;
+
+  const [startNode, startOffset] = findNode(textNodes, start, false);
+  const [endNode, endOffset] = findNode(textNodes, end, true);
+
+  const range = new Range();
+  range.setStart(startNode, startOffset);
+  range.setEnd(endNode, endOffset);
+
+  if (!highlights.has(category)) highlights.set(category, new Highlight());
+  highlights.get(category).add(range);
+};
+
+const escapeRegex = value => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+const expandEnd = (pattern, beginMatch) => pattern.replace(/\\(\d+)/g, (reference, index) => {
+  return beginMatch[index] === undefined ? reference : escapeRegex(beginMatch[index]);
+});
+
+const getRules = rule => {
+  if (!rule) return [];
+  if (Array.isArray(rule)) return rule;
+
+  if (rule.match || rule.begin || rule.include) return [rule];
+  return rule.patterns || [];
+};
+
+const compileRegex = (pattern, flags) => {
+  try {
+    return new RegExp(pattern, flags);
+  } catch {
+    return null;
+  }
+};
+
+const highlightAll = async ({
+  root = document,
+  selector = "[data-language], pre.highlight, code.highlight, pre > code",
+  languageAliases
+} = {}) => {
+  const elements = [...root.querySelectorAll(selector)];
+  const codeBlocks = elements.filter(el => {
+    if (el.tagName === "PRE" && el.querySelector(":scope > code")) return false;
+    const language = normalizeLanguage(getLanguage(el), languageAliases);
+    return language && language !== "none";
+  });
+  const languages = codeBlocks.map(codeBlock =>
+    normalizeLanguage(getLanguage(codeBlock), languageAliases)
+  );
+  const grammars = await loadGrammars(languages);
+  const regexes = new Map();
+  let matches = new Map();
+
+  highlights.forEach((ranges, category) => {
+    if (CSS.highlights.get(category) === ranges) CSS.highlights.delete(category);
+    ranges.clear();
+  });
+
+  const exec = (pattern, text, start, end, anchor = 0) => {
+    if (/(?:^|[^\\])(?:\\\\)*\\G/.test(pattern)) {
+      let entry = regexes.get(pattern);
+      if (!entry) {
+        const atPat = pattern
+          .replace(/((?:^|[^\\])(?:\\\\)*)\(\?(?:<!|!)\\G\)/g, "$1(?!)")
+          .replace(/((?:^|[^\\])(?:\\\\)*)\\G/g, "$1");
+        const afterPat = pattern.replace(/((?:^|[^\\])(?:\\\\)*)\\G/g, "$1(?!)");
+        entry = {
+          at: compileRegex(atPat, "dym"),
+          after: compileRegex(afterPat, "dgm")
+        };
+        regexes.set(pattern, entry);
+      }
+      if (start === anchor && entry.at) {
+        entry.at.lastIndex = anchor;
+        const m = entry.at.exec(text);
+        if (m && m.indices[0][0] < end && m.indices[0][1] <= end) return m;
+      }
+      if (entry.after) {
+        const searchStart = start <= anchor ? anchor + 1 : start;
+        if (searchStart < end) {
+          entry.after.lastIndex = searchStart;
+          const m = entry.after.exec(text);
+          if (m && m.indices[0][0] < end && m.indices[0][1] <= end) return m;
+        }
+      }
+      return null;
+    }
+
+    let match = matches.get(pattern);
+
+    if (!match || match.indices[0][0] < start) {
+      if (!regexes.has(pattern)) regexes.set(pattern, compileRegex(pattern, "dgm"));
+      const regex = regexes.get(pattern);
+      if (!regex) {
+        matches.set(pattern, noMatch);
+        return null;
+      }
+      regex.lastIndex = start;
+      match = regex.exec(text) || noMatch;
+      matches.set(pattern, match);
+    }
+
+    return match.indices[0][0] < end && match.indices[0][1] <= end
+      ? match
+      : null;
+  };
+
+  const resolveInclude = (include, grammar, baseGrammar) => {
+    if (include === "$self") return { grammar, rules: grammar.patterns };
+    if (include === "$base") return { grammar: baseGrammar, rules: baseGrammar.patterns };
+
+    if (include[0] === "#") {
+      return { grammar, rules: getRules(grammar.repository?.[include.slice(1)]) };
+    }
+
+    const [scopeName, repositoryName] = include.split("#");
+    const includedGrammar = grammars.scopes.get(scopeName);
+    if (!includedGrammar) return null;
+
+    return {
+      grammar: includedGrammar,
+      rules: repositoryName
+        ? getRules(includedGrammar.repository?.[repositoryName])
+        : includedGrammar.patterns
+    };
+  };
+
+  const expandRules = (rules, grammar, baseGrammar, activeIncludes = new Set()) => {
+    const expanded = [];
+
+    rules.forEach(rule => {
+      if (rule.include) {
+        const includeKey = `${grammar.scopeName}:${rule.include}`;
+        if (activeIncludes.has(includeKey)) return;
+
+        const included = resolveInclude(rule.include, grammar, baseGrammar);
+        if (!included) return;
+
+        const nestedIncludes = new Set(activeIncludes);
+        nestedIncludes.add(includeKey);
+        expanded.push(...expandRules(included.rules, included.grammar, baseGrammar, nestedIncludes));
+        return;
+      }
+
+      if (rule.match || (rule.begin && rule.end)) {
+        expanded.push({ grammar, rule });
+      } else if (rule.patterns) {
+        expanded.push(...expandRules(rule.patterns, grammar, baseGrammar, activeIncludes));
+      }
+    });
+
+    return expanded;
+  };
+
+  const nextRule = (text, contexts, start, end, anchor) => {
+    let winner = null;
+
+    contexts.forEach(context => {
+      const pattern = context.rule.match || context.rule.begin;
+      const match = exec(pattern, text, start, end, anchor);
+      if (!match) return;
+
+      if (!winner || match.indices[0][0] < winner.match.indices[0][0]) {
+        winner = { ...context, match };
+      }
+    });
+
+    return winner;
+  };
+
+  const addCaptures = (text, textNodes, match, captures, grammar, baseGrammar, depth) => {
+    if (!captures) return;
+    Object.entries(captures).forEach(([index, capture]) => {
+      const offsets = match.indices[+index];
+      if (!offsets) return;
+      if (capture.name) addRange(textNodes, ...offsets, capture.name);
+      if (capture.patterns && offsets[0] < offsets[1]) {
+        scanRegion(text, textNodes, capture.patterns, offsets[0], offsets[1], grammar, baseGrammar, null, depth + 1);
+      }
+    });
+  };
+
+  const scanRegion = (text, textNodes, rules, start, end, grammar, baseGrammar = grammar, closing = null, depth = 0) => {
+    if (depth > 64) return { contentEnd: end, end, match: null };
+    const contexts = expandRules(rules, grammar, baseGrammar);
+    let cursor = start;
+
+    while (cursor < end) {
+      const candidate = nextRule(text, contexts, cursor, end, start);
+      const endMatch = closing ? exec(closing.pattern, text, cursor, end, start) : null;
+      const candidateStart = candidate?.match.indices[0][0] ?? Infinity;
+      const endStart = endMatch?.indices[0][0] ?? Infinity;
+
+      if (endMatch && (endStart < candidateStart || (endStart === candidateStart && !closing?.applyEndPatternLast))) {
+        return { contentEnd: endStart, end: endMatch.indices[0][1], match: endMatch };
+      }
+
+      if (!candidate) return { contentEnd: end, end, match: null };
+
+      const { rule, match, grammar: ruleGrammar } = candidate;
+      if (rule.match) {
+        if (rule.name) addRange(textNodes, ...match.indices[0], rule.name);
+        addCaptures(text, textNodes, match, rule.captures, ruleGrammar, baseGrammar, depth);
+        cursor = match.indices[0][1] > cursor ? match.indices[0][1] : cursor + 1;
+        continue;
+      }
+
+      const nested = scanRegion(
+        text,
+        textNodes,
+        rule.patterns || [],
+        match.indices[0][1],
+        end,
+        ruleGrammar,
+        baseGrammar,
+        { pattern: expandEnd(rule.end, match), applyEndPatternLast: rule.applyEndPatternLast },
+        depth + 1
+      );
+
+      if (rule.name) addRange(textNodes, match.indices[0][0], nested.end, rule.name);
+      if (rule.contentName) addRange(textNodes, match.indices[0][1], nested.contentEnd, rule.contentName);
+      addCaptures(text, textNodes, match, rule.beginCaptures || rule.captures, ruleGrammar, baseGrammar, depth);
+      if (nested.match) addCaptures(text, textNodes, nested.match, rule.endCaptures || rule.captures, ruleGrammar, baseGrammar, depth);
+
+      cursor = nested.end > cursor ? nested.end : cursor + 1;
+    }
+
+    return { contentEnd: end, end, match: null };
+  };
+
+  codeBlocks.forEach((codeBlock, index) => {
+    const language = languages[index];
+    if (!language || language === "none") return;
+    const grammar = grammars.languages[language];
+    if (!grammar) return;
+
+    codeBlock.normalize();
+
+    const walker = document.createTreeWalker(codeBlock, NodeFilter.SHOW_TEXT);
+    const textNodes = [];
+    let text = "";
+    let n;
+    while ((n = walker.nextNode())) {
+      if (n.data.length === 0) continue;
+      textNodes.push({
+        node: n,
+        start: text.length,
+        end: text.length + n.data.length,
+      });
+      text += n.data;
+    }
+
+    if (!textNodes.length) return;
+
+    matches = new Map();
+
+    scanRegion(text, textNodes, grammar.patterns, 0, text.length, grammar);
+  });
+
+  highlights.forEach((ranges, category) => {
+    if (ranges.size) CSS.highlights.set(category, ranges);
+  });
+
+  return codeBlocks;
+};
+
+document.addEventListener("syntax-highlight", () => highlightAll());
+highlightAll();
+}
+</script>
 <script>/* Boilerplate: script-ref-hints */
 "use strict";
 {
@@ -1998,7 +2497,7 @@ function mkRefHint(link, ref) {
         class: "ref-hint",
         id: `ref-hint-for-${safeUrl}`,
         "data-for": url,
-        "aria-labelled-by": `ref-hint-for-${safeUrl}`,
+        "aria-label": `Reference details for ${ref.displayText}`,
     },
         mk.ul({},
             dfnTextElements,
