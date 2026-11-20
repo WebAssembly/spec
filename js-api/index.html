@@ -6,7 +6,7 @@
   <meta content="ED" name="w3c-status">
   <meta content="Bikeshed version a035d7dc6, updated Fri Nov 20 03:13:55 2026 +0000" name="generator">
   <link href="https://www.w3.org/TR/wasm-js-api-2/" rel="canonical">
-  <meta content="2b7b58c1ac9cd0d3519850e7a81f91ce96f6d7e0" name="revision">
+  <meta content="79df1e09261a8acd17bc986b14f91e2097c1858c" name="revision">
   <meta content="dark light" name="color-scheme">
 <style>
 emu-const {
@@ -3012,14 +3012,18 @@ The algorithm <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="tow
           <p>If a <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-hostaddr" id="ref-for-syntax-hostaddr②">host address</a> <var>hostaddr</var> exists such that <var>map</var>[<var>hostaddr</var>] is the same as <var>v</var>,</p>
           <ol>
            <li data-md>
-            <p>Return <a data-link-type="dfn" data-refhint-key="eba518e9" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values②⑨">ref.host</a> <var>hostaddr</var>.</p>
+            <p>Let <var>r</var> be <a data-link-type="dfn" data-refhint-key="eba518e9" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values②⑨">ref.host</a> <var>hostaddr</var>.</p>
           </ol>
          <li data-md>
-          <p>Let <var>hostaddr</var> be the smallest <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-hostaddr" id="ref-for-syntax-hostaddr③">host address</a> such that <var>map</var>[<var>hostaddr</var>] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists①④">exists</a> is false.</p>
-         <li data-md>
-          <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-set" id="ref-for-map-set⑥">Set</a> <var>map</var>[<var>hostaddr</var>] to <var>v</var>.</p>
-         <li data-md>
-          <p>Let <var>r</var> be <a data-link-type="dfn" data-refhint-key="eba518e9" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values③⓪">ref.host</a> <var>hostaddr</var>.</p>
+          <p>Else,</p>
+          <ol>
+           <li data-md>
+            <p>Let <var>hostaddr</var> be the smallest <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-hostaddr" id="ref-for-syntax-hostaddr③">host address</a> such that <var>map</var>[<var>hostaddr</var>] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists①④">exists</a> is false.</p>
+           <li data-md>
+            <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-set" id="ref-for-map-set⑥">Set</a> <var>map</var>[<var>hostaddr</var>] to <var>v</var>.</p>
+           <li data-md>
+            <p>Let <var>r</var> be <a data-link-type="dfn" data-refhint-key="eba518e9" href="https://webassembly.github.io/spec/core/exec/runtime.html#values" id="ref-for-values③⓪">ref.host</a> <var>hostaddr</var>.</p>
+          </ol>
         </ol>
        <li data-md>
         <p>Let <var>store</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent" id="ref-for-surrounding-agent④④">surrounding agent</a>’s <a data-link-type="dfn" href="#associated-store" id="ref-for-associated-store③③">associated store</a>.</p>
