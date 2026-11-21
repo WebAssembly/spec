@@ -10,6 +10,44 @@ The tests use the [testharness.js] library and the [multi-global tests] setup
 for smooth integrations with the web-platform-tests project and the existing
 test infrastructure in implementations.
 
+## Running in browsers
+
+From the repository root, install Selenium in a Python virtual environment and
+run the suite against an installed browser.
+
+```sh
+python3 -m venv /tmp/wasm-js-api-venv
+/tmp/wasm-js-api-venv/bin/python -m pip install selenium
+/tmp/wasm-js-api-venv/bin/python test/js-api/run.py --browser firefox|chrome|safari
+```
+
+For Safari, enable Remote Automation once with `safaridriver --enable`.
+
+### Browser expectations
+
+Selenium runs load [`expectations.json`](expectations.json).
+
+```json
+{
+  "memory/buffer.any.js": [
+    {
+      "browser": "safari",
+      "context": "dedicatedworker",
+      "subtest": "Branding",
+      "expect": "fail",
+      "reason": "Link to the issue tracking this failure"
+    }
+  ],
+  "table/grow.any.js": [
+    {
+      "browser": "firefox",
+      "expect": "skip",
+      "reason": "Link to the issue tracking why this test cannot run"
+    }
+  ]
+}
+```
+
 ## Metadata
 
 All tests must have the `.any.js` extension.
