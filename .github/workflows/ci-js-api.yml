@@ -1,0 +1,77 @@
+name: CI for Wasm JS API tests
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/ci-js-api.yml
+      - test/harness/testharness.js
+      - test/js-api/**
+
+  pull_request:
+    branches: [main]
+    paths:
+      - .github/workflows/ci-js-api.yml
+      - test/harness/testharness.js
+      - test/js-api/**
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  js-api:
+    name: JS API (${{ matrix.browser }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - browser: firefox
+            os: ubuntu-24.04
+          - browser: chrome
+            os: ubuntu-24.04
+          - browser: safari
+            os: macos-15
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.14'
+      - name: Install Selenium
+        run: python -m pip install selenium==4.53.0
+      - name: Enable Safari Remote Automation
+        if: matrix.browser == 'safari'
+        run: sudo /usr/bin/safaridriver --enable
+      - name: Run JS API tests
+        env:
+          BROWSER: ${{ matrix.browser }}
+        run: python test/js-api/run.py --browser "$BROWSER" --json wasm-js-api.json
+      - name: Upload browser report
+        if: ${{ !cancelled() && hashFiles('wasm-js-api.json') != '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: wasm-js-api-${{ matrix.browser }}
+          path: wasm-js-api.json
+          if-no-files-found: error
+      - name: Summarize browser results
+        if: ${{ !cancelled() && hashFiles('wasm-js-api.json') != '' }}
+        run: |
+          python - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          from collections import Counter
+          import json
+          from pathlib import Path
+
+          report = json.loads(Path('wasm-js-api.json').read_text(encoding='utf-8'))
+          counts = Counter(case['outcome'] for case in report['results'])
+          print(f"### Wasm JS API in {report['browser']} {report['version']}\n")
+          print('| Pass | Fail | Expected failure | Unexpected pass | Skip |')
+          print('| ---: | ---: | ---: | ---: | ---: |')
+          print('| ' + ' | '.join(str(counts[outcome]) for outcome in ('PASS', 'FAIL', 'XFAIL', 'XPASS', 'SKIP')) + ' |')
+          PY
