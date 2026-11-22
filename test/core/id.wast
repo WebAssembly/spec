@@ -28,4 +28,4 @@
 (assert_malformed (module quote "(func $ \"a\")") "empty identifier")
 (assert_malformed (module quote "(func $\"a\nb\")") "empty identifier")
 (assert_malformed (module quote "(func $\"a\tb\")") "empty identifier")
-(assert_malformed (module quote "(func $\"\\ef\")") "malformed UTF-8")
+(assert_malformed (module quote "(func $\"\\ef\")") "malformed UTF-8 encoding")
