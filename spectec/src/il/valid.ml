@@ -100,14 +100,15 @@ let rec as_comp_typ phrase env dir t at =
     error at (phrase ^ "'s type `" ^ string_of_typ t ^ "` is not composable")
 
 let proj_tup_typ i xts e at =
-  let rec loop i xts s =
-    match i, xts with
-    | _, [] -> error at "invalid tuple projection"
-    | 0, (_, tI)::_ -> Subst.subst_typ s tI
-    | i, (xI, tI)::xts' ->
-      let eI = ProjE (e, i) $$ at % Subst.subst_typ s tI in
-      loop (i - 1) xts' (Subst.add_varid s xI eI)
- in loop i xts Subst.empty
+  let rec loop j xts s =
+    match xts with
+    | [] -> error at "invalid tuple projection"
+    | (_, tJ)::_ when j = i -> Subst.subst_typ s tJ
+    | (xJ, tJ)::xts' when j < i ->
+      let eJ = ProjE (e, j) $$ at % Subst.subst_typ s tJ in
+      loop (j + 1) xts' (Subst.add_varid s xJ eJ)
+    | _ ->  error at "invalid tuple projection"  (* i can't be negative *)
+ in loop 0 xts Subst.empty
 
 
 (* Type Equivalence and Subtyping *)
