@@ -1992,12 +1992,7 @@ In practice, the choice depends on the <a class="reference internal" href="../ap
 <li><p>Pop the value <span class="math notranslate nohighlight">\({\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}}_2\)</span> from the stack.</p></li>
 <li><p>Assert: Due to validation, a <a class="reference internal" href="runtime.html#syntax-ref"><span class="std std-ref">reference value</span></a> is on the top of the stack.</p></li>
 <li><p>Pop the value <span class="math notranslate nohighlight">\({\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}}_1\)</span> from the stack.</p></li>
-<li><p>If <span class="math notranslate nohighlight">\({\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}}_1 = \href{../exec/runtime.html#syntax-ref}{\mathsf{ref{.}null}}\)</span> and <span class="math notranslate nohighlight">\({\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}}_2 = \href{../exec/runtime.html#syntax-ref}{\mathsf{ref{.}null}}\)</span>, then:</p>
-<ol class="loweralpha simple">
-<li><p>Push the value <span class="math notranslate nohighlight">\((\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~1)\)</span> to the stack.</p></li>
-</ol>
-</li>
-<li><p>Else if <span class="math notranslate nohighlight">\({\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}}_1 = {\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}}_2\)</span>, then:</p>
+<li><p>If <span class="math notranslate nohighlight">\({\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}}_1 = {\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}}_2\)</span>, then:</p>
 <ol class="loweralpha simple">
 <li><p>Push the value <span class="math notranslate nohighlight">\((\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~1)\)</span> to the stack.</p></li>
 </ol>
@@ -2010,8 +2005,7 @@ In practice, the choice depends on the <a class="reference internal" href="../ap
 </ol>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}[t]{&#64;{}l&#64;{}rcl&#64;{}l&#64;{}}
-&amp; {\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}}_1~{\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}}_2~\href{../syntax/instructions.html#syntax-instr-ref}{\mathsf{ref{.}eq}} &amp; \href{../exec/conventions.html#exec-notation}{\hookrightarrow} &amp; (\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~1) &amp; \quad \mbox{if}~ {\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}}_1 = \href{../exec/runtime.html#syntax-ref}{\mathsf{ref{.}null}} \land {\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}}_2 = \href{../exec/runtime.html#syntax-ref}{\mathsf{ref{.}null}} \\
-&amp; {\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}}_1~{\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}}_2~\href{../syntax/instructions.html#syntax-instr-ref}{\mathsf{ref{.}eq}} &amp; \href{../exec/conventions.html#exec-notation}{\hookrightarrow} &amp; (\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~1) &amp; \quad \mbox{otherwise, if}~ {\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}}_1 = {\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}}_2 \\
+&amp; {\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}}_1~{\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}}_2~\href{../syntax/instructions.html#syntax-instr-ref}{\mathsf{ref{.}eq}} &amp; \href{../exec/conventions.html#exec-notation}{\hookrightarrow} &amp; (\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~1) &amp; \quad \mbox{if}~ {\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}}_1 = {\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}}_2 \\
 &amp; {\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}}_1~{\href{../exec/runtime.html#syntax-ref}{\mathit{ref}}}_2~\href{../syntax/instructions.html#syntax-instr-ref}{\mathsf{ref{.}eq}} &amp; \href{../exec/conventions.html#exec-notation}{\hookrightarrow} &amp; (\href{../syntax/types.html#syntax-numtype}{\mathsf{i\scriptstyle32}}{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~0) &amp; \quad \mbox{otherwise} \\
 \end{array}\end{split}\]</div>
 </section>
