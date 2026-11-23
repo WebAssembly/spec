@@ -1323,7 +1323,6 @@ warning: rule `Step_pure/ref.is_null-true` was never spliced
 warning: rule `Step_pure/ref.is_null-false` was never spliced
 warning: rule `Step_pure/ref.as_non_null-null` was never spliced
 warning: rule `Step_pure/ref.as_non_null-addr` was never spliced
-warning: rule `Step_pure/ref.eq-null` was never spliced
 warning: rule `Step_pure/ref.eq-true` was never spliced
 warning: rule `Step_pure/ref.eq-false` was never spliced
 warning: rule `Step_pure/i31.get-null` was never spliced
