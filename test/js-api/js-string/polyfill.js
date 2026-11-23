@@ -86,15 +86,15 @@ this.polyfillImports = {
     throwIfNotString(string);
     return string;
   },
-  fromCharCodeArray: (array, arrayStart, arrayCount) => {
+  fromCharCodeArray: (array, arrayStart, arrayEnd) => {
     arrayStart >>>= 0;
-    arrayCount >>>= 0;
+    arrayEnd >>>= 0;
     let length = helperExports.arrayLength(array);
-    if (BigInt(arrayStart) + BigInt(arrayCount) > BigInt(length)) {
+    if (arrayStart > arrayEnd || arrayEnd > length) {
       throw new WebAssembly.RuntimeError();
     }
     let result = '';
-    for (let i = arrayStart; i < arrayStart + arrayCount; i++) {
+    for (let i = arrayStart; i < arrayEnd; i++) {
       result += String.fromCharCode(helperExports.arrayGet(array, i));
     }
     return result;
@@ -118,6 +118,8 @@ this.polyfillImports = {
   },
   fromCodePoint: (codePoint) => {
     codePoint >>>= 0;
+    if (codePoint > 0x10ffff)
+      throw new WebAssembly.RuntimeError();
     return String.fromCodePoint(codePoint);
   },
   charCodeAt: (string, stringIndex) => {
@@ -147,9 +149,7 @@ this.polyfillImports = {
     startIndex >>>= 0;
     endIndex >>>= 0;
     throwIfNotString(string);
-    if (startIndex > string.length,
-        endIndex > string.length,
-        endIndex < startIndex) {
+    if (startIndex > endIndex || startIndex > string.length) {
       return "";
     }
     return string.substring(startIndex, endIndex);

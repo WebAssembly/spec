@@ -348,6 +348,14 @@ test(() => {
       arrayMutI16, 0, length
     );
 
+    for (let i = 0; i <= length; i++) {
+      assert_same_behavior(
+        builtinExports['fromCharCodeArray'],
+        polyfillExports['fromCharCodeArray'],
+        arrayMutI16, i, length
+      );
+    }
+
     for (let i = 0; i < length; i++) {
       for (let j = 0; j < length; j++) {
         assert_same_behavior(
@@ -359,6 +367,64 @@ test(() => {
     }
   }
 });
+
+// Test that i32 parameters are interpreted as unsigned: a value with the top
+// bit set is a large index, not a negative one.
+const testHighBitI32s = [-1, -0x80000000];
+test(() => {
+  for (let v of testHighBitI32s) {
+    assert_same_behavior(
+      builtinExports['fromCharCode'],
+      polyfillExports['fromCharCode'],
+      v
+    );
+
+    assert_throws_if(() => assert_same_behavior(
+        builtinExports['fromCodePoint'],
+        polyfillExports['fromCodePoint'],
+        v
+      ), true, WebAssembly.RuntimeError);
+
+    for (let a of testStrings) {
+      assert_throws_if(() => assert_same_behavior(
+          builtinExports['charCodeAt'],
+          polyfillExports['charCodeAt'],
+          a, v
+        ), true, WebAssembly.RuntimeError);
+
+      assert_throws_if(() => assert_same_behavior(
+          builtinExports['codePointAt'],
+          polyfillExports['codePointAt'],
+          a, v
+        ), true, WebAssembly.RuntimeError);
+
+      assert_same_behavior(
+        builtinExports['substring'],
+        polyfillExports['substring'],
+        a, 0, v
+      );
+
+      assert_same_behavior(
+        builtinExports['substring'],
+        polyfillExports['substring'],
+        a, v, 0
+      );
+
+      let arrayMutI16 = helperExports.createArrayMutI16(a.length);
+      assert_throws_if(() => assert_same_behavior(
+          builtinExports['intoCharCodeArray'],
+          polyfillExports['intoCharCodeArray'],
+          a, arrayMutI16, v
+        ), true, WebAssembly.RuntimeError);
+
+      assert_throws_if(() => assert_same_behavior(
+          builtinExports['fromCharCodeArray'],
+          polyfillExports['fromCharCodeArray'],
+          arrayMutI16, 0, v
+        ), true, WebAssembly.RuntimeError);
+    }
+  }
+}, "i32 parameters are unsigned");
 
 // Test various binary operations
 test(() => {
