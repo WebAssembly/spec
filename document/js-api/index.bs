@@ -245,6 +245,8 @@ urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: df
     text: address; url: exec/runtime.html#addresses
     text: signed_31; url: exec/numerics.html#aux-signed
     text: signed_32; url: exec/numerics.html#aux-signed
+    text: pack; url: exec/runtime.html#aux-packfield
+    text: unpack; url: exec/runtime.html#aux-unpackfield
     text: memory.grow; url: exec/instructions.html#exec-memory-grow
     text: throw_ref; url: exec/instructions.html#exec-throw-ref
     text: current frame; url: exec/conventions.html#exec-notation-textual
@@ -1884,7 +1886,17 @@ To <dfn>validate builtin set names</dfn> with |builtinSetNames|, perform the fol
 
 To <dfn>create a builtin function</dfn> from type |funcType| and execution steps |steps|, perform the following steps:
 
-1. Let |hostfunc| be a [=host function=] which executes |steps| when called.
+1. Let [=comp-type/func=] <var ignore>parameters</var> → |results| be the [=expansion=] of |funcType|.
+1. Let |hostfunc| be a [=host function=] which performs the following steps when called with store |store| and arguments |arguments|:
+    1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
+    1. Let |jsArguments| be « ».
+    1. [=list/iterate|For each=] |arg| of |arguments|,
+        1. [=list/Append=] [=ToJSValue=](|arg|) to |jsArguments|.
+    1. Let |result| be the result of performing |steps| given |jsArguments|.
+    1. Assert: |result|.\[[Type]] is <emu-const>throw</emu-const> or <emu-const>normal</emu-const>.
+    1. Let |store| be the [=surrounding agent=]'s [=associated store=].
+    1. If |result|.\[[Type]] is <emu-const>throw</emu-const>, return (|store|, [=trap=]).
+    1. Return (|store|, « [=!=] [=ToWebAssemblyValue=](|result|.\[[Value]], |results|[0]) »).
 1. Let |store| be the [=surrounding agent=]'s [=associated store=].
 1. Let (|store|, |funcaddr|) be [=func_alloc=](|store|, |funcType|, |hostfunc|).
 1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
@@ -1936,7 +1948,7 @@ Note: The algorithms in this section refer to JS builtins defined on [=String=].
 The <dfn abstract-op lt="UnwrapString">UnwrapString(|v|)</dfn> abstract operation, when invoked, performs the following steps:
 
 1. If |v| [=is not a String=],
-    1. Throw a {{RuntimeError}} exception as if a [=trap=] was executed.
+    1. Throw a {{RuntimeError}} exception.
 1. Return |v|
 
 </div>
@@ -1945,8 +1957,7 @@ The <dfn abstract-op lt="UnwrapString">UnwrapString(|v|)</dfn> abstract operatio
 
 The <dfn abstract-op lt="FromCharCode">FromCharCode(|v|)</dfn> abstract operation, when invoked, performs the following steps:
 
-1. Assert: |v| is of type [=i32=].
-1. Return [=!=] [$Call$]([=String.fromCharCode=], undefined, « [=ToJSValue=](|v|) »).
+1. Return [=!=] [$Call$]([=String.fromCharCode=], undefined, « |v| »).
 
 </div>
 
@@ -1954,8 +1965,40 @@ The <dfn abstract-op lt="FromCharCode">FromCharCode(|v|)</dfn> abstract operatio
 
 The <dfn abstract-op lt="CharCodeAt">CharCodeAt(|string|, |index|)</dfn> abstract operation, when invoked, performs the following steps:
 
-1. Assert: |index| is of type [=i32=].
-1. Return [=!=] [$Call$]([=String.prototype.charCodeAt=], |string|, « [=ToJSValue=](|index|) »).
+1. Return [=!=] [$Call$]([=String.prototype.charCodeAt=], |string|, « [=𝔽=](|index|) »).
+
+</div>
+
+<div algorithm>
+
+The <dfn abstract-op lt="ArrayLength">ArrayLength(|array|)</dfn> abstract operation, when invoked, performs the following steps:
+
+1. Let |store| be the [=surrounding agent=]'s [=associated store=].
+1. Let |arrayaddr| be |array|.\[[ObjectAddress]].
+1. Return the [=list/size=] of |store|.arrays[|arrayaddr|].fields.
+
+</div>
+
+<div algorithm>
+
+The <dfn abstract-op lt="ArrayCharCodeAt">ArrayCharCodeAt(|array|, |index|)</dfn> abstract operation, when invoked, performs the following steps:
+
+1. Let |store| be the [=surrounding agent=]'s [=associated store=].
+1. Let |arrayaddr| be |array|.\[[ObjectAddress]].
+1. Let [=i32.const=] |charCode| be [=unpack=]<sub>i16</sub><sup>u</sup>(|store|.arrays[|arrayaddr|].fields[|index|]).
+1. Return [=𝔽=](|charCode| interpreted as a [=mathematical value=]).
+
+</div>
+
+<div algorithm>
+
+The <dfn abstract-op lt="SetArrayCharCodeAt">SetArrayCharCodeAt(|array|, |index|, |charCode|)</dfn> abstract operation, when invoked, performs the following steps:
+
+1. Let |store| be the [=surrounding agent=]'s [=associated store=].
+1. Let |arrayaddr| be |array|.\[[ObjectAddress]].
+1. Let |value| be [=!=] [=ToWebAssemblyValue=](|charCode|, [=i32=]).
+1. Set |store|.arrays[|arrayaddr|].fields[|index|] to [=pack=]<sub>i16</sub>(|value|).
+1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
 
 </div>
 
@@ -1980,8 +2023,8 @@ The |funcType| of this builtin is `(rec (type (func (param externref) (result i3
 When this builtin is invoked with parameter |v|, the following steps must be run:
 
 1. If |v| [=is not a String=],
-    1. Return 0.
-1. Return 1.
+    1. Return **+0**<sub>𝔽</sub>.
+1. Return **1**<sub>𝔽</sub>.
 
 </div>
 
@@ -1995,15 +2038,17 @@ The |funcType| of this builtin is `(rec (type (func (param (ref null arrayType) 
 
 When this builtin is invoked with parameters |array|, |start|, and |end|, the following steps must be run:
 
+1. Let |startIndex| be [=ℝ=]([=!=] [$ToUint32$](|start|)).
+1. Let |endIndex| be [=ℝ=]([=!=] [$ToUint32$](|end|)).
 1. If |array| is null,
-    1. Throw a {{RuntimeError}} exception as if a [=trap=] was executed.
-1. Let |length| be the number of elements in |array|.
-1. If |start| > |end| or |end| > |length|,
-    1. Throw a {{RuntimeError}} exception as if a [=trap=] was executed.
+    1. Throw a {{RuntimeError}} exception.
+1. Let |length| be [$ArrayLength$](|array|).
+1. If |startIndex| > |endIndex| or |endIndex| > |length|,
+    1. Throw a {{RuntimeError}} exception.
 1. Let |result| be the empty string.
-1. Let |i| be |start|.
-1. While |i| < |end|:
-    1. Let |charCode| be the value of the element stored at index |i| in |array|.
+1. Let |i| be |startIndex|.
+1. While |i| < |endIndex|:
+    1. Let |charCode| be [$ArrayCharCodeAt$](|array|, |i|).
     1. Let |charCodeString| be [$FromCharCode$](|charCode|).
     1. Let |result| be the concatenation of |result| and |charCodeString|.
     1. Set |i| to |i| + 1.
@@ -2021,19 +2066,20 @@ The |funcType| of this builtin is `(rec (type (func (param externref (ref null a
 
 When this builtin is invoked with parameters |string|, |array|, and |start|, the following steps must be run:
 
+1. Let |startIndex| be [=ℝ=]([=!=] [$ToUint32$](|start|)).
 1. If |array| is null,
-    1. Throw a {{RuntimeError}} exception as if a [=trap=] was executed.
+    1. Throw a {{RuntimeError}} exception.
 1. Let |string| be [=?=] [$UnwrapString$](|string|).
 1. Let |stringLength| be the [=string/length=] of |string|.
-1. Let |arrayLength| be the number of elements in |array|.
-1. If |start| + |stringLength| > |arrayLength|,
-    1. Throw a {{RuntimeError}} exception as if a [=trap=] was executed.
+1. Let |arrayLength| be [$ArrayLength$](|array|).
+1. If |startIndex| + |stringLength| > |arrayLength|,
+    1. Throw a {{RuntimeError}} exception.
 1. Let |i| be 0.
 1. While |i| < |stringLength|:
     1. Let |charCode| be [$CharCodeAt$](|string|, |i|).
-    1. Set the element at index |start| + |i| in |array| to [=!=] [=ToWebAssemblyValue=](|charCode|, [=i32=]).
+    1. Perform [$SetArrayCharCodeAt$](|array|, |startIndex| + |i|, |charCode|).
     1. Set |i| to |i| + 1.
-1. Return |stringLength|.
+1. Return [=𝔽=](|stringLength|).
 
 </div>
 
@@ -2046,7 +2092,8 @@ The |funcType| of this builtin is `(rec (type (func (param i32) (result (ref ext
 
 When this builtin is invoked with parameter |v|, the following steps must be run:
 
-1. Return [$FromCharCode$](|v|).
+1. Let |charCode| be [=ℝ=]([=!=] [$ToUint32$](|v|)).
+1. Return [$FromCharCode$]([=𝔽=](|charCode|)).
 
 </div>
 
@@ -2058,9 +2105,10 @@ The |funcType| of this builtin is `(rec (type (func (param i32) (result (ref ext
 
 When this builtin is invoked with parameter |v|, the following steps must be run:
 
-1. If |v| &gt; 0x10ffff,
-    1. Throw a {{RuntimeError}} exception as if a [=trap=] was executed.
-1. Return [=!=] [$Call$]([=String.fromCodePoint=], undefined, « [=ToJSValue=](|v|) »).
+1. Let |codePoint| be [=ℝ=]([=!=] [$ToUint32$](|v|)).
+1. If |codePoint| &gt; 0x10ffff,
+    1. Throw a {{RuntimeError}} exception.
+1. Return [=!=] [$Call$]([=String.fromCodePoint=], undefined, « [=𝔽=](|codePoint|) »).
 
 </div>
 
@@ -2072,10 +2120,11 @@ The |funcType| of this builtin is `(rec (type (func (param externref i32) (resul
 
 When this builtin is invoked with parameters |string| and |index|, the following steps must be run:
 
+1. Let |index| be [=ℝ=]([=!=] [$ToUint32$](|index|)).
 1. Let |string| be [=?=] [$UnwrapString$](|string|).
 1. Let |length| be the [=string/length=] of |string|.
 1. If |index| >= |length|,
-    1. Throw a {{RuntimeError}} exception as if a [=trap=] was executed.
+    1. Throw a {{RuntimeError}} exception.
 1. Return [$CharCodeAt$](|string|, |index|).
 
 </div>
@@ -2088,11 +2137,12 @@ The |funcType| of this builtin is `(rec (type (func (param externref i32) (resul
 
 When this builtin is invoked with parameters |string| and |index|, the following steps must be run:
 
+1. Let |index| be [=ℝ=]([=!=] [$ToUint32$](|index|)).
 1. Let |string| be [=?=] [$UnwrapString$](|string|).
 1. Let |length| be the [=string/length=] of |string|.
 1. If |index| >= |length|,
-    1. Throw a {{RuntimeError}} exception as if a [=trap=] was executed.
-1. Return [=!=] [$Call$]([=String.prototype.codePointAt=], |string|, « [=ToJSValue=](|index|) »).
+    1. Throw a {{RuntimeError}} exception.
+1. Return [=!=] [$Call$]([=String.prototype.codePointAt=], |string|, « [=𝔽=](|index|) »).
 
 </div>
 
@@ -2105,7 +2155,8 @@ The |funcType| of this builtin is `(rec (type (func (param externref) (result i3
 When this builtin is invoked with parameter |v|, the following steps must be run:
 
 1. Let |string| be [=?=] [$UnwrapString$](|v|).
-1. Return the [=string/length=] of |string|.
+1. Let |length| be the [=string/length=] of |string|.
+1. Return [=𝔽=](|length|).
 
 </div>
 
@@ -2131,11 +2182,13 @@ The |funcType| of this builtin is `(rec (type (func (param externref i32 i32) (r
 
 When this builtin is invoked with parameters |string|, |start|, and |end|, the following steps must be run:
 
+1. Let |startIndex| be [=ℝ=]([=!=] [$ToUint32$](|start|)).
+1. Let |endIndex| be [=ℝ=]([=!=] [$ToUint32$](|end|)).
 1. Let |string| be [=?=] [$UnwrapString$](|string|).
 1. Let |length| be the [=string/length=] of |string|.
-1. If |start| > |end| or |start| > |length|,
+1. If |startIndex| > |endIndex| or |startIndex| > |length|,
     1. Return the empty string.
-1. Return [=!=] [$Call$]([=String.prototype.substring=], |string|, « [=𝔽=](|start|), [=𝔽=](|end|) »).
+1. Return [=!=] [$Call$]([=String.prototype.substring=], |string|, « [=𝔽=](|startIndex|), [=𝔽=](|endIndex|) »).
 
 </div>
 
@@ -2150,12 +2203,12 @@ Note: Explicitly allow null strings to be compared for equality as that is meani
 When this builtin is invoked with parameters |first| and |second|, the following steps must be run:
 
 1. If |first| is not null and |first| [=is not a String=],
-    1. Throw a {{RuntimeError}} exception as if a [=trap=] was executed.
+    1. Throw a {{RuntimeError}} exception.
 1. If |second| is not null and |second| [=is not a String=],
-    1. Throw a {{RuntimeError}} exception as if a [=trap=] was executed.
+    1. Throw a {{RuntimeError}} exception.
 1. If [=IsStrictlyEqual=](|first|, |second|) is true,
-    1. Return 1.
-1. Return 0.
+    1. Return **1**<sub>𝔽</sub>.
+1. Return **+0**<sub>𝔽</sub>.
 
 </div>
 
@@ -2170,10 +2223,10 @@ When this builtin is invoked with parameters |first| and |second|, the following
 1. Let |first| be [=?=] [$UnwrapString$](|first|).
 1. Let |second| be [=?=] [$UnwrapString$](|second|).
 1. If [=IsStrictlyEqual=](|first|, |second|) is true,
-    1. Return 0.
+    1. Return **+0**<sub>𝔽</sub>.
 1. If [=!=] [=IsLessThan=](|first|, |second|, true) is true,
-    1. Return -1.
-1. Return 1.
+    1. Return **-1**<sub>𝔽</sub>.
+1. Return **1**<sub>𝔽</sub>.
 
 </div>
 
