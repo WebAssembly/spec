@@ -6,7 +6,56 @@ open Il.Ast
 
 (* let error at msg = Error.error at "if-then-else introduction" msg *)
 
-let clauses_have_same_args (c1 : clause) (c2 : clause) =
+(* Environment *)
+
+let env_ref = ref Il.Env.empty
+
+let rec typ_has_prems (pred : deftyp -> bool) typ =
+  match typ.it with
+  | VarT (id, _) ->
+    (match Il.Env.find_opt_typ !env_ref id with
+    | Some (_, insts) ->
+      List.exists (fun inst ->
+        let InstD (_, _, deftyp) = inst.it in
+        match deftyp.it with
+        | AliasT typ' -> typ_has_prems pred typ'
+        | _ -> pred deftyp
+      ) insts
+    | None -> true (* conservative *)
+    )
+  | _ -> false
+
+let case_has_prems m deftyp =
+  match deftyp.it with
+  | VariantT typcases ->
+    List.exists (fun (m', (_, _, prems), _) ->
+      Il.Eq.eq_mixop m m' && prems <> []
+    ) typcases
+  | _ -> false
+
+let struct_has_prems deftyp =
+  match deftyp.it with
+  | StructT typfields ->
+    List.exists (fun (_, (_, _, prems), _) -> prems <> []) typfields
+  | _ -> false
+
+let is_partial_constructor e =
+  match e.it with
+  | CaseE (m, _, Unchecked) -> typ_has_prems (case_has_prems m) e.note
+  | StrE (_, Unchecked) -> typ_has_prems struct_has_prems e.note
+  | _ -> false
+
+let prem_has_partial_constructor prem =
+  let c = { Il.Walk.exists_base_checker with
+    collect_exp = (fun e -> (is_partial_constructor e, true))
+  } in
+  Il.Walk.collect_prem c prem
+
+let clause_has_partial_constructor clause =
+  match clause.it with
+  | DefD (_, _, _, prems) -> List.exists prem_has_partial_constructor prems
+
+let clauses_have_same_args c1 c2 =
   match (c1.it, c2.it) with
   | (DefD (quants1, args1, _, _), DefD (quants2, args2, _, _)) ->
     Il.Eq.eq_list Il.Eq.eq_param quants1 quants2 &&
@@ -85,6 +134,7 @@ let rec t_clause_group_to_expr (clauses : clause list) : exp option =
         | Some else_exp -> Some (mk_if cond rhs else_exp)
 
 let t_clause_group (clauses : clause list) : clause list =
+  if List.exists clause_has_partial_constructor clauses then clauses else
   match t_clause_group_to_expr clauses with
   | None -> clauses
   | Some exp -> 
@@ -105,4 +155,5 @@ and t_def' = function
   | def -> def
 
 let transform (defs : script) : script =
+  env_ref := Il.Env.env_of_script defs;
   List.map t_def defs
