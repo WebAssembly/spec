@@ -14,8 +14,9 @@ from pathlib import Path
 from threading import Thread
 from urllib.parse import quote, urljoin, urlsplit
 
-SUITE = Path(__file__).resolve().parent
-MANIFEST = SUITE / "expectations.json"
+SCRIPTS = Path(__file__).resolve().parent
+SUITE = SCRIPTS.parent
+MANIFEST = SCRIPTS / "expectations.json"
 PREFIX = "/wasm/jsapi/"
 HARNESS = "/resources/testharness.js"
 BROWSERS = ("chrome", "firefox", "safari")
@@ -102,7 +103,11 @@ def test_metadata(path):
 
 
 def discover_suite():
-    sources = {path.relative_to(SUITE).as_posix(): path for path in SUITE.rglob("*.js")}
+    sources = {
+        path.relative_to(SUITE).as_posix(): path
+        for path in SUITE.rglob("*.js")
+        if not path.is_relative_to(SCRIPTS)
+    }
     scripts = {PREFIX + quote(name): path for name, path in sources.items()}
     scripts[HARNESS] = SUITE.parent / "harness" / "testharness.js"
     tests = {name: path for name, path in sources.items() if name.endswith(".any.js")}
@@ -213,10 +218,13 @@ def unique_json_keys(pairs):
     return result
 
 
-def load_expectations(path, tests, browser, metadata_for):
-    by_test = json.loads(
+def read_json(path):
+    return json.loads(
         path.read_text(encoding="utf-8"), object_pairs_hook=unique_json_keys
     )
+
+
+def validate_expectations(by_test, tests, browser, metadata_for):
     if not isinstance(by_test, dict):
         raise ValueError("Expected an object keyed by test path")
 
@@ -275,7 +283,7 @@ def load_expectations(path, tests, browser, metadata_for):
     }
 
 
-def create_driver(browser):
+def create_driver(browser, browser_version):
     try:
         from selenium import webdriver
         from selenium.common.exceptions import WebDriverException
@@ -294,6 +302,8 @@ def create_driver(browser):
     options = options_class()
     if headless:
         options.add_argument(headless)
+    if browser_version and browser != "safari":
+        options.browser_version = browser_version
 
     try:
         return driver_class(options=options)
@@ -368,7 +378,7 @@ def evaluate_result(result, rules):
     return "PASS", []
 
 
-def run_browser(browser, base_url, cases, expectations, json_path):
+def run_browser(browser, browser_version, base_url, cases, expectations):
     results = []
     counts = Counter()
     selected = [
@@ -377,10 +387,23 @@ def run_browser(browser, base_url, cases, expectations, json_path):
     has_runnable_cases = any(
         rules.get(WHOLE_CASE, (None, None))[0] != "skip" for _, rules in selected
     )
-    with create_driver(browser) if has_runnable_cases else nullcontext() as driver:
+    with (
+        create_driver(browser, browser_version)
+        if has_runnable_cases
+        else nullcontext() as driver
+    ):
         version = (
-            driver.capabilities.get("browserVersion", "unknown") if driver else None
+            (driver.capabilities.get("browserVersion") or "unknown") if driver else None
         )
+        if (
+            driver
+            and browser_version
+            and version != browser_version
+            and not (
+                "." not in browser_version and version.startswith(browser_version + ".")
+            )
+        ):
+            raise SystemExit(f"Expected {browser} {browser_version}, started {version}")
         print(
             f"{browser}: {len(cases)} selected cases"
             + (f" (version {version})" if version else ""),
@@ -413,9 +436,6 @@ def run_browser(browser, base_url, cases, expectations, json_path):
                 }
             )
 
-    if json_path:
-        report = {"browser": browser, "version": version, "results": results}
-        json_path.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     print(
         ", ".join(
             f"{counts[status]} {status}"
@@ -423,12 +443,21 @@ def run_browser(browser, base_url, cases, expectations, json_path):
         ),
         flush=True,
     )
-    return int(counts["FAIL"] > 0 or counts["XPASS"] > 0)
+    report = {"browser": browser, "version": version, "results": results}
+    return report, int(counts["FAIL"] > 0 or counts["XPASS"] > 0)
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--browser", choices=BROWSERS, default="firefox")
+    parser.add_argument(
+        "--browser",
+        choices=BROWSERS,
+        default="firefox",
+        help="Browser to run (default: firefox)",
+    )
+    parser.add_argument(
+        "--browser-version", help="Require a browser version or major version"
+    )
     parser.add_argument(
         "--context",
         choices=BROWSER_GLOBALS,
@@ -440,7 +469,7 @@ def main():
         "--manifest",
         type=Path,
         default=MANIFEST,
-        help="Expectations file for Selenium runs (default: test/js-api/expectations.json)",
+        help="Expectations file (default: test/js-api/scripts/expectations.json)",
     )
     parser.add_argument(
         "--serve", action="store_true", help="Serve test pages for manual use"
@@ -449,14 +478,28 @@ def main():
         "tests", nargs="*", help="Test paths relative to test/js-api (default: all)"
     )
     args = parser.parse_args()
+    if args.browser_version and not re.fullmatch(
+        r"\d+(?:\.\d+)*", args.browser_version
+    ):
+        parser.error("--browser-version must be a version number")
+    scripts, tests = discover_suite()
+    metadata_for = cache(test_metadata)
+
+    if not args.serve:
+        try:
+            # Validate the full manifest even when the run selects only a few cases.
+            manifest = read_json(args.manifest)
+            expectations = validate_expectations(
+                manifest, tests, args.browser, metadata_for
+            )
+        except (OSError, ValueError) as error:
+            parser.error(f"{args.manifest}: {error}")
 
     contexts = tuple(
         context
         for context in BROWSER_GLOBALS
         if not args.context or context in args.context
     )
-    scripts, tests = discover_suite()
-    metadata_for = cache(test_metadata)
     try:
         pages, cases = generate_test_pages(
             scripts, tests, set(args.tests), contexts, metadata_for
@@ -465,15 +508,6 @@ def main():
         parser.error(str(error))
     if not cases:
         parser.error("No browser cases matched the selection")
-    if not args.serve:
-        try:
-            # Validate the full manifest even when the run selects only a few cases.
-            expectations = load_expectations(
-                args.manifest, tests, args.browser, metadata_for
-            )
-        except (OSError, ValueError) as error:
-            parser.error(f"{args.manifest}: {error}")
-
     with make_server(scripts, pages) as server:
         base_url = f"http://127.0.0.1:{server.server_port}"
         if args.serve:
@@ -485,10 +519,15 @@ def main():
         thread = Thread(target=server.serve_forever, daemon=True)
         thread.start()
         try:
-            return run_browser(args.browser, base_url, cases, expectations, args.json)
+            report, status = run_browser(
+                args.browser, args.browser_version, base_url, cases, expectations
+            )
         finally:
             server.shutdown()
             thread.join()
+    if args.json:
+        args.json.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
+    return status
 
 
 if __name__ == "__main__":

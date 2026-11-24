@@ -10,44 +10,6 @@ The tests use the [testharness.js] library and the [multi-global tests] setup
 for smooth integrations with the web-platform-tests project and the existing
 test infrastructure in implementations.
 
-## Running in browsers
-
-From the repository root, install Selenium in a Python virtual environment and
-run the suite against an installed browser.
-
-```sh
-python3 -m venv /tmp/wasm-js-api-venv
-/tmp/wasm-js-api-venv/bin/python -m pip install selenium
-/tmp/wasm-js-api-venv/bin/python test/js-api/run.py --browser firefox|chrome|safari
-```
-
-For Safari, enable Remote Automation once with `safaridriver --enable`.
-
-### Browser expectations
-
-Selenium runs load [`expectations.json`](expectations.json).
-
-```json
-{
-  "memory/buffer.any.js": [
-    {
-      "browser": "safari",
-      "context": "dedicatedworker",
-      "subtest": "Branding",
-      "expect": "fail",
-      "reason": "Link to the issue tracking this failure"
-    }
-  ],
-  "table/grow.any.js": [
-    {
-      "browser": "firefox",
-      "expect": "skip",
-      "reason": "Link to the issue tracking why this test cannot run"
-    }
-  ]
-}
-```
-
 ## Metadata
 
 All tests must have the `.any.js` extension.
@@ -107,3 +69,32 @@ See the [testharness.js] documentation for more information.
 [web-platform-tests project]: https://github.com/web-platform-tests/wpt/tree/master/wasm/jsapi
 [testharness.js]: https://web-platform-tests.org/writing-tests/testharness-api.html
 [multi-global tests]: https://web-platform-tests.org/writing-tests/testharness.html#multi-global-tests
+
+## Running in browsers
+
+From the repository root, install Selenium in a Python virtual environment and
+run the suite against an installed browser.
+
+```sh
+python3 -m venv /tmp/wasm-js-api-venv
+/tmp/wasm-js-api-venv/bin/python -m pip install selenium
+/tmp/wasm-js-api-venv/bin/python test/js-api/scripts/run.py --browser firefox
+```
+
+For Safari, enable Remote Automation once with `safaridriver --enable`.
+
+### Pinned browser versions
+
+The [browser version file](scripts/browser-versions.json) pins exact Chrome and Firefox
+versions. Selenium Manager selects or downloads those versions. For Safari,
+the file records the full version last tested on the GitHub-hosted image.
+
+The [CI workflow](../../.github/workflows/ci-js-api.yml) checks for browser
+updates every four weeks. After complete runs, it opens a PR with newer versions
+and their expectations.
+
+### Browser expectations
+
+The test runner uses [scripts/expectations.json](scripts/expectations.json) to
+track expected results of tests. Run `scripts/update-expectations.py test-results.json > scripts/expectations.json`
+to update expectations based on a test run.
