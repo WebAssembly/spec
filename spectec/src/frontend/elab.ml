@@ -1305,6 +1305,8 @@ and infer_exp' env e : (Il.exp' * Il.typ') attempt =
       Ok (Il.ListE es', Il.IterT (t, Il.List))
     else
       fail_infer e.at "expression sequence"
+  | ListE [] ->
+    fail_infer e.at "empty list"
   | ListE es ->  (* treat as homogeneous sequence, not principal *)
     let* es', ts = infer_exp_list env es in
     let t = List.hd ts in
