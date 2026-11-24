@@ -1,4 +1,4 @@
-name: CI for Wasm JS API tests
+name: CI for JS API tests
 
 on:
   push:
@@ -16,7 +16,7 @@ on:
       - test/js-api/**
 
   schedule:
-    - cron: '23 6 * * 1'
+    - cron: '23 6 1 * *'
 
   workflow_dispatch:
     inputs:
@@ -42,29 +42,8 @@ defaults:
     shell: bash
 
 jobs:
-  refresh-schedule:
-    name: Check browser refresh schedule
-    if: github.event_name == 'schedule'
-    runs-on: ubuntu-24.04
-    timeout-minutes: 2
-    permissions: {}
-    outputs:
-      due: ${{ steps.schedule.outputs.due }}
-    steps:
-      - name: Check four-week cadence
-        id: schedule
-        run: |
-          # Cron wakes the workflow weekly. Count UTC weeks from a fixed Monday.
-          anchor=$(date -u -d '2026-11-23' +%s)
-          now=$(date -u +%s)
-          if (( now >= anchor && (now - anchor) / 604800 % 4 == 0 )); then
-            echo 'due=true' >> "$GITHUB_OUTPUT"
-          fi
-
   js-api:
     name: JS API (${{ matrix.browser }})
-    needs: refresh-schedule
-    if: ${{ !cancelled() && (github.event_name != 'schedule' || needs.refresh-schedule.outputs.due == 'true') }}
     runs-on: ${{ matrix.os }}
     timeout-minutes: 15
     strategy:
@@ -83,6 +62,7 @@ jobs:
     env:
       BROWSER: ${{ matrix.browser }}
       REFRESH: ${{ github.event_name == 'schedule' || inputs.refresh }}
+      PROPOSE: ${{ (github.event_name == 'schedule' || inputs.refresh) && github.ref_name == github.event.repository.default_branch }}
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
@@ -99,41 +79,12 @@ jobs:
         env:
           OVERRIDE: ${{ matrix.version }}
         run: |
-          pin=$(jq -er --arg browser "$BROWSER" '.[$browser]' test/js-api/scripts/browser-versions.json)
+          args=(select-version "$BROWSER" --override "$OVERRIDE")
           if [[ "$REFRESH" == true ]]; then
-            case "$BROWSER" in
-              chrome)
-                latest=$(curl -fsSL --retry 3 --max-time 30 https://googlechromelabs.github.io/chrome-for-testing/LATEST_RELEASE_STABLE)
-                ;;
-              firefox)
-                latest=$(curl -fsSL --retry 3 --max-time 30 https://product-details.mozilla.org/1.0/firefox_versions.json | jq -er '.LATEST_FIREFOX_VERSION')
-                ;;
-              safari)
-                latest=installed
-                ;;
-            esac
-            if [[ "$latest" == installed && "$BROWSER" == safari ]]; then
-              version=installed
-            elif [[ "$latest" =~ ^[0-9]+(\.[0-9]+)+$ ]]; then
-              # A release feed can lag behind the version already tested.
-              version=$(printf '%s\n%s\n' "$pin" "$latest" | sort -V | tail -n 1)
-            else
-              echo "Could not resolve a stable $BROWSER version" >&2
-              exit 1
-            fi
-          elif [[ -n "$OVERRIDE" ]]; then
-            version=$OVERRIDE
-          elif [[ "$BROWSER" == safari ]]; then
-            # The hosted runner supplies Safari. Normal CI checks only its major version.
-            version=${pin%%.*}
-          else
-            version=$pin
+            args+=(--refresh)
           fi
-          if [[ ! "$version" =~ ^[0-9]+(\.[0-9]+)*$ && ( "$BROWSER" != safari || "$version" != installed ) ]]; then
-            echo "Invalid $BROWSER version" >&2
-            exit 1
-          fi
-          printf 'version=%s\n' "$version" >> "$GITHUB_OUTPUT"
+          version=$(python test/js-api/scripts/ci.py "${args[@]}")
+          echo "version=$version" >> "$GITHUB_OUTPUT"
       - name: Enable Safari Remote Automation
         if: matrix.browser == 'safari'
         run: sudo /usr/bin/safaridriver --enable
@@ -142,14 +93,14 @@ jobs:
           BROWSER_VERSION: ${{ steps.browser.outputs.version }}
           SE_SKIP_DRIVER_IN_PATH: 'true'
         run: |
-          args=(--browser "$BROWSER" --json wasm-js-api.json)
-          if [[ "$BROWSER" != safari || "$BROWSER_VERSION" != installed ]]; then
+          args=(--browser "$BROWSER" --json wasm-js-api.json --summary "$GITHUB_STEP_SUMMARY")
+          if [[ -n "$BROWSER_VERSION" ]]; then
             args+=(--browser-version "$BROWSER_VERSION")
           fi
           status=0
           python test/js-api/scripts/run.py "${args[@]}" || status=$?
-          # Candidate test failures are expected. The PR job validates the report.
-          if [[ "$REFRESH" == true && "$status" == 1 && -s wasm-js-api.json ]]; then
+          # Candidate test failures are expected. The proposal job validates the report.
+          if [[ "$PROPOSE" == true && "$status" == 1 && -s wasm-js-api.json ]]; then
             exit 0
           fi
           exit "$status"
@@ -160,21 +111,6 @@ jobs:
           name: wasm-js-api-${{ matrix.browser }}
           path: wasm-js-api.json
           if-no-files-found: error
-      - name: Summarize browser results
-        if: ${{ !cancelled() && hashFiles('wasm-js-api.json') != '' }}
-        run: |
-          python - <<'PY' >> "$GITHUB_STEP_SUMMARY"
-          from collections import Counter
-          import json
-          from pathlib import Path
-
-          report = json.loads(Path('wasm-js-api.json').read_text(encoding='utf-8'))
-          counts = Counter(case['outcome'] for case in report['results'])
-          print(f"### Wasm JS API in {report['browser']} {report['version']}\n")
-          print('| Pass | Fail | Expected failure | Unexpected pass | Skip |')
-          print('| ---: | ---: | ---: | ---: | ---: |')
-          print('| ' + ' | '.join(str(counts[outcome]) for outcome in ('PASS', 'FAIL', 'XFAIL', 'XPASS', 'SKIP')) + ' |')
-          PY
 
   propose-browser-update:
     name: Propose browser update
@@ -184,6 +120,7 @@ jobs:
     timeout-minutes: 5
     concurrency: js-api-browser-update
     permissions:
+      actions: write
       contents: write
       pull-requests: write
     steps:
@@ -196,46 +133,24 @@ jobs:
         with:
           pattern: wasm-js-api-*
           path: ${{ runner.temp }}/js-api-reports
-      - name: Update pins and expectations
+      - name: Check the default branch is unchanged
         env:
-          REPORTS: ${{ runner.temp }}/js-api-reports
           BASE_BRANCH: ${{ github.event.repository.default_branch }}
         run: |
           if [[ "$(git ls-remote origin "refs/heads/$BASE_BRANCH" | cut -f1)" != "$GITHUB_SHA" ]]; then
             echo "The default branch moved during testing. Run the refresh again." >&2
             exit 1
           fi
-          proposal=$(mktemp -d)
-          pins=test/js-api/scripts/browser-versions.json
-          manifest=test/js-api/scripts/expectations.json
-          cp "$pins" "$proposal/pins.json"
-          cp "$manifest" "$proposal/manifest.json"
-          for browser in chrome firefox safari; do
-            report="$REPORTS/wasm-js-api-$browser/wasm-js-api.json"
-            pin=$(jq -er --arg browser "$browser" '.[$browser]' "$pins")
-            version=$(jq -er --arg browser "$browser" \
-              'select(.browser == $browser) | .version | select(test("^[0-9]+([.][0-9]+)+$"))' "$report")
-            python3 test/js-api/scripts/update-expectations.py --require-complete \
-              --manifest "$proposal/manifest.json" "$report" > "$proposal/manifest.next.json"
-            if [[ "$version" == "$pin" ]]; then
-              continue
-            fi
-            if [[ "$(printf '%s\n%s\n' "$pin" "$version" | sort -V | tail -n 1)" != "$version" ]]; then
-              echo "$browser $version is older than the tested pin $pin" >&2
-              exit 1
-            fi
-            jq --arg browser "$browser" --arg version "$version" '.[$browser] = $version' \
-              "$proposal/pins.json" > "$proposal/pins.next.json"
-            mv "$proposal/pins.next.json" "$proposal/pins.json"
-            mv "$proposal/manifest.next.json" "$proposal/manifest.json"
-            printf -- '- %s %s → %s\n' "$browser" "$pin" "$version" >> "$GITHUB_STEP_SUMMARY"
-          done
-          cp "$proposal/pins.json" "$pins"
-          cp "$proposal/manifest.json" "$manifest"
+      - name: Update pins and expectations
+        id: update
+        run: python3 test/js-api/scripts/ci.py propose "$RUNNER_TEMP/js-api-reports" | tee -a "$GITHUB_STEP_SUMMARY"
+      # A rejected browser fails the job, but the other browsers are still proposed.
       - name: Open or update browser bump PR
+        if: ${{ !cancelled() && steps.update.outcome != 'skipped' }}
         env:
           GH_TOKEN: ${{ github.token }}
           BASE_BRANCH: ${{ github.event.repository.default_branch }}
+          UPDATE_OUTCOME: ${{ steps.update.outcome }}
         run: |
           branch=automation/js-api-browser-versions
           ref="refs/heads/$branch"
@@ -243,7 +158,7 @@ jobs:
           lease="--force-with-lease=$ref:$previous"
           git add -- test/js-api/scripts/browser-versions.json test/js-api/scripts/expectations.json
           if git diff --cached --quiet; then
-            if [[ -n "$previous" ]]; then
+            if [[ -n "$previous" && "$UPDATE_OUTCOME" == success ]]; then
               gh auth setup-git
               git push "$lease" origin ":$ref"
             fi
@@ -275,6 +190,8 @@ jobs:
           gh auth setup-git
           # Rebuild the bot branch from the tested default-branch commit.
           git push "$lease" origin "HEAD:$ref"
+          # Pushes made with GITHUB_TOKEN do not trigger pull_request runs, so start CI on the PR head.
+          gh workflow run ci-js-api.yml --repo "$GITHUB_REPOSITORY" --ref "$branch"
           if [[ -n "$pr" ]]; then
             gh api --method PATCH "repos/$GITHUB_REPOSITORY/pulls/$pr" \
               -F body=@"$body_file" --jq .html_url

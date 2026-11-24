@@ -90,11 +90,17 @@ versions. Selenium Manager selects or downloads those versions. For Safari,
 the file records the full version last tested on the GitHub-hosted image.
 
 The [CI workflow](../../.github/workflows/ci-js-api.yml) checks for browser
-updates every four weeks. After complete runs, it opens a PR with newer versions
-and their expectations.
+updates monthly. After complete runs, it opens a PR with newer versions
+and their expectations. This requires the repository setting "Allow GitHub
+Actions to create and approve pull requests".
 
 ### Browser expectations
 
 The test runner uses [scripts/expectations.json](scripts/expectations.json) to
-track expected results of tests. Run `scripts/update-expectations.py test-results.json > scripts/expectations.json`
-to update expectations based on a test run.
+track expected results of tests. To update expectations from a test run, save a
+JSON report and apply it to the expectations file:
+
+```sh
+/tmp/wasm-js-api-venv/bin/python test/js-api/scripts/run.py --browser firefox --json firefox.json
+python3 test/js-api/scripts/update-expectations.py --in-place firefox.json
+```
