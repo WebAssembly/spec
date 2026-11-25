@@ -134,6 +134,27 @@ class SimdStoreLane:
 
         invalid_cases.append('')
 
+        invalid_cases.append(';; the lane index comes after the memarg: $mem offset=1 0')
+        invalid_cases.append(
+            '(assert_malformed\n'
+            '  (module quote\n'
+            '    "(memory $mem 1)"\n'
+            '    "(func (param $x v128)"\n'
+            '    "  (v128.store{lane_len}_lane $mem 0 offset=1 (i32.const 0) (local.get $x)))"\n'
+            '  )\n'
+            '  "unexpected token")'.format(lane_len=self.LANE_LEN))
+        invalid_cases.append(';; the lane index comes after the memarg: offset=1 0')
+        invalid_cases.append(
+            '(assert_malformed\n'
+            '  (module quote\n'
+            '    "(memory 1)"\n'
+            '    "(func (param $x v128)"\n'
+            '    "  (v128.store{lane_len}_lane 0 offset=1 (i32.const 0) (local.get $x)))"\n'
+            '  )\n'
+            '  "unexpected token")'.format(lane_len=self.LANE_LEN))
+
+        invalid_cases.append('')
+
         invalid_cases.append(';; invalid memarg alignment')
         invalid_cases.append(
             '(assert_invalid\n'
