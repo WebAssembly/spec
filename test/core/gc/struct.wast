@@ -139,6 +139,14 @@
   "immutable field"
 )
 
+(assert_malformed
+  (module quote
+    "(type $s (struct (field i32)))"
+    "(func (param (ref $s)) (struct.get $s 4294967296 (local.get 0)) drop)"
+  )
+  "i32 constant out of range"
+)
+
 
 ;; Null dereference
 
