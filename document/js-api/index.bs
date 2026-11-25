@@ -436,9 +436,9 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
     * \[[ImportedStringModule]] : an optional module specifier string where any string constant can be imported from.
 
 <div algorithm>
-  To <dfn>construct a WebAssembly module object</dfn> from a module |module|, source bytes |bytes|, enabled builtins |builtinSetNames|, and |importedStringModule|, perform the following steps:
+  To <dfn>construct a WebAssembly module object</dfn> from a module |module|, source bytes |bytes|, enabled builtins |builtinSetNames|, and |importedStringModule|, in a [=realm=] |realm|, perform the following steps:
 
-    1. Let |moduleObject| be a [=/new=] {{Module}} in the [=current Realm=].
+    1. Let |moduleObject| be a [=/new=] {{Module}} in |realm|.
     1. Set |moduleObject|.\[[Module]] to |module|.
     1. Set |moduleObject|.\[[Bytes]] to |bytes|.
     1. Set |moduleObject|.\[[BuiltinSets]] to |builtinSetNames|.
@@ -449,7 +449,8 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
 <div algorithm>
   To <dfn>asynchronously compile a WebAssembly module</dfn> from source bytes |bytes| and {{WebAssemblyCompileOptions}} |options| using optional [=task source=] |taskSource|, perform the following steps:
 
-    1. Let |promise| be [=a new promise=] in the [=current Realm=].
+    1. Let |realm| be the [=current Realm=].
+    1. Let |promise| be [=a new promise=] in |realm|.
     1. Run the following steps [=in parallel=]:
         1. [=compile a WebAssembly module|Compile the WebAssembly module=] |bytes| and store the result as |module|.
         1. [=Queue a task=] on |taskSource|, if provided, to perform the following steps:
@@ -458,7 +459,7 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
             1. Let |importedStringModule| be |options|["importedStringConstants"].
             1. If [=validate builtins and imported string for a WebAssembly module|validating builtins and imported strings=] for |module| with |builtinSetNames| and |importedStringModule| is false, [=reject=] |promise| with a {{CompileError}} exception.
             1. Otherwise,
-                1. [=Construct a WebAssembly module object=] from |module|, |bytes|, |builtinSetNames|, |importedStringModule|, and let |moduleObject| be the result.
+                1. [=Construct a WebAssembly module object=] from |module|, |bytes|, |builtinSetNames|, |importedStringModule| in |realm|, and let |moduleObject| be the result.
                 1. [=Resolve=] |promise| with |moduleObject|.
     1. Return |promise|.
 </div>
@@ -554,7 +555,7 @@ The verification of WebAssembly type requirements is deferred to the
 </div>
 
 <div algorithm>
-  To <dfn>create an exports object</dfn> from a WebAssembly module |module| and instance |instance|, perform the following steps:
+  To <dfn>create an exports object</dfn> from a WebAssembly module |module| and instance |instance| in a [=realm=] |realm|, perform the following steps:
     1. Let |exportsObject| be [$OrdinaryObjectCreate$](null).
     1. [=list/iterate|For each=] (|name|, |externtype|) of [=module_exports=](|module|),
         1. Let |externval| be [=instance_export=](|instance|, |name|).
@@ -562,27 +563,27 @@ The verification of WebAssembly type requirements is deferred to the
         1. If |externtype| is of the form [=external-type/func=] <var ignore>functype</var>,
             1. Assert: |externval| is of the form [=external value/func=] |funcaddr|.
             1. Let [=external value/func=] |funcaddr| be |externval|.
-            1. Let |func| be the result of creating [=a new Exported Function=] from |funcaddr|.
+            1. Let |func| be the result of creating [=a new Exported Function=] from |funcaddr| in |realm|.
             1. Let |value| be |func|.
         1. If |externtype| is of the form [=external-type/global=] <var ignore>mut</var> <var ignore>globaltype</var>,
             1. Assert: |externval| is of the form [=external value/global=] |globaladdr|.
             1. Let [=external value/global=] |globaladdr| be |externval|.
-            1. Let |global| be [=create a global object|a new Global object=] created from |globaladdr|.
+            1. Let |global| be [=create a global object|a new Global object=] created from |globaladdr| in |realm|.
             1. Let |value| be |global|.
         1. If |externtype| is of the form [=external-type/mem=] <var ignore>memtype</var>,
             1. Assert: |externval| is of the form [=external value/mem=] |memaddr|.
             1. Let [=external value/mem=] |memaddr| be |externval|.
-            1. Let |memory| be [=create a memory object|a new Memory object=] created from |memaddr|.
+            1. Let |memory| be [=create a memory object|a new Memory object=] created from |memaddr| in |realm|.
             1. Let |value| be |memory|.
         1. If |externtype| is of the form [=external-type/table=] <var ignore>tabletype</var>,
             1. Assert: |externval| is of the form [=external value/table=] |tableaddr|.
             1. Let [=external value/table=] |tableaddr| be |externval|.
-            1. Let |table| be [=create a Table object|a new Table object=] created from |tableaddr|.
+            1. Let |table| be [=create a Table object|a new Table object=] created from |tableaddr| in |realm|.
             1. Let |value| be |table|.
         1. If |externtype| is of the form [=external-type/tag=] <var ignore>functype</var>,
             1. Assert: |externval| is of the form [=external value/tag=] |tagaddr|.
             1. Let [=external value/tag=] |tagaddr| be |externval|.
-            1. Let |tag| be [=create a Tag object|a new Tag object=] created from |tagaddr|.
+            1. Let |tag| be [=create a Tag object|a new Tag object=] created from |tagaddr| in |realm|.
             1. Let |value| be |tag|.
         1. Let |status| be [=!=] [$CreateDataProperty$](|exportsObject|, |name|, |value|).
         1. Assert: |status| is true.
@@ -593,9 +594,9 @@ The verification of WebAssembly type requirements is deferred to the
 </div>
 
 <div algorithm>
-  To <dfn>initialize an instance object</dfn> |instanceObject| from a WebAssembly module |module| and instance |instance|, perform the following steps:
+  To <dfn>initialize an instance object</dfn> |instanceObject| from a WebAssembly module |module| and instance |instance| in a [=realm=] |realm|, perform the following steps:
 
-    1. [=Create an exports object=] from |module| and |instance| and let |exportsObject| be the result.
+    1. [=Create an exports object=] from |module| and |instance| in |realm| and let |exportsObject| be the result.
     1. Set |instanceObject|.\[[Instance]] to |instance|.
     1. Set |instanceObject|.\[[Exports]] to |exportsObject|.
 </div>
@@ -614,7 +615,8 @@ The verification of WebAssembly type requirements is deferred to the
 
 <div algorithm>
   To <dfn>asynchronously instantiate a WebAssembly module</dfn> from a {{Module}} |moduleObject| and imports |importObject|, perform the following steps:
-    1. Let |promise| be [=a new promise=] in the [=current Realm=].
+    1. Let |realm| be the [=current Realm=].
+    1. Let |promise| be [=a new promise=] in |realm|.
     1. Let |module| be |moduleObject|.\[[Module]].
     1. Let |builtinSetNames| be |moduleObject|.\[[BuiltinSets]].
     1. Let |importedStringModule| be |moduleObject|.\[[ImportedStringModule]].
@@ -625,8 +627,8 @@ The verification of WebAssembly type requirements is deferred to the
             Note: Implementation-specific work may be performed here.
             1.  [=Instantiate the core of a WebAssembly module=] |module| with |imports|, and let |instance| be the result.
                 If this throws an exception, catch it, [=reject=] |promise| with the exception, and terminate these substeps.
-            1.  Let |instanceObject| be a [=/new=] {{Instance}} in the [=current Realm=].
-            1.  [=initialize an instance object|Initialize=] |instanceObject| from |module| and |instance|.
+            1.  Let |instanceObject| be a [=/new=] {{Instance}} in |realm|.
+            1.  [=initialize an instance object|Initialize=] |instanceObject| from |module| and |instance| in |realm|.
                 If this throws an exception, catch it, [=reject=] |promise| with the exception, and terminate these substeps.
             1. [=Resolve=] |promise| with |instanceObject|.
     1. Return |promise|.
@@ -668,7 +670,7 @@ Note: A follow-on streaming API is documented in the <a href="https://webassembl
 
 The getter of the <dfn attribute for="WebAssembly">JSTag</dfn> attribute of the {{WebAssembly}} Namespace, when invoked, performs the following steps:
     1. Let |JSTagAddr| be the result of [=get the JavaScript exception tag|getting the JavaScript exception tag=].
-    1. Let |JSTagObject| be the result of [=create a Tag object|creating a Tag object=] from |JSTagAddr|.
+    1. Let |JSTagObject| be the result of [=create a Tag object|creating a Tag object=] from |JSTagAddr| in the [=current Realm=].
     1. Return |JSTagObject|.
 </div>
 
@@ -792,7 +794,7 @@ interface Instance {
     1. Let |module| be |moduleObject|.\[[Module]].
     1. [=Read the imports=] of |module| with imports |importObject|, |builtinSetNames|, and |importedStringModule|, and let |imports| be the result.
     1. [=Instantiate the core of a WebAssembly module=] |module| with |imports|, and let |instance| be the result.
-    1. [=initialize an instance object|Initialize=] **this** from |module| and |instance|.
+    1. [=initialize an instance object|Initialize=] **this** from |module| and |instance| in the [=current Realm=].
 
 Note: The use of this synchronous API is discouraged, as some implementations sometimes do long-running compilation work when instantiating.
 </div>
@@ -862,12 +864,12 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
 </div>
 
 <div algorithm>
-    To <dfn>create a memory object</dfn> from a [=memory address=] |memaddr|, perform the following steps:
+    To <dfn>create a memory object</dfn> from a [=memory address=] |memaddr| in a [=realm=] |realm|, perform the following steps:
 
     1. Let |map| be the [=surrounding agent=]'s associated [=Memory object cache=].
     1. If |map|[|memaddr|] [=map/exists=],
         1. Return |map|[|memaddr|].
-    1. Let |memory| be a [=/new=] {{Memory}} in the [=current Realm=].
+    1. Let |memory| be a [=/new=] {{Memory}} in |realm|.
     1. [=initialize a memory object|Initialize=] |memory| from |memaddr|.
     1. Return |memory|.
 </div>
@@ -1027,11 +1029,11 @@ Each {{Table}} object has a \[[Table]] internal slot, which is a [=table address
 </div>
 
 <div algorithm>
-    To <dfn>create a table object</dfn> from a [=table address=] |tableaddr|, perform the following steps:
+    To <dfn>create a table object</dfn> from a [=table address=] |tableaddr| in a [=realm=] |realm|, perform the following steps:
     1. Let |map| be the [=surrounding agent=]'s associated [=Table object cache=].
     1. If |map|[|tableaddr|] [=map/exists=],
         1. Return |map|[|tableaddr|].
-    1. Let |table| be a [=/new=] {{Table}} in the [=current Realm=].
+    1. Let |table| be a [=/new=] {{Table}} in |realm|.
     1. [=initialize a table object|Initialize=] |table| from |tableaddr|.
     1. Return |table|.
 </div>
@@ -1163,11 +1165,11 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
 </div>
 
 <div algorithm>
-    To <dfn>create a global object</dfn> from a [=global address=] |globaladdr|, perform the following steps:
+    To <dfn>create a global object</dfn> from a [=global address=] |globaladdr| in a [=realm=] |realm|, perform the following steps:
     1. Let |map| be the [=surrounding agent=]'s associated [=Global object cache=].
     1. If |map|[|globaladdr|] [=map/exists=],
         1. Return |map|[|globaladdr|].
-    1. Let |global| be a [=/new=] {{Global}} in the [=current Realm=].
+    1. Let |global| be a [=/new=] {{Global}} in |realm|.
     1. [=initialize a global object|Initialize=] |global| from |globaladdr|.
     1. Return |global|.
 </div>
@@ -1263,13 +1265,12 @@ This slot holds a [=function address=] relative to the [=surrounding agent=]'s [
 </div>
 
 <div algorithm>
-  To create <dfn>a new Exported Function</dfn> from a WebAssembly [=function address=] |funcaddr|, perform the following steps:
+  To create <dfn>a new Exported Function</dfn> from a WebAssembly [=function address=] |funcaddr| in a [=realm=] |realm|, perform the following steps:
 
     1. Let |map| be the [=surrounding agent=]'s associated [=Exported Function cache=].
     1. If |map|[|funcaddr|] [=map/exists=],
         1. Return |map|[|funcaddr|].
     1. Let |steps| be "[=call an Exported Function|call the Exported Function=] |funcaddr| with arguments."
-    1. Let |realm| be the [=current Realm=].
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
     1. Let |functype| be [=func_type=](|store|, |funcaddr|).
     1. Let [|paramTypes|] → [<var ignore>resultTypes</var>] be |functype|.
@@ -1307,7 +1308,7 @@ This slot holds a [=function address=] relative to the [=surrounding agent=]'s [
         1. If |tagaddr| is equal to |jsTagAddr|,
             1. Throw [=ToJSValue=](|payload|[0]).
         1. Otherwise,
-            1. Let |exception| be [=create an Exception object|a new Exception=] created from |exnaddr|.
+            1. Let |exception| be [=create an Exception object|a new Exception=] created from |exnaddr| in the [=current Realm=].
             1. Throw |exception|.
     1. Let |outArity| be the [=list/size=] of |ret|.
     1. If |outArity| is 0, return undefined.
@@ -1403,7 +1404,7 @@ The algorithm <dfn>ToJSValue</dfn>(|w|) coerces a [=WebAssembly value=] to a Jav
     1. Return [=𝔽=](|i31| interpreted as a [=mathematical value=]).
 1. If |w| is of the form [=ref.struct=] |structaddr|, return the result of creating [=a new Exported GC Object=] from |structaddr| and "struct".
 1. If |w| is of the form [=ref.array=] |arrayaddr|, return the result of creating [=a new Exported GC Object=] from |arrayaddr| and "array".
-1. If |w| is of the form [=ref.func=] |funcaddr|, return the result of creating [=a new Exported Function=] from |funcaddr|.
+1. If |w| is of the form [=ref.func=] |funcaddr|, return the result of creating [=a new Exported Function=] from |funcaddr| in the [=current Realm=].
 1. If |w| is of the form [=ref.host=] |hostaddr|, return the result of [=retrieving a host value=] from |hostaddr|.
 1. If |w| is of the form [=ref.extern=] |ref|, return [=ToJSValue=](|ref|).
 
@@ -1542,12 +1543,12 @@ To <dfn>initialize a Tag object</dfn> |tag| from a [=tag address=] |tagAddress|,
 </div>
 
 <div algorithm>
-To <dfn>create a Tag object</dfn> from a [=tag address=] |tagAddress|, perform the following steps:
+To <dfn>create a Tag object</dfn> from a [=tag address=] |tagAddress| in a [=realm=] |realm|, perform the following steps:
 
 1. Let |map| be the [=surrounding agent=]'s associated [=Tag object cache=].
 1. If |map|[|tagAddress|] [=map/exists=],
     1. Return |map|[|tagAddress|].
-1. Let |tag| be a [=/new=] {{Tag}} in the [=current Realm=].
+1. Let |tag| be a [=/new=] {{Tag}} in |realm|.
 1. [=initialize a Tag object|Initialize=] |tag| from |tagAddress|.
 1. Return |tag|.
 
@@ -1710,12 +1711,12 @@ To <dfn>initialize an Exception object</dfn> |exn| from an [=Exception address=]
 
 <div algorithm>
 
-To <dfn>create an Exception object</dfn> from a [=exception address=] |exnAddress|, perform the following steps:
+To <dfn>create an Exception object</dfn> from a [=exception address=] |exnAddress| in a [=realm=] |realm|, perform the following steps:
 
 1. Let |map| be the [=surrounding agent=]'s associated [=Exception object cache=].
 1. If |map|[|exnAddress|] [=map/exists=],
     1. Return |map|[|exnAddress|].
-1. Let |exn| be a [=/new=] {{Exception}} in the [=current Realm=].
+1. Let |exn| be a [=/new=] {{Exception}} in |realm|.
 1. [=initialize an Exception object|Initialize=] |exn| from |exnAddress|.
 1. Return |exn|.
 
@@ -1890,7 +1891,7 @@ To <dfn>instantiate a builtin set</dfn> with name |builtinSetName|, perform the 
 1. Let |exportsObject| be [$OrdinaryObjectCreate$](null).
 1. [=list/iterate|For each=] (|name|, |funcType|, |steps|) of |builtins|,
     1. Let |funcaddr| be the result of [=create a builtin function=] with |funcType| and |steps|.
-    1. Let |func| be the result of creating [=a new Exported Function=] from |funcaddr|.
+    1. Let |func| be the result of creating [=a new Exported Function=] from |funcaddr| in the [=current Realm=].
     1. Let |value| be |func|.
     1. Let |status| be [=!=] [$CreateDataProperty$](|exportsObject|, |name|, |value|).
     1. Assert: |status| is true.
