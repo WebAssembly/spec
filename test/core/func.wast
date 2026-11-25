@@ -627,6 +627,23 @@
   "inline function type"
 )
 
+(assert_malformed
+  (module quote "(type $t (func)) (func (type $t) (type $t))")
+  "unexpected token"
+)
+(assert_malformed
+  (module quote "(type $t (func)) (type $u (func)) (func (type $t $u))")
+  "unexpected token"
+)
+(assert_malformed
+  (module quote "(type $t (func)) (func (type $t (foo)))")
+  "unexpected token"
+)
+(assert_malformed
+  (module quote "(type $t (func)) (func (type))")
+  "unexpected token"
+)
+
 (assert_invalid
   (module (func $g (type 4)))
   "unknown type"
