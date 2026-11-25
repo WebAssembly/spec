@@ -655,3 +655,10 @@
   (module (func $large-label (br 0x10000001)))
   "unknown label"
 )
+
+;; Malformed: the index does not fit in u32
+
+(assert_malformed
+  (module quote "(func (block (br 4294967296)))")
+  "i32 constant out of range"
+)
