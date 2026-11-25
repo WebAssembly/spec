@@ -984,6 +984,30 @@
   (module quote "(func (local $x $y i32))")
   "unexpected token"
 )
+(assert_malformed
+  (module quote "(func end)")
+  "unexpected token"
+)
+(assert_malformed
+  (module quote "(func (result i32) i32.const 1 end unreachable)")
+  "unexpected token"
+)
+(assert_malformed
+  (module quote "(func (end))")
+  "unexpected token"
+)
+(assert_malformed
+  (module quote "(func (end (nop)))")
+  "unexpected token"
+)
+(assert_malformed
+  (module quote "(func (block end) unreachable)")
+  "unexpected token"
+)
+(assert_malformed
+  (module quote "(func (block (end)))")
+  "unexpected token"
+)
 
 ;; Duplicate name errors
 
