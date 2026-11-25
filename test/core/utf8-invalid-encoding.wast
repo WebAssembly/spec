@@ -196,3 +196,18 @@
   (module quote "(func (export \"\\u{00D800}\"))")
   "malformed UTF-8 codepoint"
 )
+
+;; An underscore in a \u{...} escape must be between two hex digits.
+
+(assert_malformed
+  (module quote "(func (export \"\\u{_1F600}\"))")
+  "illegal escape"
+)
+(assert_malformed
+  (module quote "(func (export \"\\u{1F600_}\"))")
+  "illegal escape"
+)
+(assert_malformed
+  (module quote "(func (export \"\\u{1__F600}\"))")
+  "illegal escape"
+)
