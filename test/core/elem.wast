@@ -108,6 +108,10 @@
   (module quote "(table 1 funcref) (elem (table 0) (offset (i32.const 0)))")
   "unexpected token"
 )
+(assert_malformed
+  (module quote "(elem $e func) (elem $e func)")
+  "duplicate elem segment"
+)
 
 
 ;; Basic use
