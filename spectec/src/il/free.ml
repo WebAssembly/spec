@@ -117,6 +117,13 @@ and free_prem prem =
 and bound_prem prem =
   match prem.it with
   | LetPr (qs, _e1, _e2) -> bound_quants qs
+  | IterPr (prem1, (_, xes)) ->
+    let bvs1 = Set.to_list (bound_prem prem1).varid in
+    List.fold_left (fun set x ->
+      match List.find_opt (fun (x', _) -> x = x'.it) xes with
+      | None -> set ++ free_varid (x $ no_region)
+      | Some (_, e) -> set ++ free_exp e
+    ) empty bvs1
   | _ -> empty
 
 and free_prems prems = free_list_dep free_prem bound_prem prems
