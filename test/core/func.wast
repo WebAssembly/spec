@@ -976,6 +976,15 @@
   "unexpected token"
 )
 
+(assert_malformed
+  (module quote "(func (local $x))")
+  "unexpected token"
+)
+(assert_malformed
+  (module quote "(func (local $x $y i32))")
+  "unexpected token"
+)
+
 ;; Duplicate name errors
 
 (assert_malformed
