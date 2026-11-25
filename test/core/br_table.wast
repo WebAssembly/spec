@@ -1463,3 +1463,12 @@
   ))
   "unknown label"
 )
+
+(assert_malformed
+  (module quote "(func i32.const 0 br_table)")
+  "unexpected token"
+)
+(assert_malformed
+  (module quote "(func (br_table (i32.const 0)))")
+  "unexpected token"
+)
