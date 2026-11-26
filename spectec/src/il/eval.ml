@@ -281,7 +281,7 @@ and reduce_exp static env e : exp result =
     let** e2' = reduce_exp static env e2 in
     let** e3' = reduce_exp static env e3 in
     (match e1'.it, e2'.it, e3'.it with
-    | ListE es, NumE (`Nat i), NumE (`Nat n) when Z.(i + n) < Z.of_int (List.length es) ->
+    | ListE es, NumE (`Nat i), NumE (`Nat n) when Z.(i + n) <= Z.of_int (List.length es) ->
       Ok (ListE (Lib.List.take (Z.to_int n) (Lib.List.drop (Z.to_int i) es)) $> e)
     | _ -> Error (SliceE (e1', e2', e3') $> e)
     )
@@ -599,7 +599,7 @@ and reduce_path static env e p k : exp result =
     let** e2' = reduce_exp static env e2 in
     let k' e' p1' =
       match e'.it, e1'.it, e2'.it with
-      | ListE es, NumE (`Nat i), NumE (`Nat n) when Z.(i + n) < Z.of_int (List.length es) ->
+      | ListE es, NumE (`Nat i), NumE (`Nat n) when Z.(i + n) <= Z.of_int (List.length es) ->
         let e1' = ListE Lib.List.(take (Z.to_int i) es) $> e' in
         let e2' = ListE Lib.List.(take (Z.to_int n) (drop (Z.to_int i) es)) $> e' in
         let e3' = ListE Lib.List.(drop Z.(to_int (i + n)) es) $> e' in

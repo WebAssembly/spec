@@ -76,7 +76,7 @@
 (assert_malformed (module quote "(@\"\")") "empty annotation id")
 (assert_malformed (module quote "(@ \"a\")") "empty annotation id")
 (assert_malformed (module quote "(@\"\n\")") "empty annotation id")
-(assert_malformed (module quote "(@\"\\ef\")") "malformed UTF-8")
+(assert_malformed (module quote "(@\"\\ef\")") "malformed UTF-8 encoding")
 
 (assert_malformed (module quote "(@x ") "unclosed annotation")
 (assert_malformed (module quote "(@x ()") "unclosed annotation")
@@ -90,6 +90,7 @@
 
 (assert_malformed (module quote "(@x \"") "unclosed string")
 (assert_malformed (module quote "(@x \")") "unclosed string")
+(assert_malformed (module quote "(@a (; x") "unclosed comment")
 
 (assert_malformed (module quote "((@a)@b)") "unknown operator")
 (assert_malformed (module quote "(func $(@a))") "empty identifier")

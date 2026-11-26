@@ -1562,3 +1562,20 @@
   (module quote "(func (if i32.const 0 (then) (else)))")
   "unexpected token"
 )
+
+(assert_malformed
+  (module quote "(func i32.const 1 if else else end)")
+  "unexpected token"
+)
+(assert_malformed
+  (module quote "(func (if (i32.const 1) (then) (else) (else)))")
+  "unexpected token"
+)
+(assert_malformed
+  (module quote "(func else)")
+  "unexpected token"
+)
+(assert_malformed
+  (module quote "(func block else end)")
+  "unexpected token"
+)

@@ -381,42 +381,41 @@ relation wf_char: `%`(char,)
 def $cont(byte : byte) : nat
   ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec
   def $cont{b : byte}(b) = ((($proj_byte_0(b).0 : nat <:> int) - (128 : nat <:> int)) : int <:> nat)
-    -- if ((128 < $proj_byte_0(b).0) /\ ($proj_byte_0(b).0 < 192))
+    -- if ((128 <= $proj_byte_0(b).0) /\ ($proj_byte_0(b).0 < 192))
 
-;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec
-rec {
-
-;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec:91.1-91.25
-def $utf8(char*) : byte*
-  ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec:52.1-52.44
-  def $utf8{`ch*` : char*}(ch*{ch <- `ch*`}) = $concat_(syntax byte, $utf8([ch])*{ch <- `ch*`})
-  ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec:53.1-55.15
-  def $utf8{ch : char}([ch]) = [b]
+;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec
+def $utf8single(char : char) : byte*
+  ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec
+  def $utf8single{ch : char}(ch) = [b]
     -- if ($proj_char_0(ch).0 < 128)
     -- let{b : byte} b = `%`_byte($proj_char_0(ch).0,)
     -- wf_byte: `%`(`%`_byte($proj_char_0(ch).0,),)
-  ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec:56.1-58.46
-  def $utf8{ch : char, b_1 : byte, b_2 : byte}([ch]) = [b_1 b_2]
+  ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec
+  def $utf8single{ch : char, b_1 : byte, b_2 : byte}(ch) = [b_1 b_2]
     -- if ((128 <= $proj_char_0(ch).0) /\ ($proj_char_0(ch).0 < 2048))
     -- if ($proj_char_0(ch).0 = (((2 ^ 6) * ((($proj_byte_0(b_1).0 : nat <:> int) - (192 : nat <:> int)) : int <:> nat)) + $cont(b_2)))
     -- wf_byte: `%`(b_1,)
     -- wf_byte: `%`(b_2,)
-  ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec:59.1-61.64
-  def $utf8{ch : char, b_1 : byte, b_2 : byte, b_3 : byte}([ch]) = [b_1 b_2 b_3]
+  ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec
+  def $utf8single{ch : char, b_1 : byte, b_2 : byte, b_3 : byte}(ch) = [b_1 b_2 b_3]
     -- if (((2048 <= $proj_char_0(ch).0) /\ ($proj_char_0(ch).0 < 55296)) \/ ((57344 <= $proj_char_0(ch).0) /\ ($proj_char_0(ch).0 < 65536)))
     -- if ($proj_char_0(ch).0 = ((((2 ^ 12) * ((($proj_byte_0(b_1).0 : nat <:> int) - (224 : nat <:> int)) : int <:> nat)) + ((2 ^ 6) * $cont(b_2))) + $cont(b_3)))
     -- wf_byte: `%`(b_1,)
     -- wf_byte: `%`(b_2,)
     -- wf_byte: `%`(b_3,)
-  ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec:62.1-64.82
-  def $utf8{ch : char, b_1 : byte, b_2 : byte, b_3 : byte, b_4 : byte}([ch]) = [b_1 b_2 b_3 b_4]
+  ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec
+  def $utf8single{ch : char, b_1 : byte, b_2 : byte, b_3 : byte, b_4 : byte}(ch) = [b_1 b_2 b_3 b_4]
     -- if ((65536 <= $proj_char_0(ch).0) /\ ($proj_char_0(ch).0 < 1114112))
     -- if ($proj_char_0(ch).0 = (((((2 ^ 18) * ((($proj_byte_0(b_1).0 : nat <:> int) - (240 : nat <:> int)) : int <:> nat)) + ((2 ^ 12) * $cont(b_2))) + ((2 ^ 6) * $cont(b_3))) + $cont(b_4)))
     -- wf_byte: `%`(b_1,)
     -- wf_byte: `%`(b_2,)
     -- wf_byte: `%`(b_3,)
     -- wf_byte: `%`(b_4,)
-}
+
+;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec
+def $utf8(char*) : byte*
+  ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec
+  def $utf8{`ch*` : char*}(ch*{ch <- `ch*`}) = $concat_(syntax byte, $utf8single(ch)*{ch <- `ch*`})
 
 ;; ../../../../specification/wasm-3.0/1.1-syntax.values.spectec
 syntax name = 
@@ -1952,7 +1951,7 @@ def $free_deftype(deftype : deftype) : free
 ;; ../../../../specification/wasm-3.0/1.2-syntax.types.spectec
 def $free_tagtype(tagtype : tagtype) : free
   ;; ../../../../specification/wasm-3.0/1.2-syntax.types.spectec
-  def $free_tagtype{deftype : deftype}((deftype : deftype <: typeuse)) = $free_deftype(deftype)
+  def $free_tagtype{typeuse : typeuse}(typeuse) = $free_typeuse(typeuse)
 
 ;; ../../../../specification/wasm-3.0/1.2-syntax.types.spectec
 def $free_globaltype(globaltype : globaltype) : free
@@ -4220,11 +4219,11 @@ relation wf_instr: `%`(instr,)
     -- wf_shape: `%`(var_0,)
 
   ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec:133.8-133.13
-  rule instr_case_102{numtype : numtype, shape : shape, `sx?` : sx?, laneidx : laneidx}:
+  rule instr_case_102{shape : shape, `sx?` : sx?, laneidx : laneidx}:
     `%`(VEXTRACT_LANE_instr(shape, `sx?`, laneidx),)
     -- wf_shape: `%`(shape,)
     -- wf_uN: `%%`(8, laneidx)
-    -- if ((sx?{sx <- `sx?`} = ?()) <=> ($lanetype(shape) = (numtype : numtype <: lanetype)))
+    -- if ((sx?{sx <- `sx?`} =/= ?()) <=> ($lanetype(shape) =/= ($lunpack($lanetype(shape)) : numtype <: lanetype)))
 
   ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec:133.8-133.13
   rule instr_case_103{shape : shape, laneidx : laneidx}:
@@ -4400,8 +4399,8 @@ def $free_instr(instr : instr) : free
   ;; ../../../../specification/wasm-3.0/1.3-syntax.instructions.spectec:468.1-468.32
   def $free_instr(THROW_REF_instr) = {TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], TAGS []}
     -- wf_free: `%`({TYPES [], FUNCS [], GLOBALS [], TABLES [], MEMS [], ELEMS [], DATAS [], LOCALS [], LABELS [], TAGS []},)
-  ;; ../../../../specification/wasm-3.0/1.3-syntax.instructions.spectec:469.1-470.99
-  def $free_instr{blocktype : blocktype, `catch*` : catch*, `instr*` : instr*}(TRY_TABLE_instr(blocktype, `%`_list(catch*{catch <- `catch*`},), instr*{instr <- `instr*`})) = $free_blocktype(blocktype) +++ $free_list($free_catch(catch)*{catch <- `catch*`}) +++ $free_list($free_instr(instr)*{instr <- `instr*`})
+  ;; ../../../../specification/wasm-3.0/1.3-syntax.instructions.spectec:469.1-470.87
+  def $free_instr{blocktype : blocktype, `catch*` : catch*, `instr*` : instr*}(TRY_TABLE_instr(blocktype, `%`_list(catch*{catch <- `catch*`},), instr*{instr <- `instr*`})) = $free_blocktype(blocktype) +++ $free_list($free_catch(catch)*{catch <- `catch*`}) +++ $free_block(instr*{instr <- `instr*`})
   ;; ../../../../specification/wasm-3.0/1.3-syntax.instructions.spectec:472.1-472.63
   def $free_instr{numtype : numtype, numlit : num_}(CONST_instr(numtype, numlit)) = $free_numtype(numtype)
   ;; ../../../../specification/wasm-3.0/1.3-syntax.instructions.spectec:473.1-473.60
@@ -7508,6 +7507,9 @@ def $R_fmax : relaxed4
 def $R_idot : relaxed2
 
 ;; ../../../../specification/wasm-3.0/3.0-numerics.relaxed.spectec
+def $R_idot_add : relaxed2
+
+;; ../../../../specification/wasm-3.0/3.0-numerics.relaxed.spectec
 def $R_iq15mulr : relaxed2
 
 ;; ../../../../specification/wasm-3.0/3.0-numerics.relaxed.spectec
@@ -7592,13 +7594,11 @@ def $inv_signed_(N : N, int : int) : nat
     -- if ((- ((2 ^ (((N : nat <:> int) - (1 : nat <:> int)) : int <:> nat)) : nat <:> int) <= i) /\ (i < (0 : nat <:> int)))
 
 ;; ../../../../specification/wasm-3.0/3.1-numerics.scalar.spectec
-def $sx(storagetype : storagetype) : sx??
+def $sx(storagetype : storagetype) : sx?
   ;; ../../../../specification/wasm-3.0/3.1-numerics.scalar.spectec
-  def $sx{consttype : consttype}((consttype : consttype <: storagetype)) = ?(?())
+  def $sx{valtype : valtype}((valtype : valtype <: storagetype)) = ?()
   ;; ../../../../specification/wasm-3.0/3.1-numerics.scalar.spectec
-  def $sx{packtype : packtype}((packtype : packtype <: storagetype)) = ?(?(S_sx))
-  def $sx{x0 : storagetype}(x0) = ?()
-    -- otherwise
+  def $sx{packtype : packtype}((packtype : packtype <: storagetype)) = ?(S_sx)
 
 ;; ../../../../specification/wasm-3.0/3.1-numerics.scalar.spectec
 def $zero(lanetype : lanetype) : lane_
@@ -7777,10 +7777,10 @@ def $ior_(N : N, iN : iN, iN : iN) : iN
 def $ixor_(N : N, iN : iN, iN : iN) : iN
 
 ;; ../../../../specification/wasm-3.0/3.1-numerics.scalar.spectec
-def $ishl_(N : N, iN : iN, u32 : u32) : iN
+def $ishl_(N : N, iN : iN, iN : iN) : iN
 
 ;; ../../../../specification/wasm-3.0/3.1-numerics.scalar.spectec
-def $ishr_(N : N, sx : sx, iN : iN, u32 : u32) : iN
+def $ishr_(N : N, sx : sx, iN : iN, iN : iN) : iN
 
 ;; ../../../../specification/wasm-3.0/3.1-numerics.scalar.spectec
 def $irotl_(N : N, iN : iN, iN : iN) : iN
@@ -8058,11 +8058,11 @@ def $binop_(numtype : numtype, binop_ : binop_, num_ : num_, num_ : num_) : num_
   def $binop_{Inn : addrtype, i_1 : uN, i_2 : uN}((Inn : addrtype <: numtype), mk_binop__0_binop_(Inn, XOR_binop_Inn), mk_num__0_num_(Inn, i_1), mk_num__0_num_(Inn, i_2)) = [mk_num__0_num_(Inn, $ixor_($sizenn((Inn : addrtype <: numtype)), i_1, i_2))]
     -- wf_num_: `%%`((Inn : addrtype <: numtype), mk_num__0_num_(Inn, $ixor_($sizenn((Inn : addrtype <: numtype)), i_1, i_2)))
   ;; ../../../../specification/wasm-3.0/3.1-numerics.scalar.spectec
-  def $binop_{Inn : addrtype, i_1 : uN, i_2 : uN}((Inn : addrtype <: numtype), mk_binop__0_binop_(Inn, SHL_binop_Inn), mk_num__0_num_(Inn, i_1), mk_num__0_num_(Inn, i_2)) = [mk_num__0_num_(Inn, $ishl_($sizenn((Inn : addrtype <: numtype)), i_1, `%`_u32($proj_uN_0(i_2).0,)))]
-    -- wf_num_: `%%`((Inn : addrtype <: numtype), mk_num__0_num_(Inn, $ishl_($sizenn((Inn : addrtype <: numtype)), i_1, `%`_u32($proj_uN_0(i_2).0,))))
+  def $binop_{Inn : addrtype, i_1 : uN, i_2 : uN}((Inn : addrtype <: numtype), mk_binop__0_binop_(Inn, SHL_binop_Inn), mk_num__0_num_(Inn, i_1), mk_num__0_num_(Inn, i_2)) = [mk_num__0_num_(Inn, $ishl_($sizenn((Inn : addrtype <: numtype)), i_1, i_2))]
+    -- wf_num_: `%%`((Inn : addrtype <: numtype), mk_num__0_num_(Inn, $ishl_($sizenn((Inn : addrtype <: numtype)), i_1, i_2)))
   ;; ../../../../specification/wasm-3.0/3.1-numerics.scalar.spectec
-  def $binop_{Inn : addrtype, sx : sx, i_1 : uN, i_2 : uN}((Inn : addrtype <: numtype), mk_binop__0_binop_(Inn, SHR_binop_Inn(sx)), mk_num__0_num_(Inn, i_1), mk_num__0_num_(Inn, i_2)) = [mk_num__0_num_(Inn, $ishr_($sizenn((Inn : addrtype <: numtype)), sx, i_1, `%`_u32($proj_uN_0(i_2).0,)))]
-    -- wf_num_: `%%`((Inn : addrtype <: numtype), mk_num__0_num_(Inn, $ishr_($sizenn((Inn : addrtype <: numtype)), sx, i_1, `%`_u32($proj_uN_0(i_2).0,))))
+  def $binop_{Inn : addrtype, sx : sx, i_1 : uN, i_2 : uN}((Inn : addrtype <: numtype), mk_binop__0_binop_(Inn, SHR_binop_Inn(sx)), mk_num__0_num_(Inn, i_1), mk_num__0_num_(Inn, i_2)) = [mk_num__0_num_(Inn, $ishr_($sizenn((Inn : addrtype <: numtype)), sx, i_1, i_2))]
+    -- wf_num_: `%%`((Inn : addrtype <: numtype), mk_num__0_num_(Inn, $ishr_($sizenn((Inn : addrtype <: numtype)), sx, i_1, i_2)))
   ;; ../../../../specification/wasm-3.0/3.1-numerics.scalar.spectec
   def $binop_{Inn : addrtype, i_1 : uN, i_2 : uN}((Inn : addrtype <: numtype), mk_binop__0_binop_(Inn, ROTL_binop_Inn), mk_num__0_num_(Inn, i_1), mk_num__0_num_(Inn, i_2)) = [mk_num__0_num_(Inn, $irotl_($sizenn((Inn : addrtype <: numtype)), i_1, i_2))]
     -- wf_num_: `%%`((Inn : addrtype <: numtype), mk_num__0_num_(Inn, $irotl_($sizenn((Inn : addrtype <: numtype)), i_1, i_2)))
@@ -8331,22 +8331,24 @@ def $fvrelop_(shape : shape, def $f_(N : N, fN : fN, fN : fN) : u32, vec_ : vec_
     -- (wf_uN: `%%`(1, `%`_uN($proj_uN_0($f_($sizenn((Fnn : Fnn <: numtype)), !($proj_num__1(!($proj_lane__0(c_1)))), !($proj_num__1(!($proj_lane__0(c_2)))))).0,)))*{c_1 <- `c_1*`, c_2 <- `c_2*`}
 
 ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
-def $ivshiftop_(shape : shape, def $f_(N : N, iN : iN, u32 : u32) : iN, vec_ : vec_, u32 : u32) : vec_
+def $ivshiftop_(shape : shape, def $f_(N : N, iN : iN, iN : iN) : iN, vec_ : vec_, u32 : u32) : vec_
   ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
-  def $ivshiftop_{Jnn : Jnn, M : dim, def $f_(N : N, iN : iN, u32 : u32) : iN, v_1 : uN, i : uN}(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $f_, v_1, i) = $inv_lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), M), mk_lane__2_lane_(Jnn, c)*{c <- `c*`})
+  def $ivshiftop_{Jnn : Jnn, M : dim, def $f_(N : N, iN : iN, iN : iN) : iN, v_1 : uN, i : uN}(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $f_, v_1, i) = $inv_lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), M), mk_lane__2_lane_(Jnn, c)*{c <- `c*`})
     -- let{`c_1*` : lane_*} c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), M), v_1)
-    -- let{`c*` : iN*} c*{c <- `c*`} = $f_($lsizenn((Jnn : Jnn <: lanetype)), !($proj_lane__2(c_1)), i)*{c_1 <- `c_1*`}
+    -- let{`c*` : iN*} c*{c <- `c*`} = $f_($lsizenn((Jnn : Jnn <: lanetype)), !($proj_lane__2(c_1)), `%`_iN($proj_uN_0(i).0,))*{c_1 <- `c_1*`}
     -- wf_shape: `%`(`%X%`_shape((Jnn : Jnn <: lanetype), M),)
     -- (wf_lane_: `%%`($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), M)), mk_lane__2_lane_(Jnn, c)))*{c <- `c*`}
+    -- wf_uN: `%%`($lsize((Jnn : Jnn <: lanetype)), `%`_uN($proj_uN_0(i).0,))
 
 ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
-def $ivshiftopsx_(shape : shape, def $f_(N : N, sx : sx, iN : iN, u32 : u32) : iN, sx : sx, vec_ : vec_, u32 : u32) : vec_
+def $ivshiftopsx_(shape : shape, def $f_(N : N, sx : sx, iN : iN, iN : iN) : iN, sx : sx, vec_ : vec_, u32 : u32) : vec_
   ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
-  def $ivshiftopsx_{Jnn : Jnn, M : dim, def $f_(N : N, sx : sx, iN : iN, u32 : u32) : iN, sx : sx, v_1 : uN, i : uN}(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $f_, sx, v_1, i) = $inv_lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), M), mk_lane__2_lane_(Jnn, c)*{c <- `c*`})
+  def $ivshiftopsx_{Jnn : Jnn, M : dim, def $f_(N : N, sx : sx, iN : iN, iN : iN) : iN, sx : sx, v_1 : uN, i : uN}(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $f_, sx, v_1, i) = $inv_lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), M), mk_lane__2_lane_(Jnn, c)*{c <- `c*`})
     -- let{`c_1*` : lane_*} c_1*{c_1 <- `c_1*`} = $lanes_(`%X%`_shape((Jnn : Jnn <: lanetype), M), v_1)
-    -- let{`c*` : iN*} c*{c <- `c*`} = $f_($lsizenn((Jnn : Jnn <: lanetype)), sx, !($proj_lane__2(c_1)), i)*{c_1 <- `c_1*`}
+    -- let{`c*` : iN*} c*{c <- `c*`} = $f_($lsizenn((Jnn : Jnn <: lanetype)), sx, !($proj_lane__2(c_1)), `%`_iN($proj_uN_0(i).0,))*{c_1 <- `c_1*`}
     -- wf_shape: `%`(`%X%`_shape((Jnn : Jnn <: lanetype), M),)
     -- (wf_lane_: `%%`($lanetype(`%X%`_shape((Jnn : Jnn <: lanetype), M)), mk_lane__2_lane_(Jnn, c)))*{c <- `c*`}
+    -- wf_uN: `%%`($lsize((Jnn : Jnn <: lanetype)), `%`_uN($proj_uN_0(i).0,))
 
 ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
 def $ivbitmaskop_(shape : shape, vec_ : vec_) : u32
@@ -8606,11 +8608,13 @@ def $vcvtop__(shape_1 : shape, shape_2 : shape, vcvtop__ : vcvtop__, vec_ : vec_
 ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
 def $vshiftop_(ishape : ishape, vshiftop_ : vshiftop_, vec_ : vec_, u32 : u32) : vec_
   ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
-  def $vshiftop_{Jnn : Jnn, M : dim, v : uN, i : uN}(`%`_ishape(`%X%`_shape((Jnn : Jnn <: lanetype), M),), mk_vshiftop__0_vshiftop_(Jnn, M, SHL_vshiftop_Jnn_M), v, i) = $ivshiftop_(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $ishl_, v, i)
+  def $vshiftop_{Jnn : Jnn, M : dim, v : uN, i : uN}(`%`_ishape(`%X%`_shape((Jnn : Jnn <: lanetype), M),), mk_vshiftop__0_vshiftop_(Jnn, M, SHL_vshiftop_Jnn_M), v, i) = $ivshiftop_(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $ishl_, v, `%`_u32(($proj_uN_0(i).0 \ $lsizenn((Jnn : Jnn <: lanetype))),))
     -- wf_shape: `%`(`%X%`_shape((Jnn : Jnn <: lanetype), M),)
+    -- wf_uN: `%%`(32, `%`_uN(($proj_uN_0(i).0 \ $lsizenn((Jnn : Jnn <: lanetype))),))
   ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
-  def $vshiftop_{Jnn : Jnn, M : dim, sx : sx, v : uN, i : uN}(`%`_ishape(`%X%`_shape((Jnn : Jnn <: lanetype), M),), mk_vshiftop__0_vshiftop_(Jnn, M, SHR_vshiftop_Jnn_M(sx)), v, i) = $ivshiftopsx_(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $ishr_, sx, v, i)
+  def $vshiftop_{Jnn : Jnn, M : dim, sx : sx, v : uN, i : uN}(`%`_ishape(`%X%`_shape((Jnn : Jnn <: lanetype), M),), mk_vshiftop__0_vshiftop_(Jnn, M, SHR_vshiftop_Jnn_M(sx)), v, i) = $ivshiftopsx_(`%X%`_shape((Jnn : Jnn <: lanetype), M), def $ishr_, sx, v, `%`_u32(($proj_uN_0(i).0 \ $lsizenn((Jnn : Jnn <: lanetype))),))
     -- wf_shape: `%`(`%X%`_shape((Jnn : Jnn <: lanetype), M),)
+    -- wf_uN: `%%`(32, `%`_uN(($proj_uN_0(i).0 \ $lsizenn((Jnn : Jnn <: lanetype))),))
 
 ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
 def $vbitmaskop_(ishape : ishape, vec_ : vec_) : u32
@@ -8736,19 +8740,20 @@ def $vextbinop__(ishape_1 : ishape, ishape_2 : ishape, vextbinop__ : vextbinop__
 ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
 def $vextternop__(ishape_1 : ishape, ishape_2 : ishape, vextternop__ : vextternop__, vec_ : vec_, vec_ : vec_, vec_ : vec_) : vec_
   ;; ../../../../specification/wasm-3.0/3.2-numerics.vector.spectec
-  def $vextternop__{Jnn_1 : Jnn, M_1 : dim, Jnn_2 : Jnn, M_2 : dim, c_1 : uN, c_2 : uN, c_3 : uN, c : uN, Jnn : Jnn, M : dim}(`%`_ishape(`%X%`_shape((Jnn_1 : Jnn <: lanetype), M_1),), `%`_ishape(`%X%`_shape((Jnn_2 : Jnn <: lanetype), M_2),), mk_vextternop___0_vextternop__(Jnn_1, M_1, Jnn_2, M_2, RELAXED_DOT_ADDS_vextternop__Jnn_1_M_1_Jnn_2_M_2), c_1, c_2, c_3) = c
-    -- if ($jsizenn(Jnn) = (2 * $lsizenn1((Jnn_1 : Jnn <: lanetype))))
-    -- if ($proj_dim_0(M).0 = (2 * $proj_dim_0(M_2).0))
-    -- let{c' : vec_} c' = $vextbinop__(`%`_ishape(`%X%`_shape((Jnn_1 : Jnn <: lanetype), M_1),), `%`_ishape(`%X%`_shape((Jnn : Jnn <: lanetype), M),), mk_vextbinop___0_vextbinop__(Jnn_1, M_1, Jnn, M, RELAXED_DOTS_vextbinop__Jnn_1_M_1_Jnn_2_M_2), c_1, c_2)
-    -- let{c'' : vec_} c'' = $vextunop__(`%`_ishape(`%X%`_shape((Jnn : Jnn <: lanetype), M),), `%`_ishape(`%X%`_shape((Jnn_2 : Jnn <: lanetype), M_2),), mk_vextunop___0_vextunop__(Jnn, M, Jnn_2, M_2, EXTADD_PAIRWISE_vextunop__Jnn_1_M_1_Jnn_2_M_2(S_sx)), c')
-    -- if (c <- $vbinop_(`%X%`_shape((Jnn_2 : Jnn <: lanetype), M_2), mk_vbinop__0_vbinop_(Jnn_2, M_2, ADD_vbinop_Jnn_M), c'', c_3))
+  def $vextternop__{Jnn_1 : Jnn, M_1 : dim, Jnn_2 : Jnn, M_2 : dim, c_1 : uN, c_2 : uN, c_3 : uN, c : uN}(`%`_ishape(`%X%`_shape((Jnn_1 : Jnn <: lanetype), M_1),), `%`_ishape(`%X%`_shape((Jnn_2 : Jnn <: lanetype), M_2),), mk_vextternop___0_vextternop__(Jnn_1, M_1, Jnn_2, M_2, RELAXED_DOT_ADDS_vextternop__Jnn_1_M_1_Jnn_2_M_2), c_1, c_2, c_3) = c
+    -- let{N : N} N = $relaxed2($R_idot_add, syntax nat, (2 * $lsizenn1((Jnn_1 : Jnn <: lanetype))), $lsizenn2((Jnn_2 : Jnn <: lanetype)))
+    -- let{`ci_1*` : lane_*} ci_1*{ci_1 <- `ci_1*`} = $lanes_(`%X%`_shape((Jnn_1 : Jnn <: lanetype), M_1), c_1)
+    -- let{`ci_2*` : lane_*} ci_2*{ci_2 <- `ci_2*`} = $lanes_(`%X%`_shape((Jnn_1 : Jnn <: lanetype), M_1), c_2)
+    -- let{`ci'_1*` : iN*} ci'_1*{ci'_1 <- `ci'_1*`} = $extend__($lsizenn1((Jnn_1 : Jnn <: lanetype)), N, S_sx, !($proj_lane__2(ci_1)))*{ci_1 <- `ci_1*`}
+    -- let{`ci'_2*` : iN*} ci'_2*{ci'_2 <- `ci'_2*`} = $extend__($lsizenn1((Jnn_1 : Jnn <: lanetype)), N, $relaxed2($R_idot, syntax sx, S_sx, U_sx), !($proj_lane__2(ci_2)))*{ci_2 <- `ci_2*`}
+    -- let{`ci*` : iN*} ci*{ci <- `ci*`} = $ivrelaxed_dot_(N, ci'_1*{ci'_1 <- `ci'_1*`}, ci'_2*{ci'_2 <- `ci'_2*`})
+    -- let{`ci'*` : iN*} ci'*{ci' <- `ci'*`} = $extend__(N, $lsizenn2((Jnn_2 : Jnn <: lanetype)), S_sx, ci)*{ci <- `ci*`}
+    -- let{c' : vec_} c' = $inv_lanes_(`%X%`_shape((Jnn_2 : Jnn <: lanetype), M_2), mk_lane__2_lane_(Jnn_2, iter_0)*{iter_0 <- $ivadd_pairwise_($lsizenn2((Jnn_2 : Jnn <: lanetype)), ci'*{ci' <- `ci'*`})})
+    -- if (c <- $vbinop_(`%X%`_shape((Jnn_2 : Jnn <: lanetype), M_2), mk_vbinop__0_vbinop_(Jnn_2, M_2, ADD_vbinop_Jnn_M), c', c_3))
     -- wf_uN: `%%`(128, c)
-    -- wf_ishape: `%`(`%`_ishape(`%X%`_shape((Jnn_1 : Jnn <: lanetype), M_1),),)
-    -- wf_ishape: `%`(`%`_ishape(`%X%`_shape((Jnn : Jnn <: lanetype), M),),)
-    -- wf_vextbinop__: `%%%`(`%`_ishape(`%X%`_shape((Jnn_1 : Jnn <: lanetype), M_1),), `%`_ishape(`%X%`_shape((Jnn : Jnn <: lanetype), M),), mk_vextbinop___0_vextbinop__(Jnn_1, M_1, Jnn, M, RELAXED_DOTS_vextbinop__Jnn_1_M_1_Jnn_2_M_2))
-    -- wf_ishape: `%`(`%`_ishape(`%X%`_shape((Jnn_2 : Jnn <: lanetype), M_2),),)
-    -- wf_vextunop__: `%%%`(`%`_ishape(`%X%`_shape((Jnn : Jnn <: lanetype), M),), `%`_ishape(`%X%`_shape((Jnn_2 : Jnn <: lanetype), M_2),), mk_vextunop___0_vextunop__(Jnn, M, Jnn_2, M_2, EXTADD_PAIRWISE_vextunop__Jnn_1_M_1_Jnn_2_M_2(S_sx)))
+    -- wf_shape: `%`(`%X%`_shape((Jnn_1 : Jnn <: lanetype), M_1),)
     -- wf_shape: `%`(`%X%`_shape((Jnn_2 : Jnn <: lanetype), M_2),)
+    -- (wf_lane_: `%%`($lanetype(`%X%`_shape((Jnn_2 : Jnn <: lanetype), M_2)), mk_lane__2_lane_(Jnn_2, iter_0)))*{iter_0 <- $ivadd_pairwise_($lsizenn2((Jnn_2 : Jnn <: lanetype)), ci'*{ci' <- `ci'*`})}
     -- wf_vbinop_: `%%`(`%X%`_shape((Jnn_2 : Jnn <: lanetype), M_2), mk_vbinop__0_vbinop_(Jnn_2, M_2, ADD_vbinop_Jnn_M))
 
 ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
@@ -9192,64 +9197,19 @@ def $frame(state : state) : frame
   def $frame{s : store, f : frame}(`%;%`_state(s, f)) = f
 
 ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
-def $tagaddr(state : state) : tagaddr*
+def $s(state : state) : store
   ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
-  def $tagaddr{s : store, f : frame}(`%;%`_state(s, f)) = f.MODULE_frame.TAGS_moduleinst
+  def $s{z : state}(z) = $store(z)
 
 ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
-def $moduleinst(state : state) : moduleinst
+def $f(state : state) : frame
   ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
-  def $moduleinst{s : store, f : frame}(`%;%`_state(s, f)) = f.MODULE_frame
+  def $f{z : state}(z) = $frame(z)
 
 ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
-def $taginst(state : state) : taginst*
+def $sof(state : state) : store
   ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
-  def $taginst{s : store, f : frame}(`%;%`_state(s, f)) = s.TAGS_store
-
-;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
-def $globalinst(state : state) : globalinst*
-  ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
-  def $globalinst{s : store, f : frame}(`%;%`_state(s, f)) = s.GLOBALS_store
-
-;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
-def $meminst(state : state) : meminst*
-  ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
-  def $meminst{s : store, f : frame}(`%;%`_state(s, f)) = s.MEMS_store
-
-;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
-def $tableinst(state : state) : tableinst*
-  ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
-  def $tableinst{s : store, f : frame}(`%;%`_state(s, f)) = s.TABLES_store
-
-;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
-def $funcinst(state : state) : funcinst*
-  ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
-  def $funcinst{s : store, f : frame}(`%;%`_state(s, f)) = s.FUNCS_store
-
-;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
-def $datainst(state : state) : datainst*
-  ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
-  def $datainst{s : store, f : frame}(`%;%`_state(s, f)) = s.DATAS_store
-
-;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
-def $eleminst(state : state) : eleminst*
-  ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
-  def $eleminst{s : store, f : frame}(`%;%`_state(s, f)) = s.ELEMS_store
-
-;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
-def $structinst(state : state) : structinst*
-  ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
-  def $structinst{s : store, f : frame}(`%;%`_state(s, f)) = s.STRUCTS_store
-
-;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
-def $arrayinst(state : state) : arrayinst*
-  ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
-  def $arrayinst{s : store, f : frame}(`%;%`_state(s, f)) = s.ARRAYS_store
-
-;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
-def $exninst(state : state) : exninst*
-  ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
-  def $exninst{s : store, f : frame}(`%;%`_state(s, f)) = s.EXNS_store
+  def $sof{z : state}(z) = $store(z)
 
 ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
 def $fof(state : state) : frame
@@ -9257,14 +9217,34 @@ def $fof(state : state) : frame
   def $fof{z : state}(z) = $frame(z)
 
 ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
+def $moduleinst(state : state) : moduleinst
+  ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
+  def $moduleinst{z : state}(z) = $fof(z).MODULE_frame
+
+;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
+def $funcinst(state : state, funcaddr : funcaddr) : funcinst
+  ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
+  def $funcinst{z : state, a : nat}(z, a) = $sof(z).FUNCS_store[a]
+
+;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
+def $structinst(state : state, structaddr : structaddr) : structinst
+  ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
+  def $structinst{z : state, a : nat}(z, a) = $sof(z).STRUCTS_store[a]
+
+;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
+def $arrayinst(state : state, arrayaddr : arrayaddr) : arrayinst
+  ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
+  def $arrayinst{z : state, a : nat}(z, a) = $sof(z).ARRAYS_store[a]
+
+;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
+def $exninst(state : state, exnaddr : exnaddr) : exninst
+  ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
+  def $exninst{z : state, a : nat}(z, a) = $sof(z).EXNS_store[a]
+
+;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
 def $type(state : state, typeidx : typeidx) : deftype
   ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
   def $type{z : state, x : uN}(z, x) = $fof(z).MODULE_frame.TYPES_moduleinst[$proj_uN_0(x).0]
-
-;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
-def $sof(state : state) : store
-  ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
-  def $sof{z : state}(z) = $store(z)
 
 ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
 def $tag(state : state, tagidx : tagidx) : taginst
@@ -9367,22 +9347,22 @@ def $with_array(state : state, arrayaddr : arrayaddr, nat : nat, fieldval : fiel
     -- wf_state: `%`(`%;%`_state($sof(z)[ARRAYS_store[a].FIELDS_arrayinst[i] = fv], $fof(z)),)
 
 ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
-def $add_structinst(state : state, structinst*) : state
+def $add_structinst(state : state, structinst : structinst) : state
   ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
-  def $add_structinst{z : state, `si*` : structinst*}(z, si*{si <- `si*`}) = `%;%`_state($sof(z)[STRUCTS_store =++ si*{si <- `si*`}], $fof(z))
-    -- wf_state: `%`(`%;%`_state($sof(z)[STRUCTS_store =++ si*{si <- `si*`}], $fof(z)),)
+  def $add_structinst{z : state, si : structinst}(z, si) = `%;%`_state($sof(z)[STRUCTS_store =++ [si]], $fof(z))
+    -- wf_state: `%`(`%;%`_state($sof(z)[STRUCTS_store =++ [si]], $fof(z)),)
 
 ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
-def $add_arrayinst(state : state, arrayinst*) : state
+def $add_arrayinst(state : state, arrayinst : arrayinst) : state
   ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
-  def $add_arrayinst{z : state, `ai*` : arrayinst*}(z, ai*{ai <- `ai*`}) = `%;%`_state($sof(z)[ARRAYS_store =++ ai*{ai <- `ai*`}], $fof(z))
-    -- wf_state: `%`(`%;%`_state($sof(z)[ARRAYS_store =++ ai*{ai <- `ai*`}], $fof(z)),)
+  def $add_arrayinst{z : state, ai : arrayinst}(z, ai) = `%;%`_state($sof(z)[ARRAYS_store =++ [ai]], $fof(z))
+    -- wf_state: `%`(`%;%`_state($sof(z)[ARRAYS_store =++ [ai]], $fof(z)),)
 
 ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
-def $add_exninst(state : state, exninst*) : state
+def $add_exninst(state : state, exninst : exninst) : state
   ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
-  def $add_exninst{z : state, `exn*` : exninst*}(z, exn*{exn <- `exn*`}) = `%;%`_state($sof(z)[EXNS_store =++ exn*{exn <- `exn*`}], $fof(z))
-    -- wf_state: `%`(`%;%`_state($sof(z)[EXNS_store =++ exn*{exn <- `exn*`}], $fof(z)),)
+  def $add_exninst{z : state, exn : exninst}(z, exn) = `%;%`_state($sof(z)[EXNS_store =++ [exn]], $fof(z))
+    -- wf_state: `%`(`%;%`_state($sof(z)[EXNS_store =++ [exn]], $fof(z)),)
 
 ;; ../../../../specification/wasm-3.0/4.0-execution.configurations.spectec
 def $growtable(tableinst : tableinst, nat : nat, ref : ref) : tableinst?
@@ -9672,18 +9652,6 @@ def $inst_tabletype(moduleinst : moduleinst, tabletype : tabletype) : tabletype
   def $inst_tabletype{moduleinst : moduleinst, tt : tabletype}(moduleinst, tt) = $subst_all_tabletype(tt, (moduleinst.TYPES_moduleinst : deftype* <: typeuse*))
 
 ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec
-relation `Step_pure_before_ref.eq-true`: `%`(instr*)
-  ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec
-  rule `ref.eq-null_0`{ref_1 : ref, ref_2 : ref}:
-    `%`([(ref_1 : ref <: instr) (ref_2 : ref <: instr) `REF.EQ`_instr])
-    -- if ((ref_1 = `REF.NULL_ADDR`_ref) /\ (ref_2 = `REF.NULL_ADDR`_ref))
-    -- wf_ref: `%`(ref_1,)
-    -- wf_ref: `%`(ref_2,)
-    -- wf_instr: `%`(`REF.EQ`_instr,)
-    -- wf_instr: `%`(CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN(1,))),)
-    -- wf_ref: `%`(`REF.NULL_ADDR`_ref,)
-
-;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec
 relation Step_pure: `%~>%`(instr*, instr*)
   ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec
   rule unreachable:
@@ -9940,19 +9908,8 @@ relation Step_pure: `%~>%`(instr*, instr*)
     -- wf_instr: `%`(`REF.AS_NON_NULL`_instr,)
 
   ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec
-  rule `ref.eq-null`{ref_1 : ref, ref_2 : ref}:
-    `%~>%`([(ref_1 : ref <: instr) (ref_2 : ref <: instr) `REF.EQ`_instr], [CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN(1,)))])
-    -- if ((ref_1 = `REF.NULL_ADDR`_ref) /\ (ref_2 = `REF.NULL_ADDR`_ref))
-    -- wf_ref: `%`(ref_1,)
-    -- wf_ref: `%`(ref_2,)
-    -- wf_instr: `%`(`REF.EQ`_instr,)
-    -- wf_instr: `%`(CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN(1,))),)
-    -- wf_ref: `%`(`REF.NULL_ADDR`_ref,)
-
-  ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec
   rule `ref.eq-true`{ref_1 : ref, ref_2 : ref}:
     `%~>%`([(ref_1 : ref <: instr) (ref_2 : ref <: instr) `REF.EQ`_instr], [CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN(1,)))])
-    -- if ((ref_1 =/= `REF.NULL_ADDR`_ref) \/ (ref_2 =/= `REF.NULL_ADDR`_ref))
     -- if (ref_1 = ref_2)
     -- wf_ref: `%`(ref_1,)
     -- wf_ref: `%`(ref_2,)
@@ -9963,7 +9920,6 @@ relation Step_pure: `%~>%`(instr*, instr*)
   rule `ref.eq-false`{ref_1 : ref, ref_2 : ref}:
     `%~>%`([(ref_1 : ref <: instr) (ref_2 : ref <: instr) `REF.EQ`_instr], [CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN(0,)))])
     -- if (ref_1 =/= ref_2)
-    -- if ((ref_1 =/= `REF.NULL_ADDR`_ref) \/ (ref_2 =/= `REF.NULL_ADDR`_ref))
     -- wf_ref: `%`(ref_1,)
     -- wf_ref: `%`(ref_2,)
     -- wf_instr: `%`(`REF.EQ`_instr,)
@@ -10357,8 +10313,8 @@ relation `Step_read_before_throw_ref-handler-next`: `%`(config)
   ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec
   rule `throw_ref-handler-catch_ref_0`{z : state, n : n, x : idx, l : labelidx, `catch'*` : catch*, a : addr, `val*` : val*}:
     `%`(`%;%`_config(z, [`HANDLER_%{%}%`_instr(n, [CATCH_REF_catch(x, l)] ++ catch'*{catch' <- `catch'*`}, [`REF.EXN_ADDR`_instr(a) THROW_REF_instr])]))
-    -- if ($exninst(z)[a].TAG_exninst = $tagaddr(z)[$proj_uN_0(x).0])
-    -- if (val*{val <- `val*`} = $exninst(z)[a].FIELDS_exninst)
+    -- if ($s(z).EXNS_store[a].TAG_exninst = $f(z).MODULE_frame.TAGS_moduleinst[$proj_uN_0(x).0])
+    -- if (val*{val <- `val*`} = $s(z).EXNS_store[a].FIELDS_exninst)
     -- (wf_val: `%`(val,))*{val <- `val*`}
     -- wf_config: `%`(`%;%`_config(z, [`HANDLER_%{%}%`_instr(n, [CATCH_REF_catch(x, l)] ++ catch'*{catch' <- `catch'*`}, [`REF.EXN_ADDR`_instr(a) THROW_REF_instr])]),)
     -- wf_instr: `%`(`REF.EXN_ADDR`_instr(a),)
@@ -10367,8 +10323,8 @@ relation `Step_read_before_throw_ref-handler-next`: `%`(config)
   ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec
   rule `throw_ref-handler-catch_0`{z : state, n : n, x : idx, l : labelidx, `catch'*` : catch*, a : addr, `val*` : val*}:
     `%`(`%;%`_config(z, [`HANDLER_%{%}%`_instr(n, [CATCH_catch(x, l)] ++ catch'*{catch' <- `catch'*`}, [`REF.EXN_ADDR`_instr(a) THROW_REF_instr])]))
-    -- if ($exninst(z)[a].TAG_exninst = $tagaddr(z)[$proj_uN_0(x).0])
-    -- if (val*{val <- `val*`} = $exninst(z)[a].FIELDS_exninst)
+    -- if ($s(z).EXNS_store[a].TAG_exninst = $f(z).MODULE_frame.TAGS_moduleinst[$proj_uN_0(x).0])
+    -- if (val*{val <- `val*`} = $s(z).EXNS_store[a].FIELDS_exninst)
     -- (wf_val: `%`(val,))*{val <- `val*`}
     -- wf_config: `%`(`%;%`_config(z, [`HANDLER_%{%}%`_instr(n, [CATCH_catch(x, l)] ++ catch'*{catch' <- `catch'*`}, [`REF.EXN_ADDR`_instr(a) THROW_REF_instr])]),)
     -- wf_instr: `%`(BR_instr(l),)
@@ -10512,7 +10468,7 @@ relation `Step_read_before_array.fill-zero`: `%`(config)
   ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec
   rule `array.fill-oob_0`{z : state, a : addr, i : num_, val : val, n : n, x : idx}:
     `%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) (val : val <: instr) CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN(n,))) `ARRAY.FILL`_instr(x)]))
-    -- if (($proj_uN_0(!($proj_num__0(i))).0 + n) > |$arrayinst(z)[a].FIELDS_arrayinst|)
+    -- if (($proj_uN_0(!($proj_num__0(i))).0 + n) > |$s(z).ARRAYS_store[a].FIELDS_arrayinst|)
     -- wf_config: `%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) (val : val <: instr) CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN(n,))) `ARRAY.FILL`_instr(x)]),)
     -- wf_instr: `%`(TRAP_instr,)
 
@@ -10521,14 +10477,14 @@ relation `Step_read_before_array.copy-zero`: `%`(config)
   ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec
   rule `array.copy-oob2_0`{z : state, a_1 : addr, i_1 : num_, a_2 : addr, i_2 : num_, n : n, x_1 : idx, x_2 : idx}:
     `%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a_1) CONST_instr(I32_numtype, i_1) `REF.ARRAY_ADDR`_instr(a_2) CONST_instr(I32_numtype, i_2) CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN(n,))) `ARRAY.COPY`_instr(x_1, x_2)]))
-    -- if (($proj_uN_0(!($proj_num__0(i_2))).0 + n) > |$arrayinst(z)[a_2].FIELDS_arrayinst|)
+    -- if (($proj_uN_0(!($proj_num__0(i_2))).0 + n) > |$s(z).ARRAYS_store[a_2].FIELDS_arrayinst|)
     -- wf_config: `%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a_1) CONST_instr(I32_numtype, i_1) `REF.ARRAY_ADDR`_instr(a_2) CONST_instr(I32_numtype, i_2) CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN(n,))) `ARRAY.COPY`_instr(x_1, x_2)]),)
     -- wf_instr: `%`(TRAP_instr,)
 
   ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec
   rule `array.copy-oob1_0`{z : state, a_1 : addr, i_1 : num_, a_2 : addr, i_2 : num_, n : n, x_1 : idx, x_2 : idx}:
     `%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a_1) CONST_instr(I32_numtype, i_1) `REF.ARRAY_ADDR`_instr(a_2) CONST_instr(I32_numtype, i_2) CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN(n,))) `ARRAY.COPY`_instr(x_1, x_2)]))
-    -- if (($proj_uN_0(!($proj_num__0(i_1))).0 + n) > |$arrayinst(z)[a_1].FIELDS_arrayinst|)
+    -- if (($proj_uN_0(!($proj_num__0(i_1))).0 + n) > |$s(z).ARRAYS_store[a_1].FIELDS_arrayinst|)
     -- wf_config: `%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a_1) CONST_instr(I32_numtype, i_1) `REF.ARRAY_ADDR`_instr(a_2) CONST_instr(I32_numtype, i_2) CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN(n,))) `ARRAY.COPY`_instr(x_1, x_2)]),)
     -- wf_instr: `%`(TRAP_instr,)
 
@@ -10544,14 +10500,14 @@ relation `Step_read_before_array.copy-le`: `%`(config)
   ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec
   rule `array.copy-oob2_1`{z : state, a_1 : addr, i_1 : num_, a_2 : addr, i_2 : num_, n : n, x_1 : idx, x_2 : idx}:
     `%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a_1) CONST_instr(I32_numtype, i_1) `REF.ARRAY_ADDR`_instr(a_2) CONST_instr(I32_numtype, i_2) CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN(n,))) `ARRAY.COPY`_instr(x_1, x_2)]))
-    -- if (($proj_uN_0(!($proj_num__0(i_2))).0 + n) > |$arrayinst(z)[a_2].FIELDS_arrayinst|)
+    -- if (($proj_uN_0(!($proj_num__0(i_2))).0 + n) > |$s(z).ARRAYS_store[a_2].FIELDS_arrayinst|)
     -- wf_config: `%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a_1) CONST_instr(I32_numtype, i_1) `REF.ARRAY_ADDR`_instr(a_2) CONST_instr(I32_numtype, i_2) CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN(n,))) `ARRAY.COPY`_instr(x_1, x_2)]),)
     -- wf_instr: `%`(TRAP_instr,)
 
   ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec
   rule `array.copy-oob1_1`{z : state, a_1 : addr, i_1 : num_, a_2 : addr, i_2 : num_, n : n, x_1 : idx, x_2 : idx}:
     `%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a_1) CONST_instr(I32_numtype, i_1) `REF.ARRAY_ADDR`_instr(a_2) CONST_instr(I32_numtype, i_2) CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN(n,))) `ARRAY.COPY`_instr(x_1, x_2)]))
-    -- if (($proj_uN_0(!($proj_num__0(i_1))).0 + n) > |$arrayinst(z)[a_1].FIELDS_arrayinst|)
+    -- if (($proj_uN_0(!($proj_num__0(i_1))).0 + n) > |$s(z).ARRAYS_store[a_1].FIELDS_arrayinst|)
     -- wf_config: `%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a_1) CONST_instr(I32_numtype, i_1) `REF.ARRAY_ADDR`_instr(a_2) CONST_instr(I32_numtype, i_2) CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN(n,))) `ARRAY.COPY`_instr(x_1, x_2)]),)
     -- wf_instr: `%`(TRAP_instr,)
 
@@ -10562,7 +10518,7 @@ relation `Step_read_before_array.copy-gt`: `%`(config)
     `%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a_1) CONST_instr(I32_numtype, i_1) `REF.ARRAY_ADDR`_instr(a_2) CONST_instr(I32_numtype, i_2) CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN(n,))) `ARRAY.COPY`_instr(x_1, x_2)]))
     -- ~ `Step_read_before_array.copy-le`: `%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a_1) CONST_instr(I32_numtype, i_1) `REF.ARRAY_ADDR`_instr(a_2) CONST_instr(I32_numtype, i_2) CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN(n,))) `ARRAY.COPY`_instr(x_1, x_2)]))
     -- Expand: `%~~%`($type(z, x_2), ARRAY_comptype(`%%`_fieldtype(mut?{mut <- `mut?`}, zt_2)))
-    -- if (($proj_uN_0(!($proj_num__0(i_1))).0 <= $proj_uN_0(!($proj_num__0(i_2))).0) /\ (sx?{sx <- `sx?`} = !($sx(zt_2))))
+    -- if (($proj_uN_0(!($proj_num__0(i_1))).0 <= $proj_uN_0(!($proj_num__0(i_2))).0) /\ (sx?{sx <- `sx?`} = $sx(zt_2)))
     -- wf_config: `%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a_1) CONST_instr(I32_numtype, i_1) `REF.ARRAY_ADDR`_instr(a_2) CONST_instr(I32_numtype, i_2) CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN(n,))) `ARRAY.COPY`_instr(x_1, x_2)]),)
     -- wf_instr: `%`(`REF.ARRAY_ADDR`_instr(a_1),)
     -- wf_instr: `%`(CONST_instr(I32_numtype, i_1),)
@@ -10586,14 +10542,14 @@ relation `Step_read_before_array.copy-gt`: `%`(config)
   ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec
   rule `array.copy-oob2_2`{z : state, a_1 : addr, i_1 : num_, a_2 : addr, i_2 : num_, n : n, x_1 : idx, x_2 : idx}:
     `%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a_1) CONST_instr(I32_numtype, i_1) `REF.ARRAY_ADDR`_instr(a_2) CONST_instr(I32_numtype, i_2) CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN(n,))) `ARRAY.COPY`_instr(x_1, x_2)]))
-    -- if (($proj_uN_0(!($proj_num__0(i_2))).0 + n) > |$arrayinst(z)[a_2].FIELDS_arrayinst|)
+    -- if (($proj_uN_0(!($proj_num__0(i_2))).0 + n) > |$s(z).ARRAYS_store[a_2].FIELDS_arrayinst|)
     -- wf_config: `%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a_1) CONST_instr(I32_numtype, i_1) `REF.ARRAY_ADDR`_instr(a_2) CONST_instr(I32_numtype, i_2) CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN(n,))) `ARRAY.COPY`_instr(x_1, x_2)]),)
     -- wf_instr: `%`(TRAP_instr,)
 
   ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec
   rule `array.copy-oob1_2`{z : state, a_1 : addr, i_1 : num_, a_2 : addr, i_2 : num_, n : n, x_1 : idx, x_2 : idx}:
     `%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a_1) CONST_instr(I32_numtype, i_1) `REF.ARRAY_ADDR`_instr(a_2) CONST_instr(I32_numtype, i_2) CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN(n,))) `ARRAY.COPY`_instr(x_1, x_2)]))
-    -- if (($proj_uN_0(!($proj_num__0(i_1))).0 + n) > |$arrayinst(z)[a_1].FIELDS_arrayinst|)
+    -- if (($proj_uN_0(!($proj_num__0(i_1))).0 + n) > |$s(z).ARRAYS_store[a_1].FIELDS_arrayinst|)
     -- wf_config: `%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a_1) CONST_instr(I32_numtype, i_1) `REF.ARRAY_ADDR`_instr(a_2) CONST_instr(I32_numtype, i_2) CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN(n,))) `ARRAY.COPY`_instr(x_1, x_2)]),)
     -- wf_instr: `%`(TRAP_instr,)
 
@@ -10609,7 +10565,7 @@ relation `Step_read_before_array.init_elem-zero`: `%`(config)
   ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec
   rule `array.init_elem-oob1_0`{z : state, a : addr, i : num_, j : num_, n : n, x : idx, y : idx}:
     `%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) CONST_instr(I32_numtype, j) CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN(n,))) `ARRAY.INIT_ELEM`_instr(x, y)]))
-    -- if (($proj_uN_0(!($proj_num__0(i))).0 + n) > |$arrayinst(z)[a].FIELDS_arrayinst|)
+    -- if (($proj_uN_0(!($proj_num__0(i))).0 + n) > |$s(z).ARRAYS_store[a].FIELDS_arrayinst|)
     -- wf_config: `%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) CONST_instr(I32_numtype, j) CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN(n,))) `ARRAY.INIT_ELEM`_instr(x, y)]),)
     -- wf_instr: `%`(TRAP_instr,)
 
@@ -10627,7 +10583,7 @@ relation `Step_read_before_array.init_data-zero`: `%`(config)
   ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec
   rule `array.init_data-oob1_0`{z : state, a : addr, i : num_, j : num_, n : n, x : idx, y : idx}:
     `%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) CONST_instr(I32_numtype, j) CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN(n,))) `ARRAY.INIT_DATA`_instr(x, y)]))
-    -- if (($proj_uN_0(!($proj_num__0(i))).0 + n) > |$arrayinst(z)[a].FIELDS_arrayinst|)
+    -- if (($proj_uN_0(!($proj_num__0(i))).0 + n) > |$s(z).ARRAYS_store[a].FIELDS_arrayinst|)
     -- wf_config: `%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) CONST_instr(I32_numtype, j) CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN(n,))) `ARRAY.INIT_DATA`_instr(x, y)]),)
     -- wf_instr: `%`(TRAP_instr,)
 
@@ -10652,7 +10608,7 @@ relation `Step_read_before_array.init_data-num`: `%`(config)
   ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec
   rule `array.init_data-oob1_1`{z : state, a : addr, i : num_, j : num_, n : n, x : idx, y : idx}:
     `%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) CONST_instr(I32_numtype, j) CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN(n,))) `ARRAY.INIT_DATA`_instr(x, y)]))
-    -- if (($proj_uN_0(!($proj_num__0(i))).0 + n) > |$arrayinst(z)[a].FIELDS_arrayinst|)
+    -- if (($proj_uN_0(!($proj_num__0(i))).0 + n) > |$s(z).ARRAYS_store[a].FIELDS_arrayinst|)
     -- wf_config: `%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) CONST_instr(I32_numtype, j) CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN(n,))) `ARRAY.INIT_DATA`_instr(x, y)]),)
     -- wf_instr: `%`(TRAP_instr,)
 
@@ -10702,19 +10658,19 @@ relation Step_read: `%~>%`(config, instr*)
 
   ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec
   rule call{z : state, x : idx, a : addr}:
-    `%~>%`(`%;%`_config(z, [CALL_instr(x)]), [`REF.FUNC_ADDR`_instr(a) CALL_REF_instr($funcinst(z)[a].TYPE_funcinst : deftype <: typeuse)])
-    -- if ($moduleinst(z).FUNCS_moduleinst[$proj_uN_0(x).0] = a)
+    `%~>%`(`%;%`_config(z, [CALL_instr(x)]), [`REF.FUNC_ADDR`_instr(a) CALL_REF_instr($s(z).FUNCS_store[a].TYPE_funcinst : deftype <: typeuse)])
+    -- if ($f(z).MODULE_frame.FUNCS_moduleinst[$proj_uN_0(x).0] = a)
     -- wf_config: `%`(`%;%`_config(z, [CALL_instr(x)]),)
     -- wf_instr: `%`(`REF.FUNC_ADDR`_instr(a),)
-    -- wf_instr: `%`(CALL_REF_instr($funcinst(z)[a].TYPE_funcinst : deftype <: typeuse),)
+    -- wf_instr: `%`(CALL_REF_instr($s(z).FUNCS_store[a].TYPE_funcinst : deftype <: typeuse),)
 
   ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec
   rule return_call{z : state, x : idx, a : addr}:
-    `%~>%`(`%;%`_config(z, [RETURN_CALL_instr(x)]), [`REF.FUNC_ADDR`_instr(a) RETURN_CALL_REF_instr($funcinst(z)[a].TYPE_funcinst : deftype <: typeuse)])
-    -- if ($moduleinst(z).FUNCS_moduleinst[$proj_uN_0(x).0] = a)
+    `%~>%`(`%;%`_config(z, [RETURN_CALL_instr(x)]), [`REF.FUNC_ADDR`_instr(a) RETURN_CALL_REF_instr($s(z).FUNCS_store[a].TYPE_funcinst : deftype <: typeuse)])
+    -- if ($f(z).MODULE_frame.FUNCS_moduleinst[$proj_uN_0(x).0] = a)
     -- wf_config: `%`(`%;%`_config(z, [RETURN_CALL_instr(x)]),)
     -- wf_instr: `%`(`REF.FUNC_ADDR`_instr(a),)
-    -- wf_instr: `%`(RETURN_CALL_REF_instr($funcinst(z)[a].TYPE_funcinst : deftype <: typeuse),)
+    -- wf_instr: `%`(RETURN_CALL_REF_instr($s(z).FUNCS_store[a].TYPE_funcinst : deftype <: typeuse),)
 
   ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec
   rule `return_call_ref-label`{z : state, k : n, `instr'*` : instr*, `val*` : val*, yy : typeuse, `instr*` : instr*}:
@@ -10737,7 +10693,7 @@ relation Step_read: `%~>%`(config, instr*)
   ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec
   rule `return_call_ref-frame-addr`{z : state, k : n, f : frame, `val'*` : val*, n : n, `val*` : val*, a : addr, yy : typeuse, `instr*` : instr*, `t_1*` : valtype*, m : m, `t_2*` : valtype*}:
     `%~>%`(`%;%`_config(z, [`FRAME_%{%}%`_instr(k, f, (val' : val <: instr)*{val' <- `val'*`} ++ (val : val <: instr)^n{val <- `val*`} ++ [`REF.FUNC_ADDR`_instr(a)] ++ [RETURN_CALL_REF_instr(yy)] ++ instr*{instr <- `instr*`})]), (val : val <: instr)^n{val <- `val*`} ++ [`REF.FUNC_ADDR`_instr(a) CALL_REF_instr(yy)])
-    -- Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, `FUNC%->%`_comptype(`%`_resulttype(t_1^n{t_1 <- `t_1*`},), `%`_resulttype(t_2^m{t_2 <- `t_2*`},)))
+    -- Expand: `%~~%`($s(z).FUNCS_store[a].TYPE_funcinst, `FUNC%->%`_comptype(`%`_resulttype(t_1^n{t_1 <- `t_1*`},), `%`_resulttype(t_2^m{t_2 <- `t_2*`},)))
     -- wf_config: `%`(`%;%`_config(z, [`FRAME_%{%}%`_instr(k, f, (val' : val <: instr)*{val' <- `val'*`} ++ (val : val <: instr)^n{val <- `val*`} ++ [`REF.FUNC_ADDR`_instr(a)] ++ [RETURN_CALL_REF_instr(yy)] ++ instr*{instr <- `instr*`})]),)
     -- wf_instr: `%`(`REF.FUNC_ADDR`_instr(a),)
     -- wf_instr: `%`(CALL_REF_instr(yy),)
@@ -10781,8 +10737,8 @@ relation Step_read: `%~>%`(config, instr*)
   ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec
   rule `throw_ref-handler-catch`{z : state, n : n, x : idx, l : labelidx, `catch'*` : catch*, a : addr, `val*` : val*}:
     `%~>%`(`%;%`_config(z, [`HANDLER_%{%}%`_instr(n, [CATCH_catch(x, l)] ++ catch'*{catch' <- `catch'*`}, [`REF.EXN_ADDR`_instr(a) THROW_REF_instr])]), (val : val <: instr)*{val <- `val*`} ++ [BR_instr(l)])
-    -- if ($exninst(z)[a].TAG_exninst = $tagaddr(z)[$proj_uN_0(x).0])
-    -- if (val*{val <- `val*`} = $exninst(z)[a].FIELDS_exninst)
+    -- if ($s(z).EXNS_store[a].TAG_exninst = $f(z).MODULE_frame.TAGS_moduleinst[$proj_uN_0(x).0])
+    -- if (val*{val <- `val*`} = $s(z).EXNS_store[a].FIELDS_exninst)
     -- (wf_val: `%`(val,))*{val <- `val*`}
     -- wf_config: `%`(`%;%`_config(z, [`HANDLER_%{%}%`_instr(n, [CATCH_catch(x, l)] ++ catch'*{catch' <- `catch'*`}, [`REF.EXN_ADDR`_instr(a) THROW_REF_instr])]),)
     -- wf_instr: `%`(BR_instr(l),)
@@ -10790,8 +10746,8 @@ relation Step_read: `%~>%`(config, instr*)
   ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec
   rule `throw_ref-handler-catch_ref`{z : state, n : n, x : idx, l : labelidx, `catch'*` : catch*, a : addr, `val*` : val*}:
     `%~>%`(`%;%`_config(z, [`HANDLER_%{%}%`_instr(n, [CATCH_REF_catch(x, l)] ++ catch'*{catch' <- `catch'*`}, [`REF.EXN_ADDR`_instr(a) THROW_REF_instr])]), (val : val <: instr)*{val <- `val*`} ++ [`REF.EXN_ADDR`_instr(a) BR_instr(l)])
-    -- if ($exninst(z)[a].TAG_exninst = $tagaddr(z)[$proj_uN_0(x).0])
-    -- if (val*{val <- `val*`} = $exninst(z)[a].FIELDS_exninst)
+    -- if ($s(z).EXNS_store[a].TAG_exninst = $f(z).MODULE_frame.TAGS_moduleinst[$proj_uN_0(x).0])
+    -- if (val*{val <- `val*`} = $s(z).EXNS_store[a].FIELDS_exninst)
     -- (wf_val: `%`(val,))*{val <- `val*`}
     -- wf_config: `%`(`%;%`_config(z, [`HANDLER_%{%}%`_instr(n, [CATCH_REF_catch(x, l)] ++ catch'*{catch' <- `catch'*`}, [`REF.EXN_ADDR`_instr(a) THROW_REF_instr])]),)
     -- wf_instr: `%`(`REF.EXN_ADDR`_instr(a),)
@@ -11187,9 +11143,9 @@ relation Step_read: `%~>%`(config, instr*)
 
   ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec
   rule `ref.func`{z : state, x : idx}:
-    `%~>%`(`%;%`_config(z, [`REF.FUNC`_instr(x)]), [`REF.FUNC_ADDR`_instr($moduleinst(z).FUNCS_moduleinst[$proj_uN_0(x).0])])
+    `%~>%`(`%;%`_config(z, [`REF.FUNC`_instr(x)]), [`REF.FUNC_ADDR`_instr($f(z).MODULE_frame.FUNCS_moduleinst[$proj_uN_0(x).0])])
     -- wf_config: `%`(`%;%`_config(z, [`REF.FUNC`_instr(x)]),)
-    -- wf_instr: `%`(`REF.FUNC_ADDR`_instr($moduleinst(z).FUNCS_moduleinst[$proj_uN_0(x).0]),)
+    -- wf_instr: `%`(`REF.FUNC_ADDR`_instr($f(z).MODULE_frame.FUNCS_moduleinst[$proj_uN_0(x).0]),)
 
   ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec
   rule `ref.test-true`{s : store, f : frame, ref : ref, rt : reftype}:
@@ -11236,7 +11192,7 @@ relation Step_read: `%~>%`(config, instr*)
 
   ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec
   rule `struct.get-struct`{z : state, a : addr, `sx?` : sx?, x : idx, i : fieldidx, `zt*` : storagetype*, `mut?*` : mut?*}:
-    `%~>%`(`%;%`_config(z, [`REF.STRUCT_ADDR`_instr(a) `STRUCT.GET`_instr(sx?{sx <- `sx?`}, x, i)]), [(!($unpackfield_(zt*{zt <- `zt*`}[$proj_uN_0(i).0], sx?{sx <- `sx?`}, $structinst(z)[a].FIELDS_structinst[$proj_uN_0(i).0])) : val <: instr)])
+    `%~>%`(`%;%`_config(z, [`REF.STRUCT_ADDR`_instr(a) `STRUCT.GET`_instr(sx?{sx <- `sx?`}, x, i)]), [(!($unpackfield_(zt*{zt <- `zt*`}[$proj_uN_0(i).0], sx?{sx <- `sx?`}, $s(z).STRUCTS_store[a].FIELDS_structinst[$proj_uN_0(i).0])) : val <: instr)])
     -- Expand: `%~~%`($type(z, x), STRUCT_comptype(`%`_list(`%%`_fieldtype(mut?{mut <- `mut?`}, zt)*{`mut?` <- `mut?*`, zt <- `zt*`},)))
     -- wf_config: `%`(`%;%`_config(z, [`REF.STRUCT_ADDR`_instr(a) `STRUCT.GET`_instr(sx?{sx <- `sx?`}, x, i)]),)
     -- wf_comptype: `%`(STRUCT_comptype(`%`_list(`%%`_fieldtype(mut?{mut <- `mut?`}, zt)*{`mut?` <- `mut?*`, zt <- `zt*`},)),)
@@ -11294,13 +11250,13 @@ relation Step_read: `%~>%`(config, instr*)
   ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec
   rule `array.get-oob`{z : state, a : addr, i : num_, `sx?` : sx?, x : idx}:
     `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) `ARRAY.GET`_instr(sx?{sx <- `sx?`}, x)]), [TRAP_instr])
-    -- if ($proj_uN_0(!($proj_num__0(i))).0 >= |$arrayinst(z)[a].FIELDS_arrayinst|)
+    -- if ($proj_uN_0(!($proj_num__0(i))).0 >= |$s(z).ARRAYS_store[a].FIELDS_arrayinst|)
     -- wf_config: `%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) `ARRAY.GET`_instr(sx?{sx <- `sx?`}, x)]),)
     -- wf_instr: `%`(TRAP_instr,)
 
   ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec
   rule `array.get-array`{z : state, a : addr, i : num_, `sx?` : sx?, x : idx, zt : storagetype, `mut?` : mut?}:
-    `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) `ARRAY.GET`_instr(sx?{sx <- `sx?`}, x)]), [(!($unpackfield_(zt, sx?{sx <- `sx?`}, $arrayinst(z)[a].FIELDS_arrayinst[$proj_uN_0(!($proj_num__0(i))).0])) : val <: instr)])
+    `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) `ARRAY.GET`_instr(sx?{sx <- `sx?`}, x)]), [(!($unpackfield_(zt, sx?{sx <- `sx?`}, $s(z).ARRAYS_store[a].FIELDS_arrayinst[$proj_uN_0(!($proj_num__0(i))).0])) : val <: instr)])
     -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`_fieldtype(mut?{mut <- `mut?`}, zt)))
     -- wf_config: `%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) `ARRAY.GET`_instr(sx?{sx <- `sx?`}, x)]),)
     -- wf_comptype: `%`(ARRAY_comptype(`%%`_fieldtype(mut?{mut <- `mut?`}, zt)),)
@@ -11313,9 +11269,9 @@ relation Step_read: `%~>%`(config, instr*)
 
   ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec
   rule `array.len-array`{z : state, a : addr}:
-    `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) `ARRAY.LEN`_instr]), [CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN(|$arrayinst(z)[a].FIELDS_arrayinst|,)))])
+    `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) `ARRAY.LEN`_instr]), [CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN(|$s(z).ARRAYS_store[a].FIELDS_arrayinst|,)))])
     -- wf_config: `%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) `ARRAY.LEN`_instr]),)
-    -- wf_instr: `%`(CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN(|$arrayinst(z)[a].FIELDS_arrayinst|,))),)
+    -- wf_instr: `%`(CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN(|$s(z).ARRAYS_store[a].FIELDS_arrayinst|,))),)
 
   ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec
   rule `array.fill-null`{z : state, i : num_, val : val, n : n, x : idx}:
@@ -11326,14 +11282,14 @@ relation Step_read: `%~>%`(config, instr*)
   ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec
   rule `array.fill-oob`{z : state, a : addr, i : num_, val : val, n : n, x : idx}:
     `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) (val : val <: instr) CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN(n,))) `ARRAY.FILL`_instr(x)]), [TRAP_instr])
-    -- if (($proj_uN_0(!($proj_num__0(i))).0 + n) > |$arrayinst(z)[a].FIELDS_arrayinst|)
+    -- if (($proj_uN_0(!($proj_num__0(i))).0 + n) > |$s(z).ARRAYS_store[a].FIELDS_arrayinst|)
     -- wf_config: `%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) (val : val <: instr) CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN(n,))) `ARRAY.FILL`_instr(x)]),)
     -- wf_instr: `%`(TRAP_instr,)
 
   ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec
   rule `array.fill-zero`{z : state, a : addr, i : num_, val : val, n : n, x : idx}:
     `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) (val : val <: instr) CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN(n,))) `ARRAY.FILL`_instr(x)]), [])
-    -- if (($proj_uN_0(!($proj_num__0(i))).0 + n) <= |$arrayinst(z)[a].FIELDS_arrayinst|)
+    -- if (($proj_uN_0(!($proj_num__0(i))).0 + n) <= |$s(z).ARRAYS_store[a].FIELDS_arrayinst|)
     -- if (n = 0)
     -- wf_config: `%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) (val : val <: instr) CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN(n,))) `ARRAY.FILL`_instr(x)]),)
 
@@ -11341,7 +11297,7 @@ relation Step_read: `%~>%`(config, instr*)
   rule `array.fill-succ`{z : state, a : addr, i : num_, val : val, n : n, x : idx}:
     `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) (val : val <: instr) CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN(n,))) `ARRAY.FILL`_instr(x)]), [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) (val : val <: instr) `ARRAY.SET`_instr(x) `REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN(($proj_uN_0(!($proj_num__0(i))).0 + 1),))) (val : val <: instr) CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN((((n : nat <:> int) - (1 : nat <:> int)) : int <:> nat),))) `ARRAY.FILL`_instr(x)])
     -- if (n =/= 0)
-    -- if (($proj_uN_0(!($proj_num__0(i))).0 + n) <= |$arrayinst(z)[a].FIELDS_arrayinst|)
+    -- if (($proj_uN_0(!($proj_num__0(i))).0 + n) <= |$s(z).ARRAYS_store[a].FIELDS_arrayinst|)
     -- wf_config: `%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) (val : val <: instr) CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN(n,))) `ARRAY.FILL`_instr(x)]),)
     -- wf_instr: `%`(`REF.ARRAY_ADDR`_instr(a),)
     -- wf_instr: `%`(CONST_instr(I32_numtype, i),)
@@ -11365,22 +11321,22 @@ relation Step_read: `%~>%`(config, instr*)
   ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec
   rule `array.copy-oob1`{z : state, a_1 : addr, i_1 : num_, a_2 : addr, i_2 : num_, n : n, x_1 : idx, x_2 : idx}:
     `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a_1) CONST_instr(I32_numtype, i_1) `REF.ARRAY_ADDR`_instr(a_2) CONST_instr(I32_numtype, i_2) CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN(n,))) `ARRAY.COPY`_instr(x_1, x_2)]), [TRAP_instr])
-    -- if (($proj_uN_0(!($proj_num__0(i_1))).0 + n) > |$arrayinst(z)[a_1].FIELDS_arrayinst|)
+    -- if (($proj_uN_0(!($proj_num__0(i_1))).0 + n) > |$s(z).ARRAYS_store[a_1].FIELDS_arrayinst|)
     -- wf_config: `%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a_1) CONST_instr(I32_numtype, i_1) `REF.ARRAY_ADDR`_instr(a_2) CONST_instr(I32_numtype, i_2) CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN(n,))) `ARRAY.COPY`_instr(x_1, x_2)]),)
     -- wf_instr: `%`(TRAP_instr,)
 
   ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec
   rule `array.copy-oob2`{z : state, a_1 : addr, i_1 : num_, a_2 : addr, i_2 : num_, n : n, x_1 : idx, x_2 : idx}:
     `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a_1) CONST_instr(I32_numtype, i_1) `REF.ARRAY_ADDR`_instr(a_2) CONST_instr(I32_numtype, i_2) CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN(n,))) `ARRAY.COPY`_instr(x_1, x_2)]), [TRAP_instr])
-    -- if (($proj_uN_0(!($proj_num__0(i_2))).0 + n) > |$arrayinst(z)[a_2].FIELDS_arrayinst|)
+    -- if (($proj_uN_0(!($proj_num__0(i_2))).0 + n) > |$s(z).ARRAYS_store[a_2].FIELDS_arrayinst|)
     -- wf_config: `%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a_1) CONST_instr(I32_numtype, i_1) `REF.ARRAY_ADDR`_instr(a_2) CONST_instr(I32_numtype, i_2) CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN(n,))) `ARRAY.COPY`_instr(x_1, x_2)]),)
     -- wf_instr: `%`(TRAP_instr,)
 
   ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec
   rule `array.copy-zero`{z : state, a_1 : addr, i_1 : num_, a_2 : addr, i_2 : num_, n : n, x_1 : idx, x_2 : idx}:
     `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a_1) CONST_instr(I32_numtype, i_1) `REF.ARRAY_ADDR`_instr(a_2) CONST_instr(I32_numtype, i_2) CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN(n,))) `ARRAY.COPY`_instr(x_1, x_2)]), [])
-    -- if (($proj_uN_0(!($proj_num__0(i_2))).0 + n) <= |$arrayinst(z)[a_2].FIELDS_arrayinst|)
-    -- if (($proj_uN_0(!($proj_num__0(i_1))).0 + n) <= |$arrayinst(z)[a_1].FIELDS_arrayinst|)
+    -- if (($proj_uN_0(!($proj_num__0(i_2))).0 + n) <= |$s(z).ARRAYS_store[a_2].FIELDS_arrayinst|)
+    -- if (($proj_uN_0(!($proj_num__0(i_1))).0 + n) <= |$s(z).ARRAYS_store[a_1].FIELDS_arrayinst|)
     -- if (n = 0)
     -- wf_config: `%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a_1) CONST_instr(I32_numtype, i_1) `REF.ARRAY_ADDR`_instr(a_2) CONST_instr(I32_numtype, i_2) CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN(n,))) `ARRAY.COPY`_instr(x_1, x_2)]),)
 
@@ -11388,10 +11344,10 @@ relation Step_read: `%~>%`(config, instr*)
   rule `array.copy-le`{z : state, a_1 : addr, i_1 : num_, a_2 : addr, i_2 : num_, n : n, x_1 : idx, x_2 : idx, `sx?` : sx?, `mut?` : mut?, zt_2 : storagetype}:
     `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a_1) CONST_instr(I32_numtype, i_1) `REF.ARRAY_ADDR`_instr(a_2) CONST_instr(I32_numtype, i_2) CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN(n,))) `ARRAY.COPY`_instr(x_1, x_2)]), [`REF.ARRAY_ADDR`_instr(a_1) CONST_instr(I32_numtype, i_1) `REF.ARRAY_ADDR`_instr(a_2) CONST_instr(I32_numtype, i_2) `ARRAY.GET`_instr(sx?{sx <- `sx?`}, x_2) `ARRAY.SET`_instr(x_1) `REF.ARRAY_ADDR`_instr(a_1) CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN(($proj_uN_0(!($proj_num__0(i_1))).0 + 1),))) `REF.ARRAY_ADDR`_instr(a_2) CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN(($proj_uN_0(!($proj_num__0(i_2))).0 + 1),))) CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN((((n : nat <:> int) - (1 : nat <:> int)) : int <:> nat),))) `ARRAY.COPY`_instr(x_1, x_2)])
     -- if (n =/= 0)
-    -- if (($proj_uN_0(!($proj_num__0(i_2))).0 + n) <= |$arrayinst(z)[a_2].FIELDS_arrayinst|)
-    -- if (($proj_uN_0(!($proj_num__0(i_1))).0 + n) <= |$arrayinst(z)[a_1].FIELDS_arrayinst|)
+    -- if (($proj_uN_0(!($proj_num__0(i_2))).0 + n) <= |$s(z).ARRAYS_store[a_2].FIELDS_arrayinst|)
+    -- if (($proj_uN_0(!($proj_num__0(i_1))).0 + n) <= |$s(z).ARRAYS_store[a_1].FIELDS_arrayinst|)
     -- Expand: `%~~%`($type(z, x_2), ARRAY_comptype(`%%`_fieldtype(mut?{mut <- `mut?`}, zt_2)))
-    -- if (($proj_uN_0(!($proj_num__0(i_1))).0 <= $proj_uN_0(!($proj_num__0(i_2))).0) /\ (sx?{sx <- `sx?`} = !($sx(zt_2))))
+    -- if (($proj_uN_0(!($proj_num__0(i_1))).0 <= $proj_uN_0(!($proj_num__0(i_2))).0) /\ (sx?{sx <- `sx?`} = $sx(zt_2)))
     -- wf_config: `%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a_1) CONST_instr(I32_numtype, i_1) `REF.ARRAY_ADDR`_instr(a_2) CONST_instr(I32_numtype, i_2) CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN(n,))) `ARRAY.COPY`_instr(x_1, x_2)]),)
     -- wf_instr: `%`(`REF.ARRAY_ADDR`_instr(a_1),)
     -- wf_instr: `%`(CONST_instr(I32_numtype, i_1),)
@@ -11410,7 +11366,7 @@ relation Step_read: `%~>%`(config, instr*)
     `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a_1) CONST_instr(I32_numtype, i_1) `REF.ARRAY_ADDR`_instr(a_2) CONST_instr(I32_numtype, i_2) CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN(n,))) `ARRAY.COPY`_instr(x_1, x_2)]), [`REF.ARRAY_ADDR`_instr(a_1) CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN((((($proj_uN_0(!($proj_num__0(i_1))).0 + n) : nat <:> int) - (1 : nat <:> int)) : int <:> nat),))) `REF.ARRAY_ADDR`_instr(a_2) CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN((((($proj_uN_0(!($proj_num__0(i_2))).0 + n) : nat <:> int) - (1 : nat <:> int)) : int <:> nat),))) `ARRAY.GET`_instr(sx?{sx <- `sx?`}, x_2) `ARRAY.SET`_instr(x_1) `REF.ARRAY_ADDR`_instr(a_1) CONST_instr(I32_numtype, i_1) `REF.ARRAY_ADDR`_instr(a_2) CONST_instr(I32_numtype, i_2) CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN((((n : nat <:> int) - (1 : nat <:> int)) : int <:> nat),))) `ARRAY.COPY`_instr(x_1, x_2)])
     -- ~ `Step_read_before_array.copy-gt`: `%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a_1) CONST_instr(I32_numtype, i_1) `REF.ARRAY_ADDR`_instr(a_2) CONST_instr(I32_numtype, i_2) CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN(n,))) `ARRAY.COPY`_instr(x_1, x_2)]))
     -- Expand: `%~~%`($type(z, x_2), ARRAY_comptype(`%%`_fieldtype(mut?{mut <- `mut?`}, zt_2)))
-    -- if (sx?{sx <- `sx?`} = !($sx(zt_2)))
+    -- if (sx?{sx <- `sx?`} = $sx(zt_2))
     -- wf_config: `%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a_1) CONST_instr(I32_numtype, i_1) `REF.ARRAY_ADDR`_instr(a_2) CONST_instr(I32_numtype, i_2) CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN(n,))) `ARRAY.COPY`_instr(x_1, x_2)]),)
     -- wf_instr: `%`(`REF.ARRAY_ADDR`_instr(a_1),)
     -- wf_instr: `%`(CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN((((($proj_uN_0(!($proj_num__0(i_1))).0 + n) : nat <:> int) - (1 : nat <:> int)) : int <:> nat),))),)
@@ -11433,7 +11389,7 @@ relation Step_read: `%~>%`(config, instr*)
   ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec
   rule `array.init_elem-oob1`{z : state, a : addr, i : num_, j : num_, n : n, x : idx, y : idx}:
     `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) CONST_instr(I32_numtype, j) CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN(n,))) `ARRAY.INIT_ELEM`_instr(x, y)]), [TRAP_instr])
-    -- if (($proj_uN_0(!($proj_num__0(i))).0 + n) > |$arrayinst(z)[a].FIELDS_arrayinst|)
+    -- if (($proj_uN_0(!($proj_num__0(i))).0 + n) > |$s(z).ARRAYS_store[a].FIELDS_arrayinst|)
     -- wf_config: `%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) CONST_instr(I32_numtype, j) CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN(n,))) `ARRAY.INIT_ELEM`_instr(x, y)]),)
     -- wf_instr: `%`(TRAP_instr,)
 
@@ -11448,7 +11404,7 @@ relation Step_read: `%~>%`(config, instr*)
   rule `array.init_elem-zero`{z : state, a : addr, i : num_, j : num_, n : n, x : idx, y : idx}:
     `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) CONST_instr(I32_numtype, j) CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN(n,))) `ARRAY.INIT_ELEM`_instr(x, y)]), [])
     -- if (($proj_uN_0(!($proj_num__0(j))).0 + n) <= |$elem(z, y).REFS_eleminst|)
-    -- if (($proj_uN_0(!($proj_num__0(i))).0 + n) <= |$arrayinst(z)[a].FIELDS_arrayinst|)
+    -- if (($proj_uN_0(!($proj_num__0(i))).0 + n) <= |$s(z).ARRAYS_store[a].FIELDS_arrayinst|)
     -- if (n = 0)
     -- wf_config: `%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) CONST_instr(I32_numtype, j) CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN(n,))) `ARRAY.INIT_ELEM`_instr(x, y)]),)
 
@@ -11457,7 +11413,7 @@ relation Step_read: `%~>%`(config, instr*)
     `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) CONST_instr(I32_numtype, j) CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN(n,))) `ARRAY.INIT_ELEM`_instr(x, y)]), [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) (ref : ref <: instr) `ARRAY.SET`_instr(x) `REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN(($proj_uN_0(!($proj_num__0(i))).0 + 1),))) CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN(($proj_uN_0(!($proj_num__0(j))).0 + 1),))) CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN((((n : nat <:> int) - (1 : nat <:> int)) : int <:> nat),))) `ARRAY.INIT_ELEM`_instr(x, y)])
     -- if (n =/= 0)
     -- if (($proj_uN_0(!($proj_num__0(j))).0 + n) <= |$elem(z, y).REFS_eleminst|)
-    -- if (($proj_uN_0(!($proj_num__0(i))).0 + n) <= |$arrayinst(z)[a].FIELDS_arrayinst|)
+    -- if (($proj_uN_0(!($proj_num__0(i))).0 + n) <= |$s(z).ARRAYS_store[a].FIELDS_arrayinst|)
     -- if (ref = $elem(z, y).REFS_eleminst[$proj_uN_0(!($proj_num__0(j))).0])
     -- wf_ref: `%`(ref,)
     -- wf_config: `%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) CONST_instr(I32_numtype, j) CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN(n,))) `ARRAY.INIT_ELEM`_instr(x, y)]),)
@@ -11478,7 +11434,7 @@ relation Step_read: `%~>%`(config, instr*)
   ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec
   rule `array.init_data-oob1`{z : state, a : addr, i : num_, j : num_, n : n, x : idx, y : idx}:
     `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) CONST_instr(I32_numtype, j) CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN(n,))) `ARRAY.INIT_DATA`_instr(x, y)]), [TRAP_instr])
-    -- if (($proj_uN_0(!($proj_num__0(i))).0 + n) > |$arrayinst(z)[a].FIELDS_arrayinst|)
+    -- if (($proj_uN_0(!($proj_num__0(i))).0 + n) > |$s(z).ARRAYS_store[a].FIELDS_arrayinst|)
     -- wf_config: `%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) CONST_instr(I32_numtype, j) CONST_instr(I32_numtype, mk_num__0_num_(I32_Inn, `%`_uN(n,))) `ARRAY.INIT_DATA`_instr(x, y)]),)
     -- wf_instr: `%`(TRAP_instr,)
 
@@ -11534,7 +11490,7 @@ relation Step: `%~>%`(config, config)
     -- wf_config: `%`(`%;%`_config(z, instr*{instr <- `instr*`}),)
     -- wf_config: `%`(`%;%`_config(z, instr'*{instr' <- `instr'*`}),)
 
-  ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec:32.1-35.41
+  ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec:32.1-35.43
   rule `ctxt-instrs`{z : state, `val*` : val*, `instr*` : instr*, `instr_1*` : instr*, z' : state, `instr'*` : instr*}:
     `%~>%`(`%;%`_config(z, (val : val <: instr)*{val <- `val*`} ++ instr*{instr <- `instr*`} ++ instr_1*{instr_1 <- `instr_1*`}), `%;%`_config(z', (val : val <: instr)*{val <- `val*`} ++ instr'*{instr' <- `instr'*`} ++ instr_1*{instr_1 <- `instr_1*`}))
     -- Step: `%~>%`(`%;%`_config(z, instr*{instr <- `instr*`}), `%;%`_config(z', instr'*{instr' <- `instr'*`}))
@@ -11580,7 +11536,7 @@ relation Step: `%~>%`(config, config)
   ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec:176.1-182.61
   rule `call_ref-func`{z : state, n : n, `val*` : val*, a : addr, yy : typeuse, m : m, f : frame, `instr*` : instr*, fi : funcinst, `t_1*` : valtype*, `t_2*` : valtype*, x : idx, `t*` : valtype*}:
     `%~>%`(`%;%`_config(z, (val : val <: instr)^n{val <- `val*`} ++ [`REF.FUNC_ADDR`_instr(a) CALL_REF_instr(yy)]), `%;%`_config(z, [`FRAME_%{%}%`_instr(m, f, [`LABEL_%{%}%`_instr(m, [], instr*{instr <- `instr*`})])]))
-    -- if ($funcinst(z)[a] = fi)
+    -- if ($s(z).FUNCS_store[a] = fi)
     -- Expand: `%~~%`(fi.TYPE_funcinst, `FUNC%->%`_comptype(`%`_resulttype(t_1^n{t_1 <- `t_1*`},), `%`_resulttype(t_2^m{t_2 <- `t_2*`},)))
     -- if (fi.CODE_funcinst = FUNC_funccode(x, LOCAL_local(t)*{t <- `t*`}, instr*{instr <- `instr*`}))
     -- if (f = {LOCALS ?(val)^n{val <- `val*`} ++ !($default_(t))*{t <- `t*`}, MODULE fi.MODULE_funcinst})
@@ -11593,14 +11549,13 @@ relation Step: `%~>%`(config, config)
   ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec:184.1-190.59
   rule `call_ref-hostfunc-res`{s : store, f : frame, n : n, `val*` : val*, a : addr, yy : typeuse, s' : store, result : result, fi : funcinst, `t_1*` : valtype*, m : m, `t_2*` : valtype*, hf : text}:
     `%~>%`(`%;%`_config(`%;%`_state(s, f), (val : val <: instr)^n{val <- `val*`} ++ [`REF.FUNC_ADDR`_instr(a) CALL_REF_instr(yy)]), `%;%`_config(`%;%`_state(s', f), $lift_result(result)))
-    -- if ($funcinst(`%;%`_state(s, f))[a] = fi)
+    -- if (s.FUNCS_store[a] = fi)
     -- Expand: `%~~%`(fi.TYPE_funcinst, `FUNC%->%`_comptype(`%`_resulttype(t_1^n{t_1 <- `t_1*`},), `%`_resulttype(t_2^m{t_2 <- `t_2*`},)))
     -- if (fi.CODE_funcinst = _HOSTFUNC_funccode(hf))
     -- if (RES_hostcallresult(s', result) <- $hostcall(_HOSTFUNC_hostfunc(hf), s, val^n{val <- `val*`}))
     -- wf_funcinst: `%`(fi,)
     -- wf_config: `%`(`%;%`_config(`%;%`_state(s, f), (val : val <: instr)^n{val <- `val*`} ++ [`REF.FUNC_ADDR`_instr(a) CALL_REF_instr(yy)]),)
     -- wf_config: `%`(`%;%`_config(`%;%`_state(s', f), $lift_result(result)),)
-    -- wf_state: `%`(`%;%`_state(s, f),)
     -- wf_comptype: `%`(`FUNC%->%`_comptype(`%`_resulttype(t_1^n{t_1 <- `t_1*`},), `%`_resulttype(t_2^m{t_2 <- `t_2*`},)),)
     -- wf_funccode: `%`(_HOSTFUNC_funccode(hf),)
     -- wf_hostcallresult: `%`(RES_hostcallresult(s', result),)
@@ -11608,27 +11563,26 @@ relation Step: `%~>%`(config, config)
   ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec:192.1-198.49
   rule `call_ref-hostfunc-div`{s : store, f : frame, n : n, `val*` : val*, a : addr, yy : typeuse, fi : funcinst, `t_1*` : valtype*, m : m, `t_2*` : valtype*, hf : text}:
     `%~>%`(`%;%`_config(`%;%`_state(s, f), (val : val <: instr)^n{val <- `val*`} ++ [`REF.FUNC_ADDR`_instr(a) CALL_REF_instr(yy)]), `%;%`_config(`%;%`_state(s, f), (val : val <: instr)^n{val <- `val*`} ++ [`REF.FUNC_ADDR`_instr(a) CALL_REF_instr(yy)]))
-    -- if ($funcinst(`%;%`_state(s, f))[a] = fi)
+    -- if (s.FUNCS_store[a] = fi)
     -- Expand: `%~~%`(fi.TYPE_funcinst, `FUNC%->%`_comptype(`%`_resulttype(t_1^n{t_1 <- `t_1*`},), `%`_resulttype(t_2^m{t_2 <- `t_2*`},)))
     -- if (fi.CODE_funcinst = _HOSTFUNC_funccode(hf))
     -- if (BOT_hostcallresult <- $hostcall(_HOSTFUNC_hostfunc(hf), s, val^n{val <- `val*`}))
     -- wf_funcinst: `%`(fi,)
     -- wf_config: `%`(`%;%`_config(`%;%`_state(s, f), (val : val <: instr)^n{val <- `val*`} ++ [`REF.FUNC_ADDR`_instr(a) CALL_REF_instr(yy)]),)
-    -- wf_state: `%`(`%;%`_state(s, f),)
     -- wf_comptype: `%`(`FUNC%->%`_comptype(`%`_resulttype(t_1^n{t_1 <- `t_1*`},), `%`_resulttype(t_2^m{t_2 <- `t_2*`},)),)
     -- wf_funccode: `%`(_HOSTFUNC_funccode(hf),)
     -- wf_hostcallresult: `%`(BOT_hostcallresult,)
 
-  ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec:242.1-246.49
+  ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec:242.1-246.55
   rule throw{z : state, n : n, `val*` : val*, x : idx, exn : exninst, a : addr, `t*` : valtype*}:
-    `%~>%`(`%;%`_config(z, (val : val <: instr)^n{val <- `val*`} ++ [THROW_instr(x)]), `%;%`_config($add_exninst(z, [exn]), [`REF.EXN_ADDR`_instr(a) THROW_REF_instr]))
+    `%~>%`(`%;%`_config(z, (val : val <: instr)^n{val <- `val*`} ++ [THROW_instr(x)]), `%;%`_config($add_exninst(z, exn), [`REF.EXN_ADDR`_instr(a) THROW_REF_instr]))
     -- Expand: `%~~%`(!($as_deftype($tag(z, x).TYPE_taginst)), `FUNC%->%`_comptype(`%`_resulttype(t^n{t <- `t*`},), `%`_resulttype([],)))
-    -- if (a = |$exninst(z)|)
-    -- if (exn = {TAG $tagaddr(z)[$proj_uN_0(x).0], FIELDS val^n{val <- `val*`}})
+    -- if (a = |$s(z).EXNS_store|)
+    -- if (exn = {TAG $f(z).MODULE_frame.TAGS_moduleinst[$proj_uN_0(x).0], FIELDS val^n{val <- `val*`}})
     -- wf_config: `%`(`%;%`_config(z, (val : val <: instr)^n{val <- `val*`} ++ [THROW_instr(x)]),)
-    -- wf_config: `%`(`%;%`_config($add_exninst(z, [exn]), [`REF.EXN_ADDR`_instr(a) THROW_REF_instr]),)
+    -- wf_config: `%`(`%;%`_config($add_exninst(z, exn), [`REF.EXN_ADDR`_instr(a) THROW_REF_instr]),)
     -- wf_comptype: `%`(`FUNC%->%`_comptype(`%`_resulttype(t^n{t <- `t*`},), `%`_resulttype([],)),)
-    -- wf_exninst: `%`({TAG $tagaddr(z)[$proj_uN_0(x).0], FIELDS val^n{val <- `val*`}},)
+    -- wf_exninst: `%`({TAG $f(z).MODULE_frame.TAGS_moduleinst[$proj_uN_0(x).0], FIELDS val^n{val <- `val*`}},)
 
   ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec:320.1-321.56
   rule `local.set`{z : state, val : val, x : idx}:
@@ -11753,24 +11707,24 @@ relation Step: `%~>%`(config, config)
     -- wf_config: `%`(`%;%`_config(z, [`DATA.DROP`_instr(x)]),)
     -- wf_config: `%`(`%;%`_config($with_data(z, x, []), []),)
 
-  ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec:707.1-711.65
+  ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec:702.1-706.65
   rule `struct.new`{z : state, n : n, `val*` : val*, x : idx, si : structinst, a : addr, `mut?*` : mut?*, `zt*` : storagetype*}:
-    `%~>%`(`%;%`_config(z, (val : val <: instr)^n{val <- `val*`} ++ [`STRUCT.NEW`_instr(x)]), `%;%`_config($add_structinst(z, [si]), [`REF.STRUCT_ADDR`_instr(a)]))
+    `%~>%`(`%;%`_config(z, (val : val <: instr)^n{val <- `val*`} ++ [`STRUCT.NEW`_instr(x)]), `%;%`_config($add_structinst(z, si), [`REF.STRUCT_ADDR`_instr(a)]))
     -- Expand: `%~~%`($type(z, x), STRUCT_comptype(`%`_list(`%%`_fieldtype(mut?{mut <- `mut?`}, zt)^n{`mut?` <- `mut?*`, zt <- `zt*`},)))
-    -- if (a = |$structinst(z)|)
+    -- if (a = |$s(z).STRUCTS_store|)
     -- if (si = {TYPE $type(z, x), FIELDS !($packfield_(zt, val))^n{val <- `val*`, zt <- `zt*`}})
     -- wf_config: `%`(`%;%`_config(z, (val : val <: instr)^n{val <- `val*`} ++ [`STRUCT.NEW`_instr(x)]),)
-    -- wf_config: `%`(`%;%`_config($add_structinst(z, [si]), [`REF.STRUCT_ADDR`_instr(a)]),)
+    -- wf_config: `%`(`%;%`_config($add_structinst(z, si), [`REF.STRUCT_ADDR`_instr(a)]),)
     -- wf_comptype: `%`(STRUCT_comptype(`%`_list(`%%`_fieldtype(mut?{mut <- `mut?`}, zt)^n{`mut?` <- `mut?*`, zt <- `zt*`},)),)
     -- wf_structinst: `%`({TYPE $type(z, x), FIELDS !($packfield_(zt, val))^n{val <- `val*`, zt <- `zt*`}},)
 
-  ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec:728.1-729.55
+  ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec:723.1-724.55
   rule `struct.set-null`{z : state, val : val, x : idx, i : fieldidx}:
     `%~>%`(`%;%`_config(z, [`REF.NULL_ADDR`_instr (val : val <: instr) `STRUCT.SET`_instr(x, i)]), `%;%`_config(z, [TRAP_instr]))
     -- wf_config: `%`(`%;%`_config(z, [`REF.NULL_ADDR`_instr (val : val <: instr) `STRUCT.SET`_instr(x, i)]),)
     -- wf_config: `%`(`%;%`_config(z, [TRAP_instr]),)
 
-  ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec:731.1-734.46
+  ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec:726.1-729.46
   rule `struct.set-struct`{z : state, a : addr, val : val, x : idx, i : fieldidx, `zt*` : storagetype*, `mut?*` : mut?*}:
     `%~>%`(`%;%`_config(z, [`REF.STRUCT_ADDR`_instr(a) (val : val <: instr) `STRUCT.SET`_instr(x, i)]), `%;%`_config($with_struct(z, a, $proj_uN_0(i).0, !($packfield_(zt*{zt <- `zt*`}[$proj_uN_0(i).0], val))), []))
     -- Expand: `%~~%`($type(z, x), STRUCT_comptype(`%`_list(`%%`_fieldtype(mut?{mut <- `mut?`}, zt)*{`mut?` <- `mut?*`, zt <- `zt*`},)))
@@ -11778,30 +11732,30 @@ relation Step: `%~>%`(config, config)
     -- wf_config: `%`(`%;%`_config($with_struct(z, a, $proj_uN_0(i).0, !($packfield_(zt*{zt <- `zt*`}[$proj_uN_0(i).0], val))), []),)
     -- wf_comptype: `%`(STRUCT_comptype(`%`_list(`%%`_fieldtype(mut?{mut <- `mut?`}, zt)*{`mut?` <- `mut?*`, zt <- `zt*`},)),)
 
-  ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec:747.1-752.65
+  ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec:742.1-747.65
   rule `array.new_fixed`{z : state, n : n, `val*` : val*, x : idx, ai : arrayinst, a : addr, `mut?` : mut?, zt : storagetype}:
-    `%~>%`(`%;%`_config(z, (val : val <: instr)^n{val <- `val*`} ++ [`ARRAY.NEW_FIXED`_instr(x, `%`_u32(n,))]), `%;%`_config($add_arrayinst(z, [ai]), [`REF.ARRAY_ADDR`_instr(a)]))
+    `%~>%`(`%;%`_config(z, (val : val <: instr)^n{val <- `val*`} ++ [`ARRAY.NEW_FIXED`_instr(x, `%`_u32(n,))]), `%;%`_config($add_arrayinst(z, ai), [`REF.ARRAY_ADDR`_instr(a)]))
     -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`_fieldtype(mut?{mut <- `mut?`}, zt)))
-    -- if ((a = |$arrayinst(z)|) /\ (ai = {TYPE $type(z, x), FIELDS !($packfield_(zt, val))^n{val <- `val*`}}))
+    -- if ((a = |$s(z).ARRAYS_store|) /\ (ai = {TYPE $type(z, x), FIELDS !($packfield_(zt, val))^n{val <- `val*`}}))
     -- wf_config: `%`(`%;%`_config(z, (val : val <: instr)^n{val <- `val*`} ++ [`ARRAY.NEW_FIXED`_instr(x, `%`_u32(n,))]),)
-    -- wf_config: `%`(`%;%`_config($add_arrayinst(z, [ai]), [`REF.ARRAY_ADDR`_instr(a)]),)
+    -- wf_config: `%`(`%;%`_config($add_arrayinst(z, ai), [`REF.ARRAY_ADDR`_instr(a)]),)
     -- wf_comptype: `%`(ARRAY_comptype(`%%`_fieldtype(mut?{mut <- `mut?`}, zt)),)
     -- wf_arrayinst: `%`({TYPE $type(z, x), FIELDS !($packfield_(zt, val))^n{val <- `val*`}},)
 
-  ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec:792.1-793.66
+  ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec:787.1-788.66
   rule `array.set-null`{z : state, i : num_, val : val, x : idx}:
     `%~>%`(`%;%`_config(z, [`REF.NULL_ADDR`_instr CONST_instr(I32_numtype, i) (val : val <: instr) `ARRAY.SET`_instr(x)]), `%;%`_config(z, [TRAP_instr]))
     -- wf_config: `%`(`%;%`_config(z, [`REF.NULL_ADDR`_instr CONST_instr(I32_numtype, i) (val : val <: instr) `ARRAY.SET`_instr(x)]),)
     -- wf_config: `%`(`%;%`_config(z, [TRAP_instr]),)
 
-  ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec:795.1-797.39
+  ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec:790.1-792.38
   rule `array.set-oob`{z : state, a : addr, i : num_, val : val, x : idx}:
     `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) (val : val <: instr) `ARRAY.SET`_instr(x)]), `%;%`_config(z, [TRAP_instr]))
-    -- if ($proj_uN_0(!($proj_num__0(i))).0 >= |$arrayinst(z)[a].FIELDS_arrayinst|)
+    -- if ($proj_uN_0(!($proj_num__0(i))).0 >= |$s(z).ARRAYS_store[a].FIELDS_arrayinst|)
     -- wf_config: `%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) (val : val <: instr) `ARRAY.SET`_instr(x)]),)
     -- wf_config: `%`(`%;%`_config(z, [TRAP_instr]),)
 
-  ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec:799.1-802.44
+  ;; ../../../../specification/wasm-3.0/4.3-execution.instructions.spectec:794.1-797.44
   rule `array.set-array`{z : state, a : addr, i : num_, val : val, x : idx, zt : storagetype, `mut?` : mut?}:
     `%~>%`(`%;%`_config(z, [`REF.ARRAY_ADDR`_instr(a) CONST_instr(I32_numtype, i) (val : val <: instr) `ARRAY.SET`_instr(x)]), `%;%`_config($with_array(z, a, $proj_uN_0(!($proj_num__0(i))).0, !($packfield_(zt, val))), []))
     -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`_fieldtype(mut?{mut <- `mut?`}, zt)))
@@ -12726,15 +12680,24 @@ relation Instrs_ok2: `%;%|-%:%`(store, context, instr*, instrtype)
     -- wf_context: `%`(C,)
     -- wf_instrtype: `%`(`%->_%%`_instrtype(`%`_resulttype([],), [], `%`_resulttype([],)),)
 
-  ;; ../../../../specification/wasm-3.0/7.1-soundness.configurations.spectec:57.1-61.86
-  rule seq{s : store, C : context, instr_1 : instr, `instr_2*` : instr*, `t_1*` : valtype*, `x_1*` : idx*, `x_2*` : idx*, `t_3*` : valtype*, `t_2*` : valtype*, `init*` : init*, `t*` : valtype*}:
-    `%;%|-%:%`(s, C, [instr_1] ++ instr_2*{instr_2 <- `instr_2*`}, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`},), x_1*{x_1 <- `x_1*`} ++ x_2*{x_2 <- `x_2*`}, `%`_resulttype(t_3*{t_3 <- `t_3*`},)))
-    -- Instr_ok2: `%;%|-%:%`(s, C, instr_1, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`},), x_1*{x_1 <- `x_1*`}, `%`_resulttype(t_2*{t_2 <- `t_2*`},)))
+  ;; ../../../../specification/wasm-3.0/7.1-soundness.configurations.spectec:57.1-59.50
+  rule instr{s : store, C : context, instr : instr, `t_1*` : valtype*, `x*` : idx*, `t_2*` : valtype*}:
+    `%;%|-%:%`(s, C, [instr], `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`},), x*{x <- `x*`}, `%`_resulttype(t_2*{t_2 <- `t_2*`},)))
+    -- Instr_ok2: `%;%|-%:%`(s, C, instr, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`},), x*{x <- `x*`}, `%`_resulttype(t_2*{t_2 <- `t_2*`},)))
+    -- wf_store: `%`(s,)
+    -- wf_context: `%`(C,)
+    -- wf_instr: `%`(instr,)
+    -- wf_instrtype: `%`(`%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`},), x*{x <- `x*`}, `%`_resulttype(t_2*{t_2 <- `t_2*`},)),)
+
+  ;; ../../../../specification/wasm-3.0/7.1-soundness.configurations.spectec:61.1-65.86
+  rule seq{s : store, C : context, `instr_1*` : instr*, `instr_2*` : instr*, `t_1*` : valtype*, `x_1*` : idx*, `x_2*` : idx*, `t_3*` : valtype*, `t_2*` : valtype*, `init*` : init*, `t*` : valtype*}:
+    `%;%|-%:%`(s, C, instr_1*{instr_1 <- `instr_1*`} ++ instr_2*{instr_2 <- `instr_2*`}, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`},), x_1*{x_1 <- `x_1*`} ++ x_2*{x_2 <- `x_2*`}, `%`_resulttype(t_3*{t_3 <- `t_3*`},)))
+    -- Instrs_ok2: `%;%|-%:%`(s, C, instr_1*{instr_1 <- `instr_1*`}, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`},), x_1*{x_1 <- `x_1*`}, `%`_resulttype(t_2*{t_2 <- `t_2*`},)))
     -- (if (C.LOCALS_context[$proj_uN_0(x_1).0] = `%%`_localtype(init, t)))*{init <- `init*`, t <- `t*`, x_1 <- `x_1*`}
     -- Instrs_ok2: `%;%|-%:%`(s, !($with_locals(C, x_1*{x_1 <- `x_1*`}, `%%`_localtype(SET_init, t)*{t <- `t*`})), instr_2*{instr_2 <- `instr_2*`}, `%->_%%`_instrtype(`%`_resulttype(t_2*{t_2 <- `t_2*`},), x_2*{x_2 <- `x_2*`}, `%`_resulttype(t_3*{t_3 <- `t_3*`},)))
     -- wf_store: `%`(s,)
     -- wf_context: `%`(C,)
-    -- wf_instr: `%`(instr_1,)
+    -- (wf_instr: `%`(instr_1,))*{instr_1 <- `instr_1*`}
     -- (wf_instr: `%`(instr_2,))*{instr_2 <- `instr_2*`}
     -- wf_instrtype: `%`(`%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`},), x_1*{x_1 <- `x_1*`} ++ x_2*{x_2 <- `x_2*`}, `%`_resulttype(t_3*{t_3 <- `t_3*`},)),)
     -- wf_instrtype: `%`(`%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`},), x_1*{x_1 <- `x_1*`}, `%`_resulttype(t_2*{t_2 <- `t_2*`},)),)
@@ -12742,7 +12705,7 @@ relation Instrs_ok2: `%;%|-%:%`(store, context, instr*, instrtype)
     -- (wf_localtype: `%`(`%%`_localtype(SET_init, t),))*{t <- `t*`}
     -- wf_instrtype: `%`(`%->_%%`_instrtype(`%`_resulttype(t_2*{t_2 <- `t_2*`},), x_2*{x_2 <- `x_2*`}, `%`_resulttype(t_3*{t_3 <- `t_3*`},)),)
 
-  ;; ../../../../specification/wasm-3.0/7.1-soundness.configurations.spectec:63.1-67.33
+  ;; ../../../../specification/wasm-3.0/7.1-soundness.configurations.spectec:67.1-71.33
   rule sub{s : store, C : context, `instr*` : instr*, it' : instrtype, it : instrtype}:
     `%;%|-%:%`(s, C, instr*{instr <- `instr*`}, it')
     -- Instrs_ok2: `%;%|-%:%`(s, C, instr*{instr <- `instr*`}, it)
@@ -12754,7 +12717,7 @@ relation Instrs_ok2: `%;%|-%:%`(store, context, instr*, instrtype)
     -- wf_instrtype: `%`(it',)
     -- wf_instrtype: `%`(it,)
 
-  ;; ../../../../specification/wasm-3.0/7.1-soundness.configurations.spectec:70.1-73.33
+  ;; ../../../../specification/wasm-3.0/7.1-soundness.configurations.spectec:74.1-77.33
   rule frame{s : store, C : context, `instr*` : instr*, `t*` : valtype*, `t_1*` : valtype*, `x*` : idx*, `t_2*` : valtype*}:
     `%;%|-%:%`(s, C, instr*{instr <- `instr*`}, `%->_%%`_instrtype(`%`_resulttype(t*{t <- `t*`} ++ t_1*{t_1 <- `t_1*`},), x*{x <- `x*`}, `%`_resulttype(t*{t <- `t*`} ++ t_2*{t_2 <- `t_2*`},)))
     -- Instrs_ok2: `%;%|-%:%`(s, C, instr*{instr <- `instr*`}, `%->_%%`_instrtype(`%`_resulttype(t_1*{t_1 <- `t_1*`},), x*{x <- `x*`}, `%`_resulttype(t_2*{t_2 <- `t_2*`},)))
@@ -12767,7 +12730,7 @@ relation Instrs_ok2: `%;%|-%:%`(store, context, instr*, instrtype)
 
 ;; ../../../../specification/wasm-3.0/7.1-soundness.configurations.spectec:7.1-8.36
 relation Expr_ok2: `%;%|-%:%`(store, context, expr, resulttype)
-  ;; ../../../../specification/wasm-3.0/7.1-soundness.configurations.spectec:76.1-78.44
+  ;; ../../../../specification/wasm-3.0/7.1-soundness.configurations.spectec:80.1-82.44
   rule _{s : store, C : context, `instr*` : instr*, `t*` : valtype*}:
     `%;%|-%:%`(s, C, instr*{instr <- `instr*`}, `%`_resulttype(t*{t <- `t*`},))
     -- Instrs_ok2: `%;%|-%:%`(s, C, instr*{instr <- `instr*`}, `%->_%%`_instrtype(`%`_resulttype([],), [], `%`_resulttype(t*{t <- `t*`},)))
@@ -12875,9 +12838,9 @@ relation Exninst_ok: `%|-%:OK`(store, exninst)
 ;; ../../../../specification/wasm-3.0/7.1-soundness.configurations.spectec
 rec {
 
-;; ../../../../specification/wasm-3.0/7.1-soundness.configurations.spectec:226.1-227.50
+;; ../../../../specification/wasm-3.0/7.1-soundness.configurations.spectec:230.1-231.50
 relation ImmutReachable: `%>>_%%`(fieldval, store, fieldval)
-  ;; ../../../../specification/wasm-3.0/7.1-soundness.configurations.spectec:240.1-243.35
+  ;; ../../../../specification/wasm-3.0/7.1-soundness.configurations.spectec:244.1-247.35
   rule trans{fv_1 : fieldval, s : store, fv_2 : fieldval, fv' : fieldval}:
     `%>>_%%`(fv_1, s, fv_2)
     -- ImmutReachable: `%>>_%%`(fv_1, s, fv')
@@ -12887,7 +12850,7 @@ relation ImmutReachable: `%>>_%%`(fieldval, store, fieldval)
     -- wf_fieldval: `%`(fv_2,)
     -- wf_fieldval: `%`(fv',)
 
-  ;; ../../../../specification/wasm-3.0/7.1-soundness.configurations.spectec:245.1-248.20
+  ;; ../../../../specification/wasm-3.0/7.1-soundness.configurations.spectec:249.1-252.20
   rule `ref.struct`{a : addr, s : store, i : nat, `ft*` : fieldtype*, zt : storagetype}:
     `%>>_%%`(`REF.STRUCT_ADDR`_fieldval(a), s, s.STRUCTS_store[a].FIELDS_structinst[i])
     -- Expand: `%~~%`(s.STRUCTS_store[a].TYPE_structinst, STRUCT_comptype(`%`_list(ft*{ft <- `ft*`},)))
@@ -12897,7 +12860,7 @@ relation ImmutReachable: `%>>_%%`(fieldval, store, fieldval)
     -- wf_comptype: `%`(STRUCT_comptype(`%`_list(ft*{ft <- `ft*`},)),)
     -- wf_fieldtype: `%`(`%%`_fieldtype(?(), zt),)
 
-  ;; ../../../../specification/wasm-3.0/7.1-soundness.configurations.spectec:250.1-252.42
+  ;; ../../../../specification/wasm-3.0/7.1-soundness.configurations.spectec:254.1-256.42
   rule `ref.array`{a : addr, s : store, i : nat, zt : storagetype}:
     `%>>_%%`(`REF.ARRAY_ADDR`_fieldval(a), s, s.ARRAYS_store[a].FIELDS_arrayinst[i])
     -- Expand: `%~~%`(s.ARRAYS_store[a].TYPE_arrayinst, ARRAY_comptype(`%%`_fieldtype(?(), zt)))
@@ -12905,13 +12868,13 @@ relation ImmutReachable: `%>>_%%`(fieldval, store, fieldval)
     -- wf_fieldval: `%`(`REF.ARRAY_ADDR`_fieldval(a),)
     -- wf_comptype: `%`(ARRAY_comptype(`%%`_fieldtype(?(), zt)),)
 
-  ;; ../../../../specification/wasm-3.0/7.1-soundness.configurations.spectec:254.1-255.44
+  ;; ../../../../specification/wasm-3.0/7.1-soundness.configurations.spectec:258.1-259.44
   rule `ref.exn`{a : addr, s : store, i : nat}:
     `%>>_%%`(`REF.EXN_ADDR`_fieldval(a), s, (s.EXNS_store[a].FIELDS_exninst[i] : val <: fieldval))
     -- wf_store: `%`(s,)
     -- wf_fieldval: `%`(`REF.EXN_ADDR`_fieldval(a),)
 
-  ;; ../../../../specification/wasm-3.0/7.1-soundness.configurations.spectec:257.1-258.28
+  ;; ../../../../specification/wasm-3.0/7.1-soundness.configurations.spectec:261.1-262.28
   rule `ref.extern`{ref : ref, s : store}:
     `%>>_%%`(`REF.EXTERN`_fieldval(ref), s, (ref : ref <: fieldval))
     -- wf_store: `%`(s,)
@@ -13331,12 +13294,12 @@ grammar Bs33 : s33
 ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec
 grammar Bi32 : i32
   ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec
-  prod{`<implicit-prod-result>` : uN} `<implicit-prod-result>`:BuN(32) => `<implicit-prod-result>`
+  prod{`<implicit-prod-result>` : iN} `<implicit-prod-result>`:BiN(32) => `<implicit-prod-result>`
 
 ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec
 grammar Bi64 : i64
   ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec
-  prod{`<implicit-prod-result>` : uN} `<implicit-prod-result>`:BuN(64) => `<implicit-prod-result>`
+  prod{`<implicit-prod-result>` : iN} `<implicit-prod-result>`:BiN(64) => `<implicit-prod-result>`
 
 ;; ../../../../specification/wasm-3.0/5.1-binary.values.spectec
 grammar Bf32 : f32
@@ -15013,7 +14976,7 @@ grammar Tstringchar : char
   prod "\\\\" => `%`_char(92,)
   ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
   prod{n : n} {{"\\u{"} {n:Thexnum} {"}"}} => `%`_char(n,)
-    -- if ((n < 55296) \/ ((59392 <= n) /\ (n < 1114112)))
+    -- if ((n < 55296) \/ ((57344 <= n) /\ (n < 1114112)))
 
 ;; ../../../../specification/wasm-3.0/6.1-text.values.spectec
 grammar Tstringelem : byte*
@@ -15635,7 +15598,8 @@ grammar Talign_(N : N) : u32
   prod{n : n, m : m} {{"align="} {`%`_u64(m,):Tu64}} => `%`_u32(n,)
     -- if (m = (2 ^ n))
   ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
-  prod eps => `%`_u32(N,)
+  prod{n : n} eps => `%`_u32(n,)
+    -- if (N = (2 ^ n))
 
 ;; ../../../../specification/wasm-3.0/6.3-text.instructions.spectec
 grammar Toffset : u64

@@ -64,8 +64,8 @@ Similarly, :ref:`defined types <syntax-deftype>` :code:`def_type` can be represe
    type def_type = Def(rec : rec_type, proj : int32)
 
    func unpack_field(t : field_type) : val_type =
-     if (it = I8 || t = I16) return I32
-     return t
+     if (t.val = I8 || t.val = I16) return I32
+     return t.val
 
    func expand_def(t : def_type) : comp_type =
      return t.rec.types[t.proj].body
@@ -107,6 +107,8 @@ Finally, the following function computes the least precise supertype of a given 
          return Func
        case (Extern | Noextern)
          return Extern
+       case (Exn | Noexn)
+         return Exn
        case (Def(dt))
          switch (dt.rec.types[dt.proj].body)
            case (Struct(_) | Array(_))
@@ -125,7 +127,7 @@ For the purpose of presenting the algorithm, it is maintained in a set of global
 
 .. code-block:: pseudo
 
-   var return_type : list(val_type)
+   var return_types : list(val_type)
    var types : array(def_type)
    var locals : array(val_type)
    var locals_init : array(bool)
@@ -336,7 +338,7 @@ Other instructions are checked in a similar manner.
 
        case (ref.test rt)
          validate_ref_type(rt)
-         pop_val(Ref(top_heap_type(rt), true))
+         pop_val(Ref(top_heap_type(rt.heap), true))
          push_val(I32)
 
        case (local.get x)
@@ -373,29 +375,29 @@ Other instructions are checked in a similar manner.
          push_ctrl(else, frame.start_types, frame.end_types)
 
        case (br n)
-         error_if(ctrls.size() < n)
+         error_if(n >= ctrls.size())
          pop_vals(label_types(ctrls[n]))
          unreachable()
 
        case (br_if n)
-         error_if(ctrls.size() < n)
+         error_if(n >= ctrls.size())
          pop_val(I32)
          pop_vals(label_types(ctrls[n]))
          push_vals(label_types(ctrls[n]))
 
        case (br_table n* m)
          pop_val(I32)
-         error_if(ctrls.size() < m)
+         error_if(m >= ctrls.size())
          let arity = label_types(ctrls[m]).size()
          foreach (n in n*)
-           error_if(ctrls.size() < n)
+           error_if(n >= ctrls.size())
            error_if(label_types(ctrls[n]).size() =/= arity)
            push_vals(pop_vals(label_types(ctrls[n])))
          pop_vals(label_types(ctrls[m]))
          unreachable()
 
        case (br_on_null n)
-         error_if(ctrls.size() < n)
+         error_if(n >= ctrls.size())
          let rt = pop_ref()
          pop_vals(label_types(ctrls[n]))
          push_vals(label_types(ctrls[n]))
@@ -418,15 +420,15 @@ Other instructions are checked in a similar manner.
        case (call_ref x)
          let t = expand_def(types[x])
          error_if(not is_func(t))
+         pop_val(Ref(Def(types[x]), true))
          pop_vals(t.params)
-         pop_val(Ref(Def(types[x])))
          push_vals(t.results)
 
        case (return_call_ref x)
          let t = expand_def(types[x])
          error_if(not is_func(t))
+         pop_val(Ref(Def(types[x]), true))
          pop_vals(t.params)
-         pop_val(Ref(Def(types[x])))
          error_if(t.results.len() =/= return_types.len())
          push_vals(t.results)
          pop_vals(return_types)
@@ -437,13 +439,15 @@ Other instructions are checked in a similar manner.
          error_if(not is_struct(t))
          for (ti in reverse(t.fields))
            pop_val(unpack_field(ti))
-         push_val(Ref(Def(types[x])))
+         push_val(Ref(Def(types[x]), false))
 
        case (struct.set x n)
          let t = expand_def(types[x])
          error_if(not is_struct(t) || n >= t.fields.len())
-         pop_val(Ref(Def(types[x])))
-         pop_val(unpack_field(st.fields[n]))
+         let field = t.fields[n]
+         error_if(not field.mut)
+         pop_val(unpack_field(field))
+         pop_val(Ref(Def(types[x]), true))
 
        case (throw x)
           pop_vals(tags[x].type.params)
@@ -452,7 +456,7 @@ Other instructions are checked in a similar manner.
        case (try_table t1*->t2* handler*)
          pop_vals([t1*])
          foreach (handler in handler*)
-           error_if(ctrls.size() < handler.label)
+           error_if(handler.label >= ctrls.size())
            push_ctrl(catch, [], label_types(ctrls[handler.label]))
            switch (handler.clause)
              case (catch x)

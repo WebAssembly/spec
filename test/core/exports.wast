@@ -72,6 +72,11 @@
   "duplicate export name"
 )
 
+(assert_malformed
+  (module quote "(func) (export \"a\" (func 0 0))")
+  "unexpected token"
+)
+
 
 ;; Globals
 

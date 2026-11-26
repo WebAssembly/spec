@@ -20,7 +20,8 @@ rule Context_ok:
   -- (Tabletype_ok: |- tt : OK)*
   -- (Functype_ok: |- ft_2 : OK)*
   
-;; Value type ok
+
+;; Value types
 
 relation Val_ok: |- val : valtype
 
@@ -28,7 +29,7 @@ rule Val_ok:
   |- CONST t c_t : t
 
 
-;; Result type ok
+;; Result types
 
 relation Result_ok: |- result : valtype*
 
@@ -38,6 +39,7 @@ rule Result_ok/result:
 
 rule Result_ok/trap:
   |- TRAP : t*
+
 
 ;; Administrative instructions
 
@@ -90,30 +92,6 @@ rule Expr_ok2:
   s; C |- admininstr* : t?
   -- Instrs_ok2: s; C |- admininstr* : eps -> t?
 
-;; External addresses
-
-relation Externaddr_ok: store |- externaddr : externtype  hint(macro "%externaddr")
-
-rule Externaddr_ok/global:
-  s |- GLOBAL a : GLOBAL globalinst.TYPE
-  -- if s.GLOBALS[a] = globalinst
-
-rule Externaddr_ok/mem:
-  s |- MEM a : MEM meminst.TYPE
-  -- if s.MEMS[a] = meminst
-
-rule Externaddr_ok/table:
-  s |- TABLE a : TABLE tableinst.TYPE
-  -- if s.TABLES[a] = tableinst
-
-rule Externaddr_ok/func:
-  s |- FUNC a : FUNC funcinst.TYPE
-  -- if s.FUNCS[a] = funcinst
-
-rule Externaddr_ok/sub:
-  s |- externaddr : xt
-  -- Externaddr_ok: s |- externaddr : xt'
-  -- Externtype_sub: |- xt' <: xt
 
 ;; Instances
 
@@ -178,7 +156,7 @@ rule Moduleinst_ok:
   -- (if exportinst.ADDR <- (GLOBAL globaladdr)* (MEM memaddr)* (TABLE tableaddr)* (FUNC funcaddr)*)*
 
 
-;; Store
+;; Stores
 
 relation Store_ok: |- store : OK
 
@@ -190,6 +168,7 @@ rule Store_ok:
   -- (Funcinst_ok: s |- funcinst : functype)*
   ----
   -- if s = {GLOBALS globalinst*, MEMS meminst*, TABLES tableinst*, FUNCS funcinst*}
+
 
 ;; Store extension
 
@@ -222,6 +201,7 @@ rule Extend_store:
   -- (Extend_meminst: s.MEMS[a] `<= s'.MEMS[a] )^(a<|s.MEMS|)
   -- (Extend_tableinst: s.TABLES[a] `<= s'.TABLES[a] )^(a<|s.TABLES|)
   -- (Extend_funcinst: s.FUNCS[a] `<= s'.FUNCS[a] )^(a<|s.FUNCS|)
+
 
 ;; Configurations
 

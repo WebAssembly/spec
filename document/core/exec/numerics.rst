@@ -50,7 +50,7 @@ Numeric operators are lifted to input sequences by applying the operator element
 
    .. math::
       \begin{array}{lll@{\qquad}l}
-      \fabs_N(z^n) &=& \fabs_N(z[0])~\dots~\fabs_N(z[n])
+      \fabs_N(z^n) &=& \fabs_N(z[0])~\dots~\fabs_N(z[n-1])
       \end{array}
 
    The binary operator |iadd|, when given two sequences of integers of the same length, :math:`n`, return a sequence of integer results:
@@ -1169,6 +1169,10 @@ The non-deterministic result is expressed by the following auxiliary function pr
 
 * Else if either :math:`z_1` or :math:`z_2` is an infinity and the other a value with opposite sign, then return negative infinity.
 
+* Else if either :math:`z_1` or :math:`z_2` is a zero and the other a value with the same sign, then return positive zero.
+
+* Else if either :math:`z_1` or :math:`z_2` is a zero and the other a value with opposite sign, then return negative zero.
+
 * Else if both :math:`z_1` and :math:`z_2` are zeroes of equal sign, then return positive zero.
 
 * Else if both :math:`z_1` and :math:`z_2` are zeroes of opposite sign, then return negative zero.
@@ -1189,8 +1193,10 @@ The non-deterministic result is expressed by the following auxiliary function pr
    \fmul_N(\pm q_1, \mp \infty) &=& -\infty \\
    \fmul_N(\pm \infty, \pm q_2) &=& +\infty \\
    \fmul_N(\pm \infty, \mp q_2) &=& -\infty \\
-   \fmul_N(\pm 0, \pm 0) &=& + 0 \\
-   \fmul_N(\pm 0, \mp 0) &=& - 0 \\
+   \fmul_N(\pm 0, \pm q_2) &=& +0 \\
+   \fmul_N(\pm 0, \mp q_2) &=& -0 \\
+   \fmul_N(\pm q_1, \pm 0) &=& +0 \\
+   \fmul_N(\pm q_1, \mp 0) &=& -0 \\
    \fmul_N(z_1, z_2) &=& \ieee_N(z_1 \cdot z_2) \\
    \end{array}
 
@@ -1252,13 +1258,13 @@ The non-deterministic result is expressed by the following auxiliary function pr
 The function :math:`\fma` is the same as *fusedMultiplyAdd* defined by |IEEE754|_ (Section 5.4.1).
 It computes :math:`(z_1 \cdot z_2) + z_3` as if with unbounded range and precision, rounding only once for the final result.
 
-* If either :math:`z_1` or :math:`z_2` or :math:`z_3` is a NaN, return an element of :math:`\nans_N{z_1, z_2, z_3}`.
+* If either :math:`z_1` or :math:`z_2` or :math:`z_3` is a NaN, return an element of :math:`\nans_N\{z_1, z_2, z_3\}`.
 
 * Else if either :math:`z_1` or :math:`z_2` is a zero and the other is an infinity, then return an element of :math:`\nans_N\{\}`.
 
-* Else if both :math:`z_1` or :math:`z_2` are infinities of equal sign, and :math:`z_3` is a negative infinity, then return an element of :math:`\nans_N\{\}`.
+* Else if both :math:`z_1` and :math:`z_2` are infinities of equal sign, and :math:`z_3` is a negative infinity, then return an element of :math:`\nans_N\{\}`.
 
-* Else if both :math:`z_1` or :math:`z_2` are infinities of opposite sign, and :math:`z_3` is a positive infinity, then return an element of :math:`\nans_N\{\}`.
+* Else if both :math:`z_1` and :math:`z_2` are infinities of opposite sign, and :math:`z_3` is a positive infinity, then return an element of :math:`\nans_N\{\}`.
 
 * Else if either :math:`z_1` or :math:`z_2` is an infinity and the other is a value of the same sign, and :math:`z_3` is a negative infinity, then return an element of :math:`\nans_N\{\}`.
 
@@ -1270,7 +1276,7 @@ It computes :math:`(z_1 \cdot z_2) + z_3` as if with unbounded range and precisi
 
 * Else if both :math:`z_1` and :math:`z_2` are zeroes of the opposite sign and :math:`z_3` is a negative zero, then return negative zero.
 
-* Else return the result of multiplying :math:`z_1` and :math:`z_2`, adding :math:`z_3` to the intermediate, and the final result ref:`rounded <aux-ieee>` to the nearest representable value.
+* Else return the result of multiplying :math:`z_1` and :math:`z_2`, adding :math:`z_3` to the intermediate, and the final result :ref:`rounded <aux-ieee>` to the nearest representable value.
 
 .. math::
    \begin{array}{@{}llcll}
@@ -2238,13 +2244,20 @@ where :math:`f`, :math:`\sx_1`, :math:`\sx_2`, :math:`h`, and :math:`k` are inst
    \VRELAXEDDOTADD{\K\_}\S_{\K{i}N_1\K{x}M_1, \K{i}N_2\K{x}M_2}(c_1, c_2, c_3) &=& c
      & (
        \begin{array}[t]{@{}l}
-       \iff N = 2\cdot N_1 \\
-       \land~M = 2\cdot M_2 \\
-       \land~c' = \VRELAXEDDOT{\K\_}\S_{\K{i}N_1\K{x}M_1, \K{i}N\K{x}M}(c_1, c_2) \\
-       \land~c'' = \VEXTADDPAIRWISE{\K\_}\S_{\K{i}N\K{x}M, \K{i}N_2\K{x}M_2}(c') \\
-       \land~c \in \VADD_{\K{i}N_2\K{x}M_2}(c'', c_3) \\
+       \iff N = \relaxed(R_{\F{idot\_add}})[2\cdot N_1, N_2] \\
+       \land~i_1^\ast = \lanes_{\K{i}N_1\K{x}M_1}(c_1) \\
+       \land~i_2^\ast = \lanes_{\K{i}N_1\K{x}M_1}(c_2) \\
+       \land~{i'_1}^\ast = \extend^{\S}_{N_1, N}(i_1)^\ast \\
+       \land~{i'_2}^\ast = \extend^{\relaxed(R_{\F{idot}})[\S, \U]}_{N_1, N}(i_2)^\ast \\
+       \land~j^\ast = \ivrelaxeddot_N({i'_1}^\ast, {i'_2}^\ast) \\
+       \land~{j'}^\ast = \extend^{\S}_{N, N_2}(j)^\ast \\
+       \land~c' = \lanes^{-1}_{\K{i}N_2\K{x}M_2}(\ivaddpairwise_{N_2}({j'}^\ast)) \\
+       \land~c \in \VADD_{\K{i}N_2\K{x}M_2}(c', c_3) \\
        \end{array}
    \end{array}
+
+.. note::
+   Relaxed operations and the parameters :math:`R_{\F{idot}}` and :math:`R_{\F{idot\_add}}` are introduced :ref:`below <relaxed-ops>`.
 
 
 .. _op-vnarrow:
@@ -2540,7 +2553,8 @@ where:
 ...........................................
 
 The implementation-specific behaviour of this operation is determined by the global parameter :math:`R_{\F{idot}} \in \{0, 1\}`.
-It also affects the behaviour of :math:`\VRELAXEDDOT` and :math:`\VRELAXEDDOTADD` specified :ref:`above <op-vextbinop>`.
+It also affects the behaviour of :math:`\VRELAXEDDOT` specified :ref:`above <op-vextbinop>`,
+and of :math:`\VRELAXEDDOTADD` specified :ref:`above <op-vextternop>`, which additionally depends on the global parameter :math:`R_{\F{idot\_add}} \in \{0, 1\}`.
 
 * Return :math:`\relaxed(R_{\F{idot}})[ \ivdot_N(i_1^{2m}, i_2^{2m}), \ivdotsat_N(i_1^{2m}, i_2^{2m}) ]`.
 

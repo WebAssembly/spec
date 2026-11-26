@@ -32,3 +32,20 @@
 (assert_return (invoke "get-t64" (i64.const 4)) (ref.extern 4))
 (assert_trap (invoke "set-t64" (i64.const 5) (ref.extern 2)) "out of bounds table access")
 (assert_trap (invoke "get-t64" (i64.const 5)) "out of bounds table access")
+
+
+(module
+  (table i64 1 funcref)
+  (func (export "grow") (param i64) (result i64)
+    (table.grow (ref.null func) (local.get 0))
+  )
+  (func (export "size") (result i64) (table.size))
+)
+(assert_return (invoke "grow" (i64.const 0xFFFF_FFFF_FFFF_FFFF)) (i64.const -1))
+(assert_return (invoke "size") (i64.const 1))
+(assert_return (invoke "grow" (i64.const 0xFFFF_FFFF_FFFF_FFFE))
+  (either (i64.const -1) (i64.const 1))
+)
+(assert_return (invoke "size")
+  (either (i64.const 1) (i64.const 0xFFFF_FFFF_FFFF_FFFF))
+)

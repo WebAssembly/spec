@@ -326,6 +326,14 @@
   "constant expression required"
 )
 
+(assert_malformed
+  (module quote
+    "(type $a (array i32))"
+    "(func (array.new_fixed $a 4294967296) drop)"
+  )
+  "i32 constant out of range"
+)
+
 
 ;; Null dereference
 

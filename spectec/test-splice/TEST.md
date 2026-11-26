@@ -236,7 +236,7 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-(s ; f){.}\mathsf{funcs} & = & s{.}\mathsf{funcs} \\[0.8ex]
+z{.}\mathsf{funcs}{}[a] & = & s{.}\mathsf{funcs}{}[a] \\[0.8ex]
 z{.}\mathsf{funcs}{}[x] & = & s{.}\mathsf{funcs}{}[f{.}\mathsf{module}{.}\mathsf{funcs}{}[x]] \\
 z{.}\mathsf{tables}{}[x] & = & s{.}\mathsf{tables}{}[f{.}\mathsf{module}{.}\mathsf{tables}{}[x]] \\
 \end{array}
@@ -1197,6 +1197,7 @@ warning: rule `Instrs_ok/instr` was never spliced
 warning: rule `Instrs_ok/sub` was never spliced
 warning: rule `Instrs_ok/frame` was spliced more than once
 warning: rule `Instrs_ok2/empty` was never spliced
+warning: rule `Instrs_ok2/instr` was never spliced
 warning: rule `Instrs_ok2/seq` was never spliced
 warning: rule `Instrs_ok2/sub` was never spliced
 warning: rule `Instrs_ok2/frame` was never spliced
@@ -1322,7 +1323,6 @@ warning: rule `Step_pure/ref.is_null-true` was never spliced
 warning: rule `Step_pure/ref.is_null-false` was never spliced
 warning: rule `Step_pure/ref.as_non_null-null` was never spliced
 warning: rule `Step_pure/ref.as_non_null-addr` was never spliced
-warning: rule `Step_pure/ref.eq-null` was never spliced
 warning: rule `Step_pure/ref.eq-true` was never spliced
 warning: rule `Step_pure/ref.eq-false` was never spliced
 warning: rule `Step_pure/i31.get-null` was never spliced
@@ -1527,6 +1527,7 @@ warning: definition `R_fmadd` was never spliced
 warning: definition `R_fmax` was never spliced
 warning: definition `R_fmin` was never spliced
 warning: definition `R_idot` was never spliced
+warning: definition `R_idot_add` was never spliced
 warning: definition `R_iq15mulr` was never spliced
 warning: definition `R_laneselect` was never spliced
 warning: definition `R_swizzle` was never spliced
@@ -1584,7 +1585,6 @@ warning: definition `cunpacknum_` was never spliced
 warning: definition `cvtop__` was never spliced
 warning: definition `data` was never spliced
 warning: definition `dataidx_funcs` was never spliced
-warning: definition `datainst` was never spliced
 warning: definition `datasd` was never spliced
 warning: definition `demote__` was never spliced
 warning: definition `diffrt` was never spliced
@@ -1592,7 +1592,6 @@ warning: definition `dim` was never spliced
 warning: definition `disjoint_` was never spliced
 warning: definition `dots` was never spliced
 warning: definition `elem` was never spliced
-warning: definition `eleminst` was never spliced
 warning: definition `elemsd` was never spliced
 warning: definition `evalexprs` was never spliced
 warning: definition `evalexprss` was never spliced
@@ -1601,6 +1600,7 @@ warning: definition `exninst` was never spliced
 warning: definition `expon` was never spliced
 warning: definition `exportsd` was never spliced
 warning: definition `extend__` was never spliced
+warning: definition `f` was never spliced
 warning: definition `fabs_` was never spliced
 warning: definition `fadd_` was never spliced
 warning: definition `fbits_` was never spliced
@@ -1707,7 +1707,6 @@ warning: definition `fvternop_` was never spliced
 warning: definition `fvunop_` was never spliced
 warning: definition `fzero` was never spliced
 warning: definition `global` was never spliced
-warning: definition `globalinst` was never spliced
 warning: definition `globalsd` was never spliced
 warning: definition `globalsxa` was never spliced
 warning: definition `globalsxt` was never spliced
@@ -1822,7 +1821,6 @@ warning: definition `lunpack` was never spliced
 warning: definition `lunpacknum_` was never spliced
 warning: definition `mem` was never spliced
 warning: definition `memarg0` was never spliced
-warning: definition `meminst` was never spliced
 warning: definition `memsd` was never spliced
 warning: definition `memsxa` was never spliced
 warning: definition `memsxt` was never spliced
@@ -1850,6 +1848,7 @@ warning: definition `rolldt` was never spliced
 warning: definition `rollrt` was never spliced
 warning: definition `rundata_` was never spliced
 warning: definition `runelem_` was never spliced
+warning: definition `s` was never spliced
 warning: definition `s33_to_u32` was never spliced
 warning: definition `sat_s_` was never spliced
 warning: definition `sat_u_` was never spliced
@@ -1901,14 +1900,11 @@ warning: definition `subst_valtype` was never spliced
 warning: definition `subst_vectype` was never spliced
 warning: definition `sum` was never spliced
 warning: definition `sx` was never spliced
-warning: definition `tableinst` was never spliced
 warning: definition `tablesd` was never spliced
 warning: definition `tablesxa` was never spliced
 warning: definition `tablesxt` was never spliced
 warning: definition `tablesxx` was never spliced
 warning: definition `tag` was never spliced
-warning: definition `tagaddr` was never spliced
-warning: definition `taginst` was never spliced
 warning: definition `tagsd` was never spliced
 warning: definition `tagsxa` was never spliced
 warning: definition `tagsxt` was never spliced
@@ -1927,6 +1923,7 @@ warning: definition `unrolldt` was never spliced
 warning: definition `unrollht_` was never spliced
 warning: definition `unrollrt` was never spliced
 warning: definition `utf8` was never spliced
+warning: definition `utf8single` was never spliced
 warning: definition `var` was never spliced
 warning: definition `vbinop_` was never spliced
 warning: definition `vbitmaskop_` was never spliced
@@ -2223,6 +2220,7 @@ warning: rule prose `Instrs_ok/sub` was never spliced
 warning: rule prose `Instrs_ok2` was never spliced
 warning: rule prose `Instrs_ok2/empty` was never spliced
 warning: rule prose `Instrs_ok2/frame` was never spliced
+warning: rule prose `Instrs_ok2/instr` was never spliced
 warning: rule prose `Instrs_ok2/seq` was never spliced
 warning: rule prose `Instrs_ok2/sub` was never spliced
 warning: rule prose `Instrtype_ok` was never spliced
@@ -2512,14 +2510,12 @@ warning: definition prose `cunpacknum_` was never spliced
 warning: definition prose `cvtop__` was never spliced
 warning: definition prose `data` was never spliced
 warning: definition prose `dataidx_funcs` was never spliced
-warning: definition prose `datainst` was never spliced
 warning: definition prose `datasd` was never spliced
 warning: definition prose `default_` was never spliced
 warning: definition prose `diffrt` was never spliced
 warning: definition prose `dim` was never spliced
 warning: definition prose `disjoint_` was never spliced
 warning: definition prose `elem` was never spliced
-warning: definition prose `eleminst` was never spliced
 warning: definition prose `elemsd` was never spliced
 warning: definition prose `evalexprs` was never spliced
 warning: definition prose `evalexprss` was never spliced
@@ -2527,6 +2523,7 @@ warning: definition prose `evalglobals` was never spliced
 warning: definition prose `exninst` was never spliced
 warning: definition prose `expon` was never spliced
 warning: definition prose `exportsd` was never spliced
+warning: definition prose `f` was never spliced
 warning: definition prose `fnat` was never spliced
 warning: definition prose `fof` was never spliced
 warning: definition prose `fone` was never spliced
@@ -2607,7 +2604,6 @@ warning: definition prose `fvternop_` was never spliced
 warning: definition prose `fvunop_` was never spliced
 warning: definition prose `fzero` was never spliced
 warning: definition prose `global` was never spliced
-warning: definition prose `globalinst` was never spliced
 warning: definition prose `globalsd` was never spliced
 warning: definition prose `globalsxa` was never spliced
 warning: definition prose `globalsxt` was never spliced
@@ -2687,7 +2683,6 @@ warning: definition prose `lunpack` was never spliced
 warning: definition prose `lunpacknum_` was never spliced
 warning: definition prose `mem` was never spliced
 warning: definition prose `memarg0` was never spliced
-warning: definition prose `meminst` was never spliced
 warning: definition prose `memsd` was never spliced
 warning: definition prose `memsxa` was never spliced
 warning: definition prose `memsxt` was never spliced
@@ -2710,6 +2705,7 @@ warning: definition prose `rolldt` was never spliced
 warning: definition prose `rollrt` was never spliced
 warning: definition prose `rundata_` was never spliced
 warning: definition prose `runelem_` was never spliced
+warning: definition prose `s` was never spliced
 warning: definition prose `sat_s_` was never spliced
 warning: definition prose `sat_u_` was never spliced
 warning: definition prose `setminus1_` was never spliced
@@ -2762,14 +2758,11 @@ warning: definition prose `subst_vectype` was never spliced
 warning: definition prose `sum` was never spliced
 warning: definition prose `sx` was never spliced
 warning: definition prose `table` was never spliced
-warning: definition prose `tableinst` was never spliced
 warning: definition prose `tablesd` was never spliced
 warning: definition prose `tablesxa` was never spliced
 warning: definition prose `tablesxt` was never spliced
 warning: definition prose `tablesxx` was never spliced
 warning: definition prose `tag` was never spliced
-warning: definition prose `tagaddr` was never spliced
-warning: definition prose `taginst` was never spliced
 warning: definition prose `tagsd` was never spliced
 warning: definition prose `tagsxa` was never spliced
 warning: definition prose `tagsxt` was never spliced
@@ -2784,6 +2777,7 @@ warning: definition prose `unpackshape` was never spliced
 warning: definition prose `unrolldt` was never spliced
 warning: definition prose `unrollht_` was never spliced
 warning: definition prose `unrollrt` was never spliced
+warning: definition prose `utf8single` was never spliced
 warning: definition prose `var` was never spliced
 warning: definition prose `vbinop_` was never spliced
 warning: definition prose `vbitmaskop_` was never spliced

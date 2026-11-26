@@ -14,6 +14,8 @@ and encode' = function
     n :: encode' ns
   | n::ns when n < 0x800 ->
     0xc0 lor (n lsr 6) :: con n :: encode' ns
+  | n::ns when n >= 0xd800 && n < 0xe000 ->
+    raise Utf8
   | n::ns when n < 0x10000 ->
     0xe0 lor (n lsr 12) :: con (n lsr 6) :: con n :: encode' ns
   | n::ns when n < 0x110000 ->

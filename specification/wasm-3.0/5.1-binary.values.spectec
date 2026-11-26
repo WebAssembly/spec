@@ -28,8 +28,8 @@ grammar Bu64 : u64 = BuN(64)
 
 grammar Bs33 : s33 = BsN(33)
 
-grammar Bi32 : i32 = BuN(32)
-grammar Bi64 : i64 = BuN(64)
+grammar Bi32 : i32 = BiN(32)
+grammar Bi64 : i64 = BiN(64)
 
 grammar Bf32 : f32 = BfN(32)
 grammar Bf64 : f64 = BfN(64)
@@ -46,20 +46,22 @@ grammar Blist(grammar BX : el) : el* =
 var ch : char
 
 def $cont(byte) : nat hint(macro none)
-def $cont(b) = $(b - 0x80) -- if (0x80 < b < 0xC0)
+def $cont(b) = $(b - 0x80) -- if 0x80 <= b < 0xC0
 
 ;; def $utf8(char*) : byte*
-def $utf8(ch*) = $concat_(byte, $utf8(ch)*)
-def $utf8(ch) = b
+def $utf8(ch*) = $concat_(byte, $utf8single(ch)*)
+
+def $utf8single(char) : byte* hint(show $utf8(%))
+def $utf8single(ch) = b
   -- if ch < U+0080
   -- if ch = b
-def $utf8(ch) = b_1 b_2
+def $utf8single(ch) = b_1 b_2
   -- if U+0080 <= ch < U+0800
   -- if ch = $(2^6*(b_1 - 0xC0) + $cont(b_2))
-def $utf8(ch) = b_1 b_2 b_3
+def $utf8single(ch) = b_1 b_2 b_3
   -- if U+0800 <= ch < U+D800 \/ U+E000 <= ch < U+10000
   -- if ch = $(2^12*(b_1 - 0xE0) + 2^6*$cont(b_2) + $cont(b_3))
-def $utf8(ch) = b_1 b_2 b_3 b_4
+def $utf8single(ch) = b_1 b_2 b_3 b_4
   -- if U+10000 <= ch < U+110000
   -- if ch = $(2^18*(b_1 - 0xF0) + 2^12*$cont(b_2) + 2^6*$cont(b_3) + $cont(b_4))
 

@@ -211,7 +211,7 @@ urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: df
         text: −∞
         text: nan
         text: canon
-        text: signif
+    text: arithmetic NaN; url: syntax/values.html#arithmetic-nan
     text: function element; url: exec/runtime.html#syntax-funcelem
     text: import component; url: syntax/modules.html#imports
     url: exec/runtime.html#syntax-externval
@@ -237,16 +237,21 @@ urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: df
             text: tag
     text: global type; url: syntax/types.html#syntax-globaltype
     url: syntax/types.html#syntax-mut
-        text: var
-        text: const
+        text: mut
+    url: syntax/types.html#syntax-comptype; for: comp-type
+        text: func
+    text: defined type; url: valid/conventions.html#syntax-deftype
+    text: expansion; url: valid/conventions.html#aux-expand-deftype
     text: address; url: exec/runtime.html#addresses
     text: signed_31; url: exec/numerics.html#aux-signed
     text: signed_32; url: exec/numerics.html#aux-signed
+    text: pack; url: exec/runtime.html#aux-packfield
+    text: unpack; url: exec/runtime.html#aux-unpackfield
     text: memory.grow; url: exec/instructions.html#exec-memory-grow
     text: throw_ref; url: exec/instructions.html#exec-throw-ref
     text: current frame; url: exec/conventions.html#exec-notation-textual
     text: module; for: frame; url: exec/runtime.html#syntax-frame
-    text: memaddrs; for: moduleinst; url: exec/runtime.html#syntax-moduleinst
+    text: mems; for: moduleinst; url: exec/runtime.html#syntax-moduleinst
     text: signed_64; url: exec/numerics.html#aux-signed
     text: sequence; url: syntax/conventions.html#grammar-notation
     text: exception; for: tagtype/attribute; url: syntax/types.html#syntax-tagtype
@@ -256,6 +261,7 @@ urlPrefix: https://webidl.spec.whatwg.org/; spec: WebIDL
         text: [EnforceRange]; url: #EnforceRange
         text: unsigned long; url: #idl-unsigned-long
         text: js-unsigned-long; url: #js-unsigned-long
+        text: converted to a JavaScript value; url: #dfn-convert-idl-to-javascript-value
 urlPrefix: https://webassembly.github.io/js-types/js-api/; spec: WebAssembly JS API (JS Type Reflection)
     type: abstract-op; text: FromValueType; url: abstract-opdef-fromvaluetype
 urlPrefix: https://tc39.es/proposal-resizablearraybuffer/; spec: ResizableArrayBuffer proposal
@@ -350,7 +356,8 @@ Each [=agent=] is associated with the following [=ordered map=]s:
     * The <dfn>Memory object cache</dfn>, mapping [=memory address=]es to {{Memory}} objects.
     * The <dfn>Table object cache</dfn>, mapping [=table address=]es to {{Table}} objects.
     * The <dfn>Exported Function cache</dfn>, mapping [=function address=]es to [=Exported Function=] objects.
-    * The <dfn>Exported GC Object cache</dfn>, mapping [=struct address=]es and [=array address=]es to [=Exported GC Object=] objects.
+    * The <dfn>Exported Struct cache</dfn>, mapping [=struct address=]es to [=Exported GC Object=] objects.
+    * The <dfn>Exported Array cache</dfn>, mapping [=array address=]es to [=Exported GC Object=] objects.
     * The <dfn>Global object cache</dfn>, mapping [=global address=]es to {{Global}} objects.
     * The <dfn>Tag object cache</dfn>, mapping [=tag address=]es to {{Tag}} objects.
     * The <dfn>Exception object cache</dfn>, mapping [=exception address=]es to {{Exception}} objects.
@@ -409,7 +416,7 @@ To <dfn>validate builtins and imported string for a WebAssembly module</dfn> fro
 1. [=list/iterate|For each=] |import| of [=module_imports=](|module|),
     1. If |importedStringModule| is not null and |import|[0] equals |importedStringModule|,
         1. Let |importExternType| be |import|[2].
-        1. Let |stringExternType| be `global const (ref extern)`.
+        1. Let |stringExternType| be [=external-type/global=] [=ref=] [=heap-type/extern=].
         1. If [=match_externtype=](|stringExternType|, |importExternType|) is false, return false
     1. Else,
         1. If [=validate an import for builtins|validating an import for builtins=] with |import| and |builtinSetNames| is false, return false.
@@ -528,7 +535,7 @@ To <dfn>instantiate imported strings</dfn> with module |module| and |importedStr
                     1. Throw a {{LinkError}} exception.
                 1. Let |value| be [=ToWebAssemblyValue=](|v|, |valtype|). If this operation throws a {{TypeError}}, catch it, and throw a {{LinkError}} exception.
                 1. Let |store| be the [=surrounding agent=]'s [=associated store=].
-                1. Let (|store|, |globaladdr|) be [=global_alloc=](|store|, [=const=] |valtype|, |value|).
+                1. Let (|store|, |globaladdr|) be [=global_alloc=](|store|, |valtype|, |value|).
                 1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
             1. Let |externglobal| be [=external value/global=] |globaladdr|.
             1. [=list/Append=] |externglobal| to |imports|.
@@ -877,7 +884,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     1. If |descriptor|["address"] [=map/exists=], let |addrtype| be [=ToValueType=](|descriptor|["address"]); otherwise, let |addrtype| be [=i32=].
     1. Let |initial| be [=?=] [=AddressValueToU64=](|descriptor|["initial"], |addrtype|).
     1. If |descriptor|["maximum"] [=map/exists=], let |maximum| be [=?=] [=AddressValueToU64=](|descriptor|["maximum"], |addrtype|); otherwise, let |maximum| be empty.
-    1. Let |memtype| be [=memory type=] |addrtype| { **min** |initial|, **max** |maximum| }.
+    1. Let |memtype| be the [=memory type=] |addrtype| [|initial| .. |maximum|] page.
     1. If |memtype| is not [=valid memtype|valid=], throw a {{RangeError}} exception.
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
     1. Let (|store|, |memaddr|) be [=mem_alloc=](|store|, |memtype|). If allocation fails, throw a {{RangeError}} exception.
@@ -918,7 +925,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     The <dfn method for="Memory">grow(|delta|)</dfn> method, when invoked, performs the following steps:
     1. Let |memaddr| be **this**.\[[Memory]].
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
-    1. Let |addrtype| be the [=address type=] in [=mem_type=](|store|, |memaddr|).
+    1. Let (|addrtype|, <var ignore>limits</var>) be [=mem_type=](|store|, |memaddr|).
     1. Let |delta64| be [=?=] [=AddressValueToU64=](|delta|, |addrtype|).
     1. Let |ret| be the result of [=grow the memory buffer|growing the memory buffer=] associated with |memaddr| by |delta64|.
     1. Return [=U64ToAddressValue=](|ret|, |addrtype|).
@@ -929,8 +936,8 @@ Immediately after a WebAssembly [=memory.grow=] |x| instruction executes, perfor
 <div algorithm="memory.grow">
     1. If the top of the stack is not [=i32.const=] (−1) and the top of the stack is not [=i64.const=] (−1),
         1. Let |frame| be the [=current frame=].
-        1. Assert: due to validation, |frame|.[=frame/module=].[=moduleinst/memaddrs=][|x|] exists.
-        1. Let |memaddr| be the [=memory address=] |frame|.[=frame/module=].[=moduleinst/memaddrs=][|x|].
+        1. Assert: due to validation, |frame|.[=frame/module=].[=moduleinst/mems=][|x|] exists.
+        1. Let |memaddr| be the [=memory address=] |frame|.[=frame/module=].[=moduleinst/mems=][|x|].
         1. [=Refresh the memory buffer=] of |memaddr|.
 </div>
 
@@ -1044,7 +1051,7 @@ Each {{Table}} object has a \[[Table]] internal slot, which is a [=table address
     1. If |descriptor|["address"] [=map/exists=], let |addrtype| be [=ToValueType=](|descriptor|["address"]); otherwise, let |addrtype| be [=i32=].
     1. Let |initial| be [=?=] [=AddressValueToU64=](|descriptor|["initial"], |addrtype|).
     1. If |descriptor|["maximum"] [=map/exists=], let |maximum| be [=?=] [=AddressValueToU64=](|descriptor|["maximum"], |addrtype|); otherwise, let |maximum| be empty.
-    1. Let |type| be the [=table type=] |addrtype| { <b>[=limits|min=]</b> |initial|, <b>[=limits|max=]</b> |maximum| } |elementtype|.
+    1. Let |type| be the [=table type=] |addrtype| [|initial| .. |maximum|] |elementtype|.
     1. If |type| is not [=valid tabletype|valid=], throw a {{RangeError}} exception.
     1. If |value| is missing,
         1. Let |ref| be [=DefaultValue=](|elementtype|).
@@ -1082,7 +1089,7 @@ Each {{Table}} object has a \[[Table]] internal slot, which is a [=table address
     The getter of the <dfn attribute for="Table">length</dfn> attribute of {{Table}}, when invoked, performs the following steps:
     1. Let |tableaddr| be **this**.\[[Table]].
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
-    1. Let |addrtype| be the [=address type=] in [=table_type=](|store|, |tableaddr|).
+    1. Let (|addrtype|, <var ignore>limits</var>, <var ignore>elementtype</var>) be [=table_type=](|store|, |tableaddr|).
     1. Let |length64| be [=table_size=](|store|, |tableaddr|).
     1. Return [=U64ToAddressValue=](|length64|, |addrtype|).
 </div>
@@ -1201,7 +1208,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
         1. Assert: |value| is not [=error=].
     1. Otherwise,
         1. Let |value| be [=?=] [=ToWebAssemblyValue=](|v|, |valuetype|).
-    1. If |mutable| is true, let |globaltype| be [=var=] |valuetype|; otherwise, let |globaltype| be [=const=] |valuetype|.
+    1. If |mutable| is true, let |globaltype| be [=mut=] |valuetype|; otherwise, let |globaltype| be |valuetype|.
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
     1. Let (|store|, |globaladdr|) be [=global_alloc=](|store|, |globaltype|, |value|). <!-- TODO(littledan): Report allocation failure https://github.com/WebAssembly/spec/issues/584 -->
     1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
@@ -1229,7 +1236,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     1. Let |globaladdr| be **this**.\[[Global]].
     1. Let |mut| |valuetype| be [=global_type=](|store|, |globaladdr|).
     1. If |valuetype| [=matches/valtype|matches=] [=v128=] or [=exnref=], throw a {{TypeError}}.
-    1. If |mut| is [=const=], throw a {{TypeError}}.
+    1. If |mut| is empty, throw a {{TypeError}}.
     1. Let |value| be [=?=] [=ToWebAssemblyValue=](**the given value**, |valuetype|).
     1. Let |store| be [=global_write=](|store|, |globaladdr|, |value|).
     1. If |store| is [=error=], throw a {{RangeError}} exception.
@@ -1252,8 +1259,7 @@ This slot holds a [=function address=] relative to the [=surrounding agent=]'s [
 
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
     1. Let |funcinst| be |store|.funcs[|funcaddr|].
-    1. If |funcinst| is of the form {type <var ignore>functype</var>, hostcode |hostfunc|},
-        1. Assert: |hostfunc| is a JavaScript object and [$IsCallable$](|hostfunc|) is true.
+    1. If |funcinst|.code is a [=host function=],
         1. Let |index| be the [=index of the host function=] |funcaddr|.
     1. Otherwise,
         1. Let |moduleinst| be |funcinst|.module.
@@ -1272,7 +1278,7 @@ This slot holds a [=function address=] relative to the [=surrounding agent=]'s [
     1. Let |realm| be the [=current Realm=].
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
     1. Let |functype| be [=func_type=](|store|, |funcaddr|).
-    1. Let [|paramTypes|] → [<var ignore>resultTypes</var>] be |functype|.
+    1. Let [=comp-type/func=] |paramTypes| → <var ignore>resultTypes</var> be the [=expansion=] of |functype|.
     1. Let |arity| be |paramTypes|'s [=list/size=].
     1. Let |name| be the [=name of the WebAssembly function=] |funcaddr|.
     1. Let |function| be [$CreateBuiltinFunction$](|steps|, |arity|, |name|, « \[[FunctionAddress]] », |realm|).
@@ -1286,7 +1292,7 @@ This slot holds a [=function address=] relative to the [=surrounding agent=]'s [
 
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
     1. Let |functype| be [=func_type=](|store|, |funcaddr|).
-    1. Let [|parameters|] → [|results|] be |functype|.
+    1. Let [=comp-type/func=] |parameters| → |results| be the [=expansion=] of |functype|.
     1. If any type in |parameters| or |results| [=matches/valtype|matches=] [=v128=] or [=exnref=], throw a {{TypeError}}.
 
         Note: the above error is thrown each time the \[[Call]] method is invoked.
@@ -1326,7 +1332,7 @@ Note: Exported Functions do not have a \[[Construct]] method and thus it is not 
 <div algorithm>
   To <dfn>run a host function</dfn> from the JavaScript object |func|, type |functype|, and [=list=] of [=WebAssembly values=] |arguments|, perform the following steps:
 
-    1. Let [|parameters|] → [|results|] be |functype|.
+    1. Let [=comp-type/func=] |parameters| → |results| be the [=expansion=] of |functype|.
     1. If any type in |parameters| or |results| [=matches/valtype|matches=] [=v128=] or [=exnref=], throw a {{TypeError}}.
     1. Let |jsArguments| be « ».
     1. [=list/iterate|For each=] |arg| of |arguments|,
@@ -1351,7 +1357,8 @@ Note: Exported Functions do not have a \[[Construct]] method and thus it is not 
 
     1. Assert: [$IsCallable$](|func|).
     1. Let |stored settings| be the <a spec=HTML>incumbent settings object</a>.
-    1. Let |hostfunc| be a [=host function=] which performs the following steps when called with arguments |arguments|:
+    1. Let |hostfunc| be a [=host function=] which performs the following steps when called with store |store| and arguments |arguments|:
+        1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
         1. Let |realm| be |func|'s [=associated Realm=].
         1. Let |relevant settings| be |realm|'s [=realm/settings object=].
         1. [=Prepare to run script=] with |relevant settings|.
@@ -1370,8 +1377,8 @@ Note: Exported Functions do not have a \[[Construct]] method and thus it is not 
                 1. Let |payload| be [=!=] [=ToWebAssemblyValue=](|v|, [=externref=]).
                 1. Let (|store|, |address|) be [=exn_alloc=](|store|, |type|, « |payload| »).
                 1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
-            1. Execute the WebAssembly instructions ([=ref.exn=] |address|) ([=throw_ref=]).
-        1. Otherwise, return |result|.\[[Value]].
+            1. Return (|store|, ([=ref.exn=] |address|) ([=throw_ref=])).
+        1. Otherwise, return (|store|, |result|.\[[Value]]).
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
     1. Let (|store|, |funcaddr|) be [=func_alloc=](|store|, |functype|, |hostfunc|).
     1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
@@ -1437,16 +1444,14 @@ The algorithm <dfn>ToWebAssemblyValue</dfn>(|v|, |type|) coerces a JavaScript va
 1. If |type| is [=f32=],
     1. Let |number| be [=?=] [$ToNumber$](|v|).
     1. If |number| is **NaN**,
-        1. Let |n| be an implementation-defined integer such that [=canon=]<sub>32</sub> &leq; |n| &lt; 2<sup>[=signif=](32)</sup>.
-        1. Let |f32| be [=nan=](n).
+        1. Let |f32| be an implementation-defined [=arithmetic NaN=] of size 32.
     1. Otherwise,
         1. Let |f32| be |number| rounded to the nearest representable value using IEEE 754-2019 round to nearest, ties to even mode. [[IEEE-754]]
     1. Return [=f32.const=] |f32|.
 1. If |type| is [=f64=],
     1. Let |number| be [=?=] [$ToNumber$](|v|).
     1. If |number| is **NaN**,
-        1. Let |n| be an implementation-defined integer such that [=canon=]<sub>64</sub> &leq; |n| &lt; 2<sup>[=signif=](64)</sup>.
-        1. Let |f64| be [=nan=](n).
+        1. Let |f64| be an implementation-defined [=arithmetic NaN=] of size 64.
     1. Otherwise,
         1. Let |f64| be |number|.
     1. Return [=f64.const=] |f64|.
@@ -1473,10 +1478,11 @@ The algorithm <dfn>ToWebAssemblyValue</dfn>(|v|, |type|) coerces a JavaScript va
     1. Else,
         1. Let |map| be the [=surrounding agent=]'s associated [=host value cache=].
         1. If a [=host address=] |hostaddr| exists such that |map|[|hostaddr|] is the same as |v|,
-            1. Return [=ref.host=] |hostaddr|.
-        1. Let |hostaddr| be the smallest [=host address=] such that |map|[|hostaddr|] [=map/exists=] is false.
-        1. [=map/Set=] |map|[|hostaddr|] to |v|.
-        1. Let |r| be [=ref.host=] |hostaddr|.
+            1. Let |r| be [=ref.host=] |hostaddr|.
+        1. Else,
+            1. Let |hostaddr| be the smallest [=host address=] such that |map|[|hostaddr|] [=map/exists=] is false.
+            1. [=map/Set=] |map|[|hostaddr|] to |v|.
+            1. Let |r| be [=ref.host=] |hostaddr|.
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
     1. Let |actualtype| be [=ref_type=](|store|, |r|).
     1. If [=match_valtype=](|actualtype|, |type|) is false,
@@ -1487,19 +1493,23 @@ The algorithm <dfn>ToWebAssemblyValue</dfn>(|v|, |type|) coerces a JavaScript va
 </div>
 
 <div algorithm>
-The algorithm <dfn>AddressValueToU64</dfn>(|v|, |addrtype|) converts a JavaScript value to a WebAssembly [=u64=] for use in embedding operations. It is designed to act like [=[EnforceRange]=] [=unsigned long=] for {{AddressType}} "i32", and to extend these semantics to {{AddressType}} "i64", by performing the following steps:
+The algorithm <dfn>AddressValueToU64</dfn>(|v|, |addrtype|) converts an IDL value to a WebAssembly [=u64=] for use in embedding operations. It is designed to act like [=[EnforceRange]=] [=unsigned long=] for {{AddressType}} "i32", and to extend these semantics to {{AddressType}} "i64", by performing the following steps:
 
+1. Let |jsValue| be |v|, [=converted to a JavaScript value=].
+
+    Note: The IDL `any` type is a discriminated union, not a transparent wrapper around a JavaScript value.
 1. If |addrtype| is [=i32=],
-    1. Let |n| be [=?=] [$ConvertToInt$](|v|, 32, "unsigned"), where the destination type is associated with [=[EnforceRange]=].
+    1. Let |n| be [=?=] [$ConvertToInt$](|jsValue|, 32, "unsigned"), where the destination type is associated with [=[EnforceRange]=].
 
         Note: This is equivalent to the [=js-unsigned-long|JS conversion rules=] for [=[EnforceRange]=] [=unsigned long=].
     1. Return [=ℝ=](|n|) as a WebAssembly [=u64=].
 1. If |addrtype| is [=i64=],
-    1. Let |n| be [=?=] [$ToBigInt$](|v|).
-    1. If |n| &lt; 0 or |n| &gt; 2<sup>64</sup> &minus; 1, [=throw=] a {{TypeError}}.
+    1. Let |n| be [=?=] [$ToBigInt$](|jsValue|).
+    1. Let |r| be [=ℝ=](|n|).
+    1. If |r| &lt; 0 or |r| &gt; 2<sup>64</sup> &minus; 1, [=throw=] a {{TypeError}}.
 
         Note: This operation is designed to emulate [=[EnforceRange]=].
-    1. Return [=ℝ=](|n|) as a WebAssembly [=u64=].
+    1. Return |r| as a WebAssembly [=u64=].
 1. Assert: This step is not reached.
 
 </div>
@@ -1561,8 +1571,9 @@ The <dfn constructor for="Tag" lt="Tag(type)">new Tag(|type|)</dfn> constructor 
 1. Let |wasmParameters| be «».
 1. [=list/iterate|For each=] |paramType| of |parameters|,
     1. [=list/Append=] [=ToValueType=](|paramType|) to |wasmParameters|.
+1. Let |tagtype| be the [=defined type=] such that [=comp-type/func=] |wasmParameters| → « » is the [=expansion=] of |tagtype|.
 1. Let |store| be the [=surrounding agent=]'s [=associated store=].
-1. Let (|store|, |tagAddress|) be [=tag_alloc=](|store|, |wasmParameters| → « »).
+1. Let (|store|, |tagAddress|) be [=tag_alloc=](|store|, |tagtype|).
 1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
 1. [=initialize a Tag object|Initialize=] **this** from |tagAddress|.
 
@@ -1652,7 +1663,7 @@ The internal methods of an [=Exported GC Object=] use the following implementati
   To create <dfn>a new Exported GC Object</dfn> from a WebAssembly [=object address=] |objectaddr| and a string |objectkind|, perform the following steps:
 
     1. Assert: |objectkind| is either "array" or "struct".
-    1. Let |map| be the [=surrounding agent=]'s associated [=exported GC object cache=].
+    1. If |objectkind| is "array", let |map| be the [=surrounding agent=]'s associated [=Exported Array cache=]; otherwise, let |map| be the [=surrounding agent=]'s associated [=Exported Struct cache=].
     1. If |map|[|objectaddr|] [=map/exists=],
         1. Return |map|[|objectaddr|].
     1. Let |object| be [=MakeBasicObject=](« \[[ObjectAddress]], \[[ObjectKind]] »).
@@ -1732,7 +1743,7 @@ constructor steps are:
 1. If |exceptionTag|.\[[Address]] is equal to |JSTagAddr|,
     1. Throw a {{TypeError}}.
 1. Let |store| be the [=surrounding agent=]'s [=associated store=].
-1. Let [|types|] → [] be [=tag_type=](|store|, |exceptionTag|.\[[Address]]).
+1. Let [=comp-type/func=] |types| → « » be the [=expansion=] of [=tag_type=](|store|, |exceptionTag|.\[[Address]]).
 1. If |types|'s [=list/size=] is not |payload|'s [=list/size=],
     1. Throw a {{TypeError}}.
 1. Let |wasmPayload| be « ».
@@ -1761,7 +1772,7 @@ The <dfn method for="Exception">getArg(|exceptionTag|, |index|)</dfn> method ste
 1. Assert: |tagaddr| is equal to **this**.\[[Type]].
 1. If |index| ≥ |payload|'s [=list/size=],
     1. Throw a {{RangeError}}.
-1. Let [|types|] → [] be [=tag_type=](|store|, |tagaddr|).
+1. Let [=comp-type/func=] |types| → « » be the [=expansion=] of [=tag_type=](|store|, |tagaddr|).
 1. If |types|[|index|] [=matches/valtype|matches=] [=v128=] or [=exnref=],
     1. Throw a {{TypeError}}.
 1. Return [=ToJSValue=](|payload|[|index|]).
@@ -1799,8 +1810,9 @@ To <dfn>get the JavaScript exception tag</dfn>, perform the following steps:
 
     1. If the [=surrounding agent=]'s associated [=JavaScript exception tag=] has been initialized,
         1. return the [=surrounding agent=]'s associated [=JavaScript exception tag=]
+    1. Let |tagtype| be the [=defined type=] such that [=comp-type/func=] « [=externref=] » → « » is the [=expansion=] of |tagtype|.
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
-    1. Let (|store|, |tagAddress|) be [=tag_alloc=](|store|, « [=externref=] » → « »).
+    1. Let (|store|, |tagAddress|) be [=tag_alloc=](|store|, |tagtype|).
     1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
     1. Set the [=surrounding agent=]'s associated [=JavaScript exception tag=] to |tagAddress|.
     1. return |tagAddress|.
@@ -1874,7 +1886,17 @@ To <dfn>validate builtin set names</dfn> with |builtinSetNames|, perform the fol
 
 To <dfn>create a builtin function</dfn> from type |funcType| and execution steps |steps|, perform the following steps:
 
-1. Let |hostfunc| be a [=host function=] which executes |steps| when called.
+1. Let [=comp-type/func=] <var ignore>parameters</var> → |results| be the [=expansion=] of |funcType|.
+1. Let |hostfunc| be a [=host function=] which performs the following steps when called with store |store| and arguments |arguments|:
+    1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
+    1. Let |jsArguments| be « ».
+    1. [=list/iterate|For each=] |arg| of |arguments|,
+        1. [=list/Append=] [=ToJSValue=](|arg|) to |jsArguments|.
+    1. Let |result| be the result of performing |steps| given |jsArguments|.
+    1. Assert: |result|.\[[Type]] is <emu-const>throw</emu-const> or <emu-const>normal</emu-const>.
+    1. Let |store| be the [=surrounding agent=]'s [=associated store=].
+    1. If |result|.\[[Type]] is <emu-const>throw</emu-const>, return (|store|, [=trap=]).
+    1. Return (|store|, « [=!=] [=ToWebAssemblyValue=](|result|.\[[Value]], |results|[0]) »).
 1. Let |store| be the [=surrounding agent=]'s [=associated store=].
 1. Let (|store|, |funcaddr|) be [=func_alloc=](|store|, |funcType|, |hostfunc|).
 1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
@@ -1926,7 +1948,7 @@ Note: The algorithms in this section refer to JS builtins defined on [=String=].
 The <dfn abstract-op lt="UnwrapString">UnwrapString(|v|)</dfn> abstract operation, when invoked, performs the following steps:
 
 1. If |v| [=is not a String=],
-    1. Throw a {{RuntimeError}} exception as if a [=trap=] was executed.
+    1. Throw a {{RuntimeError}} exception.
 1. Return |v|
 
 </div>
@@ -1935,8 +1957,7 @@ The <dfn abstract-op lt="UnwrapString">UnwrapString(|v|)</dfn> abstract operatio
 
 The <dfn abstract-op lt="FromCharCode">FromCharCode(|v|)</dfn> abstract operation, when invoked, performs the following steps:
 
-1. Assert: |v| is of type [=i32=].
-1. Return [=!=] [$Call$]([=String.fromCharCode=], undefined, « [=ToJSValue=](|v|) »).
+1. Return [=!=] [$Call$]([=String.fromCharCode=], undefined, « |v| »).
 
 </div>
 
@@ -1944,8 +1965,40 @@ The <dfn abstract-op lt="FromCharCode">FromCharCode(|v|)</dfn> abstract operatio
 
 The <dfn abstract-op lt="CharCodeAt">CharCodeAt(|string|, |index|)</dfn> abstract operation, when invoked, performs the following steps:
 
-1. Assert: |index| is of type [=i32=].
-1. Return [=!=] [$Call$]([=String.prototype.charCodeAt=], |string|, « [=ToJSValue=](|index|) »).
+1. Return [=!=] [$Call$]([=String.prototype.charCodeAt=], |string|, « [=𝔽=](|index|) »).
+
+</div>
+
+<div algorithm>
+
+The <dfn abstract-op lt="ArrayLength">ArrayLength(|array|)</dfn> abstract operation, when invoked, performs the following steps:
+
+1. Let |store| be the [=surrounding agent=]'s [=associated store=].
+1. Let |arrayaddr| be |array|.\[[ObjectAddress]].
+1. Return the [=list/size=] of |store|.arrays[|arrayaddr|].fields.
+
+</div>
+
+<div algorithm>
+
+The <dfn abstract-op lt="ArrayCharCodeAt">ArrayCharCodeAt(|array|, |index|)</dfn> abstract operation, when invoked, performs the following steps:
+
+1. Let |store| be the [=surrounding agent=]'s [=associated store=].
+1. Let |arrayaddr| be |array|.\[[ObjectAddress]].
+1. Let [=i32.const=] |charCode| be [=unpack=]<sub>i16</sub><sup>u</sup>(|store|.arrays[|arrayaddr|].fields[|index|]).
+1. Return [=𝔽=](|charCode| interpreted as a [=mathematical value=]).
+
+</div>
+
+<div algorithm>
+
+The <dfn abstract-op lt="SetArrayCharCodeAt">SetArrayCharCodeAt(|array|, |index|, |charCode|)</dfn> abstract operation, when invoked, performs the following steps:
+
+1. Let |store| be the [=surrounding agent=]'s [=associated store=].
+1. Let |arrayaddr| be |array|.\[[ObjectAddress]].
+1. Let |value| be [=!=] [=ToWebAssemblyValue=](|charCode|, [=i32=]).
+1. Set |store|.arrays[|arrayaddr|].fields[|index|] to [=pack=]<sub>i16</sub>(|value|).
+1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
 
 </div>
 
@@ -1970,8 +2023,8 @@ The |funcType| of this builtin is `(rec (type (func (param externref) (result i3
 When this builtin is invoked with parameter |v|, the following steps must be run:
 
 1. If |v| [=is not a String=],
-    1. Return 0.
-1. Return 1.
+    1. Return **+0**<sub>𝔽</sub>.
+1. Return **1**<sub>𝔽</sub>.
 
 </div>
 
@@ -1985,15 +2038,17 @@ The |funcType| of this builtin is `(rec (type (func (param (ref null arrayType) 
 
 When this builtin is invoked with parameters |array|, |start|, and |end|, the following steps must be run:
 
+1. Let |startIndex| be [=ℝ=]([=!=] [$ToUint32$](|start|)).
+1. Let |endIndex| be [=ℝ=]([=!=] [$ToUint32$](|end|)).
 1. If |array| is null,
-    1. Throw a {{RuntimeError}} exception as if a [=trap=] was executed.
-1. Let |length| be the number of elements in |array|.
-1. If |start| > |end| or |end| > |length|,
-    1. Throw a {{RuntimeError}} exception as if a [=trap=] was executed.
+    1. Throw a {{RuntimeError}} exception.
+1. Let |length| be [$ArrayLength$](|array|).
+1. If |startIndex| > |endIndex| or |endIndex| > |length|,
+    1. Throw a {{RuntimeError}} exception.
 1. Let |result| be the empty string.
-1. Let |i| be |start|.
-1. While |i| < |end|:
-    1. Let |charCode| be the value of the element stored at index |i| in |array|.
+1. Let |i| be |startIndex|.
+1. While |i| < |endIndex|:
+    1. Let |charCode| be [$ArrayCharCodeAt$](|array|, |i|).
     1. Let |charCodeString| be [$FromCharCode$](|charCode|).
     1. Let |result| be the concatenation of |result| and |charCodeString|.
     1. Set |i| to |i| + 1.
@@ -2011,19 +2066,20 @@ The |funcType| of this builtin is `(rec (type (func (param externref (ref null a
 
 When this builtin is invoked with parameters |string|, |array|, and |start|, the following steps must be run:
 
+1. Let |startIndex| be [=ℝ=]([=!=] [$ToUint32$](|start|)).
 1. If |array| is null,
-    1. Throw a {{RuntimeError}} exception as if a [=trap=] was executed.
+    1. Throw a {{RuntimeError}} exception.
 1. Let |string| be [=?=] [$UnwrapString$](|string|).
 1. Let |stringLength| be the [=string/length=] of |string|.
-1. Let |arrayLength| be the number of elements in |array|.
-1. If |start| + |stringLength| > |arrayLength|,
-    1. Throw a {{RuntimeError}} exception as if a [=trap=] was executed.
+1. Let |arrayLength| be [$ArrayLength$](|array|).
+1. If |startIndex| + |stringLength| > |arrayLength|,
+    1. Throw a {{RuntimeError}} exception.
 1. Let |i| be 0.
 1. While |i| < |stringLength|:
     1. Let |charCode| be [$CharCodeAt$](|string|, |i|).
-    1. Set the element at index |start| + |i| in |array| to [=ToWebAssemblyValue=](|charCode|, [=i32=]).
+    1. Perform [$SetArrayCharCodeAt$](|array|, |startIndex| + |i|, |charCode|).
     1. Set |i| to |i| + 1.
-1. Return |stringLength|.
+1. Return [=𝔽=](|stringLength|).
 
 </div>
 
@@ -2036,53 +2092,57 @@ The |funcType| of this builtin is `(rec (type (func (param i32) (result (ref ext
 
 When this builtin is invoked with parameter |v|, the following steps must be run:
 
-1. Return [$FromCharCode$](|v|).
+1. Let |charCode| be [=ℝ=]([=!=] [$ToUint32$](|v|)).
+1. Return [$FromCharCode$]([=𝔽=](|charCode|)).
 
 </div>
 
 <h4 id="js-string-fromCodePoint">fromCodePoint</h4>
 
-The |funcType| of this builtin is `(rec (type (func (param i32) (result externref)))).0`.
+The |funcType| of this builtin is `(rec (type (func (param i32) (result (ref extern))))).0`.
 
 <div algorithm="js-string-fromCodePoint">
 
 When this builtin is invoked with parameter |v|, the following steps must be run:
 
-1. If |v| &gt; 0x10ffff,
-    1. Throw a {{RuntimeError}} exception as if a [=trap=] was executed.
-1. Return [=!=] [$Call$]([=String.fromCodePoint=], undefined, « [=ToJSValue=](|v|) »).
+1. Let |codePoint| be [=ℝ=]([=!=] [$ToUint32$](|v|)).
+1. If |codePoint| &gt; 0x10ffff,
+    1. Throw a {{RuntimeError}} exception.
+1. Return [=!=] [$Call$]([=String.fromCodePoint=], undefined, « [=𝔽=](|codePoint|) »).
 
 </div>
 
 <h4 id="js-string-charCodeAt">charCodeAt</h4>
 
-The type of this function is `(rec (type (func (param externref i32) (result i32)))).0`.
+The |funcType| of this builtin is `(rec (type (func (param externref i32) (result i32)))).0`.
 
 <div algorithm="js-string-charCodeAt">
 
 When this builtin is invoked with parameters |string| and |index|, the following steps must be run:
 
+1. Let |index| be [=ℝ=]([=!=] [$ToUint32$](|index|)).
 1. Let |string| be [=?=] [$UnwrapString$](|string|).
 1. Let |length| be the [=string/length=] of |string|.
 1. If |index| >= |length|,
-    1. Throw a {{RuntimeError}} exception as if a [=trap=] was executed.
+    1. Throw a {{RuntimeError}} exception.
 1. Return [$CharCodeAt$](|string|, |index|).
 
 </div>
 
 <h4 id="js-string-codePointAt">codePointAt</h4>
 
-The type of this function is `(rec (type (func (param externref i32) (result i32)))).0`.
+The |funcType| of this builtin is `(rec (type (func (param externref i32) (result i32)))).0`.
 
 <div algorithm="js-string-codePointAt">
 
 When this builtin is invoked with parameters |string| and |index|, the following steps must be run:
 
+1. Let |index| be [=ℝ=]([=!=] [$ToUint32$](|index|)).
 1. Let |string| be [=?=] [$UnwrapString$](|string|).
 1. Let |length| be the [=string/length=] of |string|.
 1. If |index| >= |length|,
-    1. Throw a {{RuntimeError}} exception as if a [=trap=] was executed.
-1. Return [=!=] [$Call$]([=String.prototype.codePointAt=], |string|, « [=ToJSValue=](|index|) »).
+    1. Throw a {{RuntimeError}} exception.
+1. Return [=!=] [$Call$]([=String.prototype.codePointAt=], |string|, « [=𝔽=](|index|) »).
 
 </div>
 
@@ -2095,7 +2155,8 @@ The |funcType| of this builtin is `(rec (type (func (param externref) (result i3
 When this builtin is invoked with parameter |v|, the following steps must be run:
 
 1. Let |string| be [=?=] [$UnwrapString$](|v|).
-1. Return the [=string/length=] of |string|.
+1. Let |length| be the [=string/length=] of |string|.
+1. Return [=𝔽=](|length|).
 
 </div>
 
@@ -2121,11 +2182,13 @@ The |funcType| of this builtin is `(rec (type (func (param externref i32 i32) (r
 
 When this builtin is invoked with parameters |string|, |start|, and |end|, the following steps must be run:
 
+1. Let |startIndex| be [=ℝ=]([=!=] [$ToUint32$](|start|)).
+1. Let |endIndex| be [=ℝ=]([=!=] [$ToUint32$](|end|)).
 1. Let |string| be [=?=] [$UnwrapString$](|string|).
 1. Let |length| be the [=string/length=] of |string|.
-1. If |start| > |end| or |start| > |length|,
+1. If |startIndex| > |endIndex| or |startIndex| > |length|,
     1. Return the empty string.
-1. Return [=!=] [$Call$]([=String.prototype.substring=], |string|, « [=ToJSValue=](|start|), [=ToJSValue=](|end|) »).
+1. Return [=!=] [$Call$]([=String.prototype.substring=], |string|, « [=𝔽=](|startIndex|), [=𝔽=](|endIndex|) »).
 
 </div>
 
@@ -2140,12 +2203,12 @@ Note: Explicitly allow null strings to be compared for equality as that is meani
 When this builtin is invoked with parameters |first| and |second|, the following steps must be run:
 
 1. If |first| is not null and |first| [=is not a String=],
-    1. Throw a {{RuntimeError}} exception as if a [=trap=] was executed.
+    1. Throw a {{RuntimeError}} exception.
 1. If |second| is not null and |second| [=is not a String=],
-    1. Throw a {{RuntimeError}} exception as if a [=trap=] was executed.
+    1. Throw a {{RuntimeError}} exception.
 1. If [=IsStrictlyEqual=](|first|, |second|) is true,
-    1. Return 1.
-1. Return 0.
+    1. Return **1**<sub>𝔽</sub>.
+1. Return **+0**<sub>𝔽</sub>.
 
 </div>
 
@@ -2160,10 +2223,10 @@ When this builtin is invoked with parameters |first| and |second|, the following
 1. Let |first| be [=?=] [$UnwrapString$](|first|).
 1. Let |second| be [=?=] [$UnwrapString$](|second|).
 1. If [=IsStrictlyEqual=](|first|, |second|) is true,
-    1. Return 0.
+    1. Return **+0**<sub>𝔽</sub>.
 1. If [=!=] [=IsLessThan=](|first|, |second|, true) is true,
-    1. Return -1.
-1. Return 1.
+    1. Return **-1**<sub>𝔽</sub>.
+1. Return **1**<sub>𝔽</sub>.
 
 </div>
 

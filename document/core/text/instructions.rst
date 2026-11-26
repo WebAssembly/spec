@@ -96,6 +96,8 @@ $${grammar: Tblocktype_ Tblockinstr_/plain Tcatch_}
 
 All other control instruction are represented verbatim.
 
+$${grammar: {Tplaininstr_/br Tplaininstr_/func-plain Tplaininstr_/exn}}
+
 .. note::
    The side condition stating that the :ref:`identifier context <text-context>` ${idctxt: I'} must only contain unnamed entries in the rule for |CALLINDIRECT| enforces that no identifier can be bound in any |Tparam| declaration appearing in the type annotation.
 

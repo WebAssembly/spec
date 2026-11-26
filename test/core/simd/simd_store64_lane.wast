@@ -123,6 +123,23 @@
             (v128.store64_lane 2 (i32.const 0) (local.get $x))))
   "invalid lane index")
 
+;; the lane index comes after the memarg: $mem offset=1 0
+(assert_malformed
+  (module quote
+    "(memory $mem 1)"
+    "(func (param $x v128)"
+    "  (v128.store64_lane $mem 0 offset=1 (i32.const 0) (local.get $x)))"
+  )
+  "unexpected token")
+;; the lane index comes after the memarg: offset=1 0
+(assert_malformed
+  (module quote
+    "(memory 1)"
+    "(func (param $x v128)"
+    "  (v128.store64_lane 0 offset=1 (i32.const 0) (local.get $x)))"
+  )
+  "unexpected token")
+
 ;; invalid memarg alignment
 (assert_invalid
   (module (memory 1)
