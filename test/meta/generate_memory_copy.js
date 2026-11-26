@@ -99,14 +99,14 @@ function mem_copy(min, max, shared, srcOffs, targetOffs, len) {
     print(
 `
 (module
-  (memory (export "mem") ${min} ${max} ${shared})
-  (data (i32.const ${srcOffs}) "${initializers(srcLim - srcOffs, 0)}")
-  (func (export "run") (param $targetOffs i32) (param $srcOffs i32) (param $len i32)
+  (memory (export "mem")${decltype} ${min} ${max} ${shared})
+  (data (${memtype}.const ${srcOffs}) "${initializers(srcLim - srcOffs, 0)}")
+  (func (export "run") (param $targetOffs ${memtype}) (param $srcOffs ${memtype}) (param $len ${memtype})
     (memory.copy (local.get $targetOffs) (local.get $srcOffs) (local.get $len)))
-  (func (export "load8_u") (param i32) (result i32)
+  (func (export "load8_u") (param ${memtype}) (result i32)
     (i32.load8_u (local.get 0))))
 
-(assert_trap (invoke "run" (i32.const ${targetOffs}) (i32.const ${srcOffs}) (i32.const ${len}))
+(assert_trap (invoke "run" (${memtype}.const ${targetOffs}) (${memtype}.const ${srcOffs}) (${memtype}.const ${len}))
              "out of bounds memory access")
 `);
 
@@ -117,12 +117,12 @@ function mem_copy(min, max, shared, srcOffs, targetOffs, len) {
     let k = 0;
     for (i=0; i < memLength; i++ ) {
         if (i >= srcOffs && i < srcLim) {
-            print(`(assert_return (invoke "load8_u" (i32.const ${i})) (i32.const ${(s++) & 0xFF}))`);
+            print(`(assert_return (invoke "load8_u" (${memtype}.const ${i})) (i32.const ${(s++) & 0xFF}))`);
             continue;
         }
         // Only spot-check for zero, or we'll be here all night.
         if (++k == 199) {
-            print(`(assert_return (invoke "load8_u" (i32.const ${i})) (i32.const 0))`);
+            print(`(assert_return (invoke "load8_u" (${memtype}.const ${i})) (i32.const 0))`);
             k = 0;
         }
     }
