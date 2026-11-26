@@ -117,7 +117,7 @@ Note: This algorithm accepts a {{Response}} object, or a
     {{CompileError}} or other relevant error type, depending on the cause of failure.
 
 
-    1. Let |returnValue| be [=a new promise=].
+    1. Let |returnValue| be [=a new promise=] in the [=current Realm=].
     1. [=React=] to |source|:
         * If |source| was fulfilled with value |unwrappedSource|:
             1. Let |response| be |unwrappedSource|'s [=Response/response=].
