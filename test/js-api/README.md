@@ -69,3 +69,38 @@ See the [testharness.js] documentation for more information.
 [web-platform-tests project]: https://github.com/web-platform-tests/wpt/tree/master/wasm/jsapi
 [testharness.js]: https://web-platform-tests.org/writing-tests/testharness-api.html
 [multi-global tests]: https://web-platform-tests.org/writing-tests/testharness.html#multi-global-tests
+
+## Running in browsers
+
+From the repository root, install Selenium in a Python virtual environment and
+run the suite against an installed browser.
+
+```sh
+python3 -m venv /tmp/wasm-js-api-venv
+/tmp/wasm-js-api-venv/bin/python -m pip install selenium
+/tmp/wasm-js-api-venv/bin/python test/js-api/scripts/run.py --browser firefox
+```
+
+For Safari, enable Remote Automation once with `safaridriver --enable`.
+
+### Pinned browser versions
+
+The [browser version file](scripts/browser-versions.json) pins exact Chrome and Firefox
+versions. Selenium Manager selects or downloads those versions. For Safari,
+the file records the full version last tested on the GitHub-hosted image.
+
+The [CI workflow](../../.github/workflows/ci-js-api.yml) checks for browser
+updates monthly. After complete runs, it opens a PR with newer versions
+and their expectations. This requires the repository setting "Allow GitHub
+Actions to create and approve pull requests".
+
+### Browser expectations
+
+The test runner uses [scripts/expectations.json](scripts/expectations.json) to
+track expected results of tests. To update expectations from a test run, save a
+JSON report and apply it to the expectations file:
+
+```sh
+/tmp/wasm-js-api-venv/bin/python test/js-api/scripts/run.py --browser firefox --json firefox.json
+python3 test/js-api/scripts/update-expectations.py --in-place firefox.json
+```

@@ -1,0 +1,201 @@
+name: CI for JS API tests
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/ci-js-api.yml
+      - test/harness/testharness.js
+      - test/js-api/**
+
+  pull_request:
+    branches: [main]
+    paths:
+      - .github/workflows/ci-js-api.yml
+      - test/harness/testharness.js
+      - test/js-api/**
+
+  schedule:
+    - cron: '23 6 1 * *'
+
+  workflow_dispatch:
+    inputs:
+      refresh:
+        description: Test current releases and update the browser bump PR from the default branch
+        type: boolean
+        default: false
+      chrome-version:
+        description: Candidate Chrome version (blank uses the pin)
+        type: string
+      firefox-version:
+        description: Candidate Firefox version (blank uses the pin)
+        type: string
+      safari-version:
+        description: Candidate Safari version, or "installed" to accept the hosted version
+        type: string
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  js-api:
+    name: JS API (${{ matrix.browser }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - browser: firefox
+            os: ubuntu-24.04
+            version: ${{ inputs.firefox-version }}
+          - browser: chrome
+            os: ubuntu-24.04
+            version: ${{ inputs.chrome-version }}
+          - browser: safari
+            os: macos-15
+            version: ${{ inputs.safari-version }}
+    env:
+      BROWSER: ${{ matrix.browser }}
+      REFRESH: ${{ github.event_name == 'schedule' || inputs.refresh }}
+      PROPOSE: ${{ (github.event_name == 'schedule' || inputs.refresh) && github.ref_name == github.event.repository.default_branch }}
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.14'
+      - name: Install Selenium
+        run: python -m pip install selenium==4.53.0
+      - name: Select browser version
+        id: browser
+        env:
+          OVERRIDE: ${{ matrix.version }}
+        run: |
+          args=(select-version "$BROWSER" --override "$OVERRIDE")
+          if [[ "$REFRESH" == true ]]; then
+            args+=(--refresh)
+          fi
+          version=$(python test/js-api/scripts/ci.py "${args[@]}")
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+      - name: Enable Safari Remote Automation
+        if: matrix.browser == 'safari'
+        run: sudo /usr/bin/safaridriver --enable
+      - name: Run JS API tests
+        env:
+          BROWSER_VERSION: ${{ steps.browser.outputs.version }}
+          SE_SKIP_DRIVER_IN_PATH: 'true'
+        run: |
+          args=(--browser "$BROWSER" --json wasm-js-api.json --summary "$GITHUB_STEP_SUMMARY")
+          if [[ -n "$BROWSER_VERSION" ]]; then
+            args+=(--browser-version "$BROWSER_VERSION")
+          fi
+          status=0
+          python test/js-api/scripts/run.py "${args[@]}" || status=$?
+          # Candidate test failures are expected. The proposal job validates the report.
+          if [[ "$PROPOSE" == true && "$status" == 1 && -s wasm-js-api.json ]]; then
+            exit 0
+          fi
+          exit "$status"
+      - name: Upload browser report
+        if: ${{ !cancelled() && hashFiles('wasm-js-api.json') != '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: wasm-js-api-${{ matrix.browser }}
+          path: wasm-js-api.json
+          if-no-files-found: error
+
+  propose-browser-update:
+    name: Propose browser update
+    if: ${{ (github.event_name == 'schedule' || inputs.refresh) && github.ref_name == github.event.repository.default_branch }}
+    needs: js-api
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    concurrency: js-api-browser-update
+    permissions:
+      actions: write
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout tested commit
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Download browser reports
+        uses: actions/download-artifact@v4
+        with:
+          pattern: wasm-js-api-*
+          path: ${{ runner.temp }}/js-api-reports
+      - name: Check the default branch is unchanged
+        env:
+          BASE_BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          if [[ "$(git ls-remote origin "refs/heads/$BASE_BRANCH" | cut -f1)" != "$GITHUB_SHA" ]]; then
+            echo "The default branch moved during testing. Run the refresh again." >&2
+            exit 1
+          fi
+      - name: Update pins and expectations
+        id: update
+        run: python3 test/js-api/scripts/ci.py propose "$RUNNER_TEMP/js-api-reports" | tee -a "$GITHUB_STEP_SUMMARY"
+      # A rejected browser fails the job, but the other browsers are still proposed.
+      - name: Open or update browser bump PR
+        if: ${{ !cancelled() && steps.update.outcome != 'skipped' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BASE_BRANCH: ${{ github.event.repository.default_branch }}
+          UPDATE_OUTCOME: ${{ steps.update.outcome }}
+        run: |
+          branch=automation/js-api-browser-versions
+          ref="refs/heads/$branch"
+          previous=$(git ls-remote origin "$ref" | cut -f1)
+          lease="--force-with-lease=$ref:$previous"
+          git add -- test/js-api/scripts/browser-versions.json test/js-api/scripts/expectations.json
+          if git diff --cached --quiet; then
+            if [[ -n "$previous" && "$UPDATE_OUTCOME" == success ]]; then
+              gh auth setup-git
+              git push "$lease" origin ":$ref"
+            fi
+            echo "No browser updates to propose."
+            exit 0
+          fi
+
+          pr=$(gh api --method GET "repos/$GITHUB_REPOSITORY/pulls" \
+            -f state=open -f base="$BASE_BRANCH" \
+            -f head="${GITHUB_REPOSITORY%%/*}:$branch" --jq '.[0].number // empty')
+          if [[ -n "$pr" && -n "$previous" ]]; then
+            previous_tree=$(gh api "repos/$GITHUB_REPOSITORY/git/commits/$previous" --jq .tree.sha)
+            if [[ "$(git write-tree)" == "$previous_tree" ]]; then
+              echo "PR #$pr already contains this update."
+              exit 0
+            fi
+          fi
+
+          title='[js-api] Bump CI browser versions'
+          body_file=$(mktemp)
+          cat > "$body_file" <<EOF
+          Update the browser pins and failure expectations from complete JS API suite runs.
+
+          [Browser reports]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID)
+          EOF
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m "$title"
+          gh auth setup-git
+          # Rebuild the bot branch from the tested default-branch commit.
+          git push "$lease" origin "HEAD:$ref"
+          # Pushes made with GITHUB_TOKEN do not trigger pull_request runs, so start CI on the PR head.
+          gh workflow run ci-js-api.yml --repo "$GITHUB_REPOSITORY" --ref "$branch"
+          if [[ -n "$pr" ]]; then
+            gh api --method PATCH "repos/$GITHUB_REPOSITORY/pulls/$pr" \
+              -F body=@"$body_file" --jq .html_url
+          else
+            gh pr create --repo "$GITHUB_REPOSITORY" --base "$BASE_BRANCH" \
+              --head "$branch" --title "$title" --body-file "$body_file"
+          fi
