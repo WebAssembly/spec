@@ -130,7 +130,7 @@ Field Types
 
 $${rule-prose: Fieldtype_sub}
 
-$${rule: {Fieldtype_sub/var}}
+$${rule: {Fieldtype_sub/*}}
 
 
 $${rule-prose: Storagetype_sub}
@@ -194,7 +194,7 @@ Global Types
 
 $${rule-prose: Globaltype_sub}
 
-$${rule: {Globaltype_sub/var}}
+$${rule: {Globaltype_sub/*}}
 
 
 .. index:: memory type, limits
