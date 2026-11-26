@@ -257,6 +257,7 @@ $${grammar: Timport_/abbrev-func Texportfunc_}
 .. _text-datastring:
 .. _text-data:
 .. _text-memuse:
+.. _text-offsetexpr:
 
 Data Segments
 ~~~~~~~~~~~~~
@@ -264,7 +265,7 @@ Data Segments
 Data segments allow for an optional :ref:`memory index <text-memidx>` to identify the memory to initialize.
 The data is written as a :ref:`string <text-string>`, which may be split up into a possibly empty sequence of individual string literals.
 
-$${grammar: Tdata_ Tdatastring {Tmemuse_/plain Toffset_/plain}}
+$${grammar: Tdata_ Tdatastring {Tmemuse_/plain Toffsetexpr_/plain}}
 
 
 Abbreviations
@@ -272,7 +273,7 @@ Abbreviations
 
 As an abbreviation, a single :ref:`folded instruction <text-foldedinstr>` may occur in place of the offset of an active segment:
 
-$${grammar: Toffset_/abbrev}
+$${grammar: Toffsetexpr_/abbrev}
 
 Also, a memory use can be omitted, defaulting to ${:0}.
 

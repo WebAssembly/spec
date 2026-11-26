@@ -84,7 +84,7 @@ $${grammar: Bname}
 
 The auxiliary ${:$utf8} function expressing this encoding is defined as follows:
 
-$${definition: utf8}
+$${definition: {utf8 utf8single}}
 
 where ${definition: cont}
 

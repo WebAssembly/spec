@@ -26,16 +26,16 @@ Please make sure to only use that once a change has approval.
 
 ### Prerequisites
 
-You will need `python3.7`, and `pip`. `pip` should come with Python, if not follow [these installation instructions for `pip`](https://pip.pypa.io/en/stable/installing/), or check your system package manager for `pip3`.
+You will need `python3.10`, and `pip`. `pip` should come with Python, if not follow [these installation instructions for `pip`](https://pip.pypa.io/en/stable/installing/), or check your system package manager for `pip3`.
 
-> Important: you will need the version of pip that works with `python3.7`.
+> Important: you will need the version of pip that works with `python3.10`.
 
 
 Use something like [`pipenv`](https://pipenv.pypa.io/) to keep your system installation of Python clean.
 
 ```
 pip install pipenv
-pipenv --python 3.7
+pipenv --python 3.10
 pipenv shell
 ```
 

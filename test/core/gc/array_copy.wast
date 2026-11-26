@@ -137,3 +137,38 @@
 (assert_return (invoke "array_get_nth" (i32.const 9)) (i32.const 107))
 (assert_return (invoke "array_get_nth" (i32.const 10)) (i32.const 108))
 (assert_return (invoke "array_get_nth" (i32.const 11)) (i32.const 108))
+
+;; arrays of reference type
+
+(module
+  (type $arrref (array (mut i31ref)))
+
+  (global $g_src (ref $arrref)
+    (array.new_fixed $arrref 3 (ref.i31 (i32.const 1)) (ref.i31 (i32.const 2)) (ref.i31 (i32.const 3))))
+  (global $g_dst (ref $arrref)
+    (array.new $arrref (ref.i31 (i32.const 0)) (i32.const 3)))
+
+  (func (export "array_get_nth") (param $1 i32) (result i32)
+    (i31.get_u (array.get $arrref (global.get $g_dst) (local.get $1)))
+  )
+
+  (func (export "array_copy") (param $1 i32) (param $2 i32) (param $3 i32)
+    (array.copy $arrref $arrref (global.get $g_dst) (local.get $1) (global.get $g_src) (local.get $2) (local.get $3))
+  )
+
+  (func (export "array_copy_overlap")
+    (array.copy $arrref $arrref (global.get $g_dst) (i32.const 1) (global.get $g_dst) (i32.const 0) (i32.const 2))
+  )
+)
+
+;; normal case
+(assert_return (invoke "array_copy" (i32.const 0) (i32.const 0) (i32.const 3)))
+(assert_return (invoke "array_get_nth" (i32.const 0)) (i32.const 1))
+(assert_return (invoke "array_get_nth" (i32.const 1)) (i32.const 2))
+(assert_return (invoke "array_get_nth" (i32.const 2)) (i32.const 3))
+
+;; overlapping copy with the destination index greater than the source index
+(assert_return (invoke "array_copy_overlap"))
+(assert_return (invoke "array_get_nth" (i32.const 0)) (i32.const 1))
+(assert_return (invoke "array_get_nth" (i32.const 1)) (i32.const 1))
+(assert_return (invoke "array_get_nth" (i32.const 2)) (i32.const 2))

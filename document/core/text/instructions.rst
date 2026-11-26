@@ -96,6 +96,8 @@ $${grammar: Tblocktype_ Tblockinstr_/plain Tcatch_}
 
 All other control instruction are represented verbatim.
 
+$${grammar: {Tplaininstr_/br Tplaininstr_/func-plain Tplaininstr_/exn}}
+
 .. note::
    The side condition stating that the :ref:`identifier context <text-context>` ${idctxt: I'} must only contain unnamed entries in the rule for |CALLINDIRECT| enforces that no identifier can be bound in any |Tparam| declaration appearing in the type annotation.
 
@@ -179,7 +181,9 @@ The offset and alignment immediates to memory instructions are optional.
 The offset defaults to ${:0}, the alignment to the storage size of the respective memory access, which is its *natural alignment*.
 Lexically, an ${grammar-case: Toffset} or ${grammar-case: Talign_} phrase is considered a single :ref:`keyword token <text-keyword>`, so no :ref:`white space <text-space>` is allowed around the ${grammar-case: "="}.
 
-$${grammar: {Tmemarg_ Toffset Talign_ Tlaneidx Tplaininstr_/memory-plain Tplaininstr_/data}}
+$${grammar: {Tmemarg_ Toffset Talign_ Tlaneidx}}
+
+$${grammar: {Tplaininstr_/memory-plain Tplaininstr_/data}}
 
 
 Abbreviations

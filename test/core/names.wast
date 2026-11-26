@@ -1093,6 +1093,17 @@
 (assert_return (invoke "ẛ") (i32.const 478))
 
 (module
+  ;; Test the escapes \r, \' and \u{...} with an underscore in names.
+  (func (export "\r") (result i32) (i32.const 0))
+  (func (export "\'") (result i32) (i32.const 1))
+  (func (export "\u{1_F600}") (result i32) (i32.const 2))
+)
+
+(assert_return (invoke "\0d") (i32.const 0))
+(assert_return (invoke "'") (i32.const 1))
+(assert_return (invoke "\f0\9f\98\80") (i32.const 2))
+
+(module
   ;; Test that we can use indices instead of names to reference imports,
   ;; exports, functions and parameters.
   (import "spectest" "print_i32" (func (param i32)))

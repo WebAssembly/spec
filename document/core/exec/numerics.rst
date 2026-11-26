@@ -50,7 +50,7 @@ Numeric operators are lifted to input sequences by applying the operator element
 
    .. math::
       \begin{array}{lll@{\qquad}l}
-      \fabs_N(z^n) &=& \fabs_N(z[0])~\dots~\fabs_N(z[n])
+      \fabs_N(z^n) &=& \fabs_N(z[0])~\dots~\fabs_N(z[n-1])
       \end{array}
 
    The binary operator |iadd|, when given two sequences of integers of the same length, :math:`n`, return a sequence of integer results:
@@ -1051,7 +1051,7 @@ then its sign is non-deterministic and the :ref:`payload <syntax-payload>` is co
 
 * Otherwise the payload is picked non-deterministically among all :ref:`arithmetic NaNs <arithmetic-nan>`; that is, its most significant bit is :math:`1` and all others are unspecified.
 
-* In the :ref:`deterministic profile <profile-deterministic>`, however, a positive canonical NaNs is reliably produced in the latter case.
+* In the :ref:`deterministic profile <profile-deterministic>`, only positive canonical NaN outputs are produced.
 
 The non-deterministic result is expressed by the following auxiliary function producing a set of allowed outputs from a set of inputs:
 
@@ -1059,9 +1059,9 @@ The non-deterministic result is expressed by the following auxiliary function pr
    \begin{array}{llcl@{\qquad}l}
    & \nans_N\{z^\ast\} &=& \{ + \NAN(\canon_N) \} \\
    \exprofiles{\PROFDET} & \nans_N\{z^\ast\} &=& \{ + \NAN(n), - \NAN(n) ~|~ n = \canon_N \}
-     & (\iff \{z^\ast\} \subseteq \{ + \NAN(\canon_N), - \NAN(\canon_N) \} \\
+     & (\iff \forall \,{\pm \NAN(n)} \in z^\ast,~ n = \canon_N) \\
    \exprofiles{\PROFDET} & \nans_N\{z^\ast\} &=& \{ + \NAN(n), - \NAN(n) ~|~ n \geq \canon_N \}
-     & (\iff \{z^\ast\} \not\subseteq \{ + \NAN(\canon_N), - \NAN(\canon_N) \} \\
+     & (\iff \exists \,{\pm \NAN(n)} \in z^\ast,~ n \neq \canon_N) \\
    \end{array}
 
 
@@ -1169,6 +1169,10 @@ The non-deterministic result is expressed by the following auxiliary function pr
 
 * Else if either :math:`z_1` or :math:`z_2` is an infinity and the other a value with opposite sign, then return negative infinity.
 
+* Else if either :math:`z_1` or :math:`z_2` is a zero and the other a value with the same sign, then return positive zero.
+
+* Else if either :math:`z_1` or :math:`z_2` is a zero and the other a value with opposite sign, then return negative zero.
+
 * Else if both :math:`z_1` and :math:`z_2` are zeroes of equal sign, then return positive zero.
 
 * Else if both :math:`z_1` and :math:`z_2` are zeroes of opposite sign, then return negative zero.
@@ -1189,8 +1193,10 @@ The non-deterministic result is expressed by the following auxiliary function pr
    \fmul_N(\pm q_1, \mp \infty) &=& -\infty \\
    \fmul_N(\pm \infty, \pm q_2) &=& +\infty \\
    \fmul_N(\pm \infty, \mp q_2) &=& -\infty \\
-   \fmul_N(\pm 0, \pm 0) &=& + 0 \\
-   \fmul_N(\pm 0, \mp 0) &=& - 0 \\
+   \fmul_N(\pm 0, \pm q_2) &=& +0 \\
+   \fmul_N(\pm 0, \mp q_2) &=& -0 \\
+   \fmul_N(\pm q_1, \pm 0) &=& +0 \\
+   \fmul_N(\pm q_1, \mp 0) &=& -0 \\
    \fmul_N(z_1, z_2) &=& \ieee_N(z_1 \cdot z_2) \\
    \end{array}
 
@@ -1252,13 +1258,13 @@ The non-deterministic result is expressed by the following auxiliary function pr
 The function :math:`\fma` is the same as *fusedMultiplyAdd* defined by |IEEE754|_ (Section 5.4.1).
 It computes :math:`(z_1 \cdot z_2) + z_3` as if with unbounded range and precision, rounding only once for the final result.
 
-* If either :math:`z_1` or :math:`z_2` or :math:`z_3` is a NaN, return an element of :math:`\nans_N{z_1, z_2, z_3}`.
+* If either :math:`z_1` or :math:`z_2` or :math:`z_3` is a NaN, return an element of :math:`\nans_N\{z_1, z_2, z_3\}`.
 
 * Else if either :math:`z_1` or :math:`z_2` is a zero and the other is an infinity, then return an element of :math:`\nans_N\{\}`.
 
-* Else if both :math:`z_1` or :math:`z_2` are infinities of equal sign, and :math:`z_3` is a negative infinity, then return an element of :math:`\nans_N\{\}`.
+* Else if both :math:`z_1` and :math:`z_2` are infinities of equal sign, and :math:`z_3` is a negative infinity, then return an element of :math:`\nans_N\{\}`.
 
-* Else if both :math:`z_1` or :math:`z_2` are infinities of opposite sign, and :math:`z_3` is a positive infinity, then return an element of :math:`\nans_N\{\}`.
+* Else if both :math:`z_1` and :math:`z_2` are infinities of opposite sign, and :math:`z_3` is a positive infinity, then return an element of :math:`\nans_N\{\}`.
 
 * Else if either :math:`z_1` or :math:`z_2` is an infinity and the other is a value of the same sign, and :math:`z_3` is a negative infinity, then return an element of :math:`\nans_N\{\}`.
 
@@ -1270,7 +1276,7 @@ It computes :math:`(z_1 \cdot z_2) + z_3` as if with unbounded range and precisi
 
 * Else if both :math:`z_1` and :math:`z_2` are zeroes of the opposite sign and :math:`z_3` is a negative zero, then return negative zero.
 
-* Else return the result of multiplying :math:`z_1` and :math:`z_2`, adding :math:`z_3` to the intermediate, and the final result ref:`rounded <aux-ieee>` to the nearest representable value.
+* Else return the result of multiplying :math:`z_1` and :math:`z_2`, adding :math:`z_3` to the intermediate, and the final result :ref:`rounded <aux-ieee>` to the nearest representable value.
 
 .. math::
    \begin{array}{@{}llcll}
@@ -2162,7 +2168,7 @@ where:
 
 3. Let :math:`(j_1~j_2)^m` be :math:`j^{2m}`, decomposed into pairwise elements.
 
-4. For each :math:`i_{1k}` in :math:`i_1^m` and corresponding :math:`i_{2k}` in :math:`i_2^m`, let :math:`r_k` be :math:`\iaddsat_N(i_{1k}, i_{2k})`.
+4. For each :math:`i_{1k}` in :math:`i_1^m` and corresponding :math:`i_{2k}` in :math:`i_2^m`, let :math:`r_k` be :math:`\iaddsats_N(i_{1k}, i_{2k})`.
 
 5. Let :math:`r^m` be the concatenation of all :math:`r_k`.
 
@@ -2170,7 +2176,7 @@ where:
 
 .. math::
    \begin{array}{@{}lcll}
-   \ivdotsat_N(i_1^{2m}, i_2^{2m}) &=& (\iaddsat_N(j_1, j_2))^m
+   \ivdotsat_N(i_1^{2m}, i_2^{2m}) &=& (\iaddsats_N(j_1, j_2))^m
      & (\iff (\imul_N(i_1, i_2))^{2m} = (j_1~j_2)^m)
    \end{array}
 
@@ -2206,8 +2212,8 @@ The previous operators are lifted to operators on arguments of vector type by wr
        \begin{array}[t]{@{}l}
        \iff i_1^\ast = \lanes_{\K{i}N_1\K{x}M_1}(c_1)[h \slice k] \\
        \land~i_2^\ast = \lanes_{\K{i}N_1\K{x}M_1}(c_2)[h \slice k] \\
-       \land~{i'_1}^\ast = \extend^{\sx}_{N_1, N_2}(i_1)^\ast \\
-       \land~{i'_2}^\ast = \extend^{\sx}_{N_1, N_2}(i_2)^\ast \\
+       \land~{i'_1}^\ast = \extend^{\sx_1}_{N_1, N_2}(i_1)^\ast \\
+       \land~{i'_2}^\ast = \extend^{\sx_2}_{N_1, N_2}(i_2)^\ast \\
        \land~j^\ast = f_{N_2}({i'_1}^\ast, {i'_2}^\ast) \\
        \end{array}
    \end{array}
@@ -2221,7 +2227,7 @@ where :math:`f`, :math:`\sx_1`, :math:`\sx_2`, :math:`h`, and :math:`k` are inst
    \VEXTMUL{\K\_}\LOW{\K\_}\sx & \ivmul & \sx & \sx & 0 & M_2 \\
    \VEXTMUL{\K\_}\HIGH{\K\_}\sx & \ivmul & \sx & \sx & M_2 & M_2 \\
    \VDOT{\K\_}\S & \ivdot & \S & \S & 0 & M_1 \\
-   \VRELAXEDDOT{\K\_}\S & \ivdotsat & \S & \relaxed(R_{\F{idot}})[ \S, \U ] & 0 & M_1 \\
+   \VRELAXEDDOT{\K\_}\S & \ivrelaxeddot & \S & \relaxed(R_{\F{idot}})[ \S, \U ] & 0 & M_1 \\
    \end{array}
 
 .. note::
@@ -2238,13 +2244,20 @@ where :math:`f`, :math:`\sx_1`, :math:`\sx_2`, :math:`h`, and :math:`k` are inst
    \VRELAXEDDOTADD{\K\_}\S_{\K{i}N_1\K{x}M_1, \K{i}N_2\K{x}M_2}(c_1, c_2, c_3) &=& c
      & (
        \begin{array}[t]{@{}l}
-       \iff N = 2\cdot N_1 \\
-       \land~M = 2\cdot M_2 \\
-       \land~c' = \VRELAXEDDOT{\K\_}\S_{\K{i}N_1\K{x}M_1, \K{i}N\K{x}M}(c_1, c_2) \\
-       \land~c'' = \VEXTADDPAIRWISE{\K\_}\S_{\K{i}N\K{x}M, \K{i}N_2\K{x}M_2}(c') \\
-       \land~c \in \VADD_{\K{i}N_2\K{x}M_2}(c'', c_3) \\
+       \iff N = \relaxed(R_{\F{idot\_add}})[2\cdot N_1, N_2] \\
+       \land~i_1^\ast = \lanes_{\K{i}N_1\K{x}M_1}(c_1) \\
+       \land~i_2^\ast = \lanes_{\K{i}N_1\K{x}M_1}(c_2) \\
+       \land~{i'_1}^\ast = \extend^{\S}_{N_1, N}(i_1)^\ast \\
+       \land~{i'_2}^\ast = \extend^{\relaxed(R_{\F{idot}})[\S, \U]}_{N_1, N}(i_2)^\ast \\
+       \land~j^\ast = \ivrelaxeddot_N({i'_1}^\ast, {i'_2}^\ast) \\
+       \land~{j'}^\ast = \extend^{\S}_{N, N_2}(j)^\ast \\
+       \land~c' = \lanes^{-1}_{\K{i}N_2\K{x}M_2}(\ivaddpairwise_{N_2}({j'}^\ast)) \\
+       \land~c \in \VADD_{\K{i}N_2\K{x}M_2}(c', c_3) \\
        \end{array}
    \end{array}
+
+.. note::
+   Relaxed operations and the parameters :math:`R_{\F{idot}}` and :math:`R_{\F{idot\_add}}` are introduced :ref:`below <relaxed-ops>`.
 
 
 .. _op-vnarrow:
@@ -2533,16 +2546,22 @@ where:
    it behaves like regular :math:`\ivswizzle`.
 
 
-.. _op-irelaxed_dot:
+.. _op-ivrelaxed_dot:
 .. _op-irelaxed_dot_add:
 
-:math:`\VRELAXEDDOT(i_1, i_2)`
-..............................
+:math:`\ivrelaxeddot_N(i_1^{2m}, i_2^{2m})`
+...........................................
 
 The implementation-specific behaviour of this operation is determined by the global parameter :math:`R_{\F{idot}} \in \{0, 1\}`.
-It also affects the behaviour of :math:`\VRELAXEDDOTADD`.
+It also affects the behaviour of :math:`\VRELAXEDDOT` specified :ref:`above <op-vextbinop>`,
+and of :math:`\VRELAXEDDOTADD` specified :ref:`above <op-vextternop>`, which additionally depends on the global parameter :math:`R_{\F{idot\_add}} \in \{0, 1\}`.
 
-Its definition is part of the definition of :math:`\vextbinop` specified :ref:`above <op-vextbinop>`.
+* Return :math:`\relaxed(R_{\F{idot}})[ \ivdot_N(i_1^{2m}, i_2^{2m}), \ivdotsat_N(i_1^{2m}, i_2^{2m}) ]`.
+
+.. math::
+   \begin{array}{@{}lcll}
+   \ivrelaxeddot_N(i_1^{2m}, i_2^{2m}) &=& \relaxed(R_{\F{idot}})[ \ivdot_N(i_1^{2m}, i_2^{2m}), \ivdotsat_N(i_1^{2m}, i_2^{2m}) ] \\
+   \end{array}
 
 .. note::
    Relaxed dot product is implementation-dependent when the second operand is negative in a signed intepretation.

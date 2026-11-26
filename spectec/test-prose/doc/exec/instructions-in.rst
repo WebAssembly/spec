@@ -776,11 +776,11 @@ $${rule: Step_read/call}
 
 .. _exec-call_ref:
 
-$${rule-prose: Step_read/call_ref}
+$${rule-prose: Step/call_ref}
 
 \
 
-$${rule+: Step_read/call_ref-*}
+$${rule+: Step/call_ref-*}
 
 .. _exec-call_indirect:
 

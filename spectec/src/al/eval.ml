@@ -124,13 +124,13 @@ let rec reduce_exp s e : expr =
     (match op with
     | #Bool.binop as op' ->
       (match Bool.bin_partial op' e1'.it e2'.it of_bool_exp to_bool_exp with
-      | None -> BinE (op, e1', e2')
       | Some e' -> e'
+      | _ -> BinE (op, e1', e2')
       )
     | #Num.binop as op' ->
       (match Num.bin_partial op' e1'.it e2'.it of_num_exp to_num_exp with
-      | None -> BinE (op, e1', e2')
-      | Some e' -> e'
+      | Some (Some e') -> e'
+      | _ -> BinE (op, e1', e2')
       )
     | #Num.cmpop as op' ->
       (match of_num_exp e1'.it, of_num_exp e2'.it with

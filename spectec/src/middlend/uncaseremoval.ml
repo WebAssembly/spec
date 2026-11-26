@@ -48,6 +48,9 @@ let make_arg p =
   | GramP (_, _, _) -> assert false (* Avoid this *)
   ) $ p.at
 
+let reduce_typ env typ =
+  let Ok typ' | Error typ' = Eval.reduce_typ env typ in typ'
+
 let create_projection_functions id params mixops inst =
   let get_deftyp inst' = (match inst'.it with
     | InstD (_quants, _args, deftyp) -> deftyp.it
@@ -62,7 +65,7 @@ let create_projection_functions id params mixops inst =
     let tupt = TupT case_typs $ at in
     let no_name_tupt = TupT (List.map (fun (e, t) -> "_" $ e.at, t) case_typs) $ at in
     let new_tup = TupE (new_var_exps) $$ at % tupt in
-    let new_case_exp = CaseE(m, new_tup) $$ at % user_typ in
+    let new_case_exp = CaseE(m, new_tup, Unchecked) $$ at % user_typ in
 
     let new_params = params @ [new_param] in 
     let new_quants = List.mapi (fun idx (_, t) -> ExpP (var_prefix ^ typ_name t ^ "_" ^ Int.to_string idx $ at, t) $ at) case_typs in
@@ -121,7 +124,7 @@ let t_exp p_env e =
   match e.it with
   | UncaseE (exp, m) -> 
     (* Supplying the projection function for UncaseE removal *)
-    let typ = Eval.reduce_typ p_env.env exp.note in 
+    let typ = reduce_typ p_env.env exp.note in 
     let typ_name = Print.string_of_typ_name typ in
     let proj_info_opt = get_proj_info p_env m typ_name in
     let args = (match typ.it with 
@@ -159,7 +162,7 @@ let collect_uncase_iter env: uncase_map ref * (module Iter.Arg) =
       let visit_exp (exp : exp) = 
         match exp.it with
         | UncaseE(e, m) -> 
-          let typ_name = Print.string_of_typ_name (Il.Eval.reduce_typ env e.note) in
+          let typ_name = Print.string_of_typ_name (reduce_typ env e.note) in
           acc := StringMap.update typ_name (fun int_set_opt -> match int_set_opt with 
             | None -> Some [m]
             | Some ms -> 

@@ -269,8 +269,8 @@ struct
   let sat_s i = sx (min (max i min_int) max_int)
   let sat_u i = sx (min (max i zero) (zx minus_one))
 
-  let add_int i j = assert (bitwidth <= 32); Rep.(of_int (to_int i + to_int j))
-  let sub_int i j = assert (bitwidth <= 32); Rep.(of_int (to_int i - to_int j))
+  let add_int i j = assert (bitwidth <= 16); Rep.(of_int (to_int i + to_int j))
+  let sub_int i j = assert (bitwidth <= 16); Rep.(of_int (to_int i - to_int j))
 
   let add_sat_s i j = sat_s (add_int i j)
   let add_sat_u i j = sat_u (add_int (zx i) (zx j))

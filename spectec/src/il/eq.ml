@@ -87,7 +87,8 @@ and eq_exp e1 e2 =
     eq_exp e11 e21 && eq_path p1 p2 && eq_exp e12 e22
   | TupE es1, TupE es2
   | ListE es1, ListE es2 -> eq_list eq_exp es1 es2
-  | StrE efs1, StrE efs2 -> eq_list eq_expfield efs1 efs2
+  | StrE (efs1, ch1), StrE (efs2 , ch2)->
+    eq_list eq_expfield efs1 efs2 && ch1 = ch2
   | DotE (e11, atom1), DotE (e21, atom2) ->
     eq_exp e11 e21 && eq_atom atom1 atom2
   | UncaseE (e1, op1), UncaseE (e2, op2) ->
@@ -98,8 +99,8 @@ and eq_exp e1 e2 =
   | OptE eo1, OptE eo2 -> eq_opt eq_exp eo1 eo2
   | ProjE (e1, i1), ProjE (e2, i2) -> eq_exp e1 e2 && i1 = i2
   | TheE e1, TheE e2 -> eq_exp e1 e2
-  | CaseE (op1, e1), CaseE (op2, e2) ->
-    eq_mixop op1 op2 && eq_exp e1 e2
+  | CaseE (op1, e1, ch1), CaseE (op2, e2, ch2) ->
+    eq_mixop op1 op2 && eq_exp e1 e2 && ch1 = ch2
   | CvtE (e1, nt11, nt12), CvtE (e2, nt21, nt22) ->
     eq_exp e1 e2 && nt11 = nt21 && nt12 = nt22
   | SubE (e1, t11, t12), SubE (e2, t21, t22) ->

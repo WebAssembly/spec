@@ -160,7 +160,7 @@ $${rule: {Step_read/call}}
 
 6. :ref:`Invoke <exec-invoke>` the function instance at address :math:`a`.
 
-$${rule: {Step_read/call_ref-null}}
+$${rule: {Step/call_ref-null}}
 
 .. note::
    The formal rule for calling a non-null function reference is described :ref:`below <exec-invoke>`.
@@ -330,27 +330,29 @@ and returning from it.
 Invocation of :ref:`function reference <syntax-ref.func>` :math:`(\REFFUNCADDR~a)`
 ..................................................................................
 
-1. Assert: due to :ref:`validation <valid-call>`, :math:`S.\SFUNCS[a]` exists.
+1. Let :math:`z` be the current state.
 
-2. Let :math:`f` be the :ref:`function instance <syntax-funcinst>`, :math:`S.\SFUNCS[a]`.
+2. Assert: due to :ref:`validation <valid-call>`, :math:`z.\SFUNCS[a]` exists.
 
-3. Let :math:`\TFUNC~[t_1^n] \Tarrow [t_2^m]` be the :ref:`composite type <syntax-comptype>` :math:`\expanddt(\X{f}.\FITYPE)`.
+3. Let :math:`\X{fi}` be the :ref:`function instance <syntax-funcinst>`, :math:`z.\SFUNCS[a]`.
 
-4. Let :math:`\FUNC~x~\local^\ast~\instr^\ast` be the :ref:`function <syntax-func>` :math:`f.\FICODE`.
+4. Let :math:`\TFUNC~[t_1^n] \Tarrow [t_2^m]` be the :ref:`composite type <syntax-comptype>` :math:`\expanddt(\X{fi}.\FITYPE)`.
 
-5. Assert: due to :ref:`validation <valid-call>`, :math:`n` values are on the top of the stack.
+5. Let :math:`\FUNC~x~(\local~t)^\ast~\instr^\ast` be the :ref:`function <syntax-func>` :math:`\X{fi}.\FICODE`.
 
-6. Pop the values :math:`\val^n` from the stack.
+6. Assert: due to :ref:`validation <valid-call>`, :math:`n` values are on the top of the stack.
 
-7. Let :math:`F` be the :ref:`frame <syntax-frame>` :math:`\{ \AMODULE~F.\FIMODULE, \ALOCALS~\val^n~(\default_t)^\ast \}`.
+7. Pop the values :math:`\val^n` from the stack.
 
-8. Push the activation of :math:`f` with arity :math:`m` to the stack.
+8. Let :math:`f` be the :ref:`frame <syntax-frame>` :math:`\{ \ALOCALS~\val^n~(\default_t)^\ast, \AMODULE~\X{fi}.\FIMODULE \}`.
 
-9. Let :math:`L` be the :ref:`label <syntax-label>` whose arity is :math:`m` and whose continuation is the end of the function.
+9. Push the activation of :math:`f` with arity :math:`m` to the stack.
 
-10. :ref:`Enter <exec-instrs-enter>` the instruction sequence :math:`\instr^\ast` with label :math:`L` and no values.
+10. Let :math:`L` be the :ref:`label <syntax-label>` whose arity is :math:`m` and whose continuation is the end of the function.
 
-$${rule: {Step_read/call_ref-func}}
+11. :ref:`Enter <exec-instrs-enter>` the instruction sequence :math:`\instr^\ast` with label :math:`L` and no values.
+
+$${rule: {Step/call_ref-func}}
 
 .. note::
    For non-defaultable types, the respective local is left uninitialized by these rules.
@@ -397,39 +399,18 @@ A host function may also modify the :ref:`store <syntax-store>`.
 However, all store modifications must result in an :ref:`extension <extend-store>` of the original store, i.e., they must only modify mutable contents and must not have instances removed.
 Furthermore, the resulting store must be :ref:`valid <valid-store>`, i.e., all data and code in it is well-typed.
 
-.. math::
-   ~\\[-1ex]
-   \begin{array}{l}
-   \begin{array}{lcl@{\qquad}l}
-   S; \val^n~(\REFFUNCADDR~a)~\CALLREF &\stepto& S'; \result
-   \end{array}
-   \\ \qquad
-     \begin{array}[t]{@{}r@{~}l@{}}
-     \iff & S.\SFUNCS[a] = \{ \FITYPE~\deftype, \FIHOSTFUNC~\X{hf} \} \\
-     \wedge & \deftype \approx \TFUNC~[t_1^n] \Tarrow [t_2^m] \\
-     \wedge & (S'; \result) \in \X{hf}(S; \val^n) \\
-     \end{array} \\
-   \begin{array}{lcl@{\qquad}l}
-   S; \val^n~(\REFFUNCADDR~a)~\CALLREF &\stepto& S; \val^n~(\REFFUNCADDR~a)~\CALLREF
-   \end{array}
-   \\ \qquad
-     \begin{array}[t]{@{}r@{~}l@{}}
-     \iff & S.\SFUNCS[a] = \{ \FITYPE~\deftype, \FIHOSTFUNC~\X{hf} \} \\
-     \wedge & \deftype \approx \TFUNC~[t_1^n] \Tarrow [t_2^m] \\
-     \wedge & \bot \in \X{hf}(S; \val^n) \\
-     \end{array} \\
-   \end{array}
+$${rule: {Step/call_ref-hostfunc-*}}
 
-Here, :math:`\X{hf}(S; \val^n)` denotes the implementation-defined execution of host function :math:`\X{hf}` in current store :math:`S` with arguments :math:`\val^n`.
-It yields a set of possible outcomes, where each element is either a pair of a modified store :math:`S'` and a :ref:`result <syntax-result>`
-or the special value :math:`\bot` indicating divergence.
+Here, ${:$hostcall(_HOSTFUNC hf, s, val^n)} denotes the implementation-defined execution of host function ${:hf} in current store ${:s} with arguments ${:val^n}.
+It yields a set of possible outcomes, where each element is either a pair of a modified store ${:s'} and a :ref:`result <syntax-result>`
+or the special value ${hostcallresult:BOT} indicating divergence.
 A host function is non-deterministic if there is at least one argument for which the set of outcomes is not singular.
 
 For a WebAssembly implementation to be :ref:`sound <soundness>` in the presence of host functions,
 every :ref:`host function instance <syntax-funcinst>` must be :ref:`valid <valid-hostfuncinst>`,
 which means that it adheres to suitable pre- and post-conditions:
-under a :ref:`valid store <valid-store>` :math:`S`, and given arguments :math:`\val^n` matching the ascribed parameter types :math:`t_1^n`,
-executing the host function must yield a non-empty set of possible outcomes each of which is either divergence or consists of a valid store :math:`S'` that is an :ref:`extension <extend-store>` of :math:`S` and a result matching the ascribed return types :math:`t_2^m`.
+under a :ref:`valid store <valid-store>` ${:s}, and given arguments ${:val^n} matching the ascribed parameter types ${:t_1^n},
+executing the host function must yield a non-empty set of possible outcomes each of which is either divergence or consists of a valid store ${:s'} that is an :ref:`extension <extend-store>` of ${:s} and a result matching the ascribed return types ${:t_2^m}.
 All these notions are made precise in the :ref:`Appendix <soundness>`.
 
 .. note::
@@ -570,13 +551,25 @@ Memory Instructions
    However, it may be substantially slower on some hardware.
 
 
-.. _exec-load-val:
+.. _exec-load-num:
+
+$${rule-prose: Step_read/load-num-*}
+
+$${rule: {Step_read/load-num-*}}
+
+
 .. _exec-load-pack:
-.. _exec-vload-val:
 
-$${rule-prose: Step_read/load}
+$${rule-prose: Step_read/load-pack-*}
 
-$${rule: {Step_read/load-*}}
+$${rule: {Step_read/load-pack-*}}
+
+
+.. _exec-vload-num:
+
+$${rule-prose: Step_read/vload-num-*}
+
+$${rule: {Step_read/vload-num-*}}
 
 
 .. _exec-vload-pack:
@@ -607,13 +600,19 @@ $${rule-prose: Step_read/vload_lane}
 $${rule: {Step_read/vload_lane-*}}
 
 
-.. _exec-store-val:
+.. _exec-store-num:
 .. _exec-store-pack:
-.. _exec-vstore:
 
 $${rule-prose: Step/store}
 
-$${rule: {Step/store-* Step/vstore-*}}
+$${rule: {Step/store-*}}
+
+
+.. _exec-vstore:
+
+$${rule-prose: Step/vstore}
+
+$${rule: {Step/vstore-*}}
 
 
 .. _exec-vstore_lane:
@@ -1167,6 +1166,20 @@ $${rule-prose: Step_pure/vcvtop}
 $${rule: {Step_pure/vcvtop}}
 
 
+.. index:: ! contextual rules, execution
+.. _exec-ctxt:
+
+Contextual Rules
+~~~~~~~~~~~~~~~~
+
+The next :ref:`instruction <syntax-instr>` to :ref:`execute <exec-instr>` as well as the current :ref:`frame <syntax-frame>` is determined according to the following *contextual* reduction rules.
+
+$${rule: Step/ctxt-*}
+
+.. note::
+   In the prose formulation, the current instruction pointer and the current frame are implicit.
+
+
 .. index:: expression
    pair: execution; expression
    single: abstract syntax; expression
@@ -1177,10 +1190,10 @@ Expressions
 
 An :ref:`expression <syntax-expr>` is *evaluated* relative to a :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>` pointing to its containing :ref:`module instance <syntax-moduleinst>`.
 
-$${rule-prose: Eval_expr}
+$${rule-prose-ignore: Eval_expr}
 
-$${rule: Eval_expr}
+$${rule-ignore: Eval_expr}
 
-.. note::
-   Evaluation iterates this reduction rule until reaching a value.
-   Expressions constituting :ref:`function <syntax-func>` bodies are executed during function :ref:`invocation <exec-invoke>`.
+Expression evaluation iterates single-step reduction until reaching a sequence of resulting :ref:`values <syntax-val>`.
+
+Expressions constituting :ref:`function <syntax-func>` bodies are executed during function :ref:`invocation <exec-invoke>`.

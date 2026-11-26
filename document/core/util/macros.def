@@ -1081,6 +1081,7 @@
 .. |Tlocals| mathdef:: \xref{text/modules}{text-local}{\T{locals}}
 .. |Tdata| mathdef:: \xref{text/modules}{text-data}{\T{data}}
 .. |Tdatastring| mathdef:: \xref{text/modules}{text-datastring}{\T{datastring}}
+.. |Toffsetexpr| mathdef:: \xref{text/modules}{text-offsetexpr}{\T{offsetexpr}}
 .. |Tmemuse| mathdef:: \xref{text/modules}{text-memuse}{\T{memuse}}
 .. |Tstart| mathdef:: \xref{text/modules}{text-start}{\T{start}}
 
@@ -1699,7 +1700,7 @@
 .. |frelaxedmin| mathdef:: \xref{exec/numerics}{op-frelaxed_min}{\F{frelaxed\_min}}
 .. |frelaxedmax| mathdef:: \xref{exec/numerics}{op-frelaxed_max}{\F{frelaxed\_max}}
 .. |irelaxedq15mulrs| mathdef:: \xref{exec/numerics}{op-irelaxed_q15mulr_s}{\F{irelaxed\_q15mulr\_s}}
-.. |irelaxeddot| mathdef:: \xref{exec/numerics}{op-irelaxed_dot}{\F{irelaxed\_dot}}
+.. |ivrelaxeddot| mathdef:: \xref{exec/numerics}{op-ivrelaxed_dot}{\F{ivrelaxed\_dot}}
 
 
 .. Numerics, meta functions

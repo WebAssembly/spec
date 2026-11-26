@@ -42,7 +42,7 @@ let rec apart (e1 : exp) (e2: exp) : bool =
   | NumE n1, NumE n2 -> not (n1 = n2)
   | BoolE b1, BoolE b2 -> not (b1 = b2)
   | TextE t1, TextE t2 -> not (t1 = t2)
-  | CaseE (m1, exp1), CaseE (m2, exp2) ->
+  | CaseE (m1, exp1, _ch1), CaseE (m2, exp2, _ch2) ->
     not (m1 = m2) || apart exp1 exp2
   | TupE es1, TupE es2 when List.length es1 = List.length es2 ->
     List.exists2 apart es1 es2
@@ -50,8 +50,8 @@ let rec apart (e1 : exp) (e2: exp) : bool =
     list_exp_apart e1 e2
   | SubE (e1, _, _), SubE (e2, _, _) -> apart e1 e2
   (* Check if the specific case exists in the subtype *)
-  | CaseE (m, _), SubE (_, {it = VarT (id, _); _}, _)
-  | SubE (_, {it = VarT (id, _); _}, _), CaseE (m, _) ->
+  | CaseE (m, _, _), SubE (_, {it = VarT (id, _); _}, _)
+  | SubE (_, {it = VarT (id, _); _}, _), CaseE (m, _, _) ->
     begin match Il.Env.find_opt_typ !env_ref id with
     | Some (_, insts) -> 
       List.find_opt (fun inst -> match inst.it with

@@ -9,6 +9,7 @@ import shelve
 import subprocess
 import sys
 import threading
+from html.parser import HTMLParser
 
 
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
@@ -34,28 +35,38 @@ def FindMatching(data, prefix):
   return (start, end)
 
 
-def HasBalancedTags(s):
-  tt = re.findall(r'(</?\w+|/>)', s)
-  tags = []
-  for tag in tt:
-    if tag == '/>':
-      # self-closing tag.
-      tags.pop
-    elif tag[0] == '</':
-      # closing tag
-      tag = tag[2:]
-      if len(tags) == 0 or tag != tags[-1]:
-        expected = '"%s"' % tags[-1] if len(tags) else 'empty tag stack'
-        sys.stderr.write('expected %s, got "%s"\n' % (expected, tag))
-        sys.stderr.write('tags: %s\n' % tt)
-        sys.stderr.write('tag stack: %s\n' % tags)
-        sys.stderr.write('string: %s\n' % s)
-        return False
+class TagBalanceParser(HTMLParser):
+  VOID_TAGS = {
+      'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link',
+      'meta', 'param', 'source', 'track', 'wbr',
+  }
 
-      tags.pop()
+  def __init__(self):
+    super().__init__()
+    self.tags = []
+    self.mismatched = False
+
+  def handle_starttag(self, tag, attrs):
+    if tag not in self.VOID_TAGS:
+      self.tags.append(tag)
+
+  def handle_startendtag(self, tag, attrs):
+    pass
+
+  def handle_endtag(self, tag):
+    if not self.tags or self.tags[-1] != tag:
+      self.mismatched = True
     else:
-      # opening tag
-      tags.append(tag[1:])
+      self.tags.pop()
+
+
+def HasBalancedTags(s):
+  parser = TagBalanceParser()
+  parser.feed(s)
+  parser.close()
+  if parser.mismatched or parser.tags:
+    sys.stderr.write('Unbalanced math fragment: %s\n' % s)
+    return False
   return True
 
 
@@ -153,12 +164,16 @@ def Main():
 
   def ExtractMath(match):
     fixups.append(
-        (match.group(1), match.group(2), match.group(3), match.group(4),
+        (match.group(1), match.group(2), match.group(3), match.group(4), match.group(5),
          match.start(), match.end()))
     return 'x' * len(match.group())
 
   data = open(sys.argv[1]).read()
-  cache = shelve.open('%s.%d.cache' % (sys.argv[1], CACHE_VERSION))
+  shelf = shelve.open('%s.%d.cache' % (sys.argv[1], CACHE_VERSION))
+  # A shelf backed by sqlite (the default from Python 3.13) can only be used
+  # from the thread that opened it, so the workers share a copy instead.
+  cache = dict(shelf)
+  cached = set(cache)
   # Drop index + search links.
   data = data.replace(
       '<link href="genindex.html" rel="index" title="Index">', '')
@@ -216,7 +231,7 @@ def Main():
 
   # Pull out math fragments.
   data = re.sub(
-      'class="([^"]*)math([^"]*)"[^>]*>'
+      'class="([^"]*)math([^"]*)"([^>]*)>'
       '((?:[ \n]*<span[^>]*>[^<]*</span>)*)([^<]*)<',
       ExtractMath, data)
 
@@ -228,9 +243,9 @@ def Main():
   def Worker():
     nonlocal success
     while True:
-      cls_before, cls_after, spans, mth, start, end = q.get()
+      cls_before, cls_after, attrs, spans, mth, start, end = q.get()
       try:
-        fixed = ('class="' + cls_before + ' ' + cls_after + '">' +
+        fixed = ('class="' + cls_before + ' ' + cls_after + '"' + attrs + '>' +
                  spans + ReplaceMath(cache, mth) + '<')
         done_fixups.append((start, end, fixed))
       except Exception as inst:
@@ -251,9 +266,11 @@ def Main():
     q.put(item)
   q.join()
 
+  shelf.update((key, cache[key]) for key in cache.keys() - cached)
+  shelf.close()
+
   if not success:
       sys.stderr.write('\n!!! Error processing fragments\n')
-      cache.close()
       sys.exit(1)
 
   result = []
@@ -266,7 +283,6 @@ def Main():
 
   sys.stderr.write('\nProcessing Done.\n')
   sys.stdout.write(''.join(result))
-  cache.close()
 
 
 Main()

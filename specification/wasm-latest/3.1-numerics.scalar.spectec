@@ -10,7 +10,7 @@ def $s33_to_u32(s33) : u32  hint(show %)
 ;; Representation
 
 def $ibits_(N, iN(N)) : bit*                         hint(show $bits_($IN(%),%)) hint(inverse $inv_ibits_)
-def $fbits_(N, fN(N)) : bit*                         hint(show $bits_($FN(%),%)) hint(inverse $inv_ibits_)
+def $fbits_(N, fN(N)) : bit*                         hint(show $bits_($FN(%),%)) hint(inverse $inv_fbits_)
 def $ibytes_(N, iN(N)) : byte*                       hint(show $bytes_($IN(%),%)) hint(inverse $inv_ibytes_)
 def $fbytes_(N, fN(N)) : byte*                       hint(show $bytes_($FN(%),%)) hint(inverse $inv_fbytes_)
 def $nbytes_(numtype, num_(numtype)) : byte*         hint(show $bytes_(%,%)) hint(inverse $inv_nbytes_)
@@ -58,8 +58,8 @@ def $inv_signed_(N, i) = i          -- if $(0 <= i < 2^(N-1))
 def $inv_signed_(N, i) = $(i + 2^N) -- if $(-2^(N-1) <= i < 0)
 
 
-def $sx(storagetype) : sx?  hint(show $sx(%)) hint(partial)
-def $sx(consttype) = eps
+def $sx(storagetype) : sx?  hint(show $sx(%))
+def $sx(valtype) = eps
 def $sx(packtype) = S
 
 
@@ -102,7 +102,7 @@ def $iabs_(N, iN(N)) : iN(N)
 def $iclz_(N, iN(N)) : iN(N)
 def $ictz_(N, iN(N)) : iN(N)
 def $ipopcnt_(N, iN(N)) : iN(N)
-def $iextend_(N, M, sx, iN(N)) : iN(N)          hint(show $iextend_((%,%))^(%)#((%)))
+def $iextend_(N, K, sx, iN(N)) : iN(N)          hint(show $iextend_((%,%))^(%)#((%)))
 
 def $iadd_(N, iN(N), iN(N)) : iN(N)
 def $isub_(N, iN(N), iN(N)) : iN(N)
@@ -123,8 +123,8 @@ def $iand_(N, iN(N), iN(N)) : iN(N)
 def $iandnot_(N, iN(N), iN(N)) : iN(N)
 def $ior_(N, iN(N), iN(N)) : iN(N)
 def $ixor_(N, iN(N), iN(N)) : iN(N)
-def $ishl_(N, iN(N), u32) : iN(N)
-def $ishr_(N, sx, iN(N), u32) : iN(N)    hint(show $ishr__#%2#$_(%1,%3,%4))
+def $ishl_(N, iN(N), iN(N)) : iN(N)
+def $ishr_(N, sx, iN(N), iN(N)) : iN(N)    hint(show $ishr__#%2#$_(%1,%3,%4))
 def $irotl_(N, iN(N), iN(N)) : iN(N)
 def $irotr_(N, iN(N), iN(N)) : iN(N)
 
@@ -158,8 +158,8 @@ def $ictz_ hint(builtin)
 def $ipopcnt_ hint(builtin)
 ;;def $ipopcnt_(N, i_1) = k            -- if $ibits_(N, i_1) = (0* 1)^k 0*
 
-def $iextend_(N, M, U, i) = $(i \ 2^M)
-def $iextend_(N, M, S, i) = $inv_signed_(N, $signed_(M, $(i \ 2^M)))
+def $iextend_(N, K, U, i) = $(i \ 2^K)
+def $iextend_(N, K, S, i) = $inv_signed_(N, $signed_(K, $(i \ 2^K)))
 
 
 def $iadd_(N, i_1, i_2) = $((i_1 + i_2) \ 2^N)
@@ -305,15 +305,15 @@ def $frelaxed_nmadd_ hint(builtin)
 
 ;; Conversions
 
-def $wrap__(M, N, iN(M)) : iN(N)
-def $extend__(M, N, sx, iN(M)) : iN(N)               hint(show $extend_((%,%))^(%)#((%)))
-def $trunc__(M, N, sx, fN(M)) : iN(N)?               hint(show $trunc_((%,%))^(%)#((%)))
-def $trunc_sat__(M, N, sx, fN(M)) : iN(N)?           hint(show $trunc__sat_((%,%))^(%)#((%)))
-def $relaxed_trunc__(M, N, sx, fN(M)) : iN(N)?       hint(show $relaxed__trunc_((%,%))^(%)#((%)))
-def $demote__(M, N, fN(M)) : fN(N)*
-def $promote__(M, N, fN(M)) : fN(N)*
-def $convert__(M, N, sx, iN(M)) : fN(N)              hint(show $convert_((%,%))^(%)#((%)))
-def $narrow__(M, N, sx, iN(M)) : iN(N)               hint(show $narrow_((%,%))^(%)#(%))
+def $wrap__(N, N', iN(N)) : iN(N')
+def $extend__(N, N', sx, iN(N)) : iN(N')               hint(show $extend_((%,%))^(%)#((%)))
+def $trunc__(N, N', sx, fN(N)) : iN(N')?               hint(show $trunc_((%,%))^(%)#((%)))
+def $trunc_sat__(N, N', sx, fN(N)) : iN(N')?           hint(show $trunc__sat_((%,%))^(%)#((%)))
+def $relaxed_trunc__(N, N', sx, fN(N)) : iN(N')?       hint(show $relaxed__trunc_((%,%))^(%)#((%)))
+def $demote__(N, N', fN(N)) : fN(N')*
+def $promote__(N, N', fN(N)) : fN(N')*
+def $convert__(N, N', sx, iN(N)) : fN(N')              hint(show $convert_((%,%))^(%)#((%)))
+def $narrow__(N, N', sx, iN(N)) : iN(N')               hint(show $narrow_((%,%))^(%)#(%))
 
 def $reinterpret__(numtype_1, numtype_2, num_(numtype_1)) : num_(numtype_2)
 
@@ -375,7 +375,7 @@ def $cvtop__(numtype_1, numtype_2, cvtop__(numtype_1, numtype_2), num_(numtype_1
 def $unop_(Inn, CLZ, i) = $iclz_($sizenn(Inn), i)
 def $unop_(Inn, CTZ, i) = $ictz_($sizenn(Inn), i)
 def $unop_(Inn, POPCNT, i) = $ipopcnt_($sizenn(Inn), i)
-def $unop_(Inn, EXTEND M, i) = $iextend_($sizenn(Inn), M, S, i)
+def $unop_(Inn, EXTEND N', i) = $iextend_($sizenn(Inn), N', S, i)
 
 def $unop_(Fnn, ABS, f) = $fabs_($sizenn(Fnn), f)
 def $unop_(Fnn, NEG, f) = $fneg_($sizenn(Fnn), f)

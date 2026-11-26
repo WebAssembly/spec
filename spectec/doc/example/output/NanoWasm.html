@@ -180,7 +180,7 @@ C \vdash \mathsf{global{.}get}~x : \epsilon \rightarrow t
 </section>
 <section id="mathsf-global-set">
 <h3><span class="math notranslate nohighlight">\(\mathsf{global{.}set}\)</span><a class="headerlink" href="#mathsf-global-set" title="Link to this heading">¶</a></h3>
-<p><span class="math notranslate nohighlight">\((\mathsf{global{.}get}~x)\)</span> is <a class="reference internal" href="#valid-val"><span class="std std-ref">valid</span></a> with <span class="math notranslate nohighlight">\(t~\rightarrow~\epsilon\)</span> if:</p>
+<p><span class="math notranslate nohighlight">\((\mathsf{global{.}set}~x)\)</span> is <a class="reference internal" href="#valid-val"><span class="std std-ref">valid</span></a> with <span class="math notranslate nohighlight">\(t~\rightarrow~\epsilon\)</span> if:</p>
 <blockquote>
 <div><ul class="simple">
 <li><p><span class="math notranslate nohighlight">\(C{.}\mathsf{globals}{}[x]\)</span> exists.</p></li>
@@ -192,7 +192,7 @@ C \vdash \mathsf{global{.}get}~x : \epsilon \rightarrow t
 \frac{
 C{.}\mathsf{globals}{}[x] = \mathsf{mut}~t
 }{
-C \vdash \mathsf{global{.}get}~x : t \rightarrow \epsilon
+C \vdash \mathsf{global{.}set}~x : t \rightarrow \epsilon
 }
 \qquad
 \end{array}\]</div>

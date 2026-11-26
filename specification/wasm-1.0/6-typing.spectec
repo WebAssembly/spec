@@ -75,10 +75,15 @@ relation Memtype_sub: |- memtype <: memtype          hint(show "S-mem")
 relation Externtype_sub: |- externtype <: externtype hint(show "S-extern")
 
 
-rule Limits_sub:
-  |- `[n_11 .. n_12] <: `[n_21 .. n_22]
-  -- if n_11 >= n_21
-  -- if n_12 <= n_22
+rule Limits_sub/max:
+  |- `[n_1 .. m_1] <: `[n_2 .. m_2?]
+  -- if n_1 >= n_2
+  -- (if m_1 <= m_2)?
+
+rule Limits_sub/eps:
+  |- `[n_1 .. eps] <: `[n_2 .. eps]
+  -- if n_1 >= n_2
+
 
 rule Functype_sub:
   |- ft <: ft
@@ -134,9 +139,13 @@ rule Expr_ok:
 rule Instrs_ok/empty:
   C |- eps : eps -> eps
 
+rule Instrs_ok/instr:
+  C |- instr : t_1* -> t_2*
+  -- Instr_ok: C |- instr : t_1* -> t_2*
+
 rule Instrs_ok/seq:
-  C |- instr_1 instr_2* : t_1* -> t_3*
-  -- Instr_ok: C |- instr_1 : t_1* -> t_2*
+  C |- instr_1* instr_2* : t_1* -> t_3*
+  -- Instrs_ok: C |- instr_1* : t_1* -> t_2*
   -- Instrs_ok: C |- instr_2* : t_2* -> t_3*
 
 rule Instrs_ok/frame:
@@ -167,7 +176,7 @@ rule Instr_ok/block:
 
 rule Instr_ok/loop:
   C |- LOOP t? instr* : eps -> t?
-  -- Instrs_ok: {LABELS (eps)} ++ C |- instr* : eps -> eps
+  -- Instrs_ok: {LABELS (eps)} ++ C |- instr* : eps -> t?
 
 rule Instr_ok/if:
   C |- IF t? instr_1* ELSE instr_2* : I32 -> t?
@@ -199,6 +208,7 @@ rule Instr_ok/call:
 
 rule Instr_ok/call_indirect:
   C |- CALL_INDIRECT x : t_1* I32 -> t_2?
+  -- if C.TABLES[0] = tt
   -- if C.TYPES[x] = t_1* -> t_2?
 
 rule Instr_ok/return:
@@ -376,7 +386,7 @@ rule Mem_ok:
 ;; TODO: check bounds
 rule Elem_ok:
   C |- ELEM expr x* : OK
-  -- if C.TABLES[0] = lim
+  -- if C.TABLES[0] = tt
   -- Expr_ok_const: C |- expr : I32 CONST
   -- if (C.FUNCS[x] = ft)*
 
@@ -394,7 +404,7 @@ rule Start_ok:
 ;; Module im/exports
 
 relation Import_ok: context |- import : externtype        hint(show "T-import")
-relation Export_ok: context |- export : externtype        hint(show "T-export")
+relation Export_ok: context |- export : name externtype   hint(show "T-export")
 relation Externidx_ok: context |- externidx : externtype  hint(show "T-externidx")
 
 rule Import_ok:
@@ -402,7 +412,7 @@ rule Import_ok:
   -- Externtype_ok: |- xt : OK
 
 rule Export_ok:
-  C |- EXPORT name externidx : xt
+  C |- EXPORT name externidx : name xt
   -- Externidx_ok: C |- externidx : xt
 
 
@@ -425,10 +435,10 @@ rule Externidx_ok/mem:
 
 ;; Modules proper
 
-relation Module_ok: |- module : OK      hint(show "T-module")
+relation Module_ok: |- module : moduletype  hint(show "T-module")
 
 rule Module_ok:
-  |- MODULE type* import* func* global* table* mem* elem* data* start? export* : OK
+  |- MODULE type* import* func* global* table* mem* elem* data* start? export* : ixt* -> xt*
   -- (Type_ok: |- type : ft')*
   -- (Import_ok: {TYPES ft'*} |- import : ixt)*
   ----
@@ -440,11 +450,11 @@ rule Module_ok:
   -- (Elem_ok: C |- elem : OK)*
   -- (Data_ok: C |- data : OK)*
   -- (Start_ok: C |- start : OK)?
-  -- (Export_ok: C |- export : xt)*
+  -- (Export_ok: C |- export : nm xt)*
   ----
   -- if |tt*| <= 1
   -- if |mt*| <= 1
-  ;; -- TODO: disjoint export names
+  -- if $disjoint_(name, nm*)
   ----
   -- if C = {TYPES ft'*, FUNCS ift* ft*, GLOBALS igt* gt*, TABLES itt* tt*, MEMS imt* mt*}
   ----

@@ -387,10 +387,30 @@
 
 (assert_invalid
   (module
-    (type $ty (func (result i32 i32)))
-    (func (param (ref $ty)) (result i32)
+    (type $type-result-more (func (result i32 i32)))
+    (func $type-result-more (param (ref $type-result-more)) (result i32)
       local.get 0
-      return_call_ref $ty
+      return_call_ref $type-result-more
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (type $type-result-fewer (func (result i32)))
+    (func $type-result-fewer (param (ref $type-result-fewer)) (result i32 i32)
+      local.get 0
+      return_call_ref $type-result-fewer
+    )
+  )
+  "type mismatch"
+)
+(assert_invalid
+  (module
+    (type $type-result-i64-vs-i32 (func (result i64)))
+    (func $type-result-i64-vs-i32 (param (ref $type-result-i64-vs-i32)) (result i32)
+      local.get 0
+      return_call_ref $type-result-i64-vs-i32
     )
   )
   "type mismatch"

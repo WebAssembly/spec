@@ -18,7 +18,7 @@ val string_of_region : region -> string
 
 (* Phrases *)
 
-type ('a, 'b) note_phrase = {at : region; it : 'a; note : 'b}
+type ('a, 'b) note_phrase = {at : region; it : 'a; mutable note : 'b}
 type 'a phrase = ('a, unit) note_phrase
 
 val ($) : 'a -> region -> 'a phrase

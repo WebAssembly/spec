@@ -18,6 +18,7 @@ val bot_of_comptype : context -> comptype -> heaptype
 (* Subtyping *)
 
 val match_numtype : context -> numtype -> numtype -> bool
+val match_vectype : context -> vectype -> vectype -> bool
 val match_reftype : context -> reftype -> reftype -> bool
 val match_valtype : context -> valtype -> valtype -> bool
 
@@ -33,3 +34,10 @@ val match_memorytype : context -> memorytype -> memorytype -> bool
 val match_globaltype : context -> globaltype -> globaltype -> bool
 
 val match_externtype : context -> externtype -> externtype -> bool
+
+
+(* Greatest lower bound *)
+
+val both_heaptype : context -> heaptype -> heaptype -> heaptype
+val both_reftype : context -> reftype -> reftype -> reftype
+val both_valtype : context -> valtype -> valtype -> valtype

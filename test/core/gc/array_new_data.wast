@@ -131,3 +131,22 @@
 
 ;; Data inside the segment doesn't need to be aligned to the element size.
 (assert_return (invoke "array-new-data-unaligned") (i32.const 0x2211))
+
+
+;; Arrays of vectors
+(module
+  (type $av (array (mut v128)))
+
+  (data $d "\00\01\02\03\04\05\06\07\08\09\0a\0b\0c\0d\0e\0f")
+
+  (func (export "new") (result i32)
+    (i32x4.extract_lane 3
+      (array.get $av
+        (array.new_data $av $d (i32.const 0) (i32.const 1))
+        (i32.const 0)
+      )
+    )
+  )
+)
+
+(assert_return (invoke "new") (i32.const 0x0f0e0d0c))

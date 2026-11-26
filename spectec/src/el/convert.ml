@@ -52,7 +52,7 @@ let typ_of_varid id =
 
 let rec varid_of_typ t =
   (match t.it with
-  | VarT (id, _) -> id.it
+  | VarT (id, []) -> id.it
   | BoolT -> "bool"
   | NumT `NatT -> "nat"
   | NumT `IntT -> "int"

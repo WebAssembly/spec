@@ -275,7 +275,7 @@ let lookup_export (env : env) x_opt name at =
   let exports = find_inst env x_opt at in
   try NameMap.find name exports with Not_found ->
     raise (Eval.Crash (at, "unknown export \"" ^
-      string_of_name name ^ "\" within module isntance"))
+      string_of_name name ^ "\" within module instance"))
 
 
 (* Transitively unsubstitute deftype into list of unrolled recursive types *)

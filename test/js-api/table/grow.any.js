@@ -116,6 +116,15 @@ test(() => {
 test(() => {
   const argument = { "element": "anyfunc", "initial": 1 };
   const table = new WebAssembly.Table(argument);
+  // An explicit undefined counts as a missing optional argument.
+  const result = table.grow(2, undefined);
+  assert_equals(result, 1);
+  assert_equal_to_array(table, nulls(3));
+}, "Grow with undefined argument");
+
+test(() => {
+  const argument = { "element": "anyfunc", "initial": 1 };
+  const table = new WebAssembly.Table(argument);
   assert_throws_js(TypeError, () => table.grow(2, {}));
 }, "Grow with non-function argument");
 

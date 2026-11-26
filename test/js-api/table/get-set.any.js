@@ -187,7 +187,6 @@ test(() => {
   assert_equal_to_array(table, [null]);
 
   const invalidArguments = [
-    undefined,
     true,
     false,
     "test",
@@ -310,6 +309,10 @@ test(() => {
 
   table.set(0, fn);
   assert_equals(table.get(0), fn);
+
+  // An explicit undefined counts as a missing optional argument.
+  table.set(0, undefined);
+  assert_equals(table.get(0), null);
 
   assert_throws_js(TypeError, () => table.set(0, {}));
   assert_throws_js(TypeError, () => table.set(0, 37));

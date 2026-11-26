@@ -28,12 +28,12 @@ let is_case e =
   | _ -> false
 let case_of_case e =
   match e.it with
-  | CaseE (mixop, _) -> mixop
+  | CaseE (mixop, _, _) -> mixop
   | _ -> error e.at "cannot get case of case expression"
 let args_of_case e =
   match e.it with
-  | CaseE (_, { it = TupE exps; _ }) -> exps
-  | CaseE (_, exp) -> [ exp ]
+  | CaseE (_, { it = TupE exps; _ }, _) -> exps
+  | CaseE (_, exp, _) -> [ exp ]
   | _ -> error e.at "cannot get arguments of case expression"
 
 let is_context e =
@@ -131,7 +131,7 @@ let encode_stack stack =
     let args', inner_stack = Lib.List.split_last args in
     let mixop' = Il2al_util.split_last_case mixop in
 
-    let e1 = { e with it = CaseE (mixop', TupE args' $$ no_region % (mk_varT "")) } in
+    let e1 = { e with it = CaseE (mixop', TupE args' $$ no_region % (mk_varT ""), Unchecked) } in
     let e2 = (mk_varE "ctxt" "contextT") in
 
     let pr = LetPr (free_ids e1, e1, e2) $ e2.at in
@@ -148,7 +148,7 @@ let encode_stack stack =
 (* Encode lhs *)
 let encode_lhs lhs =
   match lhs.it with
-  | CaseE (Xl.Mixop.(Infix (Arg (), {it = Semicolon; _}, Arg ())), {it = TupE [z; stack]; _}) ->
+  | CaseE (Xl.Mixop.(Infix (Arg (), {it = Semicolon; _}, Arg ())), {it = TupE [z; stack]; _}, _) ->
     let prem = LetPr (free_ids z, z, mk_varE "state" "stateT") $ z.at in
     prem :: encode_stack stack
   | _ ->

@@ -10,6 +10,14 @@ open Print
 let error at msg = Error.error at "validation" msg
 
 
+(* Mode *)
+
+type mode = Validate | Annotate
+
+let mode = ref Validate
+let out_env = ref Env.empty
+
+
 (* Environment *)
 
 let find_field fs atom at =
@@ -24,7 +32,7 @@ let find_case cases op at =
 
 
 let typ_string env t =
-  let t' = Eval.reduce_typ env t in
+  let Ok t' | Error t' = Eval.reduce_typ env t in
   if Eq.eq_typ t t' then
     "`" ^ string_of_typ t ^ "`"
   else
@@ -33,8 +41,14 @@ let typ_string env t =
 
 (* Type Accessors *)
 
-let expand_typ (env : Env.t) t = (Eval.reduce_typ env t).it
-let expand_typdef (env : Env.t) t = (Eval.reduce_typdef env t).it
+let expand' reduce env t at =
+  match reduce env t with
+  | Ok x -> x.it
+  | Error _ ->
+    error at ("expression's type `" ^ string_of_typ t ^ "` is not defined")
+
+let expand_typ env t at = expand' Eval.reduce_typ env t at
+let expand_typdef env t at = expand' Eval.reduce_typdef env t at
 
 type direction = Infer | Check
 
@@ -52,33 +66,33 @@ let as_error at phrase dir t expected =
     )
 
 let as_iter_typ iter phrase env dir t at : typ =
-  match expand_typ env t with
+  match expand_typ env t at with
   | IterT (t1, iter2) when iter = iter2 -> t1
   | _ -> as_error at phrase dir t ("(_)" ^ string_of_iter iter)
 
 let as_list_typ phrase env dir t at : typ =
-  match expand_typ env t with
+  match expand_typ env t at with
   | IterT (t1, (List | List1 | ListN _)) -> t1
   | _ -> as_error at phrase dir t "(_)*"
 
 let as_tup_typ phrase env dir t at : (id * typ) list =
-  match expand_typ env t with
+  match expand_typ env t at with
   | TupT xts -> xts
   | _ -> as_error at phrase dir t "(_,...,_)"
 
 
 let as_struct_typ phrase env dir t at : typfield list =
-  match expand_typdef env t with
+  match expand_typdef env t at with
   | StructT tfs -> tfs
   | _ -> as_error at phrase dir t "{...}"
 
 let as_variant_typ phrase env dir t at : typcase list =
-  match expand_typdef env t with
+  match expand_typdef env t at with
   | VariantT tcs -> tcs
   | _ -> as_error at phrase dir t "| ..."
 
 let rec as_comp_typ phrase env dir t at =
-  match expand_typdef env t with
+  match expand_typdef env t at with
   | AliasT {it = IterT _; _} -> ()
   | StructT tfs ->
     List.iter (fun (_, (t, _, _), _) -> as_comp_typ phrase env dir t at) tfs
@@ -86,14 +100,15 @@ let rec as_comp_typ phrase env dir t at =
     error at (phrase ^ "'s type `" ^ string_of_typ t ^ "` is not composable")
 
 let proj_tup_typ i xts e at =
-  let rec loop i xts s =
-    match i, xts with
-    | _, [] -> error at "invalid tuple projection"
-    | 0, (_, tI)::_ -> Subst.subst_typ s tI
-    | i, (xI, tI)::xts' ->
-      let eI = ProjE (e, i) $$ at % Subst.subst_typ s tI in
-      loop (i - 1) xts' (Subst.add_varid s xI eI)
- in loop i xts Subst.empty
+  let rec loop j xts s =
+    match xts with
+    | [] -> error at "invalid tuple projection"
+    | (_, tJ)::_ when j = i -> Subst.subst_typ s tJ
+    | (xJ, tJ)::xts' when j < i ->
+      let eJ = ProjE (e, j) $$ at % Subst.subst_typ s tJ in
+      loop (j + 1) xts' (Subst.add_varid s xJ eJ)
+    | _ ->  error at "invalid tuple projection"  (* i can't be negative *)
+ in loop 0 xts Subst.empty
 
 
 (* Type Equivalence and Subtyping *)
@@ -178,7 +193,10 @@ let rec valid_binders valid_x env xs : Env.t =
   | [] -> env
   | x::xs -> valid_binders valid_x (valid_x env x) xs
 
-let rec valid_iter ?(side = `Rhs) env iter : Env.t =
+let rec valid_iter ?(side = `Rhs) env iter at : Env.t =
+  Debug.(log_at "il.valid_iter" at
+    (fun _ -> il_iter iter) (fun _ -> "ok")
+  ) @@ fun _ ->
   match iter with
   | Opt | List | List1 -> env
   | ListN (e, id_opt) ->
@@ -192,7 +210,7 @@ and valid_iterexp ?(side = `Rhs) env (it, xes) at : iter * Env.t =
     (fun _ -> il_iter it)
     (fun (it', _) -> il_iter it')
   ) @@ fun _ ->
-  let env' = valid_iter ~side env it in
+  let env' = valid_iter ~side env it at in
   if xes = [] && it <= List1 && side = `Rhs then error at "vacuous iteration";
   let it' = match it with Opt -> Opt | _ -> List in
   it',
@@ -230,7 +248,7 @@ and valid_typ_bind env t : Env.t =
     match iter with
     | ListN (e, _) -> error e.at "definite iterator not allowed in type"
     | _ ->
-      let env' = valid_iter env iter in
+      let env' = valid_iter env iter t.at in
       valid_typ env' t1;
       env
 
@@ -290,7 +308,7 @@ and infer_exp (env : Env.t) e : typ =
   | UpdE (e1, _, _)
   | ExtE (e1, _, _)
   | CompE (e1, _) -> infer_exp env e1
-  | StrE _ -> error e.at "cannot infer type of record"
+  | StrE _ -> e.note  (* error e.at "cannot infer type of record" *)
   | DotE (e1, atom) ->
     let tfs = as_struct_typ "expression" env Infer (infer_exp env e1) e1.at in
     let t, _qs, _prems = find_field tfs atom e1.at in
@@ -354,8 +372,14 @@ and valid_exp ?(side = `Rhs) env e t =
     (Fun.const "ok")
   ) @@ fun _ ->
   valid_typ env t;
+  (match !mode with
+  | Validate -> equiv_typ env e.note t e.at
+  | Annotate -> e.note <- t
+  );
   match e.it with
   | VarE x when x.it = "_" && side = `Lhs -> ()
+  | VarE x when !mode = Annotate && not (Env.mem_var env x) ->
+    out_env := Env.bind_var !out_env x t
   | VarE x ->
     let t' = Env.find_var env x in
     equiv_typ env t' t e.at
@@ -407,7 +431,7 @@ and valid_exp ?(side = `Rhs) env e t =
     let t2 = valid_path env p t in
     let _typ21 = as_list_typ "path" env Check t2 p.at in
     valid_exp env e2 t2
-  | StrE efs ->
+  | StrE (efs, _ch) ->
     let tfs = as_struct_typ "record" env Check t e.at in
     valid_list (valid_expfield ~side) env efs tfs e.at
   | DotE (e1, atom) ->
@@ -489,7 +513,7 @@ and valid_exp ?(side = `Rhs) env e t =
     let _typ1 = as_iter_typ List "list" env Check t e.at in
     valid_exp env e1 t;
     valid_exp env e2 t
-  | CaseE (op, e1) ->
+  | CaseE (op, e1, _ch) ->
     let cases = as_variant_typ "case" env Check t e.at in
     let t1, _qs, _prems = find_case cases op e1.at in
     valid_mixop env op;
@@ -551,7 +575,10 @@ and valid_path env p t : typ =
       let t, _qs, _prems = find_field tfs atom p1.at in
       t
   in
-  equiv_typ env p.note t' p.at;
+  (match !mode with
+  | Validate -> equiv_typ env p.note t' p.at
+  | Annotate -> p.note <- t'
+  );
   t'
 
 
@@ -719,7 +746,9 @@ let valid_rule env mixop t rule =
 let valid_clause env x ps t clause =
   Debug.(log_in "il.valid_clause" line);
   Debug.(log_in_at "il.valid_clause" clause.at
-    (fun _ -> fmt "%s : (%s) -> %s" (il_id x) (il_params ps) (il_typ t))
+    (fun _ -> fmt "%s : (%s) -> %s%s"
+      (il_id x) (il_params ps) (il_typ t) (il_clause x clause)
+    )
   );
   match clause.it with
   | DefD (qs, as_, e, prems) ->
@@ -806,3 +835,23 @@ let rec valid_def env d : Env.t =
 
 let valid ds =
   ignore (valid_binders valid_def Env.empty ds)
+
+
+(* (Re)Annotation *)
+
+let with_annotate_mode f x =
+  assert (!mode = Validate);
+  mode := Annotate;
+  out_env := Env.empty;
+  match f x with
+  | y -> mode := Validate; y
+  | exception exn -> mode := Validate; raise exn
+
+let annotate = with_annotate_mode valid
+
+let annotate_exp side env e = function
+  | None -> ignore (with_annotate_mode (infer_exp env) e); !out_env
+  | Some t -> with_annotate_mode (valid_exp ~side env e) t; !out_env
+
+let annotate_lhs_exp = annotate_exp `Lhs
+let annotate_rhs_exp = annotate_exp `Rhs

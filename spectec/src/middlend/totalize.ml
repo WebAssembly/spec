@@ -58,7 +58,7 @@ let fix_exp env eps exp =
   | TheE ({ it = CallE (f, _); _} as exp') when is_partial env f ->
     let id = (Fresh.fresh_varid "iter_val") $ exp'.at  in 
     eps := (id, exp') :: !eps;
-    { exp' with it = VarE id }
+    { exp with it = VarE id }
   | _ -> exp
 
 let fix_partial_funcs env exp = 

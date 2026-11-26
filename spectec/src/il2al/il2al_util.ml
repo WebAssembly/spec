@@ -67,7 +67,7 @@ let replace_lhs lhs pr =
 
 let case_of_case e =
   match e.it with
-  | CaseE (mixop, _) -> mixop
+  | CaseE (mixop, _, _) -> mixop
   | _ -> error e.at
     (Printf.sprintf "expected a CaseE, but got `%s`" (Il.Print.string_of_exp e))
 
@@ -170,7 +170,9 @@ let rec subst_hint hintexp args =
   match hintexp.it with
   | El.Ast.HoleE `Next ->
     (match args with
-    | h :: args' -> args', Il.Print.string_of_arg (Il.Eval.reduce_arg !Al.Valid.il_env h)
+    | h :: args' ->
+      let Ok h' | Error h' = Il.Eval.reduce_arg !Al.Valid.il_env h in
+      args', Il.Print.string_of_arg h'
     | _ -> failwith "not sufficient args")
   | El.Ast.FuseE (e1, e2) ->
     let args', t = subst_hint e1 args in
@@ -323,7 +325,7 @@ let is_val exp =
     | _ -> ()
   );
   match exp.it with
-  | CaseE (mixop, _) -> (
+  | CaseE (mixop, _, _) -> (
     match List.find_opt (Il.Eq.eq_mixop mixop) !val_mixops with
     | Some _ -> true
     | None -> false

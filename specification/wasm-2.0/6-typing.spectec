@@ -92,10 +92,15 @@ relation Memtype_sub: |- memtype <: memtype          hint(show "S-mem")
 relation Externtype_sub: |- externtype <: externtype hint(show "S-extern")
 
 
-rule Limits_sub:
-  |- `[n_11 .. n_12] <: `[n_21 .. n_22]
-  -- if n_11 >= n_21
-  -- if n_12 <= n_22
+rule Limits_sub/max:
+  |- `[n_1 .. m_1] <: `[n_2 .. m_2?]
+  -- if n_1 >= n_2
+  -- (if m_1 <= m_2)?
+
+rule Limits_sub/eps:
+  |- `[n_1 .. eps] <: `[n_2 .. eps]
+  -- if n_1 >= n_2
+
 
 rule Functype_sub:
   |- ft <: ft
@@ -151,9 +156,13 @@ rule Expr_ok:
 rule Instrs_ok/empty:
   C |- eps : eps -> eps
 
+rule Instrs_ok/instr:
+  C |- instr : t_1* -> t_2*
+  -- Instr_ok: C |- instr : t_1* -> t_2*
+
 rule Instrs_ok/seq:
-  C |- instr_1 instr_2* : t_1* -> t_3*
-  -- Instr_ok: C |- instr_1 : t_1* -> t_2*
+  C |- instr_1* instr_2* : t_1* -> t_3*
+  -- Instrs_ok: C |- instr_1* : t_1* -> t_2*
   -- Instrs_ok: C |- instr_2* : t_2* -> t_3*
 
 rule Instrs_ok/sub:
@@ -485,7 +494,12 @@ rule Instr_ok/store-pack:
   -- if C.MEMS[0] = mt
   -- if $(2^(memarg.ALIGN) <= M/8)
 
-rule Instr_ok/vload:
+rule Instr_ok/vload-val:
+  C |- VLOAD V128 memarg : I32 -> V128
+  -- if C.MEMS[0] = mt
+  -- if $(2^(memarg.ALIGN) <= $size(V128)/8)
+
+rule Instr_ok/vload-pack:
   C |- VLOAD V128 (SHAPE M X N _ sx) memarg : I32 -> V128
   -- if C.MEMS[0] = mt
   -- if $(2^(memarg.ALIGN) <= M/8 * N)
@@ -631,7 +645,7 @@ rule Start_ok:
 ;; Module im/exports
 
 relation Import_ok: context |- import : externtype        hint(show "T-import")
-relation Export_ok: context |- export : externtype        hint(show "T-export")
+relation Export_ok: context |- export : name externtype   hint(show "T-export")
 relation Externidx_ok: context |- externidx : externtype  hint(show "T-externidx")
 
 rule Import_ok:
@@ -639,7 +653,7 @@ rule Import_ok:
   -- Externtype_ok: |- xt : OK
 
 rule Export_ok:
-  C |- EXPORT name externidx : xt
+  C |- EXPORT name externidx : name xt
   -- Externidx_ok: C |- externidx : xt
 
 
@@ -662,11 +676,11 @@ rule Externidx_ok/mem:
 
 ;; Modules proper
 
-relation Module_ok: |- module : OK      hint(show "T-module")
+relation Module_ok: |- module : moduletype  hint(show "T-module")
 
 ;; TODO: refs
 rule Module_ok:
-  |- MODULE type* import* func* global* table* mem* elem* data^n start? export* : OK
+  |- MODULE type* import* func* global* table* mem* elem* data^n start? export* : ixt* -> xt*
   -- (Type_ok: |- type : ft')*
   -- (Import_ok: {TYPES ft'*} |- import : ixt)*
   ----
@@ -679,10 +693,10 @@ rule Module_ok:
   ----
   -- (Func_ok: C |- func : ft)*
   -- (Start_ok: C |- start : OK)?
-  -- (Export_ok: C |- export : xt)*
+  -- (Export_ok: C |- export : nm xt)*
   ----
   -- if |mt*| <= 1
-  ;; -- TODO: disjoint export names
+  -- if $disjoint_(name, nm*)
   ----
   -- if C = {TYPES ft'*, FUNCS ift* ft*, GLOBALS igt* gt*, TABLES itt* tt*, MEMS imt* mt*, ELEMS rt*, DATAS OK^n}
   ----

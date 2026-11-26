@@ -569,14 +569,14 @@ $${rule-prose: Memarg_ok}
 $${rule: Memarg_ok}
 
 
-.. _valid-load-val:
+.. _valid-load-num:
 
 :math:`t\K{.}\LOAD~x~\memarg`
 .............................
 
-$${rule-prose: Instr_ok/load-val}
+$${rule-prose: Instr_ok/load-num}
 
-$${rule: Instr_ok/load-val}
+$${rule: Instr_ok/load-num}
 
 
 .. _valid-load-pack:
@@ -589,14 +589,14 @@ $${rule-prose: Instr_ok/load-pack}
 $${rule: Instr_ok/load-pack}
 
 
-.. _valid-store-val:
+.. _valid-store-num:
 
 :math:`t\K{.}\STORE~x~\memarg`
 ..............................
 
-$${rule-prose: Instr_ok/store-val}
+$${rule-prose: Instr_ok/store-num}
 
-$${rule: Instr_ok/store-val}
+$${rule: Instr_ok/store-num}
 
 
 .. _valid-store-pack:
@@ -609,14 +609,14 @@ $${rule-prose: Instr_ok/store-pack}
 $${rule: Instr_ok/store-pack}
 
 
-.. _valid-vload-val:
+.. _valid-vload-num:
 
 :math:`\K{v128.}\LOAD~x~\memarg`
-.....................................
+................................
 
-$${rule-prose: Instr_ok/vload-val}
+$${rule-prose: Instr_ok/vload-num}
 
-$${rule: Instr_ok/vload-val}
+$${rule: Instr_ok/vload-num}
 
 
 .. _valid-vload-pack:
@@ -1360,20 +1360,24 @@ $${rule: Instrs_ok/empty}
 
 $${rule: Instrs_ok/seq}
 
-$${rule: {Instrs_ok/sub Instrs_ok/frame}}
+$${rule: Instrs_ok/sub}
 
 .. note::
-   In combination with the previous rule,
-   subsumption allows to compose instructions whose types would not directly fit otherwise.
+   This *subsumption rule* allows to weaken the type of an instruction sequence to a supertype,
+   which includes the ability to drop init variables ${:x*} from the instruction type in a context where they are not needed, for example, at the end of the body of a :ref:`block <valid-block>`.
+
+$${rule: Instrs_ok/frame}
+
+.. note::
+   In combination with the previous two rules,
+   this *frame rule* allows to compose instructions whose types would not directly fit otherwise.
    For example, consider the instruction sequence
 
    $${instr*: (CONST I32 1) (CONST I32 2) (BINOP I32 ADD)}
 
    To type this sequence, its subsequence ${instr*: (CONST I32 2) (BINOP I32 ADD)} needs to be valid with an intermediate type.
    But the direct type of ${instr: (CONST I32 2)} is ${instrtype: eps -> I32}, not matching the two inputs expected by ${instr: $($(BINOP I32 ADD))}.
-   The subsumption rule allows to weaken the type of ${instr: (CONST I32 2)} to the supertype ${instrtype: I32 -> I32 I32}, such that it can be composed with ${instr: $($(BINOP I32 ADD))} and yields the intermediate type ${instrtype: I32 -> I32 I32} for the subsequence. That can in turn be composed with the first constant.
-
-   Furthermore, subsumption allows to drop init variables ${:x*} from the instruction type in a context where they are not needed, for example, at the end of the body of a :ref:`block <valid-block>`.
+   The rule allows to weaken the type of ${instr: (CONST I32 2)} to the supertype ${instrtype: I32 -> I32 I32}, such that it can be composed with ${instr: $($(BINOP I32 ADD))} and yields the intermediate type ${instrtype: I32 -> I32 I32} for the subsequence. That can in turn be composed with the first constant.
 
 
 .. index:: expression, result type

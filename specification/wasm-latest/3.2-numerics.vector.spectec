@@ -66,8 +66,8 @@ def $ivrelop_(shape, def $f_(N, iN(N), iN(N)) : u32, vec_(V128), vec_(V128)) : v
 def $ivrelopsx_(shape, def $f_(N, sx, iN(N), iN(N)) : u32, sx, vec_(V128), vec_(V128)) : vec_(V128)
 def $fvrelop_(shape, def $f_(N, fN(N), fN(N)) : u32, vec_(V128), vec_(V128)) : vec_(V128)
 
-def $ivshiftop_(shape, def $f_(N, iN(N), u32) : iN(N), vec_(V128), u32) : vec_(V128)
-def $ivshiftopsx_(shape, def $f_(N, sx, iN(N), u32) : iN(N), sx, vec_(V128), u32) : vec_(V128)
+def $ivshiftop_(shape, def $f_(N, iN(N), iN(N)) : iN(N), vec_(V128), u32) : vec_(V128)
+def $ivshiftopsx_(shape, def $f_(N, sx, iN(N), iN(N)) : iN(N), sx, vec_(V128), u32) : vec_(V128)
 
 def $ivbitmaskop_(shape, vec_(V128)) : u32
 def $ivswizzlop_(shape, def $f_(N, iN(N)*, iN(N)) : iN(N), vec_(V128), vec_(V128)) : vec_(V128)
@@ -265,8 +265,8 @@ def $vrelop_(Fnn X M, GT, v_1, v_2) = $fvrelop_(Fnn X M, $fgt_, v_1, v_2)
 def $vrelop_(Fnn X M, LE, v_1, v_2) = $fvrelop_(Fnn X M, $fle_, v_1, v_2)
 def $vrelop_(Fnn X M, GE, v_1, v_2) = $fvrelop_(Fnn X M, $fge_, v_1, v_2)
 
-def $vshiftop_(Jnn X M, SHL, v, i) = $ivshiftop_(Jnn X M, $ishl_, v, i)
-def $vshiftop_(Jnn X M, SHR sx, v, i) = $ivshiftopsx_(Jnn X M, $ishr_, sx, v, i)
+def $vshiftop_(Jnn X M, SHL, v, i) = $ivshiftop_(Jnn X M, $ishl_, v, $(i \ $lsizenn(Jnn)))
+def $vshiftop_(Jnn X M, SHR sx, v, i) = $ivshiftopsx_(Jnn X M, $ishr_, sx, v, $(i \ $lsizenn(Jnn)))
 
 def $vbitmaskop_(Jnn X M, v) = $ivbitmaskop_(Jnn X M, v)
 
@@ -368,6 +368,9 @@ def $ivdot_sat_(N, iN(N)*, iN(N)*) : iN(N)*  hint(show $ivdot__sat_(%,%,%))
 def $ivdot_sat_(N, i_1*, i_2*) = $iadd_sat_(N, S, j_1, j_2)*
   -- if $concat_(iN(N), (j_1 j_2)*) = $imul_(N, i_1, i_2)*
 
+def $ivrelaxed_dot_(N, iN(N)*, iN(N)*) : iN(N)*  hint(show $ivrelaxed__dot_(%,%,%))
+def $ivrelaxed_dot_(N, i_1*, i_2*) = $relaxed2($R_idot, iN(N)*, $ivdot_(N, i_1*, i_2*), $ivdot_sat_(N, i_1*, i_2*))
+
 def $vextunop__(Jnn_1 X M_1, Jnn_2 X M_2, EXTADD_PAIRWISE sx, v_1) =
     $ivextunop__(Jnn_1 X M_1, Jnn_2 X M_2, $ivadd_pairwise_, sx, v_1)
 
@@ -376,7 +379,7 @@ def $vextbinop__(Jnn_1 X M_1, Jnn_2 X M_2, EXTMUL half sx, v_1, v_2) =
 def $vextbinop__(Jnn_1 X M_1, Jnn_2 X M_2, DOT S, v_1, v_2) =
     $ivextbinop__(Jnn_1 X M_1, Jnn_2 X M_2, $ivdot_, S, S, 0, M_1, v_1, v_2)
 def $vextbinop__(Jnn_1 X M_1, Jnn_2 X M_2, RELAXED_DOT S, v_1, v_2) =
-    $ivextbinop__(Jnn_1 X M_1, Jnn_2 X M_2, $ivdot_sat_, S, $relaxed2($R_idot, sx, S, U), 0, M_1, v_1, v_2)
+    $ivextbinop__(Jnn_1 X M_1, Jnn_2 X M_2, $ivrelaxed_dot_, S, $relaxed2($R_idot, sx, S, U), 0, M_1, v_1, v_2)
 
 (;
 ;; TODO(2, rossberg): this is obsolete, clean up
@@ -396,8 +399,12 @@ def $vextternop__(Jnn_1 X M_1, Jnn_2 X M_2, RELAXED_DOT_ADD S, c_1, c_2, c_3) = 
 ;)
 
 def $vextternop__(Jnn_1 X M_1, Jnn_2 X M_2, RELAXED_DOT_ADD S, c_1, c_2, c_3) = c
-  -- if $jsizenn(Jnn) = $(2*$lsizenn1(Jnn_1))
-  -- if M = $(2*M_2)
-  -- if c' = $vextbinop__(Jnn_1 X M_1, Jnn X M, RELAXED_DOT S, c_1, c_2)
-  -- if c'' = $vextunop__(Jnn X M, Jnn_2 X M_2, EXTADD_PAIRWISE S, c')
-  -- if c <- $vbinop_(Jnn_2 X M_2, ADD, c'', c_3)
+  -- if N = $relaxed2($R_idot_add, nat, $(2*$lsizenn1(Jnn_1)), $lsizenn2(Jnn_2))
+  -- if ci_1* = $lanes_(Jnn_1 X M_1, c_1)
+  -- if ci_2* = $lanes_(Jnn_1 X M_1, c_2)
+  -- if ci'_1* = $extend__($lsizenn1(Jnn_1), N, S, ci_1)*
+  -- if ci'_2* = $extend__($lsizenn1(Jnn_1), N, $relaxed2($R_idot, sx, S, U), ci_2)*
+  -- if ci* = $ivrelaxed_dot_(N, ci'_1*, ci'_2*)
+  -- if ci'* = $extend__(N, $lsizenn2(Jnn_2), S, ci)*
+  -- if c' = $inv_lanes_(Jnn_2 X M_2, $ivadd_pairwise_($lsizenn2(Jnn_2), ci'*))
+  -- if c <- $vbinop_(Jnn_2 X M_2, ADD, c', c_3)

@@ -174,8 +174,8 @@ and token = parse
   | "=_" { EQSUB }
   | "==_" { EQUIVSUB }
   | "~~_" { APPROXSUB }
-
-  | "~" { NOT }
+  | "~_" { SIMSUB }
+  | "~" { SIM }
   | "/\\" { AND }
   | "\\/" { OR }
   | "(/\\)" { BIGAND }

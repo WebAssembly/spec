@@ -740,6 +740,19 @@
   "import after memory"
 )
 
+(assert_malformed
+  (module quote "(tag) (import \"\" \"\" (tag))")
+  "import after tag"
+)
+(assert_malformed
+  (module quote "(tag) (tag (import \"\" \"\"))")
+  "import after tag"
+)
+(assert_malformed
+  (module quote "(tag) (import \"\" \"\" (func))")
+  "import after tag"
+)
+
 ;; This module is required to validate, regardless of whether it can be
 ;; linked. Overloading is not possible in wasm itself, but it is possible
 ;; in modules from which wasm can import.

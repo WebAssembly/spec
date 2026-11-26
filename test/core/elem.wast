@@ -92,6 +92,27 @@
   (elem (i32.const 3) $g)
 )
 
+(assert_malformed
+  (module quote "(elem)")
+  "unexpected token"
+)
+(assert_malformed
+  (module quote "(elem $e)")
+  "unexpected token"
+)
+(assert_malformed
+  (module quote "(elem $e declare)")
+  "unexpected token"
+)
+(assert_malformed
+  (module quote "(table 1 funcref) (elem (table 0) (offset (i32.const 0)))")
+  "unexpected token"
+)
+(assert_malformed
+  (module quote "(elem $e func) (elem $e func)")
+  "duplicate elem segment"
+)
+
 
 ;; Basic use
 
@@ -1108,3 +1129,19 @@
 
 (assert_return (invoke "call_in_table" (i32.const 6)) (i32.const 42))
 (assert_trap (invoke "call_in_table" (i32.const 0)) "uninitialized element")
+
+;; Testing how identifiers interact with elem segments specified inline
+(module
+  (func $f (result i32) i32.const 0xAB)
+  (func $g (result i32) i32.const 0xCD)
+  (table funcref (elem (ref.func $f)))
+  (elem $e funcref (ref.func $g))
+  (func (export "init")
+    (table.init $e (i32.const 0) (i32.const 0) (i32.const 1))
+  )
+  (func (export "run") (result i32)
+    (call_indirect (result i32) (i32.const 0))
+  )
+)
+(invoke "init")
+(assert_return (invoke "run") (i32.const 0xCD))

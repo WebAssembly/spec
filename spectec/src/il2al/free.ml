@@ -24,7 +24,7 @@ let rec free_exp ignore_listN e =
   | CvtE (e1, _, _) | UnE (_, _, e1) | LiftE e1 | LenE e1 | TheE e1 | SubE (e1, _, _)
   | ProjE (e1, _) ->
     f e1
-  | DotE (e1, _) | CaseE (_, e1) | UncaseE (e1, _) ->
+  | DotE (e1, _) | CaseE (_, e1, _) | UncaseE (e1, _) ->
     f e1
   | BinE (_, _, e1, e2) | CmpE (_, _, e1, e2) | IdxE (e1, e2) | CompE (e1, e2) | MemE (e1, e2) | CatE (e1, e2) ->
     free_list f [e1; e2]
@@ -33,7 +33,7 @@ let rec free_exp ignore_listN e =
   | TupE es | ListE es -> free_list f es
   | UpdE (e1, p, e2) | ExtE (e1, p, e2) ->
     free_list f [e1; e2] ++ fp p
-  | StrE efs -> free_list fef efs
+  | StrE (efs, _) -> free_list fef efs
   | CallE (_, args) -> free_list fa args
   | IterE (e1, iter) ->
     let free1 = f e1 in

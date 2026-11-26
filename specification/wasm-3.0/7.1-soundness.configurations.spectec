@@ -11,6 +11,20 @@ rule Instr_ok2/plain:
   s; C |- instr : t_1* ->_(x*) t_2*
   -- Instr_ok: C |- instr : t_1* ->_(x*) t_2*
 
+rule Instr_ok2/call_ref:
+  s; C |- CALL_REF yy : t_1* (REF NULL yy) -> t_2*
+  -- Typeuse_ok: C |- yy : OK
+  -- Expand_use: yy ~~_C FUNC t_1* -> t_2*
+
+;; TODO(3, rossberg): enable t_2* <: C.RETURN
+rule Instr_ok2/return_call_ref:
+  s; C |- RETURN_CALL_REF yy : t_3* t_1* (REF NULL yy) -> t_4*
+  -- Typeuse_ok: C |- yy : OK
+  -- Expand_use: yy ~~_C FUNC t_1* -> t_2*
+  -- if C.RETURN = (t'_2*)
+  -- Resulttype_sub: C |- t_2* <: t'_2*
+  -- Instrtype_ok: C |- t_3* -> t_4* : OK
+
 rule Instr_ok2/ref:
   s; C |- ref : eps -> rt
   -- Ref_ok: s |- ref : rt
@@ -23,12 +37,14 @@ rule Instr_ok2/label:
 rule Instr_ok2/frame:
   s; C |- FRAME_ n `{f} instr* : eps -> t^n
   -- Frame_ok: s |- f : C'
+  -- if C'.RETURN = t^n
   -- Expr_ok2: s; C' |- instr* : t^n
+  -- Resulttype_ok: {} |- t^n : OK
 
 rule Instr_ok2/handler:
-  s; C |- HANDLER_ n `{catch*} instr* : t_1* -> t_2*
+  s; C |- HANDLER_ n `{catch*} instr* : eps -> t*
   -- (Catch_ok: C |- catch : OK)*
-  -- Instrs_ok2: s; C |- instr* : t_1* ->_(x*) t_2*
+  -- Instrs_ok2: s; C |- instr* : eps ->_(x*) t*
 
 rule Instr_ok2/trap:
   s; C |- TRAP : t_1* -> t_2*
@@ -38,9 +54,13 @@ rule Instr_ok2/trap:
 rule Instrs_ok2/empty:
   s; C |- eps : eps -> eps
 
+rule Instrs_ok2/instr:
+  s; C |- instr : t_1* ->_(x*) t_2*
+  -- Instr_ok2: s; C |- instr : t_1* ->_(x*) t_2*
+
 rule Instrs_ok2/seq:
-  s; C |- instr_1 instr_2* : t_1* ->_(x_1* x_2*) t_3*
-  -- Instr_ok2: s; C |- instr_1 : t_1* ->_(x_1*) t_2*
+  s; C |- instr_1* instr_2* : t_1* ->_(x_1* x_2*) t_3*
+  -- Instrs_ok2: s; C |- instr_1* : t_1* ->_(x_1*) t_2*
   -- (if C.LOCALS[x_1] = init t)*
   -- Instrs_ok2: s; $with_locals(C, x_1*, (SET t)*) |- instr_2* : t_2* ->_(x_2*) t_3*
 
@@ -86,13 +106,13 @@ rule Globalinst_ok:
   -- Val_ok: s |- val : t
 
 rule Meminst_ok:
-  s |- {TYPE at `[n..m] PAGE, BYTES b*} : at `[n..m] PAGE
-  -- Memtype_ok: {} |- at `[n..m] PAGE : OK
+  s |- {TYPE at `[n..m?] PAGE, BYTES b*} : at `[n..m?] PAGE
+  -- Memtype_ok: {} |- at `[n..m?] PAGE : OK
   -- if |b*| = $(n * $($(64 * $Ki)))
 
 rule Tableinst_ok:
-  s |- {TYPE at `[n..m] rt, REFS ref*} : at `[n..m] rt
-  -- Tabletype_ok: {} |- at `[n..m] rt : OK
+  s |- {TYPE at `[n..m?] rt, REFS ref*} : at `[n..m?] rt
+  -- Tabletype_ok: {} |- at `[n..m?] rt : OK
   -- if |ref*| = n
   -- (Ref_ok: s |- ref : rt)*
 
@@ -157,7 +177,7 @@ rule Moduleinst_ok:
              FUNCS deftype_F*,
              DATAS datatype*,
              ELEMS elemtype*,
-             REFS (i)^(i<|funcaddr*|)
+             REFS (i)^(i<k)
            }
   -- (Deftype_ok: {} |- deftype : OK)*
   -- (Externaddr_ok: s |- TAG tagaddr : TAG tagtype)*
@@ -175,6 +195,8 @@ rule Moduleinst_ok:
   -- if $disjoint_(name, (exportinst.NAME)*)
   ----
   -- (if exportinst.ADDR <- (TAG tagaddr)* (GLOBAL globaladdr)* (MEM memaddr)* (TABLE tableaddr)* (FUNC funcaddr)*)*
+  ----
+  -- if k <= |funcaddr*|
 
 
 ;; Store
@@ -262,12 +284,12 @@ rule Extend_globalinst:
   -- if mut? = MUT \/ val = val'
 
 rule Extend_meminst:
-  {TYPE at `[n..m] PAGE, BYTES b*} `<= {TYPE at `[n'..m] PAGE, BYTES b'*}
+  {TYPE at `[n..m?] PAGE, BYTES b*} `<= {TYPE at `[n'..m?] PAGE, BYTES b'*}
   -- if n <= n'
   -- if |b*| <= |b'*|
 
 rule Extend_tableinst:
-  {TYPE at `[n..m] rt, REFS ref*} `<= {TYPE at `[n'..m] rt, REFS ref'*}
+  {TYPE at `[n..m?] rt, REFS ref*} `<= {TYPE at `[n'..m?] rt, REFS ref'*}
   -- if n <= n'
   -- if |ref*| <= |ref'*|
 
@@ -326,7 +348,8 @@ rule Localval_ok/set:
   -- Val_ok: s |- val : t
 
 rule Localval_ok/unset:
-  s |- eps : UNSET BOT
+  s |- eps : UNSET t
+  -- Valtype_ok: {} |- t : OK
 
 rule Frame_ok:
   s |- {LOCALS (val?)*, MODULE moduleinst} : C ++ {LOCALS lct*}

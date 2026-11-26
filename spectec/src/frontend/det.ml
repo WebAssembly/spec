@@ -50,8 +50,8 @@ and det_exp e =
   | BinE (#Xl.Num.binop, _, e1, e2) | CatE (e1, e2) -> det_exp e1 ++ det_exp e2
   | OptE eo -> free_opt det_exp eo
   | ListE es | TupE es -> det_list det_exp es
-  | CaseE (_, e1) | UncaseE (e1, _) -> det_exp e1
-  | StrE efs -> det_list det_expfield efs
+  | CaseE (_, e1, _) | UncaseE (e1, _) -> det_exp e1
+  | StrE (efs, _) -> det_list det_expfield efs
   | IterE (e1, ite) -> det_iterexp (det_exp e1) ite
   (* As a special hack to work with bijective functions,
    * we treat last position of a call as a pattern, too. *)
@@ -90,10 +90,10 @@ and det_idx_exp e =
   ) @@ fun _ ->
   match e.it with
   | VarE _ -> empty
-  | LiftE e1 | SubE (e1, _, _) | CaseE (_, e1) -> det_idx_exp e1
+  | LiftE e1 | SubE (e1, _, _) | CaseE (_, e1, _) -> det_idx_exp e1
   | OptE eo -> free_opt det_idx_exp eo
   | ListE es | TupE es -> det_list det_idx_exp es
-  | StrE efs -> det_list det_idx_expfield efs
+  | StrE (efs, _) -> det_list det_idx_expfield efs
   | IterE (e1, ite) -> det_idx_iterexp (det_idx_exp e1) ite
   | CallE (_, as_) -> det_list det_idx_arg as_
   | IdxE (e1, e2) -> det_quant_exp e1 ++ det_exp e2
@@ -132,10 +132,10 @@ and det_quant_exp e =
     det_quant_exp e1 ++ det_quant_exp e2 ++ det_quant_exp e3
   | UpdE (e1, p, e2) | ExtE (e1, p, e2) ->
     det_quant_exp e1 ++ det_quant_path p ++ det_quant_exp e2
-  | DotE (e1, _) | CaseE (_, e1) | UncaseE (e1, _) -> det_quant_exp e1
+  | DotE (e1, _) | CaseE (_, e1, _) | UncaseE (e1, _) -> det_quant_exp e1
   | OptE eo -> free_opt det_quant_exp eo
   | ListE es | TupE es -> det_list det_quant_exp es
-  | StrE efs -> det_list det_quant_expfield efs
+  | StrE (efs, _) -> det_list det_quant_expfield efs
   | IterE (e1, ite) -> det_quant_iterexp (det_quant_exp e1) ite
   | CallE (_, as_) -> det_list det_quant_arg as_
 

@@ -7,7 +7,6 @@ open Al_util
 open Print
 open Free
 
-module IlEval = Il.Eval
 
 (* Error *)
 
@@ -80,11 +79,12 @@ let get_deftyps (id: Il.Ast.id) (args: Il.Ast.arg list): deftyp list =
   match IlEnv.find_opt_typ !il_env id with
   | Some (_, insts) ->
     let typ_of_arg arg =
-      match (IlEval.reduce_arg !il_env arg).it with
-      | ExpA { it=SubE (_, typ, _); _ } -> typ
-      | ExpA { note; _ } -> note
-      | TypA typ -> typ
-      | a -> failwith ("TODO: " ^ Il.Print.string_of_arg (a $ arg.at))
+      match Il.Eval.reduce_arg !il_env arg with
+      | Ok {it = ExpA { it=SubE (_, typ, _); _ }; _} -> typ
+      | Ok {it = ExpA { note; _ }; _} -> note
+      | Ok {it = TypA typ; _} -> typ
+      | Ok arg' -> failwith ("TODO: " ^ Il.Print.string_of_arg arg')
+      | Error _ -> failwith ("Undefined: " ^ Il.Print.string_of_arg arg)
     in
     let get_syntax_arg_name arg = 
       match arg.it with
@@ -110,7 +110,7 @@ let get_deftyps (id: Il.Ast.id) (args: Il.Ast.arg list): deftyp list =
     let get_deftyp inst =
       let InstD (_, inst_args, deftyp) = inst.it in
       let valid_arg arg inst_arg = 
-        IlEval.sub_typ !il_env (typ_of_arg arg) (typ_of_arg inst_arg)
+        Il.Eval.sub_typ !il_env (typ_of_arg arg) (typ_of_arg inst_arg)
       in
       if List.for_all2 valid_arg args inst_args then
         Some deftyp
@@ -199,7 +199,7 @@ let rec sub_typ typ1 typ2 =
     match typ1'.it, typ2'.it with
     | IterT (typ1'', _), IterT (typ2'', _) -> sub_typ typ1'' typ2''
     | NumT _, NumT _ -> true
-    | _, _ -> IlEval.sub_typ !il_env typ1' typ2'
+    | _, _ -> Il.Eval.sub_typ !il_env typ1' typ2'
   with Util.Error.Error (_, "undeclared type") -> false
 
 let rec matches typ1 typ2 =
@@ -320,7 +320,7 @@ let check_call source id args result_typ =
       | DefA aid, DefP (_, pparams, ptyp) ->
         (match IlEnv.find_opt_def !il_env (aid $ no_region) with
         | Some (aparams, atyp, _) -> 
-          if not (IlEval.sub_typ !il_env atyp ptyp) then
+          if not (Il.Eval.sub_typ !il_env atyp ptyp) then
             error_valid
               "argument's return type is not a subtype of parameter's return type"
               source
@@ -340,7 +340,7 @@ let check_call source id args result_typ =
             let aptyp = typ_of_param aparam in
             let pptyp = typ_of_param pparam in
 
-            if not (IlEval.sub_typ !il_env pptyp aptyp) then
+            if not (Il.Eval.sub_typ !il_env pptyp aptyp) then
               error_valid
                 "parameter's parameter type is not a subtype of argument's return type"
                 source

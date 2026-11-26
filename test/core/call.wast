@@ -516,3 +516,19 @@
   (module (func $large-func (call 1012321300)))
   "unknown function"
 )
+
+(assert_invalid
+  (module (func $max-func (call 4294967295)))
+  "unknown function"
+)
+
+;; Malformed: the index does not fit in u32
+
+(assert_malformed
+  (module quote "(func (call 4294967296))")
+  "i32 constant out of range"
+)
+(assert_malformed
+  (module quote "(func (call 0x1_0000_0000))")
+  "i32 constant out of range"
+)

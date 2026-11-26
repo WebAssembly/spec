@@ -24,10 +24,9 @@ let rec reduce_type_aliasing env t =
 and reduce_inst_alias env args inst base_typ = 
   match inst.it with
   | InstD (_, args', {it = AliasT typ; _}) ->
-    let subst_opt = Eval.match_list Eval.match_arg env Subst.empty args args' in
-    (match subst_opt with
-    | Some subst -> reduce_type_aliasing env (Subst.subst_typ subst typ)
-    | None -> reduce_type_aliasing env typ
+    (match Eval.match_list Eval.match_arg env Subst.empty args args' with
+    | Ok (Some subst) -> reduce_type_aliasing env (Subst.subst_typ subst typ)
+    | Ok None | Error _ -> reduce_type_aliasing env typ
     ) 
   | _ -> base_typ
 

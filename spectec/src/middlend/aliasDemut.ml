@@ -22,7 +22,11 @@ type env = {
 
 let t_typ env x =
   match x.it with
-  | VarT (id, []) when S.mem id.it env.aliases -> Il.Eval.reduce_typ !env_ref x
+  | VarT (id, []) when S.mem id.it env.aliases ->
+    (match Il.Eval.reduce_typ !env_ref x with
+    | Ok x' -> x'
+    | Error _ -> x
+    )
   | _ -> x
 
 let alias_def_id def = 

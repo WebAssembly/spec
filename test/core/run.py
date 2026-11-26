@@ -37,7 +37,7 @@ relaxed_simd_test_files = glob.glob(os.path.join(inputDir, "relaxed-simd", "*.wa
 gc_test_files = glob.glob(os.path.join(inputDir, "gc", "*.wast"))
 memory64_test_files = glob.glob(os.path.join(inputDir, "memory64", "*.wast"))
 multi_memory_test_files = glob.glob(os.path.join(inputDir, "multi-memory", "*.wast"))
-exception_test_files = glob.glob(os.path.join(inputDir, "exception", "*.wast"))
+exception_test_files = glob.glob(os.path.join(inputDir, "exceptions", "*.wast"))
 bulk_memory_test_files = glob.glob(os.path.join(inputDir, "bulk-memory", "*.wast"))
 all_test_files = \
   main_test_files + \

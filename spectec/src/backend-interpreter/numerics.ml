@@ -64,6 +64,7 @@ let r_fmadd = relaxed "R_fmadd" 0
 let r_fmin = relaxed "R_fmin" 0
 let r_fmax = relaxed "R_fmax" 0
 let r_idot = relaxed "R_idot" 0
+let r_idot_add = relaxed "R_idot_add" 0
 let r_iq15mulr = relaxed "R_iq15mulr" 0
 let r_trunc_u = relaxed "R_trunc_u" 0
 let r_trunc_s = relaxed "R_trunc_s" 0
@@ -936,6 +937,7 @@ let inv_zbytes : numerics =
       (function
       | [ CaseV ("I8", []); l ] -> inv_ibytes.f [ NumV eight; l ]
       | [ CaseV ("I16", []); l ] -> inv_ibytes.f [ NumV sixteen; l ]
+      | [ CaseV ("V128", []); _ ] as args -> inv_vbytes.f args
       | args -> inv_nbytes.f args
       );
   }
@@ -1080,6 +1082,7 @@ let numerics_list : numerics list = [
   r_fmin;
   r_fmax;
   r_idot;
+  r_idot_add;
   r_iq15mulr;
   r_trunc_u;
   r_trunc_s;

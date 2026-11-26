@@ -95,7 +95,7 @@ grammar Tstringchar : char =
   | "\\\"" => U+22
   | "\\'" => U+27
   | "\\\\" => U+5C
-  | "\\u{" n:Thexnum "}" => n  -- if n < 0xD800 \/ 0xE800 <= n < 0x110000
+  | "\\u{" n:Thexnum "}" => n  -- if n < 0xD800 \/ 0xE000 <= n < 0x110000
 
 grammar Tstringelem : byte* =
   | c:Tstringchar => $utf8(c)

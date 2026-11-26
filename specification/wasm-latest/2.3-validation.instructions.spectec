@@ -252,7 +252,7 @@ rule Instr_ok/struct.new_default:
   -- Expand: C.TYPES[x] ~~ STRUCT (mut? zt)*
   -- (Defaultable: |- $unpack(zt) DEFAULTABLE)*
 
-def $is_packtype(storagetype) : bool             hint(show %1 = $unpack(%1)) hint(prose "%1 is a packed type")
+def $is_packtype(storagetype) : bool             hint(show %1 =/= $unpack(%1)) hint(prose "%1 is a packed type")
 def $is_packtype(zt) = zt =/= $unpack(zt)
 
 rule Instr_ok/struct.get:
@@ -441,51 +441,51 @@ rule Instr_ok/data.drop:
 
 (;
 rule Instr_ok/load:
-  C |- LOAD nt (N _ sx)? x memarg : at -> nt
+  C |- LOAD nt (K _ sx)? x memarg : at -> nt
   -- if C.MEMS[x] = at lim PAGE
   -- if $(2^(memarg.ALIGN) <= $size(nt)/8)
   -- if $(2^(memarg.ALIGN) <= N/8 < $size(nt)/8)?
-  -- if N? = eps \/ nt = Inn
+  -- if K? = eps \/ nt = Inn
 ;)
 
-rule Instr_ok/load-val:
+rule Instr_ok/load-num:
   C |- LOAD nt x memarg : at -> nt
   -- if C.MEMS[x] = at lim PAGE
   -- Memarg_ok: |- memarg : at -> $size(nt)
 
 rule Instr_ok/load-pack:
-  C |- LOAD Inn (M _ sx) x memarg : at -> Inn
+  C |- LOAD Inn (K _ sx) x memarg : at -> Inn
   -- if C.MEMS[x] = at lim PAGE
-  -- Memarg_ok: |- memarg : at -> M
+  -- Memarg_ok: |- memarg : at -> K
 
 (;
 rule Instr_ok/store:
-  C |- STORE nt N? x memarg : at nt -> eps
+  C |- STORE nt K? x memarg : at nt -> eps
   -- if C.MEMS[x] = at lim PAGE
   -- if $(2^(memarg.ALIGN) <= $size(nt)/8)
-  -- if $(2^(memarg.ALIGN) <= N/8 < $size(nt)/8)?
-  -- if N? = eps \/ nt = Inn
+  -- if $(2^(memarg.ALIGN) <= K/8 < $size(nt)/8)?
+  -- if K? = eps \/ nt = Inn
 ;)
 
-rule Instr_ok/store-val:
+rule Instr_ok/store-num:
   C |- STORE nt x memarg : at nt -> eps
   -- if C.MEMS[x] = at lim PAGE
   -- Memarg_ok: |- memarg : at -> $size(nt)
 
 rule Instr_ok/store-pack:
-  C |- STORE Inn M x memarg : at Inn -> eps
+  C |- STORE Inn K x memarg : at Inn -> eps
   -- if C.MEMS[x] = at lim PAGE
-  -- Memarg_ok: |- memarg : at -> M
+  -- Memarg_ok: |- memarg : at -> K
 
-rule Instr_ok/vload-val:
+rule Instr_ok/vload-num:
   C |- VLOAD V128 x memarg : at -> V128
   -- if C.MEMS[x] = at lim PAGE
   -- Memarg_ok: |- memarg : at -> $vsize(V128)
 
 rule Instr_ok/vload-pack:
-  C |- VLOAD V128 (SHAPE M X N _ sx) x memarg : at -> V128
+  C |- VLOAD V128 (SHAPE N X M _ sx) x memarg : at -> V128
   -- if C.MEMS[x] = at lim PAGE
-  -- Memarg_ok: |- memarg : at -> $(M*N)
+  -- Memarg_ok: |- memarg : at -> $(N*M)
 
 rule Instr_ok/vload-splat:
   C |- VLOAD V128 (SPLAT N) x memarg : at -> V128
@@ -613,10 +613,14 @@ rule Instr_ok/vcvtop:
 rule Instrs_ok/empty:
   C |- eps : eps -> eps
 
+rule Instrs_ok/instr:
+  C |- instr : t_1* ->_(x*) t_2*
+  -- Instr_ok: C |- instr : t_1* ->_(x*) t_2*
+
 ;; TODO(3, rossberg): enable x_1*#x_2* to avoid space
 rule Instrs_ok/seq:
-  C |- instr_1 instr_2* : t_1* ->_(x_1* x_2*) t_3*
-  -- Instr_ok: C |- instr_1 : t_1* ->_(x_1*) t_2*
+  C |- instr_1* instr_2* : t_1* ->_(x_1* x_2*) t_3*
+  -- Instrs_ok: C |- instr_1* : t_1* ->_(x_1*) t_2*
   -- (if C.LOCALS[x_1] = init t)*
   -- Instrs_ok: $with_locals(C, x_1*, (SET t)*) |- instr_2* : t_2* ->_(x_2*) t_3*
 

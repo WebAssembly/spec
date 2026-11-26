@@ -41,6 +41,8 @@ and atom' =
   | EquivSub                     (* `==_` *)
   | Approx                       (* `~~` *)
   | ApproxSub                    (* `~~_` *)
+  | Sim                          (* `~` *)
+  | SimSub                       (* `~_` *)
   | SqArrow                      (* `~>` *)
   | SqArrowSub                   (* `~>_` *)
   | SqArrowStar                  (* `~>*` *)
@@ -85,7 +87,7 @@ let compare atom1 atom2 =
 let is_sub atom =
   match atom.it with
   | Atom id -> id <> "" && id.[String.length id - 1] = '_'
-  | ArrowSub | Arrow2Sub | ColonSub | EqualSub | EquivSub | ApproxSub
+  | ArrowSub | Arrow2Sub | ColonSub | EqualSub | EquivSub | ApproxSub | SimSub
   | SqArrowSub | SqArrowStarSub | PrecSub | SuccSub
   | TurnstileSub | TilesturnSub -> true
   | _ -> false
@@ -99,6 +101,7 @@ let sub atom1 atom2 =
   | EqualSub, Equal
   | EquivSub, Equiv
   | ApproxSub, Approx
+  | SimSub, Sim
   | SqArrowSub, SqArrow
   | SqArrowStarSub, SqArrowStar
   | PrecSub, Prec
@@ -143,6 +146,8 @@ let to_string atom =
   | EquivSub -> "==_"
   | Approx -> "~~"
   | ApproxSub -> "~~_"
+  | Sim -> "~"
+  | SimSub -> "~_"
   | SqArrow -> "~>"
   | SqArrowSub -> "~>_"
   | SqArrowStar -> "~>*"
@@ -221,6 +226,8 @@ let name atom =
   | EquivSub -> "equiv_"
   | Approx -> "approx"
   | ApproxSub -> "approx_"
+  | Sim -> "sim"
+  | SimSub -> "sim_"
   | SqArrow -> "sqarrow"          (* Latex: \hookrightarrow *)
   | SqArrowSub -> "sqarrow_"      (* Latex: \hookrightarrow with subscript *)
   | SqArrowStar -> "sqarrowstar"  (* Latex: \hookrightarrow^\ast *)
