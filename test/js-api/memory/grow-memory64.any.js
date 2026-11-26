@@ -1,4 +1,5 @@
 // META: global=window,dedicatedworker,jsshell
+// META: script=/wasm/jsapi/assertions.js
 // META: script=/wasm/jsapi/memory/assertions.js
 
 test(() => {
