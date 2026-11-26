@@ -95,12 +95,16 @@ partial namespace WebAssembly {
 </pre>
 
 <div algorithm>
-The <dfn method for="WebAssembly">compileStreaming(|source|, |options|)</dfn> method, when invoked, returns the result of [=compile a potential WebAssembly response|compiling a potential WebAssembly response=] with |source| using |options|.
+The <dfn method for="WebAssembly">compileStreaming(|source|, |options|)</dfn> method, when invoked, performs the following steps:
+    1. Perform [=?=] [$HostEnsureCanCompileWasmBytes(realm)$], where |realm| is the [=current Realm=].
+        Note: This operation terminates with a {{CompileError}} exception if the operation is not permitted.
+    1. Return the result of [=compile a potential WebAssembly response|compiling a potential WebAssembly response=] with |source| using |options|.
 </div>
 
 <div algorithm>
 The <dfn method for="WebAssembly">instantiateStreaming(|source|, |importObject|, |options|)</dfn> method, when invoked, performs the following steps:
-
+    1. Perform [=?=] [$HostEnsureCanCompileWasmBytes(realm)$], where |realm| is the [=current Realm=].
+        Note: This operation terminates with a {{CompileError}} exception if the operation is not permitted.
     1. Let |promiseOfModule| be the result of [=compile a potential WebAssembly response|compiling a potential WebAssembly response=] with |source| using |options|.
     1. Return the result of [=instantiate a promise of a module|instantiating the promise of a module=] |promiseOfModule| with imports |importObject|.
 </div>
