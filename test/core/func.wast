@@ -627,6 +627,23 @@
   "inline function type"
 )
 
+(assert_malformed
+  (module quote "(type $t (func)) (func (type $t) (type $t))")
+  "unexpected token"
+)
+(assert_malformed
+  (module quote "(type $t (func)) (type $u (func)) (func (type $t $u))")
+  "unexpected token"
+)
+(assert_malformed
+  (module quote "(type $t (func)) (func (type $t (foo)))")
+  "unexpected token"
+)
+(assert_malformed
+  (module quote "(type $t (func)) (func (type))")
+  "unexpected token"
+)
+
 (assert_invalid
   (module (func $g (type 4)))
   "unknown type"
@@ -956,6 +973,39 @@
 )
 (assert_malformed
   (module quote "(func (result i32) (param i32) (local.get 0))")
+  "unexpected token"
+)
+
+(assert_malformed
+  (module quote "(func (local $x))")
+  "unexpected token"
+)
+(assert_malformed
+  (module quote "(func (local $x $y i32))")
+  "unexpected token"
+)
+(assert_malformed
+  (module quote "(func end)")
+  "unexpected token"
+)
+(assert_malformed
+  (module quote "(func (result i32) i32.const 1 end unreachable)")
+  "unexpected token"
+)
+(assert_malformed
+  (module quote "(func (end))")
+  "unexpected token"
+)
+(assert_malformed
+  (module quote "(func (end (nop)))")
+  "unexpected token"
+)
+(assert_malformed
+  (module quote "(func (block end) unreachable)")
+  "unexpected token"
+)
+(assert_malformed
+  (module quote "(func (block (end)))")
   "unexpected token"
 )
 

@@ -35,6 +35,11 @@
   (data $d14 "a" "" "bcd")
 )
 
+(assert_malformed
+  (module quote "(memory 1) (data $d \"\") (data $d \"\")")
+  "duplicate data segment"
+)
+
 ;; Basic use
 
 (module
