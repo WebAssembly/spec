@@ -90,6 +90,7 @@
 
 (assert_malformed (module quote "(@x \"") "unclosed string")
 (assert_malformed (module quote "(@x \")") "unclosed string")
+(assert_malformed (module quote "(@a (; x") "unclosed comment")
 
 (assert_malformed (module quote "((@a)@b)") "unknown operator")
 (assert_malformed (module quote "(func $(@a))") "empty identifier")

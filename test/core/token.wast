@@ -302,3 +302,10 @@
   )
   "unknown operator"
 )
+
+;; Control characters in strings
+
+(assert_malformed
+  (module quote "(memory 1) (data (i32.const 0) \"a\01b\")")
+  "illegal control character"
+)
