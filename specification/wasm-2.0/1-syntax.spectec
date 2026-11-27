@@ -209,7 +209,7 @@ def $lanetype(shape) : lanetype
 def $unpack(lanetype) : numtype
 
 def $size(valtype) : nat      hint(show |%|) hint(partial)
-def $vsize(vectype) : nat      hint(show |%|)
+def $vsize(vectype) : nat     hint(show |%|)
 def $psize(packtype) : nat    hint(show |%|)
 def $lsize(lanetype) : nat    hint(show |%|)
 def $isize(Inn) : nat         hint(show |%|) hint(inverse $inv_isize)

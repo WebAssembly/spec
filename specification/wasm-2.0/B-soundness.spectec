@@ -88,7 +88,7 @@ rule Instr_ok2/label:
 rule Instr_ok2/frame:
   s; C |- FRAME_ n `{f} admininstr* : eps -> t^n
   -- Frame_ok: s |- f : C'
-  -- Expr_ok2: s; {RETURN t^n} ++ C' |- admininstr* : t^n
+  -- Expr_ok2: s; C' ++ {RETURN t^n} |- admininstr* : t^n
 
 rule Instr_ok2/call_addr:
   s; C |- CALL_ADDR funcaddr : t_1* -> t_2*
@@ -279,7 +279,7 @@ relation State_ok: |- state : context
 relation Config_ok: |- config : resulttype
 
 rule Frame_ok:
-  s |- {LOCALS val*, MODULE moduleinst} : {LOCALS t*} ++ C
+  s |- {LOCALS val*, MODULE moduleinst} : C ++ {LOCALS t*}
   -- Moduleinst_ok: s |- moduleinst : C
   -- (Val_ok: s |- val : t)*
 

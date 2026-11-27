@@ -66,7 +66,7 @@ rule Instr_ok2/frame:
   s; C |- FRAME_ n `{f} admininstr* : eps -> t?
   -- if |t?| = n 
   -- Frame_ok: s |- f : C'
-  -- Expr_ok2: s; {RETURN t?} ++ C' |- admininstr* : t?
+  -- Expr_ok2: s; C' ++ {RETURN t?} |- admininstr* : t?
 
 rule Instr_ok2/call_addr:
   s; C |- CALL_ADDR funcaddr : t_1* -> t_2*
