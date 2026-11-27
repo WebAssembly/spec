@@ -15,6 +15,7 @@ spectec 0.5 generator
 == IL Validation after pass sideconditions...
 == Translating to AL...
 == Prose Generation...
+../../../../specification/wasm-1.0/B-soundness.spectec:121.8-121.45: prem_to_instrs: Yet `Externaddr_ok: `%|-%:%`(s, FUNC_externaddr(fa), FUNC_externtype(ft))`
 
 
 
@@ -395,16 +396,7 @@ The instruction :math:`(t {.} {\mathit{relop}}_t)` is :ref:`valid <valid-val>` w
 
 
 
-The instruction :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}}}{\mathsf{\_}}{{\mathit{nt}}_2})` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1` if:
-
-
-   * Either:
-
-      * :math:`{\mathit{cvtop}}` is of the form :math:`\mathsf{reinterpret}`.
-
-      * :math:`{|{\mathit{nt}}_1|}` is of the form :math:`{|{\mathit{nt}}_2|}`.
-
-   * Or:
+The instruction :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}}}{\mathsf{\_}}{{\mathit{nt}}_2})` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1`.
 
 
 
@@ -513,19 +505,6 @@ The instruction :math:`({t{.}\mathsf{store}}{{{\mathit{sz}}^?}}~{\mathit{memarg}
       * The number type :math:`{t'}` is of the form :math:`{\mathsf{i}}{n}`.
 
       * :math:`{2^{{\mathit{memarg}}{.}\mathsf{align}}}` is less than or equal to :math:`M / 8`.
-
-
-
-
-The instruction :math:`({\mathit{nt}}_1 {.} {\mathsf{reinterpret}}{\mathsf{\_}}{{\mathit{nt}}_2})` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1` if:
-
-
-   * :math:`{|{\mathit{nt}}_1|}` is of the form :math:`{|{\mathit{nt}}_2|}`.
-
-
-
-
-The instruction :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}}}{\mathsf{\_}}{{\mathit{nt}}_2})` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1`.
 
 
 
@@ -1035,6 +1014,399 @@ The external value :math:`{\mathit{externaddr}}` is :ref:`valid <valid-val>` wit
    * The external type :math:`{\mathit{xt}}` is :ref:`valid <valid-val>`.
 
    * The external type :math:`{\mathit{xt}'}` :ref:`matches <match>` the external type :math:`{\mathit{xt}}`.
+
+
+
+
+The context :math:`C` is :ref:`valid <valid-val>` if:
+
+
+   * The context :math:`C` is of the form :math:`\{ \mathsf{types}~{{\mathit{ft}}^\ast},\;\allowbreak \mathsf{funcs}~{{\mathit{ft}}_2^\ast},\;\allowbreak \mathsf{globals}~{{\mathit{gt}}^\ast},\;\allowbreak \mathsf{tables}~{{\mathit{tt}}^\ast},\;\allowbreak \mathsf{mems}~{{\mathit{mt}}^\ast},\;\allowbreak \mathsf{locals}~{{\mathit{lct}}^\ast},\;\allowbreak \mathsf{labels}~{{\mathit{rt}}^\ast},\;\allowbreak \mathsf{return}~{{\mathit{rt}'}^?} \}`.
+
+   * For all :math:`{\mathit{ft}}` in :math:`{{\mathit{ft}}^\ast}`:
+
+      * The function type :math:`{\mathit{ft}}` is :ref:`valid <valid-val>`.
+
+   * For all :math:`{\mathit{gt}}` in :math:`{{\mathit{gt}}^\ast}`:
+
+      * The global type :math:`{\mathit{gt}}` is :ref:`valid <valid-val>`.
+
+   * For all :math:`{\mathit{mt}}` in :math:`{{\mathit{mt}}^\ast}`:
+
+      * The memory type :math:`{\mathit{mt}}` is :ref:`valid <valid-val>`.
+
+   * For all :math:`{\mathit{tt}}` in :math:`{{\mathit{tt}}^\ast}`:
+
+      * The table type :math:`{\mathit{tt}}` is :ref:`valid <valid-val>`.
+
+   * For all :math:`{\mathit{ft}}_2` in :math:`{{\mathit{ft}}_2^\ast}`:
+
+      * The function type :math:`{\mathit{ft}}_2` is :ref:`valid <valid-val>`.
+
+
+
+
+The value :math:`(t{.}\mathsf{const}~c_t)` is :ref:`valid <valid-val>` with the number type :math:`t`.
+
+
+
+
+The result :math:`{\mathit{result}}` is :ref:`valid <valid-val>` with the number type sequence :math:`{t^\ast}` if:
+
+
+   * Either:
+
+      * The result :math:`{\mathit{result}}` is of the form :math:`{v^\ast}`.
+
+      * For all :math:`t` in :math:`{t^\ast}`, and corresponding :math:`v` in :math:`{v^\ast}`:
+
+         * The value :math:`v` is :ref:`valid <valid-val>` with the number type :math:`t`.
+
+   * Or:
+
+      * The result :math:`{\mathit{result}}` is of the form :math:`\mathsf{trap}`.
+
+
+
+
+The result :math:`{v^\ast}` is :ref:`valid <valid-val>` with the number type sequence :math:`{t^\ast}` if:
+
+
+   * For all :math:`t` in :math:`{t^\ast}`, and corresponding :math:`v` in :math:`{v^\ast}`:
+
+      * The value :math:`v` is :ref:`valid <valid-val>` with the number type :math:`t`.
+
+
+
+
+The result :math:`\mathsf{trap}` is :ref:`valid <valid-val>` with the number type sequence :math:`{t^\ast}`.
+
+
+
+
+The export instance :math:`\{ \mathsf{name}~{\mathit{nm}},\;\allowbreak \mathsf{addr}~{\mathit{xa}} \}` is :ref:`valid <valid-val>` if:
+
+
+   * The external value :math:`{\mathit{xa}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{xt}}`.
+
+
+
+
+The module instance :math:`\{ \mathsf{types}~{{\mathit{functype}}^\ast},\;\allowbreak \mathsf{funcs}~{{\mathit{funcaddr}}^\ast},\;\allowbreak \mathsf{globals}~{{\mathit{globaladdr}}^\ast},\;\allowbreak \mathsf{tables}~{{\mathit{tableaddr}}^\ast},\;\allowbreak \mathsf{mems}~{{\mathit{memaddr}}^\ast},\;\allowbreak \mathsf{exports}~{{\mathit{exportinst}}^\ast} \}` is :ref:`valid <valid-val>` with the context :math:`\{ \mathsf{types}~{{\mathit{functype}}^\ast},\;\allowbreak \mathsf{funcs}~{{\mathit{functype}}_{\mathsf{f}}^\ast},\;\allowbreak \mathsf{globals}~{{\mathit{globaltype}}^\ast},\;\allowbreak \mathsf{tables}~{{\mathit{tabletype}}^\ast},\;\allowbreak \mathsf{mems}~{{\mathit{memtype}}^\ast},\;\allowbreak \mathsf{return}~\epsilon \}` if:
+
+
+   * For all :math:`{\mathit{functype}}` in :math:`{{\mathit{functype}}^\ast}`:
+
+      * The function type :math:`{\mathit{functype}}` is :ref:`valid <valid-val>`.
+
+   * For all :math:`{\mathit{globaladdr}}` in :math:`{{\mathit{globaladdr}}^\ast}`, and corresponding :math:`{\mathit{globaltype}}` in :math:`{{\mathit{globaltype}}^\ast}`:
+
+      * The external value :math:`(\mathsf{global}~{\mathit{globaladdr}})` is :ref:`valid <valid-val>` with the external type :math:`(\mathsf{global}~{\mathit{globaltype}})`.
+
+   * For all :math:`{\mathit{funcaddr}}` in :math:`{{\mathit{funcaddr}}^\ast}`, and corresponding :math:`{\mathit{functype}}_{\mathsf{f}}` in :math:`{{\mathit{functype}}_{\mathsf{f}}^\ast}`:
+
+      * The external value :math:`(\mathsf{func}~{\mathit{funcaddr}})` is :ref:`valid <valid-val>` with the external type :math:`(\mathsf{func}~{\mathit{functype}}_{\mathsf{f}})`.
+
+   * For all :math:`{\mathit{memaddr}}` in :math:`{{\mathit{memaddr}}^\ast}`, and corresponding :math:`{\mathit{memtype}}` in :math:`{{\mathit{memtype}}^\ast}`:
+
+      * The external value :math:`(\mathsf{mem}~{\mathit{memaddr}})` is :ref:`valid <valid-val>` with the external type :math:`(\mathsf{mem}~{\mathit{memtype}})`.
+
+   * For all :math:`{\mathit{tableaddr}}` in :math:`{{\mathit{tableaddr}}^\ast}`, and corresponding :math:`{\mathit{tabletype}}` in :math:`{{\mathit{tabletype}}^\ast}`:
+
+      * The external value :math:`(\mathsf{table}~{\mathit{tableaddr}})` is :ref:`valid <valid-val>` with the external type :math:`(\mathsf{table}~{\mathit{tabletype}})`.
+
+   * For all :math:`{\mathit{exportinst}}` in :math:`{{\mathit{exportinst}}^\ast}`:
+
+      * The export instance :math:`{\mathit{exportinst}}` is :ref:`valid <valid-val>`.
+
+   * :math:`{{\mathit{exportinst}}{.}\mathsf{name}^\ast}~{\mathrm{disjoint}}` is true.
+
+   * The length of :math:`{(\mathsf{global}~{\mathit{globaladdr}})^\ast}~{(\mathsf{mem}~{\mathit{memaddr}})^\ast}~{(\mathsf{table}~{\mathit{tableaddr}})^\ast}~{(\mathsf{func}~{\mathit{funcaddr}})^\ast}` is greater than :math:`0`.
+
+   * For all :math:`{\mathit{exportinst}}` in :math:`{{\mathit{exportinst}}^\ast}`:
+
+      * :math:`{\mathit{exportinst}}{.}\mathsf{addr}` is contained in :math:`{(\mathsf{global}~{\mathit{globaladdr}})^\ast}~{(\mathsf{mem}~{\mathit{memaddr}})^\ast}~{(\mathsf{table}~{\mathit{tableaddr}})^\ast}~{(\mathsf{func}~{\mathit{funcaddr}})^\ast}`.
+
+
+
+
+The frame :math:`\{ \mathsf{locals}~{{\mathit{val}}^\ast},\;\allowbreak \mathsf{module}~{\mathit{moduleinst}} \}` is :ref:`valid <valid-val>` with the context :math:`C` with the field :math:`\mathsf{locals}` appended by :math:`{t^\ast}` if:
+
+
+   * The module instance :math:`{\mathit{moduleinst}}` is :ref:`valid <valid-val>` with the context :math:`C`.
+
+   * For all :math:`t` in :math:`{t^\ast}`, and corresponding :math:`{\mathit{val}}` in :math:`{{\mathit{val}}^\ast}`:
+
+      * The value :math:`{\mathit{val}}` is :ref:`valid <valid-val>` with the number type :math:`t`.
+
+
+
+
+:math:`{\mathit{instr}}` is valid with :math:`{{\mathit{valtype}}^\ast}~\rightarrow~{{\mathit{valtype}'}^\ast}` if:
+
+
+   * Either:
+
+      * The administrative instruction :math:`{\mathit{instr}}` is of the form :math:`{\mathit{instr}}`.
+
+      * The instruction :math:`{\mathit{instr}}` is :ref:`valid <valid-val>` with the function type :math:`{{\mathit{valtype}}^\ast}~\rightarrow~{{\mathit{valtype}'}^\ast}`.
+
+   * Or:
+
+      * The administrative instruction :math:`{\mathit{instr}}` is of the form :math:`({{\mathsf{label}}_{n}}{\{}~{{\mathit{instr}'}^\ast}~\}~{{{\mathit{instr}}'}^\ast})`.
+
+      * The number type sequence :math:`{{\mathit{valtype}}^\ast}` is empty.
+
+      * The number type sequence :math:`{{\mathit{valtype}'}^\ast}` is of the form :math:`{t^?}`.
+
+      * The length of :math:`{{t'}^?}` is equal to :math:`n`.
+
+      * :math:`{{\mathit{instr}'}^\ast}` is valid with :math:`{{t'}^?}~\rightarrow~{t^?}`.
+
+      * :math:`{{{\mathit{instr}}'}^\ast}` is valid with :math:`\epsilon~\rightarrow~{t^?}`.
+   * Or:
+
+      * The administrative instruction :math:`{\mathit{instr}}` is of the form :math:`({{\mathsf{frame}}_{n}}{\{}~f~\}~{{{\mathit{instr}}'}^\ast})`.
+
+      * The number type sequence :math:`{{\mathit{valtype}}^\ast}` is empty.
+
+      * The number type sequence :math:`{{\mathit{valtype}'}^\ast}` is of the form :math:`{t^?}`.
+
+      * The length of :math:`{t^?}` is equal to :math:`n`.
+
+      * The frame :math:`f` is :ref:`valid <valid-val>` with the context :math:`{C'}`.
+
+      * :math:`{{{\mathit{instr}}'}^\ast}` is valid with :math:`{t^?}`.
+   * Or:
+
+      * The administrative instruction :math:`{\mathit{instr}}` is of the form :math:`(\mathsf{call}~{\mathit{funcaddr}})`.
+
+      * The external value :math:`(\mathsf{func}~{\mathit{funcaddr}})` is :ref:`valid <valid-val>` with the external type :math:`(\mathsf{func}~{{\mathit{valtype}}^\ast}~\rightarrow~{{\mathit{valtype}'}^\ast})`.
+   * Or:
+
+      * The administrative instruction :math:`{\mathit{instr}}` is of the form :math:`\mathsf{trap}`.
+
+
+
+
+:math:`{\mathit{instr}}` is valid with :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
+
+
+   * The instruction :math:`{\mathit{instr}}` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+
+
+
+
+:math:`({{\mathsf{label}}_{n}}{\{}~{{\mathit{instr}}^\ast}~\}~{{\mathit{instr}}^\ast})` is valid with :math:`\epsilon~\rightarrow~{t^?}` if:
+
+
+   * The length of :math:`{{t'}^?}` is equal to :math:`n`.
+
+   * :math:`{{\mathit{instr}'}^\ast}` is valid with :math:`{{t'}^?}~\rightarrow~{t^?}`.
+
+   * :math:`{{\mathit{instr}}^\ast}` is valid with :math:`\epsilon~\rightarrow~{t^?}`.
+
+
+
+
+:math:`({{\mathsf{frame}}_{n}}{\{}~f~\}~{{\mathit{instr}}^\ast})` is valid with :math:`\epsilon~\rightarrow~{t^?}` if:
+
+
+   * The length of :math:`{t^?}` is equal to :math:`n`.
+
+   * The frame :math:`f` is :ref:`valid <valid-val>` with the context :math:`{C'}`.
+
+   * :math:`{{\mathit{instr}}^\ast}` is valid with :math:`{t^?}`.
+
+
+
+
+:math:`(\mathsf{call}~{\mathit{funcaddr}})` is valid with :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
+
+
+   * The external value :math:`(\mathsf{func}~{\mathit{funcaddr}})` is :ref:`valid <valid-val>` with the external type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
+
+
+
+
+:math:`\mathsf{trap}` is valid with :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+
+
+
+
+:math:`{{\mathit{instr}}^\ast}` is valid with :math:`{{\mathit{valtype}}^\ast}~\rightarrow~{{\mathit{valtype}'}^\ast}` if:
+
+
+   * Either:
+
+      * The administrative instruction sequence :math:`{{\mathit{instr}}^\ast}` is empty.
+
+      * The number type sequence :math:`{{\mathit{valtype}}^\ast}` is empty.
+
+      * The number type sequence :math:`{{\mathit{valtype}'}^\ast}` is empty.
+
+   * Or:
+
+      * The administrative instruction sequence :math:`{{\mathit{instr}}^\ast}` is of the form :math:`{{\mathit{instr}}'}`.
+
+      * :math:`{{\mathit{instr}}'}` is valid with :math:`{{\mathit{valtype}}^\ast}~\rightarrow~{{\mathit{valtype}'}^\ast}`.
+   * Or:
+
+      * The administrative instruction sequence :math:`{{\mathit{instr}}^\ast}` is of the form :math:`{{{\mathit{instr}}}_1^\ast}~{{{\mathit{instr}}}_2^\ast}`.
+
+      * :math:`{{{\mathit{instr}}}_1^\ast}` is valid with :math:`{{\mathit{valtype}}^\ast}~\rightarrow~{t_2^\ast}`.
+
+      * :math:`{{{\mathit{instr}}}_2^\ast}` is valid with :math:`{t_2^\ast}~\rightarrow~{{\mathit{valtype}'}^\ast}`.
+   * Or:
+
+      * The number type sequence :math:`{{\mathit{valtype}}^\ast}` is of the form :math:`{t^\ast}~{t_1^\ast}`.
+
+      * The number type sequence :math:`{{\mathit{valtype}'}^\ast}` is of the form :math:`{t^\ast}~{t_2^\ast}`.
+
+      * :math:`{{\mathit{instr}}^\ast}` is valid with :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+
+
+
+
+:math:`\epsilon` is valid with :math:`\epsilon~\rightarrow~\epsilon`.
+
+
+
+
+:math:`{\mathit{instr}}` is valid with :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
+
+
+   * :math:`{\mathit{instr}}` is valid with :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+
+
+
+
+:math:`{{{\mathit{instr}}}_1^\ast}~{{{\mathit{instr}}}_2^\ast}` is valid with :math:`{t_1^\ast}~\rightarrow~{t_3^\ast}` if:
+
+
+   * :math:`{{{\mathit{instr}}}_1^\ast}` is valid with :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+
+   * :math:`{{{\mathit{instr}}}_2^\ast}` is valid with :math:`{t_2^\ast}~\rightarrow~{t_3^\ast}`.
+
+
+
+
+:math:`{{\mathit{instr}}^\ast}` is valid with :math:`{t^\ast}~{t_1^\ast}~\rightarrow~{t^\ast}~{t_2^\ast}` if:
+
+
+   * :math:`{{\mathit{instr}}^\ast}` is valid with :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+
+
+
+
+:math:`{{\mathit{instr}}^\ast}` is valid with :math:`{t^?}` if:
+
+
+   * :math:`{{\mathit{instr}}^\ast}` is valid with :math:`\epsilon~\rightarrow~{t^?}`.
+
+
+
+
+The global instance :math:`\{ \mathsf{type}~({\mathit{mut}}~t),\;\allowbreak \mathsf{value}~{\mathit{val}} \}` is :ref:`valid <valid-val>` with the global type :math:`({\mathit{mut}}~t)` if:
+
+
+   * The global type :math:`({\mathit{mut}}~t)` is :ref:`valid <valid-val>`.
+
+   * The value :math:`{\mathit{val}}` is :ref:`valid <valid-val>` with the number type :math:`t`.
+
+
+
+
+The memory instance :math:`\{ \mathsf{type}~{}[ n .. {m^?} ],\;\allowbreak \mathsf{bytes}~{b^\ast} \}` is :ref:`valid <valid-val>` with the memory type :math:`{}[ n .. {m^?} ]` if:
+
+
+   * The memory type :math:`{}[ n .. {m^?} ]` is :ref:`valid <valid-val>`.
+
+   * The length of :math:`{b^\ast}` is equal to :math:`n \cdot 64 \, {\mathrm{Ki}}`.
+
+
+
+
+The table instance :math:`\{ \mathsf{type}~{}[ n .. {m^?} ],\;\allowbreak \mathsf{refs}~{({{\mathit{fa}}^?})^\ast} \}` is :ref:`valid <valid-val>` with the table type :math:`{}[ n .. {m^?} ]` if:
+
+
+   * The table type :math:`{}[ n .. {m^?} ]` is :ref:`valid <valid-val>`.
+
+   * For all :math:`{\mathit{fa?}}` in :math:`{{\mathit{fa?}}^\ast}`:
+
+      * The function address :math:`{\mathit{fa?}}` is absent if and only if the function type :math:`{\mathit{ft?}}` is absent.
+
+   * :math:`{{\mathit{ft?}}^\ast}` is the concatenation of all such :math:`{\mathit{ft?}}`.
+
+   * For all :math:`{\mathit{fa?}}` in :math:`{{\mathit{fa?}}^\ast}`, and corresponding :math:`{\mathit{ft?}}` in :math:`{{\mathit{ft?}}^\ast}`:
+
+      * YetS: TODO: prem_to_intrs iter.
+
+   * The length of :math:`{({{\mathit{fa}}^?})^\ast}` is equal to :math:`n`.
+
+
+
+
+The function instance :math:`\{ \mathsf{type}~{\mathit{ft}},\;\allowbreak \mathsf{module}~{\mathit{moduleinst}},\;\allowbreak \mathsf{code}~{\mathit{func}} \}` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{ft}}` if:
+
+
+   * The function type :math:`{\mathit{ft}}` is :ref:`valid <valid-val>`.
+
+   * The module instance :math:`{\mathit{moduleinst}}` is :ref:`valid <valid-val>` with the context :math:`C`.
+
+   * The function :math:`{\mathit{func}}` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{ft}}`.
+
+
+
+
+The store :math:`s` is :ref:`valid <valid-val>` if:
+
+
+   * For all :
+
+      * The global instance :math:`{\mathit{globalinst}}` is :ref:`valid <valid-val>` with the global type :math:`{\mathit{globaltype}}`.
+
+   * :math:`{{\mathit{globalinst}}^\ast}` is the concatenation of all such :math:`{\mathit{globalinst}}`.
+
+   * For all :
+
+      * The memory instance :math:`{\mathit{meminst}}` is :ref:`valid <valid-val>` with the memory type :math:`{\mathit{memtype}}`.
+
+   * :math:`{{\mathit{meminst}}^\ast}` is the concatenation of all such :math:`{\mathit{meminst}}`.
+
+   * For all :
+
+      * The table instance :math:`{\mathit{tableinst}}` is :ref:`valid <valid-val>` with the table type :math:`{\mathit{tabletype}}`.
+
+   * :math:`{{\mathit{tableinst}}^\ast}` is the concatenation of all such :math:`{\mathit{tableinst}}`.
+
+   * For all :
+
+      * The function instance :math:`{\mathit{funcinst}}` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{functype}}`.
+
+   * :math:`{{\mathit{funcinst}}^\ast}` is the concatenation of all such :math:`{\mathit{funcinst}}`.
+
+   * The store :math:`s` is of the form :math:`\{ \mathsf{funcs}~{{\mathit{funcinst}}^\ast},\;\allowbreak \mathsf{globals}~{{\mathit{globalinst}}^\ast},\;\allowbreak \mathsf{tables}~{{\mathit{tableinst}}^\ast},\;\allowbreak \mathsf{mems}~{{\mathit{meminst}}^\ast} \}`.
+
+
+
+
+The state :math:`(s, f)` is :ref:`valid <valid-val>` with the context :math:`C` if:
+
+
+   * The store :math:`s` is :ref:`valid <valid-val>`.
+
+   * The frame :math:`f` is :ref:`valid <valid-val>` with the context :math:`C`.
+
+
+
+
+The configuration :math:`(s, f)~;~{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the result type :math:`{t^?}` if:
+
+
+   * The state :math:`(s, f)` is :ref:`valid <valid-val>` with the context :math:`C`.
+
+   * :math:`{{\mathit{instr}}^\ast}` is valid with :math:`{t^?}`.
 
 
 :math:`\mathsf{load}~t~{\mathit{ao}}`
@@ -3225,6 +3597,7 @@ spectec 0.5 generator
 == IL Validation after pass sideconditions...
 == Translating to AL...
 == Prose Generation...
+../../../../specification/wasm-1.0/B-soundness.spectec:121.8-121.45: prem_to_instrs: Yet `Externaddr_ok: `%|-%:%`(s, FUNC_externaddr(fa), FUNC_externtype(ft))`
 Limits_ok
 - the limits ([ n .. m? ]) is valid with k if:
   - n is less than or equal to k.
@@ -3423,12 +3796,7 @@ Instr_ok/relop
 - the instruction (RELOP t relop_t) is valid with the function type [t, t] -> [I32].
 
 Instr_ok/cvtop
-- the instruction (CVTOP nt_1 nt_2 cvtop) is valid with the function type [nt_2] -> [nt_1] if:
-  - Either:
-    - cvtop is REINTERPRET.
-    - $size(nt_1) is $size(nt_2).
-  - Or:
-
+- the instruction (CVTOP nt_1 nt_2 cvtop) is valid with the function type [nt_2] -> [nt_1].
 
 Instr_ok/local.get
 - the instruction (LOCAL.GET x) is valid with the function type [] -> [t] if:
@@ -3484,13 +3852,6 @@ Instr_ok/store
     - sz? is ?(M).
     - t' is Inn.
     - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
-
-Instr_ok/cvtop-reinterpret
-- the instruction (CVTOP nt_1 nt_2 REINTERPRET) is valid with the function type [nt_2] -> [nt_1] if:
-  - $size(nt_1) is $size(nt_2).
-
-Instr_ok/cvtop-convert
-- the instruction (CVTOP nt_1 nt_2 cvtop) is valid with [nt_2] -> [nt_1].
 
 Instr_ok/load-val
 - the instruction (LOAD t ?() memarg) is valid with the function type [I32] -> [t] if:
@@ -3750,6 +4111,207 @@ Externaddr_ok/sub
   - externaddr is valid with the external type xt'.
   - xt is valid.
   - xt' matches xt.
+
+Context_ok
+- the context C is valid if:
+  - C is { TYPES: ft*; FUNCS: ft_2*; GLOBALS: gt*; TABLES: tt*; MEMS: mt*; LOCALS: lct*; LABELS: ?(rt)*; RETURN: ?(rt'?) }.
+  - For all ft in ft*:
+    - the function type ft is valid.
+  - For all gt in gt*:
+    - the global type gt is valid.
+  - For all mt in mt*:
+    - the memory type mt is valid.
+  - For all tt in tt*:
+    - the table type tt is valid.
+  - For all ft_2 in ft_2*:
+    - the function type ft_2 is valid.
+
+Val_ok
+- the value (t.CONST c_t) is valid with the number type t.
+
+Result_ok
+- the result result is valid with the number type sequence t* if:
+  - Either:
+    - result is (_VALS v*).
+    - For all t in t*, and corresponding v in v*:
+      - the value v is valid with the number type t.
+  - Or:
+    - result is TRAP.
+
+Result_ok/result
+- the result (_VALS v*) is valid with the number type sequence t* if:
+  - For all t in t*, and corresponding v in v*:
+    - the value v is valid with the number type t.
+
+Result_ok/trap
+- the result TRAP is valid with t*.
+
+Exportinst_ok
+- the export instance { NAME: nm; ADDR: xa } is valid if:
+  - the external value xa is valid with the external type xt.
+
+Moduleinst_ok
+- the module instance { TYPES: functype*; FUNCS: funcaddr*; GLOBALS: globaladdr*; TABLES: tableaddr*; MEMS: memaddr*; EXPORTS: exportinst* } is valid with the context { TYPES: functype*; FUNCS: functype_F*; GLOBALS: globaltype*; TABLES: tabletype*; MEMS: memtype*; RETURN: ?() } if:
+  - For all functype in functype*:
+    - the function type functype is valid.
+  - For all globaladdr in globaladdr*, and corresponding globaltype in globaltype*:
+    - the external value (GLOBAL globaladdr) is valid with the external type (GLOBAL globaltype).
+  - For all funcaddr in funcaddr*, and corresponding functype_F in functype_F*:
+    - the external value (FUNC funcaddr) is valid with the external type (FUNC functype_F).
+  - For all memaddr in memaddr*, and corresponding memtype in memtype*:
+    - the external value (MEM memaddr) is valid with the external type (MEM memtype).
+  - For all tableaddr in tableaddr*, and corresponding tabletype in tabletype*:
+    - the external value (TABLE tableaddr) is valid with the external type (TABLE tabletype).
+  - For all exportinst in exportinst*:
+    - the export instance exportinst is valid.
+  - $disjoint_(`name, exportinst.NAME*) is true.
+  - |(GLOBAL globaladdr)* :: (MEM memaddr)* :: (TABLE tableaddr)* :: (FUNC funcaddr)*| is greater than 0.
+  - For all exportinst in exportinst*:
+    - exportinst.ADDR is contained in (GLOBAL globaladdr)* :: (MEM memaddr)* :: (TABLE tableaddr)* :: (FUNC funcaddr)*.
+
+Frame_ok
+- the frame { LOCALS: val*; MODULE: moduleinst } is valid with the context C with .LOCALS appended by t* if:
+  - the module instance moduleinst is valid with the context C.
+  - For all t in t*, and corresponding val in val*:
+    - the value val is valid with the number type t.
+
+Instr_ok2
+- admininstr is valid with valtype* -> valtype'* if:
+  - Either:
+    - the administrative instruction admininstr is instr.
+    - the instruction instr is valid with the function type valtype* -> valtype'*.
+  - Or:
+    - admininstr is (LABEL_ n { instr'* } admininstr'*).
+    - the number type sequence valtype* is [].
+    - the number type sequence valtype'* is t?.
+    - |t'?| is n.
+    - instr'* is valid with t'? -> t?.
+    - admininstr'* is valid with [] -> t?.
+  - Or:
+    - admininstr is (FRAME_ n { f } admininstr'*).
+    - valtype* is [].
+    - valtype'* is t?.
+    - |t?| is n.
+    - the frame f is valid with the context C'.
+    - admininstr'* is valid with t?.
+  - Or:
+    - admininstr is (CALL_ADDR funcaddr).
+    - the external value (FUNC funcaddr) is valid with the external type (FUNC valtype* -> valtype'*).
+  - Or:
+    - admininstr is TRAP.
+
+Instr_ok2/plain
+- instr is valid with t_1* -> t_2* if:
+  - the instruction instr is valid with the function type t_1* -> t_2*.
+
+Instr_ok2/label
+- (LABEL_ n { instr* } admininstr*) is valid with [] -> t? if:
+  - |t'?| is n.
+  - instr'* is valid with t'? -> t?.
+  - admininstr* is valid with [] -> t?.
+
+Instr_ok2/frame
+- (FRAME_ n { f } admininstr*) is valid with [] -> t? if:
+  - |t?| is n.
+  - the frame f is valid with the context C'.
+  - admininstr* is valid with t?.
+
+Instr_ok2/call_addr
+- (CALL_ADDR funcaddr) is valid with t_1* -> t_2* if:
+  - the external value (FUNC funcaddr) is valid with the external type (FUNC t_1* -> t_2*).
+
+Instr_ok2/trap
+- TRAP is valid with t_1* -> t_2*.
+
+Instrs_ok2
+- admininstr* is valid with valtype* -> valtype'* if:
+  - Either:
+    - the administrative instruction sequence admininstr* is [].
+    - the number type sequence valtype* is [].
+    - the number type sequence valtype'* is [].
+  - Or:
+    - admininstr* is [admininstr'].
+    - admininstr' is valid with valtype* -> valtype'*.
+  - Or:
+    - admininstr* is admininstr_1* :: admininstr_2*.
+    - admininstr_1* is valid with valtype* -> t_2*.
+    - admininstr_2* is valid with t_2* -> valtype'*.
+  - Or:
+    - valtype* is t* :: t_1*.
+    - valtype'* is t* :: t_2*.
+    - admininstr* is valid with t_1* -> t_2*.
+
+Instrs_ok2/empty
+- [] is valid with [] -> [].
+
+Instrs_ok2/instr
+- [admininstr] is valid with t_1* -> t_2* if:
+  - admininstr is valid with t_1* -> t_2*.
+
+Instrs_ok2/seq
+- admininstr_1* :: admininstr_2* is valid with t_1* -> t_3* if:
+  - admininstr_1* is valid with t_1* -> t_2*.
+  - admininstr_2* is valid with t_2* -> t_3*.
+
+Instrs_ok2/frame
+- admininstr* is valid with t* :: t_1* -> t* :: t_2* if:
+  - admininstr* is valid with t_1* -> t_2*.
+
+Expr_ok2
+- admininstr* is valid with t? if:
+  - admininstr* is valid with [] -> t?.
+
+Globalinst_ok
+- the global instance { TYPE: (mut t); VALUE: val } is valid with the global type (mut t) if:
+  - (mut t) is valid.
+  - the value val is valid with the number type t.
+
+Meminst_ok
+- the memory instance { TYPE: ([ n .. m? ]); BYTES: b* } is valid with the memory type ([ n .. m? ]) if:
+  - ([ n .. m? ]) is valid.
+  - |b*| is (n * (64 * $Ki())).
+
+Tableinst_ok
+- the table instance { TYPE: ([ n .. m? ]); REFS: fa?* } is valid with the table type ([ n .. m? ]) if:
+  - ([ n .. m? ]) is valid.
+  - For all fa? in fa?*:
+    - the function address fa? is ?() if and only if the function type ft? is ?().
+  - ft?* is the concatenation of all such ft?.
+  - For all fa? in fa?*, and corresponding ft? in ft?*:
+    -     -  Yet: TODO: prem_to_intrs iter.
+  - |fa?*| is n.
+
+Funcinst_ok
+- the function instance { TYPE: ft; MODULE: moduleinst; CODE: func } is valid with the function type ft if:
+  - ft is valid.
+  - the module instance moduleinst is valid with the context C.
+  - the function func is valid with ft.
+
+Store_ok
+- the store s is valid if:
+  - For all :
+    - the global instance globalinst is valid with the global type globaltype.
+  - globalinst* is the concatenation of all such globalinst.
+  - For all :
+    - the memory instance meminst is valid with the memory type memtype.
+  - meminst* is the concatenation of all such meminst.
+  - For all :
+    - the table instance tableinst is valid with the table type tabletype.
+  - tableinst* is the concatenation of all such tableinst.
+  - For all :
+    - the function instance funcinst is valid with the function type functype.
+  - funcinst* is the concatenation of all such funcinst.
+  - s is { FUNCS: funcinst*; GLOBALS: globalinst*; TABLES: tableinst*; MEMS: meminst* }.
+
+State_ok
+- the state (s, f) is valid with the context C if:
+  - the store s is valid.
+  - the frame f is valid with C.
+
+Config_ok
+- the configuration (s, f) ; admininstr* is valid with the result type t? if:
+  - the state (s, f) is valid with the context C.
+  - admininstr* is valid with t?.
 
 Step_read/load-num-* t ?() ao
 1. Let z be the current state.
@@ -4360,29 +4922,29 @@ relop_ valtype relop_ iN_1 iN_2
 8. Assert: Due to validation, (relop_ = GE).
 9. Return $fge_($size(valtype), iN_1, iN_2).
 
-cvtop__ valtype valtype' cvtop iN
-1. If cvtop is some EXTEND, then:
-  a. Let (EXTEND sx) be cvtop.
+cvtop__ valtype valtype' cvtop__ iN
+1. If cvtop__ is some EXTEND, then:
+  a. Let (EXTEND sx) be cvtop__.
   b. If ((valtype = I32) /\ (valtype' = I64)), then:
     1) Return [$extend__(32, 64, sx, iN)].
-2. If ((valtype = I64) /\ ((valtype' = I32) /\ (cvtop = WRAP))), then:
+2. If ((valtype = I64) /\ ((valtype' = I32) /\ (cvtop__ = WRAP))), then:
   a. Return [$wrap__(64, 32, iN)].
-3. If (valtype is Fnn /\ (valtype' is Inn /\ cvtop is some TRUNC)), then:
-  a. Let (TRUNC sx) be cvtop.
+3. If (valtype is Fnn /\ (valtype' is Inn /\ cvtop__ is some TRUNC)), then:
+  a. Let (TRUNC sx) be cvtop__.
   b. Return $list_(`val_((Inn : Inn <: valtype)), $trunc__($size(valtype), $size(valtype'), sx, iN)).
-4. If ((valtype = F32) /\ ((valtype' = F64) /\ (cvtop = PROMOTE))), then:
+4. If ((valtype = F32) /\ ((valtype' = F64) /\ (cvtop__ = PROMOTE))), then:
   a. Return $promote__(32, 64, iN).
-5. If ((valtype = F64) /\ ((valtype' = F32) /\ (cvtop = DEMOTE))), then:
+5. If ((valtype = F64) /\ ((valtype' = F32) /\ (cvtop__ = DEMOTE))), then:
   a. Return $demote__(64, 32, iN).
 6. If (valtype is Inn /\ valtype' is Fnn), then:
-  a. If cvtop is some CONVERT, then:
-    1) Let (CONVERT sx) be cvtop.
+  a. If cvtop__ is some CONVERT, then:
+    1) Let (CONVERT sx) be cvtop__.
     2) Return [$convert__($size(valtype), $size(valtype'), sx, iN)].
-  b. If ((cvtop = REINTERPRET) /\ ($size(valtype) = $size(valtype'))), then:
+  b. If ((cvtop__ = REINTERPRET) /\ ($size(valtype) = $size(valtype'))), then:
     1) Return [$reinterpret__(valtype, valtype', iN)].
 7. Assert: Due to validation, valtype is Fnn.
 8. Assert: Due to validation, valtype' is Inn.
-9. Assert: Due to validation, (cvtop = REINTERPRET).
+9. Assert: Due to validation, (cvtop__ = REINTERPRET).
 10. Assert: Due to validation, ($size(valtype') = $size(valtype)).
 11. Return [$reinterpret__(valtype, valtype', iN)].
 
@@ -5247,16 +5809,7 @@ The instruction :math:`({\mathit{nt}} {.} {\mathit{relop}}_{\mathit{nt}})` is :r
 
 
 
-The instruction :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}}}{\mathsf{\_}}{{\mathit{nt}}_2})` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1` if:
-
-
-   * Either:
-
-      * :math:`{\mathit{cvtop}}` is of the form :math:`\mathsf{reinterpret}`.
-
-      * :math:`{|{\mathit{nt}}_1|}` is of the form :math:`{|{\mathit{nt}}_2|}`.
-
-   * Or:
+The instruction :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}}}{\mathsf{\_}}{{\mathit{nt}}_2})` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1`.
 
 
 
@@ -5688,19 +6241,6 @@ The instruction :math:`(\mathsf{select})` is :ref:`valid <valid-val>` with the f
    * The value type :math:`t` :ref:`matches <match>` the value type :math:`{t'}`.
 
    * The value type :math:`{t'}` is of the form :math:`{\mathit{numtype}}` or :math:`{t'}` is of the form :math:`{\mathit{vectype}}`.
-
-
-
-
-The instruction :math:`({\mathit{nt}}_1 {.} {\mathsf{reinterpret}}{\mathsf{\_}}{{\mathit{nt}}_2})` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1` if:
-
-
-   * :math:`{|{\mathit{nt}}_1|}` is of the form :math:`{|{\mathit{nt}}_2|}`.
-
-
-
-
-The instruction :math:`({\mathit{nt}}_1 {.} {{\mathit{cvtop}}}{\mathsf{\_}}{{\mathit{nt}}_2})` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{nt}}_2~\rightarrow~{\mathit{nt}}_1`.
 
 
 
@@ -6369,6 +6909,544 @@ The external value :math:`{\mathit{externaddr}}` is :ref:`valid <valid-val>` wit
    * The external type :math:`{\mathit{xt}}` is :ref:`valid <valid-val>`.
 
    * The external type :math:`{\mathit{xt}'}` :ref:`matches <match>` the external type :math:`{\mathit{xt}}`.
+
+
+
+
+The context :math:`C` is :ref:`valid <valid-val>` if:
+
+
+   * The context :math:`C` is of the form :math:`\{ \mathsf{types}~{{\mathit{ft}}^\ast},\;\allowbreak \mathsf{funcs}~{{\mathit{ft}}_2^\ast},\;\allowbreak \mathsf{globals}~{{\mathit{gt}}^\ast},\;\allowbreak \mathsf{tables}~{{\mathit{tt}}^\ast},\;\allowbreak \mathsf{mems}~{{\mathit{mt}}^\ast},\;\allowbreak \mathsf{elems}~{{\mathit{et}}^\ast},\;\allowbreak \mathsf{datas}~{{\mathit{ok}}^\ast},\;\allowbreak \mathsf{locals}~{{\mathit{lct}}^\ast},\;\allowbreak \mathsf{labels}~{{\mathit{rt}}^\ast},\;\allowbreak \mathsf{return}~{{\mathit{rt}'}^?} \}`.
+
+   * For all :math:`{\mathit{ft}}` in :math:`{{\mathit{ft}}^\ast}`:
+
+      * The function type :math:`{\mathit{ft}}` is :ref:`valid <valid-val>`.
+
+   * For all :math:`{\mathit{gt}}` in :math:`{{\mathit{gt}}^\ast}`:
+
+      * The global type :math:`{\mathit{gt}}` is :ref:`valid <valid-val>`.
+
+   * For all :math:`{\mathit{mt}}` in :math:`{{\mathit{mt}}^\ast}`:
+
+      * The memory type :math:`{\mathit{mt}}` is :ref:`valid <valid-val>`.
+
+   * For all :math:`{\mathit{tt}}` in :math:`{{\mathit{tt}}^\ast}`:
+
+      * The table type :math:`{\mathit{tt}}` is :ref:`valid <valid-val>`.
+
+   * For all :math:`{\mathit{ft}}_2` in :math:`{{\mathit{ft}}_2^\ast}`:
+
+      * The function type :math:`{\mathit{ft}}_2` is :ref:`valid <valid-val>`.
+
+
+
+
+The reference :math:`{\mathit{ref}}` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}}` if:
+
+
+   * Either:
+
+      * The reference :math:`{\mathit{ref}}` is of the form :math:`(\mathsf{ref{.}null}~{\mathit{rt}'})`.
+
+   * Or:
+
+      * The reference :math:`{\mathit{ref}}` is of the form :math:`(\mathsf{ref{.}func\_addr}~a)`.
+
+      * The reference type :math:`{\mathit{rt}}` is of the form :math:`\mathsf{funcref}`.
+
+      * The external value :math:`(\mathsf{func}~a)` is :ref:`valid <valid-val>` with the external type :math:`(\mathsf{func}~{\mathit{ext}})`.
+   * Or:
+
+      * The reference :math:`{\mathit{ref}}` is of the form :math:`(\mathsf{ref{.}host\_addr}~a)`.
+
+      * The reference type :math:`{\mathit{rt}}` is of the form :math:`\mathsf{externref}`.
+
+
+
+
+The reference :math:`(\mathsf{ref{.}null}~{\mathit{rt}})` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}}`.
+
+
+
+
+The reference :math:`(\mathsf{ref{.}func\_addr}~a)` is :ref:`valid <valid-val>` with the reference type :math:`\mathsf{funcref}` if:
+
+
+   * The external value :math:`(\mathsf{func}~a)` is :ref:`valid <valid-val>` with the external type :math:`(\mathsf{func}~{\mathit{ext}})`.
+
+
+
+
+The reference :math:`(\mathsf{ref{.}host\_addr}~a)` is :ref:`valid <valid-val>` with the reference type :math:`\mathsf{externref}`.
+
+
+
+
+The value :math:`{\mathit{val}}` is :ref:`valid <valid-val>` with the value type :math:`{\mathit{valtype}}` if:
+
+
+   * Either:
+
+      * The value :math:`{\mathit{val}}` is of the form :math:`({\mathit{nt}}{.}\mathsf{const}~c_t)`.
+
+      * The value type :math:`{\mathit{valtype}}` is of the form :math:`{\mathit{nt}}`.
+
+   * Or:
+
+      * The value :math:`{\mathit{val}}` is of the form :math:`({\mathit{vt}}{.}\mathsf{const}~c_t)`.
+
+      * The value type :math:`{\mathit{valtype}}` is of the form :math:`{\mathit{vt}}`.
+   * Or:
+
+      * The value :math:`{\mathit{val}}` is of the form :math:`r`.
+
+      * The value type :math:`{\mathit{valtype}}` is of the form :math:`{\mathit{rt}}`.
+
+      * The reference :math:`r` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}}`.
+
+
+
+
+The value :math:`({\mathit{nt}}{.}\mathsf{const}~c_t)` is :ref:`valid <valid-val>` with the value type :math:`{\mathit{nt}}`.
+
+
+
+
+The value :math:`({\mathit{vt}}{.}\mathsf{const}~c_t)` is :ref:`valid <valid-val>` with the value type :math:`{\mathit{vt}}`.
+
+
+
+
+The value :math:`r` is :ref:`valid <valid-val>` with the value type :math:`{\mathit{rt}}` if:
+
+
+   * The reference :math:`r` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}}`.
+
+
+
+
+The result :math:`{\mathit{result}}` is :ref:`valid <valid-val>` with the value type sequence :math:`{t^\ast}` if:
+
+
+   * Either:
+
+      * The result :math:`{\mathit{result}}` is of the form :math:`{v^\ast}`.
+
+      * For all :math:`t` in :math:`{t^\ast}`, and corresponding :math:`v` in :math:`{v^\ast}`:
+
+         * The value :math:`v` is :ref:`valid <valid-val>` with the value type :math:`t`.
+
+   * Or:
+
+      * The result :math:`{\mathit{result}}` is of the form :math:`\mathsf{trap}`.
+
+
+
+
+The result :math:`{v^\ast}` is :ref:`valid <valid-val>` with the value type sequence :math:`{t^\ast}` if:
+
+
+   * For all :math:`t` in :math:`{t^\ast}`, and corresponding :math:`v` in :math:`{v^\ast}`:
+
+      * The value :math:`v` is :ref:`valid <valid-val>` with the value type :math:`t`.
+
+
+
+
+The result :math:`\mathsf{trap}` is :ref:`valid <valid-val>` with the value type sequence :math:`{t^\ast}`.
+
+
+
+
+The data instance :math:`\{ \mathsf{bytes}~{b^\ast} \}` is :ref:`valid <valid-val>` with the data type :math:`\mathsf{ok}` if:
+
+
+   * The length of :math:`{b^\ast}` is less than :math:`{2^{32}}`.
+
+
+
+
+The element instance :math:`\{ \mathsf{type}~{\mathit{rt}},\;\allowbreak \mathsf{refs}~{{\mathit{ref}}^\ast} \}` is :ref:`valid <valid-val>` with the element type :math:`{\mathit{rt}}` if:
+
+
+   * For all :math:`{\mathit{ref}}` in :math:`{{\mathit{ref}}^\ast}`:
+
+      * The reference :math:`{\mathit{ref}}` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}}`.
+
+   * The length of :math:`{{\mathit{ref}}^\ast}` is less than :math:`{2^{32}}`.
+
+
+
+
+The export instance :math:`\{ \mathsf{name}~{\mathit{nm}},\;\allowbreak \mathsf{addr}~{\mathit{xa}} \}` is :ref:`valid <valid-val>` if:
+
+
+   * The external value :math:`{\mathit{xa}}` is :ref:`valid <valid-val>` with the external type :math:`{\mathit{xt}}`.
+
+
+
+
+The module instance :math:`\{ \mathsf{types}~{{\mathit{functype}}^\ast},\;\allowbreak \mathsf{funcs}~{{\mathit{funcaddr}}^\ast},\;\allowbreak \mathsf{globals}~{{\mathit{globaladdr}}^\ast},\;\allowbreak \mathsf{tables}~{{\mathit{tableaddr}}^\ast},\;\allowbreak \mathsf{mems}~{{\mathit{memaddr}}^\ast},\;\allowbreak \mathsf{elems}~{{\mathit{elemaddr}}^\ast},\;\allowbreak \mathsf{datas}~{{\mathit{dataaddr}}^\ast},\;\allowbreak \mathsf{exports}~{{\mathit{exportinst}}^\ast} \}` is :ref:`valid <valid-val>` with the context :math:`\{ \mathsf{types}~{{\mathit{functype}}^\ast},\;\allowbreak \mathsf{funcs}~{{\mathit{functype}}_{\mathsf{f}}^\ast},\;\allowbreak \mathsf{globals}~{{\mathit{globaltype}}^\ast},\;\allowbreak \mathsf{tables}~{{\mathit{tabletype}}^\ast},\;\allowbreak \mathsf{mems}~{{\mathit{memtype}}^\ast},\;\allowbreak \mathsf{elems}~{{\mathit{elemtype}}^\ast},\;\allowbreak \mathsf{datas}~{{\mathit{datatype}}^\ast},\;\allowbreak \mathsf{return}~\epsilon \}` if:
+
+
+   * For all :math:`{\mathit{functype}}` in :math:`{{\mathit{functype}}^\ast}`:
+
+      * The function type :math:`{\mathit{functype}}` is :ref:`valid <valid-val>`.
+
+   * For all :math:`{\mathit{globaladdr}}` in :math:`{{\mathit{globaladdr}}^\ast}`, and corresponding :math:`{\mathit{globaltype}}` in :math:`{{\mathit{globaltype}}^\ast}`:
+
+      * The external value :math:`(\mathsf{global}~{\mathit{globaladdr}})` is :ref:`valid <valid-val>` with the external type :math:`(\mathsf{global}~{\mathit{globaltype}})`.
+
+   * For all :math:`{\mathit{funcaddr}}` in :math:`{{\mathit{funcaddr}}^\ast}`, and corresponding :math:`{\mathit{functype}}_{\mathsf{f}}` in :math:`{{\mathit{functype}}_{\mathsf{f}}^\ast}`:
+
+      * The external value :math:`(\mathsf{func}~{\mathit{funcaddr}})` is :ref:`valid <valid-val>` with the external type :math:`(\mathsf{func}~{\mathit{functype}}_{\mathsf{f}})`.
+
+   * For all :math:`{\mathit{memaddr}}` in :math:`{{\mathit{memaddr}}^\ast}`, and corresponding :math:`{\mathit{memtype}}` in :math:`{{\mathit{memtype}}^\ast}`:
+
+      * The external value :math:`(\mathsf{mem}~{\mathit{memaddr}})` is :ref:`valid <valid-val>` with the external type :math:`(\mathsf{mem}~{\mathit{memtype}})`.
+
+   * For all :math:`{\mathit{tableaddr}}` in :math:`{{\mathit{tableaddr}}^\ast}`, and corresponding :math:`{\mathit{tabletype}}` in :math:`{{\mathit{tabletype}}^\ast}`:
+
+      * The external value :math:`(\mathsf{table}~{\mathit{tableaddr}})` is :ref:`valid <valid-val>` with the external type :math:`(\mathsf{table}~{\mathit{tabletype}})`.
+
+   * For all :math:`{\mathit{exportinst}}` in :math:`{{\mathit{exportinst}}^\ast}`:
+
+      * The export instance :math:`{\mathit{exportinst}}` is :ref:`valid <valid-val>`.
+
+   * For all :math:`{\mathit{dataaddr}}` in :math:`{{\mathit{dataaddr}}^\ast}`:
+
+      * The data instance :math:`s{.}\mathsf{datas}{}[{\mathit{dataaddr}}]` exists.
+
+   * For all :math:`{\mathit{dataaddr}}` in :math:`{{\mathit{dataaddr}}^\ast}`, and corresponding :math:`{\mathit{datatype}}` in :math:`{{\mathit{datatype}}^\ast}`:
+
+      * The data instance :math:`s{.}\mathsf{datas}{}[{\mathit{dataaddr}}]` is :ref:`valid <valid-val>` with the data type :math:`{\mathit{datatype}}`.
+
+   * For all :math:`{\mathit{elemaddr}}` in :math:`{{\mathit{elemaddr}}^\ast}`:
+
+      * The element instance :math:`s{.}\mathsf{elems}{}[{\mathit{elemaddr}}]` exists.
+
+   * For all :math:`{\mathit{elemaddr}}` in :math:`{{\mathit{elemaddr}}^\ast}`, and corresponding :math:`{\mathit{elemtype}}` in :math:`{{\mathit{elemtype}}^\ast}`:
+
+      * The element instance :math:`s{.}\mathsf{elems}{}[{\mathit{elemaddr}}]` is :ref:`valid <valid-val>` with the element type :math:`{\mathit{elemtype}}`.
+
+   * :math:`{{\mathit{exportinst}}{.}\mathsf{name}^\ast}~{\mathrm{disjoint}}` is true.
+
+   * The length of :math:`{(\mathsf{global}~{\mathit{globaladdr}})^\ast}~{(\mathsf{mem}~{\mathit{memaddr}})^\ast}~{(\mathsf{table}~{\mathit{tableaddr}})^\ast}~{(\mathsf{func}~{\mathit{funcaddr}})^\ast}` is greater than :math:`0`.
+
+   * For all :math:`{\mathit{exportinst}}` in :math:`{{\mathit{exportinst}}^\ast}`:
+
+      * :math:`{\mathit{exportinst}}{.}\mathsf{addr}` is contained in :math:`{(\mathsf{global}~{\mathit{globaladdr}})^\ast}~{(\mathsf{mem}~{\mathit{memaddr}})^\ast}~{(\mathsf{table}~{\mathit{tableaddr}})^\ast}~{(\mathsf{func}~{\mathit{funcaddr}})^\ast}`.
+
+
+
+
+The frame :math:`\{ \mathsf{locals}~{{\mathit{val}}^\ast},\;\allowbreak \mathsf{module}~{\mathit{moduleinst}} \}` is :ref:`valid <valid-val>` with the context :math:`C` with the field :math:`\mathsf{locals}` appended by :math:`{t^\ast}` if:
+
+
+   * The module instance :math:`{\mathit{moduleinst}}` is :ref:`valid <valid-val>` with the context :math:`C`.
+
+   * For all :math:`t` in :math:`{t^\ast}`, and corresponding :math:`{\mathit{val}}` in :math:`{{\mathit{val}}^\ast}`:
+
+      * The value :math:`{\mathit{val}}` is :ref:`valid <valid-val>` with the value type :math:`t`.
+
+
+
+
+:math:`{\mathit{instr}}` is valid with :math:`{{\mathit{valtype}}^\ast}~\rightarrow~{{\mathit{valtype}'}^\ast}` if:
+
+
+   * Either:
+
+      * The administrative instruction :math:`{\mathit{instr}}` is of the form :math:`{\mathit{instr}}`.
+
+      * The instruction :math:`{\mathit{instr}}` is :ref:`valid <valid-val>` with the function type :math:`{{\mathit{valtype}}^\ast}~\rightarrow~{{\mathit{valtype}'}^\ast}`.
+
+   * Or:
+
+      * The administrative instruction :math:`{\mathit{instr}}` is of the form :math:`({{\mathsf{label}}_{n}}{\{}~{{\mathit{instr}'}^\ast}~\}~{{{\mathit{instr}}'}^\ast})`.
+
+      * The value type sequence :math:`{{\mathit{valtype}}^\ast}` is empty.
+
+      * :math:`{{\mathit{instr}'}^\ast}` is valid with :math:`{{t'}^{n}}~\rightarrow~{{\mathit{valtype}'}^\ast}`.
+
+      * :math:`{{{\mathit{instr}}'}^\ast}` is valid with :math:`\epsilon~\rightarrow~{{\mathit{valtype}'}^\ast}`.
+   * Or:
+
+      * The administrative instruction :math:`{\mathit{instr}}` is of the form :math:`({{\mathsf{frame}}_{n}}{\{}~f~\}~{{{\mathit{instr}}'}^\ast})`.
+
+      * The value type sequence :math:`{{\mathit{valtype}}^\ast}` is empty.
+
+      * The frame :math:`f` is :ref:`valid <valid-val>` with the context :math:`{C'}`.
+
+      * :math:`{{{\mathit{instr}}'}^\ast}` is valid with :math:`{{\mathit{valtype}'}^{n}}`.
+   * Or:
+
+      * The administrative instruction :math:`{\mathit{instr}}` is of the form :math:`(\mathsf{call}~{\mathit{funcaddr}})`.
+
+      * The external value :math:`(\mathsf{func}~{\mathit{funcaddr}})` is :ref:`valid <valid-val>` with the external type :math:`(\mathsf{func}~{{\mathit{valtype}}^\ast}~\rightarrow~{{\mathit{valtype}'}^\ast})`.
+   * Or:
+
+      * The administrative instruction :math:`{\mathit{instr}}` is of the form :math:`{\mathit{ref}}`.
+
+      * The value type sequence :math:`{{\mathit{valtype}}^\ast}` is empty.
+
+      * The value type sequence :math:`{{\mathit{valtype}'}^\ast}` is of the form :math:`{\mathit{rt}}`.
+
+      * The reference :math:`{\mathit{ref}}` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}}`.
+   * Or:
+
+      * The administrative instruction :math:`{\mathit{instr}}` is of the form :math:`\mathsf{trap}`.
+
+
+
+
+:math:`{\mathit{instr}}` is valid with :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
+
+
+   * The instruction :math:`{\mathit{instr}}` is :ref:`valid <valid-val>` with the function type :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+
+
+
+
+:math:`({{\mathsf{label}}_{n}}{\{}~{{\mathit{instr}}^\ast}~\}~{{\mathit{instr}}^\ast})` is valid with :math:`\epsilon~\rightarrow~{t^\ast}` if:
+
+
+   * :math:`{{\mathit{instr}'}^\ast}` is valid with :math:`{{t'}^{n}}~\rightarrow~{t^\ast}`.
+
+   * :math:`{{\mathit{instr}}^\ast}` is valid with :math:`\epsilon~\rightarrow~{t^\ast}`.
+
+
+
+
+:math:`({{\mathsf{frame}}_{n}}{\{}~f~\}~{{\mathit{instr}}^\ast})` is valid with :math:`\epsilon~\rightarrow~{t^{n}}` if:
+
+
+   * The frame :math:`f` is :ref:`valid <valid-val>` with the context :math:`{C'}`.
+
+   * :math:`{{\mathit{instr}}^\ast}` is valid with :math:`{t^{n}}`.
+
+
+
+
+:math:`(\mathsf{call}~{\mathit{funcaddr}})` is valid with :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
+
+
+   * The external value :math:`(\mathsf{func}~{\mathit{funcaddr}})` is :ref:`valid <valid-val>` with the external type :math:`(\mathsf{func}~{t_1^\ast}~\rightarrow~{t_2^\ast})`.
+
+
+
+
+:math:`{\mathit{ref}}` is valid with :math:`\epsilon~\rightarrow~{\mathit{rt}}` if:
+
+
+   * The reference :math:`{\mathit{ref}}` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}}`.
+
+
+
+
+:math:`\mathsf{trap}` is valid with :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+
+
+
+
+:math:`{{\mathit{instr}}^\ast}` is valid with :math:`{{\mathit{valtype}}^\ast}~\rightarrow~{{\mathit{valtype}'}^\ast}` if:
+
+
+   * Either:
+
+      * The administrative instruction sequence :math:`{{\mathit{instr}}^\ast}` is empty.
+
+      * The value type sequence :math:`{{\mathit{valtype}}^\ast}` is empty.
+
+      * The value type sequence :math:`{{\mathit{valtype}'}^\ast}` is empty.
+
+   * Or:
+
+      * The administrative instruction sequence :math:`{{\mathit{instr}}^\ast}` is of the form :math:`{{\mathit{instr}}'}`.
+
+      * :math:`{{\mathit{instr}}'}` is valid with :math:`{{\mathit{valtype}}^\ast}~\rightarrow~{{\mathit{valtype}'}^\ast}`.
+   * Or:
+
+      * The administrative instruction sequence :math:`{{\mathit{instr}}^\ast}` is of the form :math:`{{{\mathit{instr}}}_1^\ast}~{{{\mathit{instr}}}_2^\ast}`.
+
+      * :math:`{{{\mathit{instr}}}_1^\ast}` is valid with :math:`{{\mathit{valtype}}^\ast}~\rightarrow~{t_2^\ast}`.
+
+      * :math:`{{{\mathit{instr}}}_2^\ast}` is valid with :math:`{t_2^\ast}~\rightarrow~{{\mathit{valtype}'}^\ast}`.
+   * Or:
+
+      * :math:`{{\mathit{instr}}^\ast}` is valid with :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+
+      * The result type :math:`{{\mathit{valtype}}^\ast}` :ref:`matches <match>` the result type :math:`{t_1^\ast}`.
+
+      * The result type :math:`{t_2^\ast}` :ref:`matches <match>` the result type :math:`{{\mathit{valtype}'}^\ast}`.
+   * Or:
+
+      * The value type sequence :math:`{{\mathit{valtype}}^\ast}` is of the form :math:`{t^\ast}~{t_1^\ast}`.
+
+      * The value type sequence :math:`{{\mathit{valtype}'}^\ast}` is of the form :math:`{t^\ast}~{t_2^\ast}`.
+
+      * :math:`{{\mathit{instr}}^\ast}` is valid with :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+
+
+
+
+:math:`\epsilon` is valid with :math:`\epsilon~\rightarrow~\epsilon`.
+
+
+
+
+:math:`{\mathit{instr}}` is valid with :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}` if:
+
+
+   * :math:`{\mathit{instr}}` is valid with :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+
+
+
+
+:math:`{{{\mathit{instr}}}_1^\ast}~{{{\mathit{instr}}}_2^\ast}` is valid with :math:`{t_1^\ast}~\rightarrow~{t_3^\ast}` if:
+
+
+   * :math:`{{{\mathit{instr}}}_1^\ast}` is valid with :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+
+   * :math:`{{{\mathit{instr}}}_2^\ast}` is valid with :math:`{t_2^\ast}~\rightarrow~{t_3^\ast}`.
+
+
+
+
+:math:`{{\mathit{instr}}^\ast}` is valid with :math:`{{t'}_1^\ast}~\rightarrow~{{t'}_2^\ast}` if:
+
+
+   * :math:`{{\mathit{instr}}^\ast}` is valid with :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+
+   * The result type :math:`{{t'}_1^\ast}` :ref:`matches <match>` the result type :math:`{t_1^\ast}`.
+
+   * The result type :math:`{t_2^\ast}` :ref:`matches <match>` the result type :math:`{{t'}_2^\ast}`.
+
+
+
+
+:math:`{{\mathit{instr}}^\ast}` is valid with :math:`{t^\ast}~{t_1^\ast}~\rightarrow~{t^\ast}~{t_2^\ast}` if:
+
+
+   * :math:`{{\mathit{instr}}^\ast}` is valid with :math:`{t_1^\ast}~\rightarrow~{t_2^\ast}`.
+
+
+
+
+:math:`{{\mathit{instr}}^\ast}` is valid with :math:`{t^\ast}` if:
+
+
+   * :math:`{{\mathit{instr}}^\ast}` is valid with :math:`\epsilon~\rightarrow~{t^\ast}`.
+
+
+
+
+The global instance :math:`\{ \mathsf{type}~({\mathit{mut}}~t),\;\allowbreak \mathsf{value}~{\mathit{val}} \}` is :ref:`valid <valid-val>` with the global type :math:`({\mathit{mut}}~t)` if:
+
+
+   * The global type :math:`({\mathit{mut}}~t)` is :ref:`valid <valid-val>`.
+
+   * The value :math:`{\mathit{val}}` is :ref:`valid <valid-val>` with the value type :math:`t`.
+
+
+
+
+The memory instance :math:`\{ \mathsf{type}~{}[ n .. {m^?} ]~\mathsf{page},\;\allowbreak \mathsf{bytes}~{b^\ast} \}` is :ref:`valid <valid-val>` with the memory type :math:`{}[ n .. {m^?} ]~\mathsf{page}` if:
+
+
+   * The memory type :math:`{}[ n .. {m^?} ]~\mathsf{page}` is :ref:`valid <valid-val>`.
+
+   * The length of :math:`{b^\ast}` is equal to :math:`n \cdot 64 \, {\mathrm{Ki}}`.
+
+
+
+
+The table instance :math:`\{ \mathsf{type}~({}[ n .. {m^?} ]~{\mathit{rt}}),\;\allowbreak \mathsf{refs}~{{\mathit{ref}}^\ast} \}` is :ref:`valid <valid-val>` with the table type :math:`({}[ n .. {m^?} ]~{\mathit{rt}})` if:
+
+
+   * The table type :math:`({}[ n .. {m^?} ]~{\mathit{rt}})` is :ref:`valid <valid-val>`.
+
+   * For all :math:`{\mathit{ref}}` in :math:`{{\mathit{ref}}^\ast}`:
+
+      * The reference :math:`{\mathit{ref}}` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}}`.
+
+   * The length of :math:`{{\mathit{ref}}^\ast}` is equal to :math:`n`.
+
+
+
+
+The function instance :math:`\{ \mathsf{type}~{\mathit{ft}},\;\allowbreak \mathsf{module}~{\mathit{moduleinst}},\;\allowbreak \mathsf{code}~{\mathit{func}} \}` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{ft}}` if:
+
+
+   * The function type :math:`{\mathit{ft}}` is :ref:`valid <valid-val>`.
+
+   * The module instance :math:`{\mathit{moduleinst}}` is :ref:`valid <valid-val>` with the context :math:`C`.
+
+   * The function :math:`{\mathit{func}}` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{ft}}`.
+
+
+
+
+The store :math:`s` is :ref:`valid <valid-val>` if:
+
+
+   * For all :
+
+      * The global instance :math:`{\mathit{globalinst}}` is :ref:`valid <valid-val>` with the global type :math:`{\mathit{globaltype}}`.
+
+   * :math:`{{\mathit{globalinst}}^\ast}` is the concatenation of all such :math:`{\mathit{globalinst}}`.
+
+   * For all :
+
+      * The memory instance :math:`{\mathit{meminst}}` is :ref:`valid <valid-val>` with the memory type :math:`{\mathit{memtype}}`.
+
+   * :math:`{{\mathit{meminst}}^\ast}` is the concatenation of all such :math:`{\mathit{meminst}}`.
+
+   * For all :
+
+      * The table instance :math:`{\mathit{tableinst}}` is :ref:`valid <valid-val>` with the table type :math:`{\mathit{tabletype}}`.
+
+   * :math:`{{\mathit{tableinst}}^\ast}` is the concatenation of all such :math:`{\mathit{tableinst}}`.
+
+   * For all :
+
+      * The function instance :math:`{\mathit{funcinst}}` is :ref:`valid <valid-val>` with the function type :math:`{\mathit{functype}}`.
+
+   * :math:`{{\mathit{funcinst}}^\ast}` is the concatenation of all such :math:`{\mathit{funcinst}}`.
+
+   * For all :
+
+      * The data instance :math:`{\mathit{datainst}}` is :ref:`valid <valid-val>` with the data type :math:`{\mathit{datatype}}`.
+
+   * :math:`{{\mathit{datainst}}^\ast}` is the concatenation of all such :math:`{\mathit{datainst}}`.
+
+   * For all :
+
+      * The element instance :math:`{\mathit{eleminst}}` is :ref:`valid <valid-val>` with the element type :math:`{\mathit{elemtype}}`.
+
+   * :math:`{{\mathit{eleminst}}^\ast}` is the concatenation of all such :math:`{\mathit{eleminst}}`.
+
+   * The store :math:`s` is of the form :math:`\{ \mathsf{funcs}~{{\mathit{funcinst}}^\ast},\;\allowbreak \mathsf{globals}~{{\mathit{globalinst}}^\ast},\;\allowbreak \mathsf{tables}~{{\mathit{tableinst}}^\ast},\;\allowbreak \mathsf{mems}~{{\mathit{meminst}}^\ast},\;\allowbreak \mathsf{elems}~{{\mathit{eleminst}}^\ast},\;\allowbreak \mathsf{datas}~{{\mathit{datainst}}^\ast} \}`.
+
+
+
+
+The state :math:`(s, f)` is :ref:`valid <valid-val>` with the context :math:`C` if:
+
+
+   * The store :math:`s` is :ref:`valid <valid-val>`.
+
+   * The frame :math:`f` is :ref:`valid <valid-val>` with the context :math:`C`.
+
+
+
+
+The configuration :math:`(s, f)~;~{{\mathit{instr}}^\ast}` is :ref:`valid <valid-val>` with the result type :math:`{t^\ast}` if:
+
+
+   * The state :math:`(s, f)` is :ref:`valid <valid-val>` with the context :math:`C`.
+
+   * :math:`{{\mathit{instr}}^\ast}` is valid with :math:`{t^\ast}`.
 
 
 :math:`\mathsf{table{.}copy}~x~y`
@@ -7186,7 +8264,7 @@ The external value :math:`{\mathit{externaddr}}` is :ref:`valid <valid-val>` wit
 
    #. Assert: Due to validation, :math:`i < {|{{\mathrm{lanes}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{N}}(c_1)|}`.
 
-   #. Let :math:`c_2` be :math:`{{\mathrm{lanes}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{N}}(c_1){}[i]`.
+   #. Let :math:`c_2` be :math:`{{\mathrm{unpack}}}_{{\mathit{lanetype}}}({{\mathrm{lanes}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{N}}(c_1){}[i])`.
 
    #. Push the value :math:`({\mathit{lanetype}}{.}\mathsf{const}~c_2)` to the stack.
 
@@ -7222,7 +8300,7 @@ The external value :math:`{\mathit{externaddr}}` is :ref:`valid <valid-val>` wit
 #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
 
-:math:`\mathsf{vextunop}~{\mathit{sh}}_1~{\mathit{sh}}_2~{\mathit{vextunop}}`
+:math:`\mathsf{vextunop}~{\mathit{sh}}_2~{\mathit{sh}}_1~{\mathit{vextunop}}`
 .............................................................................
 
 
@@ -7235,7 +8313,7 @@ The external value :math:`{\mathit{externaddr}}` is :ref:`valid <valid-val>` wit
 #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
 
-:math:`\mathsf{vextbinop}~{\mathit{sh}}_1~{\mathit{sh}}_2~{\mathit{vextbinop}}`
+:math:`\mathsf{vextbinop}~{\mathit{sh}}_2~{\mathit{sh}}_1~{\mathit{vextbinop}}`
 ...............................................................................
 
 
@@ -7289,51 +8367,17 @@ The external value :math:`{\mathit{externaddr}}` is :ref:`valid <valid-val>` wit
 #. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
 
-:math:`{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M} {.} {{\mathit{vcvtop}}}{\mathsf{\_}}{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{{M'}}}`
-..........................................................................................................................
+:math:`{\mathit{sh}}_2 {.} {{\mathit{vcvtop}}}{\mathsf{\_}}{{\mathit{sh}}_1}`
+.............................................................................
 
 
 1. Assert: Due to validation, a value of vector type :math:`\mathsf{v{\scriptstyle 128}}` is on the top of the stack.
 
 #. Pop the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)` from the stack.
 
-#. If :math:`{\mathrm{halfop}}({\mathit{vcvtop}})` is defined, then:
+#. Let :math:`c` be :math:`{{\mathrm{vcvtop}}}_{{\mathit{sh}}_1, {\mathit{sh}}_2}({\mathit{vcvtop}}, c_1)`.
 
-   a. Let :math:`{\mathit{half}}` be :math:`{\mathrm{halfop}}({\mathit{vcvtop}})`.
-
-   #. Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{{M'}}}(c_1){}[{\mathrm{half}}({\mathit{half}}, 0, M) : M]`.
-
-   #. Let :math:`{{{\mathit{cj}}^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{vcvtop}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{{M'}}, {{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M}}({\mathit{vcvtop}}, {\mathit{ci}})^\ast}`.
-
-   #. If :math:`{|{{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M}}({{\mathit{cj}}^\ast})^\ast}|} > 0`, then:
-
-      1) Let :math:`c` be an element of :math:`{{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M}}({{\mathit{cj}}^\ast})^\ast}`.
-
-      #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
-
-#. Else if :math:`{\mathrm{zeroop}}({\mathit{vcvtop}})` is not defined and :math:`M = {M'}`, then:
-
-   a. Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{{M'}}}(c_1)`.
-
-   #. Let :math:`{{{\mathit{cj}}^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{vcvtop}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{{M'}}, {{{\mathsf{i}}{n}}_2}{\mathsf{x}}{{M'}}}({\mathit{vcvtop}}, {\mathit{ci}})^\ast}`.
-
-   #. If :math:`{|{{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{{M'}}}({{\mathit{cj}}^\ast})^\ast}|} > 0`, then:
-
-      1) Let :math:`c` be an element of :math:`{{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{{M'}}}({{\mathit{cj}}^\ast})^\ast}`.
-
-      #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
-
-#. If :math:`{\mathrm{zeroop}}({\mathit{vcvtop}}) = \mathsf{zero}` and :math:`{{\mathsf{i}}{n}}_1` is number type and :math:`{{\mathsf{i}}{n}}_2` is number type, then:
-
-   a. Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{{M'}}}(c_1)`.
-
-   #. Let :math:`{{{\mathit{cj}}^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{vcvtop}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{{M'}}, {{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M}}({\mathit{vcvtop}}, {\mathit{ci}})^\ast}~{{\mathrm{zero}}({{\mathsf{i}}{n}}_2)^{{M'}}}`.
-
-   #. If :math:`{|{{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M}}({{\mathit{cj}}^\ast})^\ast}|} > 0`, then:
-
-      1) Let :math:`c` be an element of :math:`{{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M}}({{\mathit{cj}}^\ast})^\ast}`.
-
-      #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
+#. Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
 
 :math:`\mathsf{local{.}tee}~x`
@@ -7737,7 +8781,7 @@ The external value :math:`{\mathit{externaddr}}` is :ref:`valid <valid-val>` wit
 
    a. Let :math:`{\mathit{vloadop}}_0` be :math:`{{\mathit{vloadop}}^?}`.
 
-   #. If :math:`{\mathit{vloadop}}_0` is some :math:`{\mathbb{N}}{\mathsf{x}}{\mathbb{N}}{\mathsf{\_}}{{\mathit{sx}}}`, then:
+   #. If :math:`{\mathit{vloadop}}_0` is some :math:`{{\mathit{sz}}}{\mathsf{x}}{M}{\mathsf{\_}}{{\mathit{sx}}}`, then:
 
       1) Let :math:`({M}{\mathsf{x}}{N}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{vloadop}}_0`.
 
@@ -7753,7 +8797,7 @@ The external value :math:`{\mathit{externaddr}}` is :ref:`valid <valid-val>` wit
 
       #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
-   #. If :math:`{\mathit{vloadop}}_0` is some :math:`{\mathbb{N}}{\mathsf{\_}}{\mathsf{splat}}`, then:
+   #. If :math:`{\mathit{vloadop}}_0` is some :math:`{{\mathit{sz}}}{\mathsf{\_}}{\mathsf{splat}}`, then:
 
       1) Let :math:`({N}{\mathsf{\_}}{\mathsf{splat}})` be the destructuring of :math:`{\mathit{vloadop}}_0`.
 
@@ -7771,7 +8815,7 @@ The external value :math:`{\mathit{externaddr}}` is :ref:`valid <valid-val>` wit
 
       #) Push the value :math:`(\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c)` to the stack.
 
-   #. If :math:`{\mathit{vloadop}}_0` is some :math:`{\mathbb{N}}{\mathsf{\_}}{\mathsf{zero}}`, then:
+   #. If :math:`{\mathit{vloadop}}_0` is some :math:`{{\mathit{sz}}}{\mathsf{\_}}{\mathsf{zero}}`, then:
 
       1) Let :math:`({N}{\mathsf{\_}}{\mathsf{zero}})` be the destructuring of :math:`{\mathit{vloadop}}_0`.
 
@@ -7860,7 +8904,7 @@ The external value :math:`{\mathit{externaddr}}` is :ref:`valid <valid-val>` wit
 
    #. Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}}{8})`.
 
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
+   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{{\mathrm{iadd}}}_{32}(i, 1))` to the stack.
 
    #. Push the value :math:`{\mathit{val}}` to the stack.
 
@@ -7911,9 +8955,9 @@ The external value :math:`{\mathit{externaddr}}` is :ref:`valid <valid-val>` wit
 
       #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}}{8})`.
 
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + 1)` to the stack.
+      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{{\mathrm{iadd}}}_{32}(j, 1))` to the stack.
 
-      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
+      #) Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{{\mathrm{iadd}}}_{32}(i, 1))` to the stack.
 
    #. Else:
 
@@ -7974,9 +9018,9 @@ The external value :math:`{\mathit{externaddr}}` is :ref:`valid <valid-val>` wit
 
    #. Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}}{8})`.
 
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + 1)` to the stack.
+   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{{\mathrm{iadd}}}_{32}(j, 1))` to the stack.
 
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~i + 1)` to the stack.
+   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{{\mathrm{iadd}}}_{32}(i, 1))` to the stack.
 
    #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
 
@@ -8382,24 +9426,17 @@ The external value :math:`{\mathit{externaddr}}` is :ref:`valid <valid-val>` wit
 1. Return :math:`{2^{{\mathrm{signif}}(N) - 1}}`.
 
 
-:math:`{\mathrm{lanetype}}({{\mathsf{i}}{n}}{\mathsf{x}}{N})`
-.............................................................
+:math:`{|{\mathit{packtype}}|}`
+...............................
 
 
-1. Return :math:`{\mathsf{i}}{n}`.
+1. If :math:`{\mathit{packtype}} = \mathsf{i{\scriptstyle 8}}`, then:
 
+   a. Return :math:`8`.
 
-:math:`{\mathrm{unpack}}({\mathit{lanetype}})`
-..............................................
+#. Assert: Due to validation, :math:`{\mathit{packtype}} = \mathsf{i{\scriptstyle 16}}`.
 
-
-1. If :math:`{\mathit{lanetype}}` is number type, then:
-
-   a. Return :math:`{\mathit{lanetype}}`.
-
-#. Assert: Due to validation, :math:`{\mathit{lanetype}}` is packed type.
-
-#. Return :math:`\mathsf{i{\scriptstyle 32}}`.
+#. Return :math:`16`.
 
 
 :math:`{|{\mathit{valtype}}|}`
@@ -8429,19 +9466,6 @@ The external value :math:`{\mathit{externaddr}}` is :ref:`valid <valid-val>` wit
 #. Fail.
 
 
-:math:`{|{\mathit{packtype}}|}`
-...............................
-
-
-1. If :math:`{\mathit{packtype}} = \mathsf{i{\scriptstyle 8}}`, then:
-
-   a. Return :math:`8`.
-
-#. Assert: Due to validation, :math:`{\mathit{packtype}} = \mathsf{i{\scriptstyle 16}}`.
-
-#. Return :math:`16`.
-
-
 :math:`{|{\mathit{lanetype}}|}`
 ...............................
 
@@ -8453,6 +9477,33 @@ The external value :math:`{\mathit{externaddr}}` is :ref:`valid <valid-val>` wit
 #. Assert: Due to validation, :math:`{\mathit{lanetype}}` is packed type.
 
 #. Return :math:`{|{\mathit{lanetype}}|}`.
+
+
+:math:`{\mathrm{lanetype}}({{\mathsf{i}}{n}}{\mathsf{x}}{N})`
+.............................................................
+
+
+1. Return :math:`{\mathsf{i}}{n}`.
+
+
+:math:`{\mathrm{unpack}}({\mathit{lanetype}})`
+..............................................
+
+
+1. If :math:`{\mathit{lanetype}}` is number type, then:
+
+   a. Return :math:`{\mathit{lanetype}}`.
+
+#. Assert: Due to validation, :math:`{\mathit{lanetype}}` is packed type.
+
+#. Return :math:`\mathsf{i{\scriptstyle 32}}`.
+
+
+:math:`{|\mathsf{v{\scriptstyle 128}}|}`
+........................................
+
+
+1. Return :math:`128`.
 
 
 :math:`{|{\mathsf{i}}{n}|}`
@@ -9361,7 +10412,11 @@ The external value :math:`{\mathit{externaddr}}` is :ref:`valid <valid-val>` wit
 ..................................................
 
 
-1. If :math:`{\mathit{lanetype}}` is number type, then:
+1. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{i}}{n}`, then:
+
+   a. Return :math:`c`.
+
+#. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{f}}{n}`, then:
 
    a. Return :math:`c`.
 
@@ -9374,7 +10429,11 @@ The external value :math:`{\mathit{externaddr}}` is :ref:`valid <valid-val>` wit
 ....................................................
 
 
-1. If :math:`{\mathit{lanetype}}` is number type, then:
+1. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{i}}{n}`, then:
+
+   a. Return :math:`c`.
+
+#. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{f}}{n}`, then:
 
    a. Return :math:`c`.
 
@@ -9383,27 +10442,33 @@ The external value :math:`{\mathit{externaddr}}` is :ref:`valid <valid-val>` wit
 #. Return :math:`{{{{\mathrm{extend}}}_{{|{\mathit{lanetype}}|}, {|{\mathrm{unpack}}({\mathit{lanetype}})|}}^{\mathsf{u}}}}{(c)}`.
 
 
-:math:`{\mathrm{zeroop}}({\mathit{vcvtop}})`
-............................................
+:math:`{\mathrm{zeroop}}({{\mathit{lanetype}'}}{\mathsf{x}}{M_1}, {{\mathit{lanetype}}}{\mathsf{x}}{M_2}, {\mathit{vcvtop}})`
+.............................................................................................................................
 
 
-1. If :math:`{\mathit{vcvtop}}` is some :math:`\mathsf{extend}~{\mathit{half}}~{\mathit{sx}}`, then:
+1. If :math:`{\mathit{lanetype}'}` is :math:`{\mathsf{i}}{n}`, then:
 
-   a. Return :math:`\epsilon`.
+   a. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{i}}{n}` and :math:`{\mathit{vcvtop}}` is some :math:`{\mathsf{extend}}{\mathsf{\_}}{{\mathit{half}}}{\mathsf{\_}}{{\mathit{sx}}}`, then:
 
-#. If :math:`{\mathit{vcvtop}}` is some :math:`\mathsf{convert}~{{\mathit{half}}^?}~{\mathit{sx}}`, then:
+      1) Return :math:`\epsilon`.
 
-   a. Return :math:`\epsilon`.
+   #. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{f}}{n}` and :math:`{\mathit{vcvtop}}` is some :math:`{\mathsf{convert}}{\mathsf{\_}}{{{\mathit{half}}^?}}{\mathsf{\_}}{{\mathit{sx}}}`, then:
 
-#. If :math:`{\mathit{vcvtop}}` is some :math:`\mathsf{trunc\_sat}~{\mathit{sx}}~{{\mathit{zero}}^?}`, then:
+      1) Return :math:`\epsilon`.
 
-   a. Let :math:`(\mathsf{trunc\_sat}~{\mathit{sx}}~{{\mathit{zero}}^?})` be the destructuring of :math:`{\mathit{vcvtop}}`.
+#. Assert: Due to validation, :math:`{\mathit{lanetype}'}` is :math:`{\mathsf{f}}{n}`.
+
+#. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{i}}{n}` and :math:`{\mathit{vcvtop}}` is some :math:`{\mathsf{trunc\_sat}}{\mathsf{\_}}{{\mathit{sx}}}{\mathsf{\_}}{{{\mathit{zero}}^?}}`, then:
+
+   a. Let :math:`({\mathsf{trunc\_sat}}{\mathsf{\_}}{{\mathit{sx}}}{\mathsf{\_}}{{{\mathit{zero}}^?}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
 
    #. Return :math:`{{\mathit{zero}}^?}`.
 
-#. If :math:`{\mathit{vcvtop}}` is some :math:`\mathsf{demote}~{\mathit{zero}}`, then:
+#. Assert: Due to validation, :math:`{\mathit{lanetype}}` is :math:`{\mathsf{f}}{n}`.
 
-   a. Let :math:`(\mathsf{demote}~{\mathit{zero}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
+#. If :math:`{\mathit{vcvtop}}` is some :math:`{\mathsf{demote}}{\mathsf{\_}}{\mathsf{zero}}`, then:
+
+   a. Let :math:`({\mathsf{demote}}{\mathsf{\_}}{\mathsf{zero}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
 
    #. Return :math:`{\mathit{zero}}`.
 
@@ -9412,27 +10477,33 @@ The external value :math:`{\mathit{externaddr}}` is :ref:`valid <valid-val>` wit
 #. Return :math:`\epsilon`.
 
 
-:math:`{\mathrm{halfop}}({\mathit{vcvtop}})`
-............................................
+:math:`{\mathrm{halfop}}({{\mathit{lanetype}'}}{\mathsf{x}}{M_1}, {{\mathit{lanetype}}}{\mathsf{x}}{M_2}, {\mathit{vcvtop}})`
+.............................................................................................................................
 
 
-1. If :math:`{\mathit{vcvtop}}` is some :math:`\mathsf{extend}~{\mathit{half}}~{\mathit{sx}}`, then:
+1. If :math:`{\mathit{lanetype}'}` is :math:`{\mathsf{i}}{n}`, then:
 
-   a. Let :math:`(\mathsf{extend}~{\mathit{half}}~{\mathit{sx}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
+   a. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{i}}{n}` and :math:`{\mathit{vcvtop}}` is some :math:`{\mathsf{extend}}{\mathsf{\_}}{{\mathit{half}}}{\mathsf{\_}}{{\mathit{sx}}}`, then:
 
-   #. Return :math:`{\mathit{half}}`.
+      1) Let :math:`({\mathsf{extend}}{\mathsf{\_}}{{\mathit{half}}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
 
-#. If :math:`{\mathit{vcvtop}}` is some :math:`\mathsf{convert}~{{\mathit{half}}^?}~{\mathit{sx}}`, then:
+      #) Return :math:`{\mathit{half}}`.
 
-   a. Let :math:`(\mathsf{convert}~{{\mathit{half}}^?}~{\mathit{sx}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
+   #. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{f}}{n}` and :math:`{\mathit{vcvtop}}` is some :math:`{\mathsf{convert}}{\mathsf{\_}}{{{\mathit{half}}^?}}{\mathsf{\_}}{{\mathit{sx}}}`, then:
 
-   #. Return :math:`{{\mathit{half}}^?}`.
+      1) Let :math:`({\mathsf{convert}}{\mathsf{\_}}{{{\mathit{half}}^?}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
 
-#. If :math:`{\mathit{vcvtop}}` is some :math:`\mathsf{trunc\_sat}~{\mathit{sx}}~{{\mathit{zero}}^?}`, then:
+      #) Return :math:`{{\mathit{half}}^?}`.
+
+#. Assert: Due to validation, :math:`{\mathit{lanetype}'}` is :math:`{\mathsf{f}}{n}`.
+
+#. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{i}}{n}` and :math:`{\mathit{vcvtop}}` is some :math:`{\mathsf{trunc\_sat}}{\mathsf{\_}}{{\mathit{sx}}}{\mathsf{\_}}{{{\mathit{zero}}^?}}`, then:
 
    a. Return :math:`\epsilon`.
 
-#. If :math:`{\mathit{vcvtop}}` is some :math:`\mathsf{demote}~{\mathit{zero}}`, then:
+#. Assert: Due to validation, :math:`{\mathit{lanetype}}` is :math:`{\mathsf{f}}{n}`.
+
+#. If :math:`{\mathit{vcvtop}}` is some :math:`{\mathsf{demote}}{\mathsf{\_}}{\mathsf{zero}}`, then:
 
    a. Return :math:`\epsilon`.
 
@@ -10130,23 +11201,23 @@ The external value :math:`{\mathit{externaddr}}` is :ref:`valid <valid-val>` wit
 #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
 
 
-:math:`{{\mathrm{vcvtop}}}_{{{\mathit{lanetype}'}}{\mathsf{x}}{M_1}, {{\mathit{lanetype}}}{\mathsf{x}}{M_2}}({\mathit{vcvtop}}, {\mathit{iN}}_1)`
+:math:`{{\mathrm{lcvtop}}}_{{{\mathit{lanetype}'}}{\mathsf{x}}{M_1}, {{\mathit{lanetype}}}{\mathsf{x}}{M_2}}({\mathit{vcvtop}}, {\mathit{iN}}_1)`
 .................................................................................................................................................
 
 
 1. If :math:`{\mathit{lanetype}'}` is :math:`{\mathsf{i}}{n}`, then:
 
-   a. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{i}}{n}` and :math:`{\mathit{vcvtop}}` is some :math:`\mathsf{extend}~{\mathit{half}}~{\mathit{sx}}`, then:
+   a. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{i}}{n}` and :math:`{\mathit{vcvtop}}` is some :math:`{\mathsf{extend}}{\mathsf{\_}}{{\mathit{half}}}{\mathsf{\_}}{{\mathit{sx}}}`, then:
 
-      1) Let :math:`(\mathsf{extend}~{\mathit{half}}~{\mathit{sx}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
+      1) Let :math:`({\mathsf{extend}}{\mathsf{\_}}{{\mathit{half}}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
 
       #) Let :math:`{\mathit{iN}}_2` be :math:`{{{{\mathrm{extend}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{iN}}_1)}`.
 
       #) Return :math:`{\mathit{iN}}_2`.
 
-   #. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{f}}{n}` and :math:`{\mathit{vcvtop}}` is some :math:`\mathsf{convert}~{{\mathit{half}}^?}~{\mathit{sx}}`, then:
+   #. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{f}}{n}` and :math:`{\mathit{vcvtop}}` is some :math:`{\mathsf{convert}}{\mathsf{\_}}{{{\mathit{half}}^?}}{\mathsf{\_}}{{\mathit{sx}}}`, then:
 
-      1) Let :math:`(\mathsf{convert}~{{\mathit{half}}^?}~{\mathit{sx}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
+      1) Let :math:`({\mathsf{convert}}{\mathsf{\_}}{{{\mathit{half}}^?}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
 
       #) Let :math:`{\mathit{fN}}_2` be :math:`{{{{\mathrm{convert}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{iN}}_1)}`.
 
@@ -10154,9 +11225,9 @@ The external value :math:`{\mathit{externaddr}}` is :ref:`valid <valid-val>` wit
 
 #. Assert: Due to validation, :math:`{\mathit{lanetype}'}` is :math:`{\mathsf{f}}{n}`.
 
-#. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{i}}{n}` and :math:`{\mathit{vcvtop}}` is some :math:`\mathsf{trunc\_sat}~{\mathit{sx}}~{{\mathit{zero}}^?}`, then:
+#. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{i}}{n}` and :math:`{\mathit{vcvtop}}` is some :math:`{\mathsf{trunc\_sat}}{\mathsf{\_}}{{\mathit{sx}}}{\mathsf{\_}}{{{\mathit{zero}}^?}}`, then:
 
-   a. Let :math:`(\mathsf{trunc\_sat}~{\mathit{sx}}~{{\mathit{zero}}^?})` be the destructuring of :math:`{\mathit{vcvtop}}`.
+   a. Let :math:`({\mathsf{trunc\_sat}}{\mathsf{\_}}{{\mathit{sx}}}{\mathsf{\_}}{{{\mathit{zero}}^?}})` be the destructuring of :math:`{\mathit{vcvtop}}`.
 
    #. Let :math:`{{\mathit{iN}}_2^?}` be :math:`{{{{\mathrm{trunc\_sat}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{iN}}_1)}`.
 
@@ -10164,7 +11235,7 @@ The external value :math:`{\mathit{externaddr}}` is :ref:`valid <valid-val>` wit
 
 #. Assert: Due to validation, :math:`{\mathit{lanetype}}` is :math:`{\mathsf{f}}{n}`.
 
-#. If :math:`{\mathit{vcvtop}} = (\mathsf{demote}~\mathsf{zero})`, then:
+#. If :math:`{\mathit{vcvtop}} = ({\mathsf{demote}}{\mathsf{\_}}{\mathsf{zero}})`, then:
 
    a. Let :math:`{{\mathit{fN}}_2^\ast}` be :math:`{{\mathrm{demote}}}_{N_1, N_2}({\mathit{iN}}_1)`.
 
@@ -10177,15 +11248,52 @@ The external value :math:`{\mathit{externaddr}}` is :ref:`valid <valid-val>` wit
 #. Return :math:`{{\mathit{fN}}_2^\ast}`.
 
 
-:math:`{{\mathrm{vextunop}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2}}(\mathsf{extadd\_pairwise}~{\mathit{sx}}, c_1)`
-............................................................................................................................................................
+:math:`{{\mathrm{vcvtop}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M}, {{{\mathsf{i}}{n}}_2}{\mathsf{x}}{{M'}}}({\mathit{vcvtop}}, {\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`
+...........................................................................................................................................................................
 
 
-1. Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2}}(c_1)`.
+1. If :math:`M = {M'}` and :math:`{\mathrm{halfop}}({{{\mathsf{i}}{n}}_1}{\mathsf{x}}{{M'}}, {{{\mathsf{i}}{n}}_2}{\mathsf{x}}{{M'}}, {\mathit{vcvtop}})` is not defined and :math:`{\mathrm{zeroop}}({{{\mathsf{i}}{n}}_1}{\mathsf{x}}{{M'}}, {{{\mathsf{i}}{n}}_2}{\mathsf{x}}{{M'}}, {\mathit{vcvtop}})` is not defined, then:
 
-#. Let :math:`{{\mathit{cj}}_1~{\mathit{cj}}_2^\ast}` be the result for which the :ref:`concatenation <notation-concat>` of :math:`{{\mathit{cj}}_1~{\mathit{cj}}_2^\ast}` is :math:`{{{{{\mathrm{extend}}}_{N_2, N_1}^{{\mathit{sx}}}}}{({\mathit{ci}})}^\ast}`.
+   a. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{{M'}}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
 
-#. Let :math:`c` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M_1}}({{{\mathrm{iadd}}}_{N_1}({\mathit{cj}}_1, {\mathit{cj}}_2)^\ast})`.
+   #. Let :math:`{{c^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{lcvtop}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{{M'}}, {{{\mathsf{i}}{n}}_2}{\mathsf{x}}{{M'}}}({\mathit{vcvtop}}, c_1)^\ast}`.
+
+   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be an element of :math:`{{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{{M'}}}({c^\ast})^\ast}`.
+
+   #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
+
+#. If :math:`{\mathrm{halfop}}({{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M}, {{{\mathsf{i}}{n}}_2}{\mathsf{x}}{{M'}}, {\mathit{vcvtop}})` is defined, then:
+
+   a. Let :math:`{\mathit{half}}` be :math:`{\mathrm{halfop}}({{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M}, {{{\mathsf{i}}{n}}_2}{\mathsf{x}}{{M'}}, {\mathit{vcvtop}})`.
+
+   #. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1){}[{\mathrm{half}}({\mathit{half}}, 0, {M'}) : {M'}]`.
+
+   #. Let :math:`{{c^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{lcvtop}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M}, {{{\mathsf{i}}{n}}_2}{\mathsf{x}}{{M'}}}({\mathit{vcvtop}}, c_1)^\ast}`.
+
+   #. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be an element of :math:`{{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{{M'}}}({c^\ast})^\ast}`.
+
+   #. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
+
+#. Assert: Due to validation, :math:`{\mathrm{zeroop}}({{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M}, {{{\mathsf{i}}{n}}_2}{\mathsf{x}}{{M'}}, {\mathit{vcvtop}}) = \mathsf{zero}`.
+
+#. Let :math:`{c_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M}}({\mathit{v{\kern-0.1em\scriptstyle 128}}}_1)`.
+
+#. Let :math:`{{c^\ast}^\ast}` be :math:`{\Large\times}~{{{\mathrm{lcvtop}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M}, {{{\mathsf{i}}{n}}_2}{\mathsf{x}}{{M'}}}({\mathit{vcvtop}}, c_1)^\ast}~{{{\mathrm{pack}}}_{{{\mathsf{i}}{n}}_2}({\mathrm{zero}}({\mathrm{unpack}}({{\mathsf{i}}{n}}_2)))^{M}}`.
+
+#. Let :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}` be an element of :math:`{{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{{M'}}}({c^\ast})^\ast}`.
+
+#. Return :math:`{\mathit{v{\kern-0.1em\scriptstyle 128}}}`.
+
+
+:math:`{{\mathrm{vextunop}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M_1}, {{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2}}({\mathsf{extadd\_pairwise}}{\mathsf{\_}}{{\mathit{sx}}}, c_1)`
+............................................................................................................................................................................
+
+
+1. Let :math:`{{\mathit{ci}}^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M_1}}(c_1)`.
+
+#. Let :math:`{{\mathit{cj}}_1~{\mathit{cj}}_2^\ast}` be the result for which the :ref:`concatenation <notation-concat>` of :math:`{{\mathit{cj}}_1~{\mathit{cj}}_2^\ast}` is :math:`{{{{{\mathrm{extend}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{ci}})}^\ast}`.
+
+#. Let :math:`c` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2}}({{{\mathrm{iadd}}}_{N_2}({\mathit{cj}}_1, {\mathit{cj}}_2)^\ast})`.
 
 #. Return :math:`c`.
 
@@ -10198,23 +11306,23 @@ The external value :math:`{\mathit{externaddr}}` is :ref:`valid <valid-val>` wit
 
    a. Let :math:`({\mathsf{extmul}}{\mathsf{\_}}{{\mathit{half}}}{\mathsf{\_}}{{\mathit{sx}}})` be the destructuring of :math:`{\mathit{vextbinop}}`.
 
-   #. Let :math:`{{\mathit{ci}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2}}(c_1){}[{\mathrm{half}}({\mathit{half}}, 0, M_1) : M_1]`.
+   #. Let :math:`{{\mathit{ci}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M_1}}(c_1){}[{\mathrm{half}}({\mathit{half}}, 0, M_2) : M_2]`.
 
-   #. Let :math:`{{\mathit{ci}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2}}(c_2){}[{\mathrm{half}}({\mathit{half}}, 0, M_1) : M_1]`.
+   #. Let :math:`{{\mathit{ci}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M_1}}(c_2){}[{\mathrm{half}}({\mathit{half}}, 0, M_2) : M_2]`.
 
-   #. Let :math:`c` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M_1}}({{{\mathrm{imul}}}_{N_1}({{{{\mathrm{extend}}}_{N_2, N_1}^{{\mathit{sx}}}}}{({\mathit{ci}}_1)}, {{{{\mathrm{extend}}}_{N_2, N_1}^{{\mathit{sx}}}}}{({\mathit{ci}}_2)})^\ast})`.
+   #. Let :math:`c` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2}}({{{\mathrm{imul}}}_{N_2}({{{{\mathrm{extend}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{ci}}_1)}, {{{{\mathrm{extend}}}_{N_1, N_2}^{{\mathit{sx}}}}}{({\mathit{ci}}_2)})^\ast})`.
 
    #. Return :math:`c`.
 
 #. Assert: Due to validation, :math:`{\mathit{vextbinop}} = `.
 
-#. Let :math:`{{\mathit{ci}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2}}(c_1)`.
+#. Let :math:`{{\mathit{ci}}_1^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M_1}}(c_1)`.
 
-#. Let :math:`{{\mathit{ci}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2}}(c_2)`.
+#. Let :math:`{{\mathit{ci}}_2^\ast}` be :math:`{{\mathrm{lanes}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M_1}}(c_2)`.
 
-#. Let :math:`{{\mathit{cj}}_1~{\mathit{cj}}_2^\ast}` be the result for which the :ref:`concatenation <notation-concat>` of :math:`{{\mathit{cj}}_1~{\mathit{cj}}_2^\ast}` is :math:`{{{\mathrm{imul}}}_{N_1}({{{{\mathrm{extend}}}_{N_2, N_1}^{\mathsf{s}}}}{({\mathit{ci}}_1)}, {{{{\mathrm{extend}}}_{N_2, N_1}^{\mathsf{s}}}}{({\mathit{ci}}_2)})^\ast}`.
+#. Let :math:`{{\mathit{cj}}_1~{\mathit{cj}}_2^\ast}` be the result for which the :ref:`concatenation <notation-concat>` of :math:`{{\mathit{cj}}_1~{\mathit{cj}}_2^\ast}` is :math:`{{{\mathrm{imul}}}_{N_2}({{{{\mathrm{extend}}}_{N_1, N_2}^{\mathsf{s}}}}{({\mathit{ci}}_1)}, {{{{\mathrm{extend}}}_{N_1, N_2}^{\mathsf{s}}}}{({\mathit{ci}}_2)})^\ast}`.
 
-#. Let :math:`c` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{{\mathsf{i}}{n}}_1}{\mathsf{x}}{M_1}}({{{\mathrm{iadd}}}_{N_1}({\mathit{cj}}_1, {\mathit{cj}}_2)^\ast})`.
+#. Let :math:`c` be :math:`{{\mathrm{inv}}_{{\mathit{lanes}}}}_{{{{\mathsf{i}}{n}}_2}{\mathsf{x}}{M_2}}({{{\mathrm{iadd}}}_{N_2}({\mathit{cj}}_1, {\mathit{cj}}_2)^\ast})`.
 
 #. Return :math:`c`.
 
@@ -10225,13 +11333,13 @@ The external value :math:`{\mathit{externaddr}}` is :ref:`valid <valid-val>` wit
 
 1. If :math:`{\mathit{vshiftop}} = \mathsf{shl}`, then:
 
-   a. Return :math:`{{\mathrm{ishl}}}_{N}({\mathit{lane}}, n)`.
+   a. Return :math:`{{\mathrm{ishl}}}_{N}({\mathit{lane}}, n \mathbin{\mathrm{mod}} N)`.
 
 #. Assert: Due to validation, :math:`{\mathit{vshiftop}}` is some :math:`\mathsf{shr}~{\mathit{sx}}`.
 
 #. Let :math:`(\mathsf{shr}~{\mathit{sx}})` be the destructuring of :math:`{\mathit{vshiftop}}`.
 
-#. Return :math:`{{{{\mathrm{ishr}}}_{N}^{{\mathit{sx}}}}}{({\mathit{lane}}, n)}`.
+#. Return :math:`{{{{\mathrm{ishr}}}_{N}^{{\mathit{sx}}}}}{({\mathit{lane}}, n \mathbin{\mathrm{mod}} N)}`.
 
 
 :math:`{{\mathrm{default}}}_{{\mathit{valtype}}}`
@@ -11021,15 +12129,19 @@ The external value :math:`{\mathit{externaddr}}` is :ref:`valid <valid-val>` wit
 
    a. Return :math:`\epsilon`.
 
-#. Assert: :math:`{\mathit{datamode}}` is some :math:`\mathsf{active}~{\mathit{memidx}}~{\mathit{expr}}`.
+#. If :math:`{\mathit{datamode}}` is not some :math:`\mathsf{active}~{\mathit{memidx}}~{\mathit{expr}}`, then:
+
+   a. Fail.
 
 #. Let :math:`(\mathsf{active}~{\mathit{memidx}}_0~{{\mathit{instr}}^\ast})` be the destructuring of :math:`{\mathit{datamode}}`.
 
-#. Assert: Due to validation, :math:`{\mathit{memidx}}_0 = 0`.
+#. If :math:`{\mathit{memidx}}_0 = 0`, then:
 
-#. Let :math:`n` be the length of :math:`{{\mathit{byte}}^\ast}`.
+   a. Let :math:`n` be the length of :math:`{{\mathit{byte}}^\ast}`.
 
-#. Return :math:`{{\mathit{instr}}^\ast}~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~0)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)~(\mathsf{memory{.}init}~i)~(\mathsf{data{.}drop}~i)`.
+   #. Return :math:`{{\mathit{instr}}^\ast}~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~0)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n)~(\mathsf{memory{.}init}~i)~(\mathsf{data{.}drop}~i)`.
+
+#. Fail.
 
 
 :math:`{\mathrm{instantiate}}(s, {\mathit{module}}, {{\mathit{externaddr}}^\ast})`
@@ -11444,12 +12556,7 @@ Instr_ok/relop
 - the instruction (RELOP nt relop_nt) is valid with the function type [nt, nt] -> [I32].
 
 Instr_ok/cvtop
-- the instruction (CVTOP nt_1 nt_2 cvtop) is valid with the function type [nt_2] -> [nt_1] if:
-  - Either:
-    - cvtop is REINTERPRET.
-    - $size(nt_1) is $size(nt_2).
-  - Or:
-
+- the instruction (CVTOP nt_1 nt_2 cvtop) is valid with the function type [nt_2] -> [nt_1].
 
 Instr_ok/ref.null
 - the instruction (REF.NULL rt) is valid with the function type [] -> [rt].
@@ -11643,18 +12750,18 @@ Instr_ok/store
     - (2 ^ memarg.ALIGN) is less than or equal to (M / 8).
 
 Instr_ok/vload
-- the instruction (VLOAD V128 vloadop? memarg) is valid with the function type [I32] -> [V128] if:
+- the instruction (VLOAD V128 vloadop_? memarg) is valid with the function type [I32] -> [V128] if:
   - Either:
-    - vloadop? is ?().
+    - vloadop_? is ?().
     - (2 ^ memarg.ALIGN) is less than or equal to ($size(V128) / 8).
   - Or:
-    - vloadop? is ?((SHAPE M X N _ sx)).
+    - vloadop_? is ?((SHAPE M X N _ sx)).
     - (2 ^ memarg.ALIGN) is less than or equal to ((M / 8) * N).
   - Or:
-    - vloadop? is ?((SPLAT n)).
+    - vloadop_? is ?((SPLAT n)).
     - (2 ^ memarg.ALIGN) is less than or equal to (n / 8).
   - Or:
-    - vloadop? is ?((ZERO n)).
+    - vloadop_? is ?((ZERO n)).
     - (2 ^ memarg.ALIGN) is less than or equal to (n / 8).
 
 Instr_ok/vload_lane
@@ -11678,13 +12785,6 @@ Instr_ok/select-impl
 - the instruction (SELECT ?()) is valid with the function type [t, t, I32] -> [t] if:
   - the value type t matches the value type t'.
   - t' is numtype or t' is vectype.
-
-Instr_ok/cvtop-reinterpret
-- the instruction (CVTOP nt_1 nt_2 REINTERPRET) is valid with the function type [nt_2] -> [nt_1] if:
-  - $size(nt_1) is $size(nt_2).
-
-Instr_ok/cvtop-convert
-- the instruction (CVTOP nt_1 nt_2 cvtop) is valid with [nt_2] -> [nt_1].
 
 Instr_ok/load-val
 - the instruction (LOAD nt ?() memarg) is valid with the function type [I32] -> [nt] if:
@@ -12029,6 +13129,283 @@ Externaddr_ok/sub
   - externaddr is valid with the external type xt'.
   - xt is valid.
   - xt' matches xt.
+
+Context_ok
+- the context C is valid if:
+  - C is { TYPES: ft*; FUNCS: ft_2*; GLOBALS: gt*; TABLES: tt*; MEMS: mt*; ELEMS: et*; DATAS: ok*; LOCALS: lct*; LABELS: [rt*]; RETURN: ?(rt'?) }.
+  - For all ft in ft*:
+    - the function type ft is valid.
+  - For all gt in gt*:
+    - the global type gt is valid.
+  - For all mt in mt*:
+    - the memory type mt is valid.
+  - For all tt in tt*:
+    - the table type tt is valid.
+  - For all ft_2 in ft_2*:
+    - the function type ft_2 is valid.
+
+Ref_ok
+- the reference ref is valid with the reference type rt if:
+  - Either:
+    - ref is (REF.NULL rt').
+  - Or:
+    - ref is (REF.FUNC_ADDR a).
+    - rt is FUNCREF.
+    - the external value (FUNC a) is valid with the external type (FUNC ext).
+  - Or:
+    - ref is (REF.HOST_ADDR a).
+    - rt is EXTERNREF.
+
+Ref_ok/null
+- the reference (REF.NULL rt) is valid with rt.
+
+Ref_ok/func
+- the reference (REF.FUNC_ADDR a) is valid with the reference type FUNCREF if:
+  - the external value (FUNC a) is valid with the external type (FUNC ext).
+
+Ref_ok/extern
+- the reference (REF.HOST_ADDR a) is valid with the reference type EXTERNREF.
+
+Val_ok
+- the value val is valid with the value type valtype if:
+  - Either:
+    - val is (nt.CONST c_t).
+    - valtype is nt.
+  - Or:
+    - val is (vt.CONST c_t).
+    - valtype is vt.
+  - Or:
+    - val is r.
+    - valtype is rt.
+    - the reference r is valid with the reference type rt.
+
+Val_ok/numtype
+- the value (nt.CONST c_t) is valid with the value type nt.
+
+Val_ok/vectype
+- the value (vt.CONST c_t) is valid with the value type vt.
+
+Val_ok/reftype
+- the value r is valid with the value type rt if:
+  - r is valid with rt.
+
+Result_ok
+- the result result is valid with the value type sequence t* if:
+  - Either:
+    - result is (_VALS v*).
+    - For all t in t*, and corresponding v in v*:
+      - the value v is valid with the value type t.
+  - Or:
+    - result is TRAP.
+
+Result_ok/result
+- the result (_VALS v*) is valid with the value type sequence t* if:
+  - For all t in t*, and corresponding v in v*:
+    - the value v is valid with the value type t.
+
+Result_ok/trap
+- the result TRAP is valid with t*.
+
+Datainst_ok
+- the data instance { BYTES: b* } is valid with the data type OK if:
+  - |b*| is less than (2 ^ 32).
+
+Eleminst_ok
+- the element instance { TYPE: rt; REFS: ref* } is valid with the element type rt if:
+  - For all ref in ref*:
+    - the reference ref is valid with rt.
+  - |ref*| is less than (2 ^ 32).
+
+Exportinst_ok
+- the export instance { NAME: nm; ADDR: xa } is valid if:
+  - the external value xa is valid with the external type xt.
+
+Moduleinst_ok
+- the module instance { TYPES: functype*; FUNCS: funcaddr*; GLOBALS: globaladdr*; TABLES: tableaddr*; MEMS: memaddr*; ELEMS: elemaddr*; DATAS: dataaddr*; EXPORTS: exportinst* } is valid with the context { TYPES: functype*; FUNCS: functype_F*; GLOBALS: globaltype*; TABLES: tabletype*; MEMS: memtype*; ELEMS: elemtype*; DATAS: datatype*; RETURN: ?() } if:
+  - For all functype in functype*:
+    - the function type functype is valid.
+  - For all globaladdr in globaladdr*, and corresponding globaltype in globaltype*:
+    - the external value (GLOBAL globaladdr) is valid with the external type (GLOBAL globaltype).
+  - For all funcaddr in funcaddr*, and corresponding functype_F in functype_F*:
+    - the external value (FUNC funcaddr) is valid with the external type (FUNC functype_F).
+  - For all memaddr in memaddr*, and corresponding memtype in memtype*:
+    - the external value (MEM memaddr) is valid with the external type (MEM memtype).
+  - For all tableaddr in tableaddr*, and corresponding tabletype in tabletype*:
+    - the external value (TABLE tableaddr) is valid with the external type (TABLE tabletype).
+  - For all exportinst in exportinst*:
+    - the export instance exportinst is valid.
+  - For all dataaddr in dataaddr*:
+    - the data instance s.DATAS[dataaddr] exists.
+  - For all dataaddr in dataaddr*, and corresponding datatype in datatype*:
+    - s.DATAS[dataaddr] is valid with the data type datatype.
+  - For all elemaddr in elemaddr*:
+    - the element instance s.ELEMS[elemaddr] exists.
+  - For all elemaddr in elemaddr*, and corresponding elemtype in elemtype*:
+    - s.ELEMS[elemaddr] is valid with the element type elemtype.
+  - $disjoint_(`name, exportinst.NAME*) is true.
+  - |(GLOBAL globaladdr)* :: (MEM memaddr)* :: (TABLE tableaddr)* :: (FUNC funcaddr)*| is greater than 0.
+  - For all exportinst in exportinst*:
+    - exportinst.ADDR is contained in (GLOBAL globaladdr)* :: (MEM memaddr)* :: (TABLE tableaddr)* :: (FUNC funcaddr)*.
+
+Frame_ok
+- the frame { LOCALS: val*; MODULE: moduleinst } is valid with the context C with .LOCALS appended by t* if:
+  - the module instance moduleinst is valid with the context C.
+  - For all t in t*, and corresponding val in val*:
+    - the value val is valid with the value type t.
+
+Instr_ok2
+- admininstr is valid with valtype* -> valtype'* if:
+  - Either:
+    - the administrative instruction admininstr is instr.
+    - the instruction instr is valid with the function type valtype* -> valtype'*.
+  - Or:
+    - admininstr is (LABEL_ n { instr'* } admininstr'*).
+    - the value type sequence valtype* is [].
+    - instr'* is valid with t'^n -> valtype'*.
+    - admininstr'* is valid with [] -> valtype'*.
+  - Or:
+    - admininstr is (FRAME_ n { f } admininstr'*).
+    - valtype* is [].
+    - the frame f is valid with the context C'.
+    - admininstr'* is valid with valtype'^n.
+  - Or:
+    - admininstr is (CALL_ADDR funcaddr).
+    - the external value (FUNC funcaddr) is valid with the external type (FUNC valtype* -> valtype'*).
+  - Or:
+    - admininstr is ref.
+    - valtype* is [].
+    - the value type sequence valtype'* is [rt].
+    - the reference ref is valid with the reference type rt.
+  - Or:
+    - admininstr is TRAP.
+
+Instr_ok2/plain
+- instr is valid with t_1* -> t_2* if:
+  - the instruction instr is valid with the function type t_1* -> t_2*.
+
+Instr_ok2/label
+- (LABEL_ n { instr* } admininstr*) is valid with [] -> t* if:
+  - instr'* is valid with t'^n -> t*.
+  - admininstr* is valid with [] -> t*.
+
+Instr_ok2/frame
+- (FRAME_ n { f } admininstr*) is valid with [] -> t^n if:
+  - the frame f is valid with the context C'.
+  - admininstr* is valid with t^n.
+
+Instr_ok2/call_addr
+- (CALL_ADDR funcaddr) is valid with t_1* -> t_2* if:
+  - the external value (FUNC funcaddr) is valid with the external type (FUNC t_1* -> t_2*).
+
+Instr_ok2/ref
+- ref is valid with [] -> [rt] if:
+  - the reference ref is valid with the reference type rt.
+
+Instr_ok2/trap
+- TRAP is valid with t_1* -> t_2*.
+
+Instrs_ok2
+- admininstr* is valid with valtype* -> valtype'* if:
+  - Either:
+    - the administrative instruction sequence admininstr* is [].
+    - the value type sequence valtype* is [].
+    - the value type sequence valtype'* is [].
+  - Or:
+    - admininstr* is [admininstr'].
+    - admininstr' is valid with valtype* -> valtype'*.
+  - Or:
+    - admininstr* is admininstr_1* :: admininstr_2*.
+    - admininstr_1* is valid with valtype* -> t_2*.
+    - admininstr_2* is valid with t_2* -> valtype'*.
+  - Or:
+    - admininstr* is valid with t_1* -> t_2*.
+    - valtype* matches the result type t_1*.
+    - the result type t_2* matches valtype'*.
+  - Or:
+    - valtype* is t* :: t_1*.
+    - valtype'* is t* :: t_2*.
+    - admininstr* is valid with t_1* -> t_2*.
+
+Instrs_ok2/empty
+- [] is valid with [] -> [].
+
+Instrs_ok2/instr
+- [admininstr] is valid with t_1* -> t_2* if:
+  - admininstr is valid with t_1* -> t_2*.
+
+Instrs_ok2/seq
+- admininstr_1* :: admininstr_2* is valid with t_1* -> t_3* if:
+  - admininstr_1* is valid with t_1* -> t_2*.
+  - admininstr_2* is valid with t_2* -> t_3*.
+
+Instrs_ok2/sub
+- admininstr* is valid with t'_1* -> t'_2* if:
+  - admininstr* is valid with t_1* -> t_2*.
+  - the result type t'_1* matches the result type t_1*.
+  - the result type t_2* matches the result type t'_2*.
+
+Instrs_ok2/frame
+- admininstr* is valid with t* :: t_1* -> t* :: t_2* if:
+  - admininstr* is valid with t_1* -> t_2*.
+
+Expr_ok2
+- admininstr* is valid with t* if:
+  - admininstr* is valid with [] -> t*.
+
+Globalinst_ok
+- the global instance { TYPE: (mut t); VALUE: val } is valid with the global type (mut t) if:
+  - (mut t) is valid.
+  - the value val is valid with the value type t.
+
+Meminst_ok
+- the memory instance { TYPE: ([ n .. m? ]) PAGE; BYTES: b* } is valid with the memory type ([ n .. m? ]) PAGE if:
+  - ([ n .. m? ]) PAGE is valid.
+  - |b*| is (n * (64 * $Ki())).
+
+Tableinst_ok
+- the table instance { TYPE: (([ n .. m? ]) rt); REFS: ref* } is valid with the table type (([ n .. m? ]) rt) if:
+  - (([ n .. m? ]) rt) is valid.
+  - For all ref in ref*:
+    - the reference ref is valid with the reference type rt.
+  - |ref*| is n.
+
+Funcinst_ok
+- the function instance { TYPE: ft; MODULE: moduleinst; CODE: func } is valid with the function type ft if:
+  - ft is valid.
+  - the module instance moduleinst is valid with the context C.
+  - the function func is valid with ft.
+
+Store_ok
+- the store s is valid if:
+  - For all :
+    - the global instance globalinst is valid with the global type globaltype.
+  - globalinst* is the concatenation of all such globalinst.
+  - For all :
+    - the memory instance meminst is valid with the memory type memtype.
+  - meminst* is the concatenation of all such meminst.
+  - For all :
+    - the table instance tableinst is valid with the table type tabletype.
+  - tableinst* is the concatenation of all such tableinst.
+  - For all :
+    - the function instance funcinst is valid with the function type functype.
+  - funcinst* is the concatenation of all such funcinst.
+  - For all :
+    - the data instance datainst is valid with the data type datatype.
+  - datainst* is the concatenation of all such datainst.
+  - For all :
+    - the element instance eleminst is valid with the element type elemtype.
+  - eleminst* is the concatenation of all such eleminst.
+  - s is { FUNCS: funcinst*; GLOBALS: globalinst*; TABLES: tableinst*; MEMS: meminst*; ELEMS: eleminst*; DATAS: datainst* }.
+
+State_ok
+- the state (s, f) is valid with the context C if:
+  - the store s is valid.
+  - the frame f is valid with C.
+
+Config_ok
+- the configuration (s, f) ; admininstr* is valid with the result type t* if:
+  - the state (s, f) is valid with the context C.
+  - admininstr* is valid with t*.
 
 Step_read/table.copy-trap-* x y
 1. Let z be the current state.
@@ -12413,7 +13790,7 @@ Step_pure/vextract_lane lanetype X N sx'? i
 3. If sx'? is not defined, then:
   a. Assert: Due to validation, lanetype is numtype.
   b. Assert: Due to validation, (i < |$lanes_(lanetype X N, c_1)|).
-  c. Let c_2 be $lanes_(lanetype X N, c_1)[i].
+  c. Let c_2 be $unpacknum_(lanetype, $lanes_(lanetype X N, c_1)[i]).
   d. Push the value (lanetype.CONST c_2) to the stack.
 4. Else:
   a. Assert: Due to validation, lanetype is packtype.
@@ -12431,13 +13808,13 @@ Step_pure/vreplace_lane Lnn X N i
 6. Let c be $inv_lanes_(Lnn X N, $lanes_(Lnn X N, c_1) with [i] replaced by $packnum_(Lnn, c_2)).
 7. Push the value (V128.CONST c) to the stack.
 
-Step_pure/vextunop sh_1 sh_2 vextunop
+Step_pure/vextunop sh_2 sh_1 vextunop
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_1) from the stack.
 3. Let c be $vextunop__(sh_1, sh_2, vextunop, c_1).
 4. Push the value (V128.CONST c) to the stack.
 
-Step_pure/vextbinop sh_1 sh_2 vextbinop
+Step_pure/vextbinop sh_2 sh_1 vextbinop
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_2) from the stack.
 3. Assert: Due to validation, a value of value type V128 is on the top of the stack.
@@ -12463,28 +13840,11 @@ Step_pure/vnarrow Jnn_2 X N_2 Jnn_1 X N_1 sx
 11. Let c be $inv_lanes_(Jnn_2 X N_2, cj_1* :: cj_2*).
 12. Push the value (V128.CONST c) to the stack.
 
-Step_pure/vcvtop Lnn_2 X M Lnn_1 X M' vcvtop
+Step_pure/vcvtop sh_2 sh_1 vcvtop
 1. Assert: Due to validation, a value of value type V128 is on the top of the stack.
 2. Pop the value (V128.CONST c_1) from the stack.
-3. If $halfop(vcvtop) is defined, then:
-  a. Let ?(half) be $halfop(vcvtop).
-  b. Let ci* be $lanes_(Lnn_1 X M', c_1)[$half(half, 0, M) : M].
-  c. Let cj** be $setproduct_(`lane_(Lnn_2), $vcvtop__(Lnn_1 X M', Lnn_2 X M, vcvtop, ci)*).
-  d. If (|$inv_lanes_(Lnn_2 X M, cj*)*| > 0), then:
-    1) Let c be an element of $inv_lanes_(Lnn_2 X M, cj*)*.
-    2) Push the value (V128.CONST c) to the stack.
-4. Else if ($zeroop(vcvtop) is not defined /\ (M = M')), then:
-  a. Let ci* be $lanes_(Lnn_1 X M', c_1).
-  b. Let cj** be $setproduct_(`lane_(Lnn_2), $vcvtop__(Lnn_1 X M', Lnn_2 X M', vcvtop, ci)*).
-  c. If (|$inv_lanes_(Lnn_2 X M', cj*)*| > 0), then:
-    1) Let c be an element of $inv_lanes_(Lnn_2 X M', cj*)*.
-    2) Push the value (V128.CONST c) to the stack.
-5. If (($zeroop(vcvtop) = ?(ZERO)) /\ (Lnn_1 is numtype /\ Lnn_2 is numtype)), then:
-  a. Let ci* be $lanes_(Lnn_1 X M', c_1).
-  b. Let cj** be $setproduct_(`lane_((nt_2 : numtype <: lanetype)), $vcvtop__(Lnn_1 X M', Lnn_2 X M, vcvtop, ci)* :: [$zero(Lnn_2)]^M').
-  c. If (|$inv_lanes_(Lnn_2 X M, cj*)*| > 0), then:
-    1) Let c be an element of $inv_lanes_(Lnn_2 X M, cj*)*.
-    2) Push the value (V128.CONST c) to the stack.
+3. Let c be $vcvtop__(sh_1, sh_2, vcvtop, c_1).
+4. Push the value (V128.CONST c) to the stack.
 
 Step_pure/local.tee x
 1. Assert: Due to validation, a value is on the top of the stack.
@@ -12663,17 +14023,17 @@ Step_read/load nt loadop_? ao
   e. Let c be $ibytes__1^-1(n, $mem(z, 0).BYTES[(i + ao.OFFSET) : (n / 8)]).
   f. Push the value (nt.CONST $extend__(n, $size(nt), sx, c)) to the stack.
 
-Step_read/vload V128 vloadop? ao
+Step_read/vload V128 vloadop_? ao
 1. Let z be the current state.
 2. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 3. Pop the value (I32.CONST i) from the stack.
-4. If vloadop? is not defined, then:
+4. If vloadop_? is not defined, then:
   a. If (((i + ao.OFFSET) + ($size(V128) / 8)) > |$mem(z, 0).BYTES|), then:
     1) Trap.
   b. Let c be $vbytes__1^-1(V128, $mem(z, 0).BYTES[(i + ao.OFFSET) : ($size(V128) / 8)]).
   c. Push the value (V128.CONST c) to the stack.
 5. Else:
-  a. Let ?(vloadop_0) be vloadop?.
+  a. Let ?(vloadop_0) be vloadop_?.
   b. If vloadop_0 is some SHAPE, then:
     1) Let (SHAPE M X N _ sx) be vloadop_0.
     2) If (((i + ao.OFFSET) + ((M * N) / 8)) > |$mem(z, 0).BYTES|), then:
@@ -12734,7 +14094,7 @@ Step_read/memory.fill
   a. Push the value (I32.CONST i) to the stack.
   b. Push the value val to the stack.
   c. Execute the instruction (STORE I32 ?(8) $memarg0()).
-  d. Push the value (I32.CONST (i + 1)) to the stack.
+  d. Push the value (I32.CONST $iadd_(32, i, 1)) to the stack.
   e. Push the value val to the stack.
   f. Push the value (I32.CONST (n - 1)) to the stack.
   g. Execute the instruction MEMORY.FILL.
@@ -12759,8 +14119,8 @@ Step_read/memory.copy
     2) Push the value (I32.CONST i) to the stack.
     3) Execute the instruction (LOAD I32 ?(8 _ U) $memarg0()).
     4) Execute the instruction (STORE I32 ?(8) $memarg0()).
-    5) Push the value (I32.CONST (j + 1)) to the stack.
-    6) Push the value (I32.CONST (i + 1)) to the stack.
+    5) Push the value (I32.CONST $iadd_(32, j, 1)) to the stack.
+    6) Push the value (I32.CONST $iadd_(32, i, 1)) to the stack.
   b. Else:
     1) Push the value (I32.CONST ((j + n) - 1)) to the stack.
     2) Push the value (I32.CONST ((i + n) - 1)) to the stack.
@@ -12790,8 +14150,8 @@ Step_read/memory.init x
   b. Push the value (I32.CONST j) to the stack.
   c. Push the value (I32.CONST $data(z, x).BYTES[i]) to the stack.
   d. Execute the instruction (STORE I32 ?(8) $memarg0()).
-  e. Push the value (I32.CONST (j + 1)) to the stack.
-  f. Push the value (I32.CONST (i + 1)) to the stack.
+  e. Push the value (I32.CONST $iadd_(32, j, 1)) to the stack.
+  f. Push the value (I32.CONST $iadd_(32, i, 1)) to the stack.
   g. Push the value (I32.CONST (n - 1)) to the stack.
   h. Execute the instruction (MEMORY.INIT x).
 
@@ -12981,14 +14341,11 @@ fone N
 canon_ N
 1. Return (2 ^ ($signif(N) - 1)).
 
-lanetype Lnn X N
-1. Return Lnn.
-
-unpack lanetype
-1. If lanetype is numtype, then:
-  a. Return lanetype.
-2. Assert: Due to validation, lanetype is packtype.
-3. Return I32.
+psize packtype
+1. If (packtype = I8), then:
+  a. Return 8.
+2. Assert: Due to validation, (packtype = I16).
+3. Return 16.
 
 size valtype
 1. If (valtype = I32), then:
@@ -13003,17 +14360,23 @@ size valtype
   a. Return 128.
 6. Fail.
 
-psize packtype
-1. If (packtype = I8), then:
-  a. Return 8.
-2. Assert: Due to validation, (packtype = I16).
-3. Return 16.
-
 lsize lanetype
 1. If lanetype is numtype, then:
   a. Return $size(lanetype).
 2. Assert: Due to validation, lanetype is packtype.
 3. Return $psize(lanetype).
+
+lanetype Lnn X N
+1. Return Lnn.
+
+unpack lanetype
+1. If lanetype is numtype, then:
+  a. Return lanetype.
+2. Assert: Due to validation, lanetype is packtype.
+3. Return I32.
+
+vsize V128
+1. Return 128.
 
 isize Inn
 1. Return $size(Inn).
@@ -13365,33 +14728,33 @@ relop_ numtype relop_ iN_1 iN_2
 8. Assert: Due to validation, (relop_ = GE).
 9. Return $fge_($sizenn(numtype), iN_1, iN_2).
 
-cvtop__ numtype numtype' cvtop iN_1
+cvtop__ numtype numtype' cvtop__ iN_1
 1. If (numtype is Inn /\ numtype' is Inn), then:
-  a. If cvtop is some EXTEND, then:
-    1) Let (EXTEND sx) be cvtop.
+  a. If cvtop__ is some EXTEND, then:
+    1) Let (EXTEND sx) be cvtop__.
     2) Return [$extend__($sizenn1(numtype), $sizenn2(numtype'), sx, iN_1)].
-  b. If (cvtop = WRAP), then:
+  b. If (cvtop__ = WRAP), then:
     1) Return [$wrap__($sizenn1(numtype), $sizenn2(numtype'), iN_1)].
 2. If (numtype is Fnn /\ numtype' is Inn), then:
-  a. If cvtop is some TRUNC, then:
-    1) Let (TRUNC sx) be cvtop.
+  a. If cvtop__ is some TRUNC, then:
+    1) Let (TRUNC sx) be cvtop__.
     2) Return $list_(`num_((Inn_2 : Inn <: numtype)), $trunc__($sizenn1(numtype), $sizenn2(numtype'), sx, iN_1)).
-  b. If cvtop is some TRUNC_SAT, then:
-    1) Let (TRUNC_SAT sx) be cvtop.
+  b. If cvtop__ is some TRUNC_SAT, then:
+    1) Let (TRUNC_SAT sx) be cvtop__.
     2) Return $list_(`num_((Inn_2 : Inn <: numtype)), $trunc_sat__($sizenn1(numtype), $sizenn2(numtype'), sx, iN_1)).
-3. If (numtype is Inn /\ (numtype' is Fnn /\ cvtop is some CONVERT)), then:
-  a. Let (CONVERT sx) be cvtop.
+3. If (numtype is Inn /\ (numtype' is Fnn /\ cvtop__ is some CONVERT)), then:
+  a. Let (CONVERT sx) be cvtop__.
   b. Return [$convert__($sizenn1(numtype), $sizenn2(numtype'), sx, iN_1)].
 4. If (numtype is Fnn /\ numtype' is Fnn), then:
-  a. If (cvtop = PROMOTE), then:
+  a. If (cvtop__ = PROMOTE), then:
     1) Return $promote__($sizenn1(numtype), $sizenn2(numtype'), iN_1).
-  b. If (cvtop = DEMOTE), then:
+  b. If (cvtop__ = DEMOTE), then:
     1) Return $demote__($sizenn1(numtype), $sizenn2(numtype'), iN_1).
-5. If (numtype is Inn /\ (numtype' is Fnn /\ ((cvtop = REINTERPRET) /\ ($size(numtype) = $size(numtype'))))), then:
+5. If (numtype is Inn /\ (numtype' is Fnn /\ ((cvtop__ = REINTERPRET) /\ ($size(numtype) = $size(numtype'))))), then:
   a. Return [$reinterpret__(numtype, numtype', iN_1)].
 6. Assert: Due to validation, numtype is Fnn.
 7. Assert: Due to validation, numtype' is Inn.
-8. Assert: Due to validation, (cvtop = REINTERPRET).
+8. Assert: Due to validation, (cvtop__ = REINTERPRET).
 9. Assert: Due to validation, ($size(numtype) = $size(numtype')).
 10. Return [$reinterpret__(numtype, numtype', iN_1)].
 
@@ -13439,44 +14802,54 @@ isub_sat_ N sx i_1 i_2
 3. Return $inv_signed_(N, $sat_s_(N, ($signed_(N, i_1) - $signed_(N, i_2)))).
 
 packnum_ lanetype c
-1. If lanetype is numtype, then:
+1. If lanetype is Inn, then:
   a. Return c.
-2. Assert: Due to validation, lanetype is packtype.
-3. Return $wrap__($size($unpack(lanetype)), $psize(lanetype), c).
+2. If lanetype is Fnn, then:
+  a. Return c.
+3. Assert: Due to validation, lanetype is packtype.
+4. Return $wrap__($size($unpack(lanetype)), $psize(lanetype), c).
 
 unpacknum_ lanetype c
-1. If lanetype is numtype, then:
+1. If lanetype is Inn, then:
   a. Return c.
-2. Assert: Due to validation, lanetype is packtype.
-3. Return $extend__($psize(lanetype), $size($unpack(lanetype)), U, c).
+2. If lanetype is Fnn, then:
+  a. Return c.
+3. Assert: Due to validation, lanetype is packtype.
+4. Return $extend__($psize(lanetype), $size($unpack(lanetype)), U, c).
 
-zeroop vcvtop
-1. If vcvtop is some EXTEND, then:
-  a. Return ?().
-2. If vcvtop is some CONVERT, then:
-  a. Return ?().
-3. If vcvtop is some TRUNC_SAT, then:
-  a. Let (TRUNC_SAT sx zero?) be vcvtop.
+zeroop lanetype' X M_1 lanetype X M_2 vcvtop__
+1. If lanetype' is Jnn, then:
+  a. If (lanetype is Jnn /\ vcvtop__ is some EXTEND), then:
+    1) Return ?().
+  b. If (lanetype is Fnn /\ vcvtop__ is some CONVERT), then:
+    1) Return ?().
+2. Assert: Due to validation, lanetype' is Fnn.
+3. If (lanetype is Inn /\ vcvtop__ is some TRUNC_SAT), then:
+  a. Let (TRUNC_SAT sx zero?) be vcvtop__.
   b. Return zero?.
-4. If vcvtop is some DEMOTE, then:
-  a. Let (DEMOTE zero) be vcvtop.
+4. Assert: Due to validation, lanetype is Fnn.
+5. If vcvtop__ is some DEMOTE, then:
+  a. Let (DEMOTE zero) be vcvtop__.
   b. Return ?(zero).
-5. Assert: Due to validation, (vcvtop = PROMOTELOW).
-6. Return ?().
+6. Assert: Due to validation, (vcvtop__ = PROMOTELOW).
+7. Return ?().
 
-halfop vcvtop
-1. If vcvtop is some EXTEND, then:
-  a. Let (EXTEND half sx) be vcvtop.
-  b. Return ?(half).
-2. If vcvtop is some CONVERT, then:
-  a. Let (CONVERT half? sx) be vcvtop.
-  b. Return half?.
-3. If vcvtop is some TRUNC_SAT, then:
+halfop lanetype' X M_1 lanetype X M_2 vcvtop__
+1. If lanetype' is Jnn, then:
+  a. If (lanetype is Jnn /\ vcvtop__ is some EXTEND), then:
+    1) Let (EXTEND half sx) be vcvtop__.
+    2) Return ?(half).
+  b. If (lanetype is Fnn /\ vcvtop__ is some CONVERT), then:
+    1) Let (CONVERT half? sx) be vcvtop__.
+    2) Return half?.
+2. Assert: Due to validation, lanetype' is Fnn.
+3. If (lanetype is Inn /\ vcvtop__ is some TRUNC_SAT), then:
   a. Return ?().
-4. If vcvtop is some DEMOTE, then:
+4. Assert: Due to validation, lanetype is Fnn.
+5. If vcvtop__ is some DEMOTE, then:
   a. Return ?().
-5. Assert: Due to validation, (vcvtop = PROMOTELOW).
-6. Return ?(LOW).
+6. Assert: Due to validation, (vcvtop__ = PROMOTELOW).
+7. Return ?(LOW).
 
 half half i j
 1. If (half = LOW), then:
@@ -13819,55 +15192,73 @@ vrelop_ lanetype X M vrelop_ v128_1 v128_2
 14. Let v128 be $inv_lanes_(Inn X M, lane_3*).
 15. Return v128.
 
-vcvtop__ lanetype' X M_1 lanetype X M_2 vcvtop iN_1
+lcvtop__ lanetype' X M_1 lanetype X M_2 vcvtop__ iN_1
 1. If lanetype' is Jnn, then:
-  a. If (lanetype is Jnn /\ vcvtop is some EXTEND), then:
-    1) Let (EXTEND half sx) be vcvtop.
+  a. If (lanetype is Jnn /\ vcvtop__ is some EXTEND), then:
+    1) Let (EXTEND half sx) be vcvtop__.
     2) Let iN_2 be $extend__($lsizenn1(lanetype'), $lsizenn2(lanetype), sx, iN_1).
     3) Return [iN_2].
-  b. If (lanetype is Fnn /\ vcvtop is some CONVERT), then:
-    1) Let (CONVERT half? sx) be vcvtop.
+  b. If (lanetype is Fnn /\ vcvtop__ is some CONVERT), then:
+    1) Let (CONVERT half? sx) be vcvtop__.
     2) Let fN_2 be $convert__($lsizenn1(lanetype'), $lsizenn2(lanetype), sx, iN_1).
     3) Return [fN_2].
 2. Assert: Due to validation, lanetype' is Fnn.
-3. If (lanetype is Inn /\ vcvtop is some TRUNC_SAT), then:
-  a. Let (TRUNC_SAT sx zero?) be vcvtop.
+3. If (lanetype is Inn /\ vcvtop__ is some TRUNC_SAT), then:
+  a. Let (TRUNC_SAT sx zero?) be vcvtop__.
   b. Let iN_2? be $trunc_sat__($lsizenn1(lanetype'), $lsizenn2(lanetype), sx, iN_1).
   c. Return $list_(`lane_((Inn_2 : Inn <: lanetype)), iN_2?).
 4. Assert: Due to validation, lanetype is Fnn.
-5. If (vcvtop = (DEMOTE ZERO)), then:
+5. If (vcvtop__ = (DEMOTE ZERO)), then:
   a. Let fN_2* be $demote__($lsizenn1(lanetype'), $lsizenn2(lanetype), iN_1).
   b. Return fN_2*.
-6. Assert: Due to validation, (vcvtop = PROMOTELOW).
+6. Assert: Due to validation, (vcvtop__ = PROMOTELOW).
 7. Let fN_2* be $promote__($lsizenn1(lanetype'), $lsizenn2(lanetype), iN_1).
 8. Return fN_2*.
 
-vextunop__ Inn_1 X M_1 Inn_2 X M_2 (EXTADD_PAIRWISE sx) c_1
-1. Let ci* be $lanes_(Inn_2 X M_2, c_1).
-2. Let [cj_1, cj_2]* be $concat__1^-1(`iN($lsizenn1((Inn_1 : Inn <: lanetype))), $extend__($lsizenn2(Inn_2), $lsizenn1(Inn_1), sx, ci)*).
-3. Let c be $inv_lanes_(Inn_1 X M_1, $iadd_($lsizenn1(Inn_1), cj_1, cj_2)*).
+vcvtop__ Lnn_1 X M Lnn_2 X M' vcvtop v128_1
+1. If ((M = M') /\ ($halfop(Lnn_1 X M', Lnn_2 X M', vcvtop) is not defined /\ $zeroop(Lnn_1 X M', Lnn_2 X M', vcvtop) is not defined)), then:
+  a. Let c_1* be $lanes_(Lnn_1 X M', v128_1).
+  b. Let c** be $setproduct_(`lane_(Lnn_2), $lcvtop__(Lnn_1 X M', Lnn_2 X M', vcvtop, c_1)*).
+  c. Let v128 be an element of $inv_lanes_(Lnn_2 X M', c*)*.
+  d. Return v128.
+2. If $halfop(Lnn_1 X M, Lnn_2 X M', vcvtop) is defined, then:
+  a. Let ?(half) be $halfop(Lnn_1 X M, Lnn_2 X M', vcvtop).
+  b. Let c_1* be $lanes_(Lnn_1 X M, v128_1)[$half(half, 0, M') : M'].
+  c. Let c** be $setproduct_(`lane_(Lnn_2), $lcvtop__(Lnn_1 X M, Lnn_2 X M', vcvtop, c_1)*).
+  d. Let v128 be an element of $inv_lanes_(Lnn_2 X M', c*)*.
+  e. Return v128.
+3. Assert: Due to validation, ($zeroop(Lnn_1 X M, Lnn_2 X M', vcvtop) = ?(ZERO)).
+4. Let c_1* be $lanes_(Lnn_1 X M, v128_1).
+5. Let c** be $setproduct_(`lane_(Lnn_2), $lcvtop__(Lnn_1 X M, Lnn_2 X M', vcvtop, c_1)* :: [$packnum_(Lnn_2, $zero($unpack(Lnn_2)))]^M).
+6. Let v128 be an element of $inv_lanes_(Lnn_2 X M', c*)*.
+7. Return v128.
+
+vextunop__ Jnn_1 X M_1 Jnn_2 X M_2 (EXTADD_PAIRWISE sx) c_1
+1. Let ci* be $lanes_(Jnn_1 X M_1, c_1).
+2. Let [cj_1, cj_2]* be $concat__1^-1(`iN($lsizenn1((Jnn_2 : Jnn <: lanetype))), $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, ci)*).
+3. Let c be $inv_lanes_(Jnn_2 X M_2, $iadd_($lsizenn2(Jnn_2), cj_1, cj_2)*).
 4. Return c.
 
-vextbinop__ Inn_1 X M_1 Inn_2 X M_2 vextbinop_ c_1 c_2
-1. If vextbinop_ is some EXTMUL, then:
-  a. Let (EXTMUL half sx) be vextbinop_.
-  b. Let ci_1* be $lanes_(Inn_2 X M_2, c_1)[$half(half, 0, M_1) : M_1].
-  c. Let ci_2* be $lanes_(Inn_2 X M_2, c_2)[$half(half, 0, M_1) : M_1].
-  d. Let c be $inv_lanes_(Inn_1 X M_1, $imul_($lsizenn1(Inn_1), $extend__($lsizenn2(Inn_2), $lsizenn1(Inn_1), sx, ci_1), $extend__($lsizenn2(Inn_2), $lsizenn1(Inn_1), sx, ci_2))*).
+vextbinop__ Jnn_1 X M_1 Jnn_2 X M_2 vextbinop__ c_1 c_2
+1. If vextbinop__ is some EXTMUL, then:
+  a. Let (EXTMUL half sx) be vextbinop__.
+  b. Let ci_1* be $lanes_(Jnn_1 X M_1, c_1)[$half(half, 0, M_2) : M_2].
+  c. Let ci_2* be $lanes_(Jnn_1 X M_1, c_2)[$half(half, 0, M_2) : M_2].
+  d. Let c be $inv_lanes_(Jnn_2 X M_2, $imul_($lsizenn2(Jnn_2), $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, ci_1), $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), sx, ci_2))*).
   e. Return c.
-2. Assert: Due to validation, (vextbinop_ = DOTS).
-3. Let ci_1* be $lanes_(Inn_2 X M_2, c_1).
-4. Let ci_2* be $lanes_(Inn_2 X M_2, c_2).
-5. Let [cj_1, cj_2]* be $concat__1^-1(`iN($lsizenn1((Inn_1 : Inn <: lanetype))), $imul_($lsizenn1(Inn_1), $extend__($lsizenn2(Inn_2), $lsizenn1(Inn_1), S, ci_1), $extend__($lsizenn2(Inn_2), $lsizenn1(Inn_1), S, ci_2))*).
-6. Let c be $inv_lanes_(Inn_1 X M_1, $iadd_($lsizenn1(Inn_1), cj_1, cj_2)*).
+2. Assert: Due to validation, (vextbinop__ = DOTS).
+3. Let ci_1* be $lanes_(Jnn_1 X M_1, c_1).
+4. Let ci_2* be $lanes_(Jnn_1 X M_1, c_2).
+5. Let [cj_1, cj_2]* be $concat__1^-1(`iN($lsizenn2((Jnn_2 : Jnn <: lanetype))), $imul_($lsizenn2(Jnn_2), $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), S, ci_1), $extend__($lsizenn1(Jnn_1), $lsizenn2(Jnn_2), S, ci_2))*).
+6. Let c be $inv_lanes_(Jnn_2 X M_2, $iadd_($lsizenn2(Jnn_2), cj_1, cj_2)*).
 7. Return c.
 
 vshiftop_ Jnn X M vshiftop_ lane n
 1. If (vshiftop_ = SHL), then:
-  a. Return $ishl_($lsizenn(Jnn), lane, n).
+  a. Return $ishl_($lsizenn(Jnn), lane, (n \ $lsizenn(Jnn))).
 2. Assert: Due to validation, vshiftop_ is some SHR.
 3. Let (SHR sx) be vshiftop_.
-4. Return $ishr_($lsizenn(Jnn), sx, lane, n).
+4. Return $ishr_($lsizenn(Jnn), sx, lane, (n \ $lsizenn(Jnn))).
 
 default_ valtype
 1. If (valtype = I32), then:
@@ -14235,11 +15626,13 @@ runelem (ELEM reftype expr* elemmode) i
 rundata (DATA byte* datamode) i
 1. If (datamode = PASSIVE), then:
   a. Return [].
-2. Assert: Due to validation, datamode is some ACTIVE.
+2. If datamode is not ACTIVE, then:
+  a. Fail.
 3. Let (ACTIVE memidx_0 instr*) be datamode.
-4. Assert: Due to validation, (memidx_0 = 0).
-5. Let n be |byte*|.
-6. Return instr* :: [(I32.CONST 0), (I32.CONST n), (MEMORY.INIT i), (DATA.DROP i)].
+4. If (memidx_0 = 0), then:
+  a. Let n be |byte*|.
+  b. Return instr* :: [(I32.CONST 0), (I32.CONST n), (MEMORY.INIT i), (DATA.DROP i)].
+5. Fail.
 
 instantiate s module externaddr*
 1. Let xt_I* -> xt_E* be $Module_ok(module).
@@ -18446,7 +19839,10 @@ The value :math:`\epsilon` is :ref:`valid <valid-val>` with the local type :math
 
 
 
-The data instance :math:`\{ \mathsf{bytes}~{b^\ast} \}` is :ref:`valid <valid-val>` with the data type :math:`\mathsf{ok}`.
+The data instance :math:`\{ \mathsf{bytes}~{b^\ast} \}` is :ref:`valid <valid-val>` with the data type :math:`\mathsf{ok}` if:
+
+
+   * The length of :math:`{b^\ast}` is less than :math:`{2^{32}}`.
 
 
 
@@ -18459,6 +19855,8 @@ The element instance :math:`\{ \mathsf{type}~{\mathit{rt}},\;\allowbreak \mathsf
    * For all :math:`{\mathit{ref}}` in :math:`{{\mathit{ref}}^\ast}`:
 
       * The reference value :math:`{\mathit{ref}}` is :ref:`valid <valid-val>` with the reference type :math:`{\mathit{rt}}`.
+
+   * The length of :math:`{{\mathit{ref}}^\ast}` is less than :math:`{2^{32}}`.
 
 
 
@@ -18610,8 +20008,6 @@ The frame :math:`\{ \mathsf{locals}~{({{\mathit{val}}^?})^\ast},\;\allowbreak \m
 
       * The frame :math:`f` is :ref:`valid <valid-val>` with the context :math:`{C'}`.
 
-      * The result type :math:`{C'}{.}\mathsf{return}` is of the form :math:`{{\mathit{valtype}'}^{n}}`.
-
       * :math:`{{\mathit{instr}''}^\ast}` is valid with :math:`{{\mathit{valtype}'}^{n}}`.
 
       * Under the context :math:`\{ \mathsf{return}~\epsilon \}`, the result type :math:`{{\mathit{valtype}'}^{n}}` is :ref:`valid <valid-val>`.
@@ -18695,8 +20091,6 @@ The frame :math:`\{ \mathsf{locals}~{({{\mathit{val}}^?})^\ast},\;\allowbreak \m
 
 
    * The frame :math:`f` is :ref:`valid <valid-val>` with the context :math:`{C'}`.
-
-   * The result type :math:`{C'}{.}\mathsf{return}` is of the form :math:`{t^{n}}`.
 
    * :math:`{{\mathit{instr}}^\ast}` is valid with :math:`{t^{n}}`.
 
@@ -20440,7 +21834,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Assert: Due to validation, :math:`i < {|{{\mathrm{lanes}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}(c_1)|}`.
 
-   #. Let :math:`c_2` be :math:`{{\mathrm{lanes}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}(c_1){}[i]`.
+   #. Let :math:`c_2` be :math:`{{\mathrm{unpack}}}_{{\mathit{lanetype}}}({{\mathrm{lanes}}}_{{{\mathit{lanetype}}}{\mathsf{x}}{M}}(c_1){}[i])`.
 
    #. Push the value :math:`({\mathit{lanetype}}{.}\mathsf{const}~c_2)` to the stack.
 
@@ -21359,7 +22753,7 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}}{8}~x)`.
 
-   #. Push the value :math:`({\mathit{at}}{.}\mathsf{const}~i + 1)` to the stack.
+   #. Push the value :math:`({\mathit{at}}{.}\mathsf{const}~{{\mathrm{iadd}}}_{{|{\mathit{at}}|}}(i, 1))` to the stack.
 
    #. Push the value :math:`{\mathit{val}}` to the stack.
 
@@ -21410,9 +22804,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       #) Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}}{8}~x_1)`.
 
-      #) Push the value :math:`({\mathit{at}}_1{.}\mathsf{const}~i_1 + 1)` to the stack.
+      #) Push the value :math:`({\mathit{at}}_1{.}\mathsf{const}~{{\mathrm{iadd}}}_{{|{\mathit{at}}_1|}}(i_1, 1))` to the stack.
 
-      #) Push the value :math:`({\mathit{at}}_2{.}\mathsf{const}~i_2 + 1)` to the stack.
+      #) Push the value :math:`({\mathit{at}}_2{.}\mathsf{const}~{{\mathrm{iadd}}}_{{|{\mathit{at}}_2|}}(i_2, 1))` to the stack.
 
    #. Else:
 
@@ -21473,9 +22867,9 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
    #. Execute the instruction :math:`({\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}}{8}~x)`.
 
-   #. Push the value :math:`({\mathit{at}}{.}\mathsf{const}~i + 1)` to the stack.
+   #. Push the value :math:`({\mathit{at}}{.}\mathsf{const}~{{\mathrm{iadd}}}_{{|{\mathit{at}}|}}(i, 1))` to the stack.
 
-   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + 1)` to the stack.
+   #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{{\mathrm{iadd}}}_{32}(j, 1))` to the stack.
 
    #. Push the value :math:`(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)` to the stack.
 
@@ -23614,15 +25008,21 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 
       #) Return :math:`{\mathrm{minus}}_{\mathit{recs}}({{\mathit{tv}}^\ast}, {{\mathit{tu}}^\ast})`.
 
-#. Assert: Due to validation, :math:`{|{{\mathit{typeuse}}^\ast}|} \geq 1`.
+#. If :math:`{|{{\mathit{typeuse}}^\ast}|} < 1`, then:
+
+   a. Fail.
 
 #. Let :math:`{\mathit{tu}}_1~{{\mathit{tu}}^\ast}` be :math:`{{\mathit{typeuse}}^\ast}`.
 
-#. Assert: Due to validation, :math:`{|{{\mathit{typevar}}^\ast}|} \geq 1`.
+#. If :math:`{|{{\mathit{typevar}}^\ast}|} < 1`, then:
+
+   a. Fail.
 
 #. Let :math:`{\mathit{typevar}}_0~{{\mathit{tv}}^\ast}` be :math:`{{\mathit{typevar}}^\ast}`.
 
-#. Assert: Due to validation, :math:`{\mathit{typevar}}_0` is some :math:`{\mathit{typeidx}}`.
+#. If :math:`{\mathit{typevar}}_0` is not some :math:`{\mathit{typeidx}}`, then:
+
+   a. Fail.
 
 #. Let :math:`x` be the type variable :math:`{\mathit{typevar}}_0`.
 
@@ -25652,7 +27052,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ..................................................
 
 
-1. If :math:`{\mathit{lanetype}}` is number type, then:
+1. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{i}}{N}`, then:
+
+   a. Return :math:`c`.
+
+#. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{f}}{N}`, then:
 
    a. Return :math:`c`.
 
@@ -25678,7 +27082,11 @@ The instruction sequence :math:`(\mathsf{block}~{\mathit{blocktype}}~{{\mathit{i
 ....................................................
 
 
-1. If :math:`{\mathit{lanetype}}` is number type, then:
+1. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{i}}{N}`, then:
+
+   a. Return :math:`c`.
+
+#. If :math:`{\mathit{lanetype}}` is :math:`{\mathsf{f}}{N}`, then:
 
    a. Return :math:`c`.
 
@@ -30540,13 +31948,15 @@ Localval_ok/unset
   - Under the context { RETURN: ?() }, the value type t is valid.
 
 Datainst_ok
-- the data instance { BYTES: b* } is valid with the data type OK.
+- the data instance { BYTES: b* } is valid with the data type OK if:
+  - |b*| is less than (2 ^ 32).
 
 Eleminst_ok
 - the element instance { TYPE: rt; REFS: ref* } is valid with the element type rt if:
   - Under the context { RETURN: ?() }, rt is valid.
   - For all ref in ref*:
     - the reference value ref is valid with rt.
+  - |ref*| is less than (2 ^ 32).
 
 Exportinst_ok
 - the export instance { NAME: nm; ADDR: xa } is valid if:
@@ -30624,7 +32034,6 @@ Instr_ok2
     - valtype* is [].
     - localidx* is [].
     - the frame f is valid with the context C'.
-    - the result type C'.RETURN is ?(valtype'^n).
     - instr''* is valid with valtype'^n.
     - Under the context { RETURN: ?() }, the result type valtype'^n is valid.
   - Or:
@@ -30668,7 +32077,6 @@ Instr_ok2/label
 Instr_ok2/frame
 - (FRAME_ n { f } instr*) is valid with [] -> t^n if:
   - the frame f is valid with the context C'.
-  - the result type C'.RETURN is ?(t^n).
   - instr* is valid with t^n.
   - Under the context { RETURN: ?() }, the result type t^n is valid.
 
@@ -31501,7 +32909,7 @@ Step_pure/vextract_lane lanetype X M sx'? i
 3. If sx'? is not defined, then:
   a. Assert: Due to validation, lanetype is numtype.
   b. Assert: Due to validation, (i < |$lanes_(lanetype X M, c_1)|).
-  c. Let c_2 be $lanes_(lanetype X M, c_1)[i].
+  c. Let c_2 be $lunpacknum_(lanetype, $lanes_(lanetype X M, c_1)[i]).
   d. Push the value (lanetype.CONST c_2) to the stack.
 4. Else:
   a. Assert: Due to validation, lanetype is packtype.
@@ -31935,7 +33343,7 @@ Step_read/memory.fill x
   a. Push the value (at.CONST i) to the stack.
   b. Push the value val to the stack.
   c. Execute the instruction (STORE I32 ?(8) x $memarg0()).
-  d. Push the value (at.CONST (i + 1)) to the stack.
+  d. Push the value (at.CONST $iadd_($size(at), i, 1)) to the stack.
   e. Push the value val to the stack.
   f. Push the value (at.CONST (n - 1)) to the stack.
   g. Execute the instruction (MEMORY.FILL x).
@@ -31960,8 +33368,8 @@ Step_read/memory.copy x_1 x_2
     2) Push the value (at_2.CONST i_2) to the stack.
     3) Execute the instruction (LOAD I32 ?(8 _ U) x_2 $memarg0()).
     4) Execute the instruction (STORE I32 ?(8) x_1 $memarg0()).
-    5) Push the value (at_1.CONST (i_1 + 1)) to the stack.
-    6) Push the value (at_2.CONST (i_2 + 1)) to the stack.
+    5) Push the value (at_1.CONST $iadd_($size(at_1), i_1, 1)) to the stack.
+    6) Push the value (at_2.CONST $iadd_($size(at_2), i_2, 1)) to the stack.
   b. Else:
     1) Push the value (at_1.CONST ((i_1 + n) - 1)) to the stack.
     2) Push the value (at_2.CONST ((i_2 + n) - 1)) to the stack.
@@ -31991,8 +33399,8 @@ Step_read/memory.init x y
   b. Push the value (at.CONST i) to the stack.
   c. Push the value (I32.CONST $data(z, y).BYTES[j]) to the stack.
   d. Execute the instruction (STORE I32 ?(8) x $memarg0()).
-  e. Push the value (at.CONST (i + 1)) to the stack.
-  f. Push the value (I32.CONST (j + 1)) to the stack.
+  e. Push the value (at.CONST $iadd_($size(at), i, 1)) to the stack.
+  f. Push the value (I32.CONST $iadd_(32, j, 1)) to the stack.
   g. Push the value (I32.CONST (n - 1)) to the stack.
   h. Execute the instruction (MEMORY.INIT x y).
 
@@ -32998,11 +34406,14 @@ minus_recs typevar* typeuse*
   b. If (typevar_0 is some REC /\ (|typeuse*| >= 1)), then:
     1) Let [tu_1] :: tu* be typeuse*.
     2) Return $minus_recs(tv*, tu*).
-3. Assert: Due to validation, (|typeuse*| >= 1).
+3. If (|typeuse*| < 1), then:
+  a. Fail.
 4. Let [tu_1] :: tu* be typeuse*.
-5. Assert: Due to validation, (|typevar*| >= 1).
+5. If (|typevar*| < 1), then:
+  a. Fail.
 6. Let [typevar_0] :: tv* be typevar*.
-7. Assert: Due to validation, typevar_0 is some _IDX.
+7. If typevar_0 is not _IDX, then:
+  a. Fail.
 8. Let (_IDX x) be typevar_0.
 9. Let (tv'*, tu'*) be $minus_recs(tv*, tu*).
 10. Return ([(_IDX x)] :: tv'*, [tu_1] :: tu'*).
@@ -33951,10 +35362,12 @@ ige_ N sx i_1 i_2
 3. Return $bool(($signed_(N, i_1) >= $signed_(N, i_2))).
 
 lpacknum_ lanetype c
-1. If lanetype is numtype, then:
+1. If lanetype is Inn, then:
   a. Return c.
-2. Assert: Due to validation, lanetype is packtype.
-3. Return $wrap__($size($lunpack(lanetype)), $psize(lanetype), c).
+2. If lanetype is Fnn, then:
+  a. Return c.
+3. Assert: Due to validation, lanetype is packtype.
+4. Return $wrap__($size($lunpack(lanetype)), $psize(lanetype), c).
 
 cpacknum_ storagetype c
 1. If storagetype is consttype, then:
@@ -33963,10 +35376,12 @@ cpacknum_ storagetype c
 3. Return $wrap__($size($lunpack(storagetype)), $psize(storagetype), c).
 
 lunpacknum_ lanetype c
-1. If lanetype is numtype, then:
+1. If lanetype is Inn, then:
   a. Return c.
-2. Assert: Due to validation, lanetype is packtype.
-3. Return $extend__($psize(lanetype), $size($lunpack(lanetype)), U, c).
+2. If lanetype is Fnn, then:
+  a. Return c.
+3. Assert: Due to validation, lanetype is packtype.
+4. Return $extend__($psize(lanetype), $size($lunpack(lanetype)), U, c).
 
 cunpacknum_ storagetype c
 1. If storagetype is consttype, then:
@@ -34118,7 +35533,7 @@ zeroop lanetype' X M_1 lanetype X M_2 vcvtop__
   b. If (lanetype is Fnn /\ vcvtop__ is some CONVERT), then:
     1) Return ?().
 2. Assert: Due to validation, lanetype' is Fnn.
-3. If lanetype is Jnn, then:
+3. If lanetype is Inn, then:
   a. If vcvtop__ is some TRUNC_SAT, then:
     1) Let (TRUNC_SAT sx zero?) be vcvtop__.
     2) Return zero?.
@@ -34141,7 +35556,7 @@ halfop lanetype' X M_1 lanetype X M_2 vcvtop__
     1) Let (CONVERT half? sx) be vcvtop__.
     2) Return half?.
 2. Assert: Due to validation, lanetype' is Fnn.
-3. If lanetype is Jnn, then:
+3. If lanetype is Inn, then:
   a. If vcvtop__ is some TRUNC_SAT, then:
     1) Return ?().
   b. If vcvtop__ is some RELAXED_TRUNC, then:

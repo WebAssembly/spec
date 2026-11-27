@@ -340,7 +340,8 @@ def $lpacknum_(lanetype, num_($lunpack(lanetype))) : lane_(lanetype)
 def $cpacknum_(storagetype, lit_($cunpack(storagetype))) : lit_(storagetype)
     hint(show $pack_(%,%)) hint(macro "packnum")
 
-def $lpacknum_(numtype, c) = c
+def $lpacknum_(Inn, c) = c
+def $lpacknum_(Fnn, c) = c
 def $lpacknum_(packtype, c) = $wrap__($size($lunpack(packtype)), $psize(packtype), c)
 
 def $cpacknum_(consttype, c) = c
@@ -352,7 +353,8 @@ def $lunpacknum_(lanetype, lane_(lanetype)) : num_($lunpack(lanetype))
 def $cunpacknum_(storagetype, lit_(storagetype)) : lit_($cunpack(storagetype))
     hint(show $unpack_(%,%)) hint(macro "unpacknum")
 
-def $lunpacknum_(numtype, c) = c
+def $lunpacknum_(Inn, c) = c
+def $lunpacknum_(Fnn, c) = c
 def $lunpacknum_(packtype, c) = $extend__($psize(packtype), $size($lunpack(packtype)), U, c)
 
 def $cunpacknum_(consttype, c) = c

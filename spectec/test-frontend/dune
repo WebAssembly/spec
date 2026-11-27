@@ -7,3 +7,13 @@
   )
   (files TEST.md)
 )
+
+(test
+  (name wasm1_cvtop)
+  (modules wasm1_cvtop)
+  (libraries util frontend il)
+  (deps (source_tree ../_specification/wasm-1.0))
+  (action
+    (chdir %{workspace_root}
+      (run %{test} _specification/wasm-1.0)))
+)

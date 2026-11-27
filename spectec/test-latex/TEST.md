@@ -3741,11 +3741,12 @@ $$
 \end{array}
 $$
 
+\vspace{1ex}
+
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}}
-& {{\mathit{lane}}}_{{\mathit{numtype}}} & ::= & {{\mathit{num}}}_{{\mathit{numtype}}} \\
-& {{\mathit{lane}}}_{{\mathit{packtype}}} & ::= & {{\mathit{pack}}}_{{\mathit{packtype}}} \\
 & {{\mathit{lane}}}_{{\mathsf{i}}{N}} & ::= & {i}{N} \\
+& {{\mathit{lane}}}_{{\mathsf{f}}{N}} & ::= & {f}{N} \\
 & {{\mathit{vec}}}_{{\mathsf{v}}{N}} & ::= & {v}{N} \\
 \end{array}
 $$
@@ -3972,7 +3973,7 @@ $$
 $$
 \begin{array}[t]{@{}lrrl@{}l@{}}
 & {{\mathit{storeop}}}_{{\mathsf{i}}{N}} & ::= & {\mathit{sz}} & \quad \mbox{if}~ {\mathit{sz}} < N \\
-& {{\mathit{vloadop}}}_{{\mathit{vectype}}} & ::= & {{\mathit{sz}}}{\mathsf{x}}{M}{\mathsf{\_}}{{\mathit{sx}}} & \quad \mbox{if}~ {\mathit{sz}} \cdot M = {|{\mathit{vectype}}|} / 2 \\
+& {{\mathit{vloadop}}}_{{\mathit{vectype}}} & ::= & {{\mathit{sz}}}{\mathsf{x}}{M}{\mathsf{\_}}{{\mathit{sx}}} & \quad \mbox{if}~ {\mathit{sz}} \cdot M = {|{\mathit{vectype}}|} / 2 \land M > \mathsf{{\scriptstyle 1}} \\
 & & | & {{\mathit{sz}}}{\mathsf{\_}}{\mathsf{splat}} \\
 & & | & {{\mathit{sz}}}{\mathsf{\_}}{\mathsf{zero}} & \quad \mbox{if}~ {\mathit{sz}} \geq \mathsf{{\scriptstyle 32}} \\
 \end{array}
@@ -8363,7 +8364,8 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{{\mathrm{pack}}}_{{\mathit{numtype}}}(c) & = & c \\
+{{\mathrm{pack}}}_{{\mathsf{i}}{N}}(c) & = & c \\
+{{\mathrm{pack}}}_{{\mathsf{f}}{N}}(c) & = & c \\
 {{\mathrm{pack}}}_{{\mathit{packtype}}}(c) & = & {{\mathrm{wrap}}}_{{|{\mathrm{unpack}}({\mathit{packtype}})|}, {|{\mathit{packtype}}|}}(c) \\
 \end{array}
 $$
@@ -8379,7 +8381,8 @@ $$
 
 $$
 \begin{array}[t]{@{}lcl@{}l@{}}
-{{\mathrm{unpack}}}_{{\mathit{numtype}}}(c) & = & c \\
+{{\mathrm{unpack}}}_{{\mathsf{i}}{N}}(c) & = & c \\
+{{\mathrm{unpack}}}_{{\mathsf{f}}{N}}(c) & = & c \\
 {{\mathrm{unpack}}}_{{\mathit{packtype}}}(c) & = & {{{{\mathrm{extend}}}_{{|{\mathit{packtype}}|}, {|{\mathrm{unpack}}({\mathit{packtype}})|}}^{\mathsf{u}}}}{(c)} \\
 \end{array}
 $$
@@ -10473,7 +10476,7 @@ $$
 & \multicolumn{4}{@{}l@{}}{\quad
 \begin{array}[t]{@{}l@{}l@{}}
 \begin{array}[t]{@{}l@{}} ({\mathit{at}}{.}\mathsf{const}~i)~{\mathit{val}}~({\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}}{\mathsf{{\scriptstyle 8}}}~x) \\
-  ({\mathit{at}}{.}\mathsf{const}~i + 1)~{\mathit{val}}~({\mathit{at}}{.}\mathsf{const}~n - 1)~(\mathsf{memory{.}fill}~x) \end{array} & \quad \mbox{otherwise} \\
+  ({\mathit{at}}{.}\mathsf{const}~{{\mathrm{iadd}}}_{{|{\mathit{at}}|}}(i, 1))~{\mathit{val}}~({\mathit{at}}{.}\mathsf{const}~n - 1)~(\mathsf{memory{.}fill}~x) \end{array} & \quad \mbox{otherwise} \\
 \end{array}
 } \\
 \end{array}
@@ -10492,7 +10495,7 @@ $$
 & \multicolumn{4}{@{}l@{}}{\quad
 \begin{array}[t]{@{}l@{}l@{}}
 \begin{array}[t]{@{}l@{}} ({\mathit{at}}_1{.}\mathsf{const}~i_1)~({\mathit{at}}_2{.}\mathsf{const}~i_2)~({\mathsf{i{\scriptstyle 32}}{.}\mathsf{load}}{{\mathsf{{\scriptstyle 8}}}{\mathsf{\_}}{\mathsf{u}}}~x_2)~({\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}}{\mathsf{{\scriptstyle 8}}}~x_1) \\
-  ({\mathit{at}}_1{.}\mathsf{const}~i_1 + 1)~({\mathit{at}}_2{.}\mathsf{const}~i_2 + 1)~({\mathit{at}'}{.}\mathsf{const}~n - 1)~(\mathsf{memory{.}copy}~x_1~x_2) \end{array} & \quad \mbox{otherwise, if}~ i_1 \leq i_2 \\
+  ({\mathit{at}}_1{.}\mathsf{const}~{{\mathrm{iadd}}}_{{|{\mathit{at}}_1|}}(i_1, 1))~({\mathit{at}}_2{.}\mathsf{const}~{{\mathrm{iadd}}}_{{|{\mathit{at}}_2|}}(i_2, 1))~({\mathit{at}'}{.}\mathsf{const}~n - 1)~(\mathsf{memory{.}copy}~x_1~x_2) \end{array} & \quad \mbox{otherwise, if}~ i_1 \leq i_2 \\
 \end{array}
 } \\
 {[\textsc{\scriptsize E{-}memory.copy{-}gt}]} \quad & z ; ({\mathit{at}}_1{.}\mathsf{const}~i_1)~({\mathit{at}}_2{.}\mathsf{const}~i_2)~({\mathit{at}'}{.}\mathsf{const}~n)~(\mathsf{memory{.}copy}~x_1~x_2) & \hookrightarrow & & \\
@@ -10518,7 +10521,7 @@ $$
 & \multicolumn{4}{@{}l@{}}{\quad
 \begin{array}[t]{@{}l@{}l@{}}
 \begin{array}[t]{@{}l@{}} ({\mathit{at}}{.}\mathsf{const}~i)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~z{.}\mathsf{datas}{}[y]{.}\mathsf{bytes}{}[j])~({\mathsf{i{\scriptstyle 32}}{.}\mathsf{store}}{\mathsf{{\scriptstyle 8}}}~x) \\
-  ({\mathit{at}}{.}\mathsf{const}~i + 1)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~j + 1)~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)~(\mathsf{memory{.}init}~x~y) \end{array} & \quad \mbox{otherwise} \\
+  ({\mathit{at}}{.}\mathsf{const}~{{\mathrm{iadd}}}_{{|{\mathit{at}}|}}(i, 1))~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~{{\mathrm{iadd}}}_{32}(j, 1))~(\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~n - 1)~(\mathsf{memory{.}init}~x~y) \end{array} & \quad \mbox{otherwise} \\
 \end{array}
 } \\
 \end{array}
@@ -11068,7 +11071,7 @@ $$
 
 $$
 \begin{array}[t]{@{}lrcl@{}l@{}}
-{[\textsc{\scriptsize E{-}vextract\_lane{-}num}]} \quad & (\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)~({{\mathit{nt}}}{\mathsf{x}}{M}{.}\mathsf{extract\_lane}~i) & \hookrightarrow & ({\mathit{nt}}{.}\mathsf{const}~c_2) & \quad \mbox{if}~ c_2 = {{\mathrm{lanes}}}_{{{\mathit{nt}}}{\mathsf{x}}{M}}(c_1){}[i] \\
+{[\textsc{\scriptsize E{-}vextract\_lane{-}num}]} \quad & (\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)~({{\mathit{nt}}}{\mathsf{x}}{M}{.}\mathsf{extract\_lane}~i) & \hookrightarrow & ({\mathit{nt}}{.}\mathsf{const}~c_2) & \quad \mbox{if}~ c_2 = {{\mathrm{unpack}}}_{{\mathit{nt}}}({{\mathrm{lanes}}}_{{{\mathit{nt}}}{\mathsf{x}}{M}}(c_1){}[i]) \\
 {[\textsc{\scriptsize E{-}vextract\_lane{-}pack}]} \quad & (\mathsf{v{\scriptstyle 128}}{.}\mathsf{const}~c_1)~({{{\mathit{pt}}}{\mathsf{x}}{M}{.}\mathsf{extract\_lane}}{\mathsf{\_}}{{\mathit{sx}}}~i) & \hookrightarrow & (\mathsf{i{\scriptstyle 32}}{.}\mathsf{const}~c_2) & \quad \mbox{if}~ c_2 = {{{{\mathrm{extend}}}_{{|{\mathit{pt}}|}, 32}^{{\mathit{sx}}}}}{({{\mathrm{lanes}}}_{{{\mathit{pt}}}{\mathsf{x}}{M}}(c_1){}[i])} \\
 \end{array}
 $$
@@ -14317,9 +14320,7 @@ $$
 \frac{
 s \vdash f : {C'}
  \qquad
-{C'}{.}\mathsf{return} = {t^{n}}
- \qquad
-s ; {C'} \vdash {{\mathit{instr}}^\ast} : {t^{n}}
+s ; {C'} \oplus \{ \mathsf{return}~{t^{n}} \} \vdash {{\mathit{instr}}^\ast} : {t^{n}}
  \qquad
 \{  \} \vdash {t^{n}} : \mathsf{ok}
 }{
@@ -14530,6 +14531,7 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
+{|{b^\ast}|} < {2^{32}}
 }{
 s \vdash \{ \mathsf{bytes}~{b^\ast} \} : \mathsf{ok}
 } \, {[\textsc{\scriptsize Datainst\_ok}]}
@@ -14543,6 +14545,8 @@ $$
 \{  \} \vdash {\mathit{rt}} : \mathsf{ok}
  \qquad
 (s \vdash {\mathit{ref}} : {\mathit{rt}})^\ast
+ \qquad
+{|{{\mathit{ref}}^\ast}|} < {2^{32}}
 }{
 s \vdash \{ \mathsf{type}~{\mathit{rt}},\;\allowbreak \mathsf{refs}~{{\mathit{ref}}^\ast} \} : {\mathit{rt}}
 } \, {[\textsc{\scriptsize Eleminst\_ok}]}

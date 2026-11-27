@@ -84,10 +84,10 @@ rule Step_pure/label-vals:
 
 ;; TODO: may want a label context instead of bubbling up
 rule Step_pure/br-zero:
-  (LABEL_ n `{instr'*} val'* val^n (BR 0) instr*)  ~>  val^n instr'*
+  (LABEL_ n `{instr'*} val'* val^n (BR 0) admininstr*)  ~>  val^n instr'*
 
 rule Step_pure/br-succ:
-  (LABEL_ n `{instr'*} val* (BR $(l+1)) instr*)  ~>  val* (BR l)
+  (LABEL_ n `{instr'*} val* (BR $(l+1)) admininstr*)  ~>  val* (BR l)
 
 
 rule Step_pure/br_if-true:
@@ -133,17 +133,17 @@ rule Step_pure/frame-vals:
   (FRAME_ n `{f} val^n)  ~>  val^n
 
 rule Step_pure/return-frame:
-  (FRAME_ n `{f} val'* val^n RETURN instr*)  ~>  val^n
+  (FRAME_ n `{f} val'* val^n RETURN admininstr*)  ~>  val^n
 
 rule Step_pure/return-label:
-  (LABEL_ n `{instr'*} val* RETURN instr*)  ~>  val* RETURN
+  (LABEL_ n `{instr'*} val* RETURN admininstr*)  ~>  val* RETURN
 
 
 ;; Traps
 
 rule Step_pure/trap-vals:
-  val* TRAP instr*  ~>  TRAP
-  -- if val* =/= eps \/ instr* =/= eps
+  val* TRAP admininstr*  ~>  TRAP
+  -- if val* =/= eps \/ admininstr* =/= eps
 
 rule Step_pure/trap-label:
   (LABEL_ n `{instr'*} TRAP)  ~>  TRAP
