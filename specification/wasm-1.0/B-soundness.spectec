@@ -1,0 +1,229 @@
+;; Contexts
+
+relation Context_ok: |- context : OK  hint(macro "%context")
+
+rule Context_ok:
+  |- C : OK
+  -- if C =
+    { TYPES ft*,
+      FUNCS ft_2*,
+      GLOBALS gt*,
+      MEMS mt*,
+      TABLES tt*,
+      LOCALS lct*,
+      LABELS rt*,
+      RETURN rt'?,
+    }
+  -- (Functype_ok: |- ft : OK)*
+  -- (Globaltype_ok: |- gt : OK)*
+  -- (Memtype_ok: |- mt : OK)*
+  -- (Tabletype_ok: |- tt : OK)*
+  -- (Functype_ok: |- ft_2 : OK)*
+  
+
+;; Value types
+
+relation Val_ok: |- val : valtype
+
+rule Val_ok:
+  |- CONST t c_t : t
+
+
+;; Result types
+
+relation Result_ok: |- result : valtype*
+
+rule Result_ok/result:
+  |- _VALS v* : t*
+  -- (Val_ok: |- v : t)*
+
+rule Result_ok/trap:
+  |- TRAP : t*
+
+
+;; Administrative instructions
+
+syntax adminexpr = admininstr*
+
+relation Instr_ok2: store; context |- admininstr : functype
+  hint(prose "%3 is valid with %4")
+relation Instrs_ok2: store; context |- admininstr* : functype
+  hint(prose "%3 is valid with %4")
+relation Expr_ok2: store; context |- adminexpr : resulttype
+  hint(prose "%3 is valid with %4")
+
+rule Instr_ok2/plain:
+  s; C |- instr : t_1* -> t_2*
+  -- Instr_ok: C |- instr : t_1* -> t_2*
+
+rule Instr_ok2/label:
+  s; C |- LABEL_ n `{instr'*} admininstr* : eps -> t?
+  -- if |t'?| = n
+  -- Instrs_ok2: s; C |- instr'* : t'? -> t?
+  -- Instrs_ok2: s; {LABELS (t'?)} ++ C |- admininstr* : eps -> t?
+
+rule Instr_ok2/frame:
+  s; C |- FRAME_ n `{f} admininstr* : eps -> t?
+  -- if |t?| = n 
+  -- Frame_ok: s |- f : C'
+  -- Expr_ok2: s; {RETURN t?} ++ C' |- admininstr* : t?
+
+rule Instr_ok2/call_addr:
+  s; C |- CALL_ADDR funcaddr : t_1* -> t_2*
+  -- Externaddr_ok: s |- FUNC funcaddr: FUNC (t_1* -> t_2*)
+
+rule Instr_ok2/trap:
+  s; C |- TRAP : t_1* -> t_2*
+
+
+rule Instrs_ok2/empty:
+  s; C |- eps : eps -> eps
+
+rule Instrs_ok2/instr:
+  s; C |- admininstr : t_1* -> t_2*
+  -- Instr_ok2: s; C |- admininstr : t_1* -> t_2*
+
+rule Instrs_ok2/seq:
+  s; C |- admininstr_1* admininstr_2* : t_1* -> t_3*
+  -- Instrs_ok2: s; C |- admininstr_1* : t_1* -> t_2*
+  -- Instrs_ok2: s; C |- admininstr_2* : t_2* -> t_3*
+
+rule Instrs_ok2/frame:
+  s; C |- admininstr* : t* t_1* -> t* t_2*
+  -- Instrs_ok2: s; C |- admininstr* : t_1* -> t_2*
+
+rule Expr_ok2:
+  s; C |- admininstr* : t?
+  -- Instrs_ok2: s; C |- admininstr* : eps -> t?
+
+
+;; Instances
+
+relation Globalinst_ok: store |- globalinst : globaltype
+relation Meminst_ok: store |- meminst : memtype
+relation Tableinst_ok: store |- tableinst : tabletype
+relation Funcinst_ok: store |- funcinst : functype
+relation Exportinst_ok: store |- exportinst : OK
+
+rule Globalinst_ok:
+  s |- {TYPE mut t, VALUE val} : mut t
+  -- Globaltype_ok: |- mut t : OK
+  -- Val_ok: |- val : t
+
+rule Meminst_ok:
+  s |- {TYPE `[n..m?], BYTES b*} : `[n..m?]
+  -- Memtype_ok: |- `[n..m?] : OK
+  -- if |b*| = $(n * $($(64 * $Ki)))
+
+rule Tableinst_ok:
+  s |- {TYPE `[n..m?] , REFS (fa?)*} : `[n..m?]
+  -- Tabletype_ok: |- `[n..m?] : OK
+  -- ((Externaddr_ok: s |- FUNC fa : FUNC ft)?)*
+  -- if |(fa?)*| = n
+
+rule Funcinst_ok:
+  s |- {TYPE ft, MODULE moduleinst, CODE func} : ft
+  -- Functype_ok: |- ft : OK
+  -- Moduleinst_ok: s |- moduleinst : C
+  -- Func_ok: C |- func : ft
+
+rule Exportinst_ok:
+  s |- {NAME nm, ADDR xa} : OK
+  -- Externaddr_ok: s |- xa : xt
+
+
+;; Modules
+
+relation Moduleinst_ok: store |- moduleinst : context
+
+rule Moduleinst_ok:
+  s |- { TYPES functype*,
+         GLOBALS globaladdr*,
+         MEMS memaddr*,
+         TABLES tableaddr*,
+         FUNCS funcaddr*,
+         EXPORTS exportinst* } :
+           { TYPES functype*,
+             GLOBALS globaltype*,
+             MEMS memtype*,
+             TABLES tabletype*,
+             FUNCS functype_F*,
+           }
+  -- (Functype_ok: |- functype : OK)*
+  -- (Externaddr_ok: s |- GLOBAL globaladdr : GLOBAL globaltype)*
+  -- (Externaddr_ok: s |- FUNC funcaddr : FUNC functype_F)*
+  -- (Externaddr_ok: s |- MEM memaddr : MEM memtype)*
+  -- (Externaddr_ok: s |- TABLE tableaddr : TABLE tabletype)*
+  -- (Exportinst_ok: s |- exportinst : OK)*
+  ----
+  -- if $disjoint_(name, (exportinst.NAME)*)
+  -- (if exportinst.ADDR <- (GLOBAL globaladdr)* (MEM memaddr)* (TABLE tableaddr)* (FUNC funcaddr)*)*
+
+
+;; Stores
+
+relation Store_ok: |- store : OK
+
+rule Store_ok:
+  |- s : OK
+  -- (Globalinst_ok: s |- globalinst : globaltype)*
+  -- (Meminst_ok: s |- meminst : memtype)*
+  -- (Tableinst_ok: s |- tableinst : tabletype)*
+  -- (Funcinst_ok: s |- funcinst : functype)*
+  ----
+  -- if s = {GLOBALS globalinst*, MEMS meminst*, TABLES tableinst*, FUNCS funcinst*}
+
+
+;; Store extension
+
+relation Extend_globalinst: globalinst `<= globalinst
+relation Extend_meminst: meminst `<= meminst
+relation Extend_tableinst: tableinst `<= tableinst
+relation Extend_funcinst: funcinst `<= funcinst
+relation Extend_store: store `<= store
+
+rule Extend_globalinst:
+  {TYPE mut t, VALUE val} `<= {TYPE mut t, VALUE val'}
+  -- if mut = MUT \/ val = val'
+
+rule Extend_meminst:
+  {TYPE `[n..m?], BYTES b*} `<= {TYPE `[n'..m?], BYTES b'*}
+  -- if n <= n'
+  -- if |b*| <= |b'*|
+
+rule Extend_tableinst:
+  {TYPE `[n..m?], REFS ref*} `<= {TYPE `[n'..m?], REFS ref'*}
+  -- if n <= n'
+  -- if |ref*| <= |ref'*|
+
+rule Extend_funcinst:
+  {TYPE ft, MODULE mm, CODE fc} `<= {TYPE ft, MODULE mm, CODE fc}
+
+rule Extend_store:
+  s `<= s'
+  -- (Extend_globalinst: s.GLOBALS[a] `<= s'.GLOBALS[a] )^(a<|s.GLOBALS|)
+  -- (Extend_meminst: s.MEMS[a] `<= s'.MEMS[a] )^(a<|s.MEMS|)
+  -- (Extend_tableinst: s.TABLES[a] `<= s'.TABLES[a] )^(a<|s.TABLES|)
+  -- (Extend_funcinst: s.FUNCS[a] `<= s'.FUNCS[a] )^(a<|s.FUNCS|)
+
+
+;; Configurations
+
+relation Frame_ok: store |- frame : context
+relation State_ok: |- state : context
+relation Config_ok: |- config : resulttype
+
+rule Frame_ok:
+  s |- {LOCALS val*, MODULE moduleinst} : C ++ {LOCALS t*}
+  -- Moduleinst_ok: s |- moduleinst : C
+  -- (Val_ok: |- val : t)*
+
+rule State_ok:
+  |- s; f : C
+  -- Store_ok: |- s : OK
+  -- Frame_ok: s |- f : C
+
+rule Config_ok:
+  |- s; f; admininstr* : t?
+  -- State_ok: |- s; f : C
+  -- Expr_ok2: s; C |- admininstr* : t?
