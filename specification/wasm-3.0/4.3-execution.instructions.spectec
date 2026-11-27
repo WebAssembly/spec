@@ -582,7 +582,7 @@ rule Step_read/memory.fill-zero:
 rule Step_read/memory.fill-succ:
   z; (CONST at i) val (CONST at n) (MEMORY.FILL x)  ~>
     (CONST at i) val (STORE I32 `8 x $memarg0)
-    (CONST at $(i+1)) val (CONST at $(n-1)) (MEMORY.FILL x)
+    (CONST at $iadd_($size(at), i, 1)) val (CONST at $(n-1)) (MEMORY.FILL x)
   -- otherwise
 
 
@@ -599,7 +599,7 @@ rule Step_read/memory.copy-zero:
 rule Step_read/memory.copy-le:
   z; (CONST at_1 i_1) (CONST at_2 i_2) (CONST at' n) (MEMORY.COPY x_1 x_2)  ~>
     (CONST at_1 i_1) (CONST at_2 i_2) (LOAD I32 (`8 _ U) x_2 $memarg0) (STORE I32 `8 x_1 $memarg0)
-    (CONST at_1 $(i_1 + 1)) (CONST at_2 $(i_2 + 1)) (CONST at' $(n - 1)) (MEMORY.COPY x_1 x_2)
+    (CONST at_1 $iadd_($size(at_1), i_1, 1)) (CONST at_2 $iadd_($size(at_2), i_2, 1)) (CONST at' $(n - 1)) (MEMORY.COPY x_1 x_2)
   -- otherwise
   -- if i_1 <= i_2
 
@@ -623,7 +623,7 @@ rule Step_read/memory.init-zero:
 rule Step_read/memory.init-succ:
   z; (CONST at i) (CONST I32 j) (CONST I32 n) (MEMORY.INIT x y)  ~>
     (CONST at i) (CONST I32 $data(z,y).BYTES[j]) (STORE I32 `8 x $memarg0)
-    (CONST at $(i+1)) (CONST I32 $(j+1)) (CONST I32 $(n-1)) (MEMORY.INIT x y)
+    (CONST at $iadd_($size(at), i, 1)) (CONST I32 $iadd_(32, j, 1)) (CONST I32 $(n-1)) (MEMORY.INIT x y)
   -- otherwise
 
 
@@ -1071,7 +1071,7 @@ rule Step_pure/vsplat:
 
 rule Step_pure/vextract_lane-num:
   (VCONST V128 c_1) (VEXTRACT_LANE (nt X M) i)  ~>  (CONST nt c_2)
-  -- if c_2 = $lanes_(nt X M, c_1)[i]
+  -- if c_2 = $lunpacknum_(nt, $lanes_(nt X M, c_1)[i])
 
 rule Step_pure/vextract_lane-pack:
   (VCONST V128 c_1) (VEXTRACT_LANE (pt X M) sx i)  ~>  (CONST I32 c_2)

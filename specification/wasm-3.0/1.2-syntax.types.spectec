@@ -398,7 +398,7 @@ def $subst_comptype((FUNC t_1* -> t_2*), tv*, tu*) = FUNC $subst_valtype(t_1, tv
 def $subst_subtype((SUB final? tu'* ct), tv*, tu*) =
   SUB final? $subst_typeuse(tu', tv*, tu*)* $subst_comptype(ct, tv*, tu*)
 
-def $minus_recs(typevar*, typeuse*) : (typevar*, typeuse*) hint(partial)
+def $minus_recs(typevar*, typeuse*) : (typevar*, typeuse*) hint(partial) hint(recfunc)
 def $minus_recs(eps, eps) = (eps, eps)
 def $minus_recs((REC n) tv*, tu_1 tu*) = $minus_recs(tv*, tu*)
 def $minus_recs((_IDX x) tv*, tu_1 tu*) = ((_IDX x) tv'*, tu_1 tu'*)

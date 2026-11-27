@@ -88,7 +88,7 @@ rule Instr_ok2/label:
 rule Instr_ok2/frame:
   s; C |- FRAME_ n `{f} admininstr* : eps -> t^n
   -- Frame_ok: s |- f : C'
-  -- Expr_ok2: s; C' |- admininstr* : t^n
+  -- Expr_ok2: s; {RETURN t^n} ++ C' |- admininstr* : t^n
 
 rule Instr_ok2/call_addr:
   s; C |- CALL_ADDR funcaddr : t_1* -> t_2*
@@ -105,13 +105,17 @@ rule Instr_ok2/trap:
 rule Instrs_ok2/empty:
   s; C |- eps : eps -> eps
 
+rule Instrs_ok2/instr:
+  s; C |- admininstr : t_1* -> t_2*
+  -- Instr_ok2: s; C |- admininstr : t_1* -> t_2*
+
 rule Instrs_ok2/seq:
-  s; C |- admininstr_1 admininstr_2* : t_1* -> t_3*
-  -- Instr_ok2: s; C |- admininstr_1 : t_1* -> t_2*
+  s; C |- admininstr_1* admininstr_2* : t_1* -> t_3*
+  -- Instrs_ok2: s; C |- admininstr_1* : t_1* -> t_2*
   -- Instrs_ok2: s; C |- admininstr_2* : t_2* -> t_3*
 
 rule Instrs_ok2/sub:
-  s; C |- instr* : t'_1* -> t'_2*
+  s; C |- admininstr* : t'_1* -> t'_2*
   -- Instrs_ok2: s; C |- admininstr* : t_1* -> t_2*
   -- Resulttype_sub: |- t'_1* <: t_1*
   -- Resulttype_sub: |- t_2* <: t'_2*
@@ -141,13 +145,13 @@ rule Globalinst_ok:
   -- Val_ok: s |- val : t
 
 rule Meminst_ok:
-  s |- {TYPE `[n..m] PAGE, BYTES b*} : `[n..m] PAGE
-  -- Memtype_ok: |- `[n..m] PAGE : OK
+  s |- {TYPE `[n..m?] PAGE, BYTES b*} : `[n..m?] PAGE
+  -- Memtype_ok: |- `[n..m?] PAGE : OK
   -- if |b*| = $(n * $($(64 * $Ki)))
 
 rule Tableinst_ok:
-  s |- {TYPE `[n..m] rt , REFS ref*} : `[n..m] rt
-  -- Tabletype_ok: |- `[n..m] rt : OK
+  s |- {TYPE `[n..m?] rt , REFS ref*} : `[n..m?] rt
+  -- Tabletype_ok: |- `[n..m?] rt : OK
   -- (Ref_ok : s |- ref : rt)*
   -- if |ref*| = n
 
@@ -159,10 +163,12 @@ rule Funcinst_ok:
 
 rule Datainst_ok:
   s |- {BYTES b*} : OK
+  -- if |b*| < $(2^32)
 
 rule Eleminst_ok:
   s |- {TYPE rt, REFS ref*} : rt
   -- (Ref_ok: s |- ref : rt)*
+  -- if |ref*| < $(2^32)
 
 rule Exportinst_ok:
   s |- {NAME nm, ADDR xa} : OK
@@ -236,12 +242,12 @@ rule Extend_globalinst:
   -- if mut = MUT \/ val = val'
 
 rule Extend_meminst:
-  {TYPE `[n..m] PAGE, BYTES b*} `<= {TYPE `[n'..m] PAGE, BYTES b'*}
+  {TYPE `[n..m?] PAGE, BYTES b*} `<= {TYPE `[n'..m?] PAGE, BYTES b'*}
   -- if n <= n'
   -- if |b*| <= |b'*|
 
 rule Extend_tableinst:
-  {TYPE `[n..m] rt, REFS ref*} `<= {TYPE `[n'..m] rt, REFS ref'*}
+  {TYPE `[n..m?] rt, REFS ref*} `<= {TYPE `[n'..m?] rt, REFS ref'*}
   -- if n <= n'
   -- if |ref*| <= |ref'*|
 
@@ -273,7 +279,7 @@ relation State_ok: |- state : context
 relation Config_ok: |- config : resulttype
 
 rule Frame_ok:
-  s |- {LOCALS val*, MODULE moduleinst} : C ++ {LOCALS t*}
+  s |- {LOCALS val*, MODULE moduleinst} : {LOCALS t*} ++ C
   -- Moduleinst_ok: s |- moduleinst : C
   -- (Val_ok: s |- val : t)*
 
@@ -283,6 +289,6 @@ rule State_ok:
   -- Frame_ok: s |- f : C
 
 rule Config_ok:
-  |- s; f; instr* : t*
+  |- s; f; admininstr* : t*
   -- State_ok: |- s; f : C
   -- Expr_ok2: s; C |- admininstr* : t*
