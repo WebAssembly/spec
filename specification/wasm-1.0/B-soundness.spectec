@@ -66,7 +66,7 @@ rule Instr_ok2/frame:
   s; C |- FRAME_ n `{f} admininstr* : eps -> t?
   -- if |t?| = n 
   -- Frame_ok: s |- f : C'
-  -- Expr_ok2: s; C' |- admininstr* : t?
+  -- Expr_ok2: s; {RETURN t?} ++ C' |- admininstr* : t?
 
 rule Instr_ok2/call_addr:
   s; C |- CALL_ADDR funcaddr : t_1* -> t_2*
@@ -79,9 +79,13 @@ rule Instr_ok2/trap:
 rule Instrs_ok2/empty:
   s; C |- eps : eps -> eps
 
+rule Instrs_ok2/instr:
+  s; C |- admininstr : t_1* -> t_2*
+  -- Instr_ok2: s; C |- admininstr : t_1* -> t_2*
+
 rule Instrs_ok2/seq:
-  s; C |- admininstr_1 admininstr_2* : t_1* -> t_3*
-  -- Instr_ok2: s; C |- admininstr_1 : t_1* -> t_2*
+  s; C |- admininstr_1* admininstr_2* : t_1* -> t_3*
+  -- Instrs_ok2: s; C |- admininstr_1* : t_1* -> t_2*
   -- Instrs_ok2: s; C |- admininstr_2* : t_2* -> t_3*
 
 rule Instrs_ok2/frame:
@@ -107,13 +111,13 @@ rule Globalinst_ok:
   -- Val_ok: |- val : t
 
 rule Meminst_ok:
-  s |- {TYPE `[n..m], BYTES b*} : `[n..m]
-  -- Memtype_ok: |- `[n..m] : OK
+  s |- {TYPE `[n..m?], BYTES b*} : `[n..m?]
+  -- Memtype_ok: |- `[n..m?] : OK
   -- if |b*| = $(n * $($(64 * $Ki)))
 
 rule Tableinst_ok:
-  s |- {TYPE `[n..m] , REFS (fa?)*} : `[n..m]
-  -- Tabletype_ok: |- `[n..m] : OK
+  s |- {TYPE `[n..m?] , REFS (fa?)*} : `[n..m?]
+  -- Tabletype_ok: |- `[n..m?] : OK
   -- ((Externaddr_ok: s |- FUNC fa : FUNC ft)?)*
   -- if |(fa?)*| = n
 
@@ -183,12 +187,12 @@ rule Extend_globalinst:
   -- if mut = MUT \/ val = val'
 
 rule Extend_meminst:
-  {TYPE `[n..m], BYTES b*} `<= {TYPE `[n'..m], BYTES b'*}
+  {TYPE `[n..m?], BYTES b*} `<= {TYPE `[n'..m?], BYTES b'*}
   -- if n <= n'
   -- if |b*| <= |b'*|
 
 rule Extend_tableinst:
-  {TYPE `[n..m], REFS ref*} `<= {TYPE `[n'..m], REFS ref'*}
+  {TYPE `[n..m?], REFS ref*} `<= {TYPE `[n'..m?], REFS ref'*}
   -- if n <= n'
   -- if |ref*| <= |ref'*|
 
@@ -220,6 +224,6 @@ rule State_ok:
   -- Frame_ok: s |- f : C
 
 rule Config_ok:
-  |- s; f; instr* : t?
+  |- s; f; admininstr* : t?
   -- State_ok: |- s; f : C
   -- Expr_ok2: s; C |- admininstr* : t?
