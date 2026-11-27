@@ -90,10 +90,10 @@ rule Step_pure/label-vals:
 
 ;; TODO: may want a label context instead of bubbling up
 rule Step_pure/br-zero:
-  (LABEL_ n `{instr'*} val'* val^n (BR 0) instr*)  ~>  val^n instr'*
+  (LABEL_ n `{instr'*} val'* val^n (BR 0) admininstr*)  ~>  val^n instr'*
 
 rule Step_pure/br-succ:
-  (LABEL_ n `{instr'*} val* (BR $(l+1)) instr*)  ~>  val* (BR l)
+  (LABEL_ n `{instr'*} val* (BR $(l+1)) admininstr*)  ~>  val* (BR l)
 
 
 rule Step_pure/br_if-true:
@@ -139,17 +139,17 @@ rule Step_pure/frame-vals:
   (FRAME_ n `{f} val^n)  ~>  val^n
 
 rule Step_pure/return-frame:
-  (FRAME_ n `{f} val'* val^n RETURN instr*)  ~>  val^n
+  (FRAME_ n `{f} val'* val^n RETURN admininstr*)  ~>  val^n
 
 rule Step_pure/return-label:
-  (LABEL_ n `{instr'*} val* RETURN instr*)  ~>  val* RETURN
+  (LABEL_ n `{instr'*} val* RETURN admininstr*)  ~>  val* RETURN
 
 
 ;; Traps
 
 rule Step_pure/trap-vals:
-  val* TRAP instr*  ~>  TRAP
-  -- if val* =/= eps \/ instr* =/= eps
+  val* TRAP admininstr*  ~>  TRAP
+  -- if val* =/= eps \/ admininstr* =/= eps
 
 rule Step_pure/trap-label:
   (LABEL_ n `{instr'*} TRAP)  ~>  TRAP
@@ -323,7 +323,7 @@ rule Step_pure/vsplat:
 
 rule Step_pure/vextract_lane-num:
   (VCONST V128 c_1) (VEXTRACT_LANE (nt X N) i) ~> (CONST nt c_2)
-  -- if c_2 = $lanes_(nt X N, c_1)[i]
+  -- if c_2 = $unpacknum_(nt, $lanes_(nt X N, c_1)[i])
 
 ;; TODO : fshape
 rule Step_pure/vextract_lane-pack:
@@ -337,12 +337,12 @@ rule Step_pure/vreplace_lane:
 
 
 rule Step_pure/vextunop:
-  (VCONST V128 c_1) (VEXTUNOP sh_1 sh_2 vextunop) ~> (VCONST V128 c)
+  (VCONST V128 c_1) (VEXTUNOP sh_2 sh_1 vextunop) ~> (VCONST V128 c)
   -- if $vextunop__(sh_1, sh_2, vextunop, c_1) = c
 
 
 rule Step_pure/vextbinop:
-  (VCONST V128 c_1) (VCONST V128 c_2) (VEXTBINOP sh_1 sh_2 vextbinop) ~> (VCONST V128 c)
+  (VCONST V128 c_1) (VCONST V128 c_2) (VEXTBINOP sh_2 sh_1 vextbinop) ~> (VCONST V128 c)
   -- if $vextbinop__(sh_1, sh_2, vextbinop, c_1, c_2) = c
 
 
@@ -355,26 +355,9 @@ rule Step_pure/vnarrow:
   -- if c = $inv_lanes_(Jnn_2 X N_2, cj_1* cj_2*)
 
 
-rule Step_pure/vcvtop-full:
-  (VCONST V128 c_1) (VCVTOP (Lnn_2 X M) (Lnn_1 X M) vcvtop) ~> (VCONST V128 c)
-  -- if $halfop(vcvtop) = eps /\ $zeroop(vcvtop) = eps
-  -- if ci* = $lanes_(Lnn_1 X M, c_1)
-  -- if cj** = $setproduct_(lane_(Lnn_2), $vcvtop__(Lnn_1 X M, Lnn_2 X M, vcvtop, ci)*)
-  -- if c <- $inv_lanes_(Lnn_2 X M, cj*)*
-
-rule Step_pure/vcvtop-half:
-  (VCONST V128 c_1) (VCVTOP (Lnn_2 X M_2) (Lnn_1 X M_1) vcvtop) ~> (VCONST V128 c)
-  -- if $halfop(vcvtop) = half
-  -- if ci* = $lanes_(Lnn_1 X M_1, c_1)[$half(half, 0, M_2) : M_2]
-  -- if cj** = $setproduct_(lane_(Lnn_2), $vcvtop__(Lnn_1 X M_1, Lnn_2 X M_2, vcvtop, ci)*)
-  -- if c <- $inv_lanes_(Lnn_2 X M_2, cj*)*
-
-rule Step_pure/vcvtop-zero:
-  (VCONST V128 c_1) (VCVTOP (nt_2 X M_2) (nt_1 X M_1) vcvtop) ~> (VCONST V128 c)
-  -- if $zeroop(vcvtop) = ZERO
-  -- if ci* = $lanes_(nt_1 X M_1, c_1)
-  -- if cj** = $setproduct_(lane_(nt_2), ($vcvtop__(nt_1 X M_1, nt_2 X M_2, vcvtop, ci)* ++ [$zero(nt_2)]^M_1))
-  -- if c <- $inv_lanes_(nt_2 X M_2, cj*)*
+rule Step_pure/vcvtop:
+  (VCONST V128 c_1) (VCVTOP sh_2 sh_1 vcvtop) ~> (VCONST V128 c)
+  -- if c = $vcvtop__(sh_1, sh_2, vcvtop, c_1)
 
 
 ;; Local instructions
@@ -622,7 +605,7 @@ rule Step_read/memory.fill-zero:
 rule Step_read/memory.fill-succ:
   z; (CONST I32 i) val (CONST I32 n) (MEMORY.FILL)  ~>
     (CONST I32 i) val (STORE I32 8 $memarg0)
-    (CONST I32 $(i+1)) val (CONST I32 $(n-1)) (MEMORY.FILL)
+    (CONST I32 $iadd_(32, i, 1)) val (CONST I32 $(n-1)) (MEMORY.FILL)
   -- otherwise
 
 
@@ -638,7 +621,7 @@ rule Step_read/memory.copy-zero:
 rule Step_read/memory.copy-le:
   z; (CONST I32 j) (CONST I32 i) (CONST I32 n) (MEMORY.COPY)  ~>
     (CONST I32 j) (CONST I32 i) (LOAD I32 (8 _ U) $memarg0) (STORE I32 8 $memarg0)
-    (CONST I32 $(j+1)) (CONST I32 $(i+1)) (CONST I32 $(n-1)) (MEMORY.COPY)
+    (CONST I32 $iadd_(32, j, 1)) (CONST I32 $iadd_(32, i, 1)) (CONST I32 $(n-1)) (MEMORY.COPY)
   -- otherwise
   -- if j <= i
 
@@ -661,7 +644,7 @@ rule Step_read/memory.init-zero:
 rule Step_read/memory.init-succ:
   z; (CONST I32 j) (CONST I32 i) (CONST I32 n) (MEMORY.INIT x)  ~>
     (CONST I32 j) (CONST I32 $data(z,x).BYTES[i]) (STORE I32 8 $memarg0)
-    (CONST I32 $(j+1)) (CONST I32 $(i+1)) (CONST I32 $(n-1)) (MEMORY.INIT x)
+    (CONST I32 $iadd_(32, j, 1)) (CONST I32 $iadd_(32, i, 1)) (CONST I32 $(n-1)) (MEMORY.INIT x)
   -- otherwise
 
 
