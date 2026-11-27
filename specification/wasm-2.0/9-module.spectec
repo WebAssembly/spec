@@ -187,7 +187,7 @@ def $runelem(ELEM reftype expr* (ACTIVE x instr*), i) =
   instr* (CONST I32 0) (CONST I32 n) (TABLE.INIT x i) (ELEM.DROP i)
   -- if n = |expr*|
 
-def $rundata(data, idx) : instr*
+def $rundata(data, idx) : instr* hint(partial)
 def $rundata(DATA byte* (PASSIVE), i) = eps
 def $rundata(DATA byte* (ACTIVE 0 instr*), i) =
   instr* (CONST I32 0) (CONST I32 n) (MEMORY.INIT i) (DATA.DROP i)

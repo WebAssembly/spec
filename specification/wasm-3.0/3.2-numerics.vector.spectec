@@ -19,16 +19,16 @@ def $inv_lanes_ hint(builtin)
 def $zeroop(shape_1, shape_2, vcvtop__(shape_1, shape_2)) : zero?
 def $zeroop(Jnn_1 X M_1, Jnn_2 X M_2, EXTEND half sx) = eps
 def $zeroop(Jnn_1 X M_1, Fnn_2 X M_2, CONVERT half? sx) = eps
-def $zeroop(Fnn_1 X M_1, Jnn_2 X M_2, TRUNC_SAT sx zero?) = zero?
-def $zeroop(Fnn_1 X M_1, Jnn_2 X M_2, RELAXED_TRUNC sx zero?) = zero?
+def $zeroop(Fnn_1 X M_1, Inn_2 X M_2, TRUNC_SAT sx zero?) = zero?
+def $zeroop(Fnn_1 X M_1, Inn_2 X M_2, RELAXED_TRUNC sx zero?) = zero?
 def $zeroop(Fnn_1 X M_1, Fnn_2 X M_2, DEMOTE zero) = zero
 def $zeroop(Fnn_1 X M_1, Fnn_2 X M_2, PROMOTE LOW) = eps
 
 def $halfop(shape_1, shape_2, vcvtop__(shape_1, shape_2)) : half?
 def $halfop(Jnn_1 X M_1, Jnn_2 X M_2, EXTEND half sx) = half
 def $halfop(Jnn_1 X M_1, Fnn_2 X M_2, CONVERT half? sx) = half?
-def $halfop(Fnn_1 X M_1, Jnn_2 X M_2, TRUNC_SAT sx zero?) = eps
-def $halfop(Fnn_1 X M_1, Jnn_2 X M_2, RELAXED_TRUNC sx zero?) = eps
+def $halfop(Fnn_1 X M_1, Inn_2 X M_2, TRUNC_SAT sx zero?) = eps
+def $halfop(Fnn_1 X M_1, Inn_2 X M_2, RELAXED_TRUNC sx zero?) = eps
 def $halfop(Fnn_1 X M_1, Fnn_2 X M_2, DEMOTE zero) = eps
 def $halfop(Fnn_1 X M_1, Fnn_2 X M_2, PROMOTE LOW) = LOW
 
@@ -51,11 +51,11 @@ def $irelaxed_swizzle_lane_(N, c*, i) = $relaxed2($R_swizzle, iN(N), 0, c*[i \ |
 
 ;; Lanewise operations
 
-def $ivunop_(shape, def $f_(N, iN(N)) : iN(N), vec_(V128)) : vec_(V128)*
+def $ivunop_(shape, def $f_(N, iN(N)) : iN(N), vec_(V128)) : vec_(V128)* hint(partial)
 def $fvunop_(shape, def $f_(N, fN(N)) : fN(N)*, vec_(V128)) : vec_(V128)*
 
-def $ivbinop_(shape, def $f_(N, iN(N), iN(N)) : iN(N), vec_(V128), vec_(V128)) : vec_(V128)*
-def $ivbinopsx_(shape, def $f_(N, sx, iN(N), iN(N)) : iN(N), sx, vec_(V128), vec_(V128)) : vec_(V128)*
+def $ivbinop_(shape, def $f_(N, iN(N), iN(N)) : iN(N), vec_(V128), vec_(V128)) : vec_(V128)* hint(partial)
+def $ivbinopsx_(shape, def $f_(N, sx, iN(N), iN(N)) : iN(N), sx, vec_(V128), vec_(V128)) : vec_(V128)* hint(partial)
 def $ivbinopsxnd_(shape, def $f_(N, sx, iN(N), iN(N)) : iN(N)*, sx, vec_(V128), vec_(V128)) : vec_(V128)*
 def $fvbinop_(shape, def $f_(N, fN(N), fN(N)) : fN(N)*, vec_(V128), vec_(V128)) : vec_(V128)*
 
@@ -66,12 +66,12 @@ def $ivrelop_(shape, def $f_(N, iN(N), iN(N)) : u32, vec_(V128), vec_(V128)) : v
 def $ivrelopsx_(shape, def $f_(N, sx, iN(N), iN(N)) : u32, sx, vec_(V128), vec_(V128)) : vec_(V128)
 def $fvrelop_(shape, def $f_(N, fN(N), fN(N)) : u32, vec_(V128), vec_(V128)) : vec_(V128)
 
-def $ivshiftop_(shape, def $f_(N, iN(N), iN(N)) : iN(N), vec_(V128), u32) : vec_(V128)
-def $ivshiftopsx_(shape, def $f_(N, sx, iN(N), iN(N)) : iN(N), sx, vec_(V128), u32) : vec_(V128)
+def $ivshiftop_(shape, def $f_(N, iN(N), iN(N)) : iN(N), vec_(V128), u32) : vec_(V128) hint(partial)
+def $ivshiftopsx_(shape, def $f_(N, sx, iN(N), iN(N)) : iN(N), sx, vec_(V128), u32) : vec_(V128) hint(partial)
 
 def $ivbitmaskop_(shape, vec_(V128)) : u32
-def $ivswizzlop_(shape, def $f_(N, iN(N)*, iN(N)) : iN(N), vec_(V128), vec_(V128)) : vec_(V128)
-def $ivshufflop_(shape, laneidx*, vec_(V128), vec_(V128)) : vec_(V128)
+def $ivswizzlop_(shape, def $f_(N, iN(N)*, iN(N)) : iN(N), vec_(V128), vec_(V128)) : vec_(V128) hint(partial)
+def $ivshufflop_(shape, laneidx*, vec_(V128), vec_(V128)) : vec_(V128) hint(partial)
 
 
 def $ivunop_(Jnn X M, def $f_, v_1) = $inv_lanes_(Jnn X M, c*)
@@ -189,7 +189,7 @@ def $vbitmaskop_(ishape, vec_(V128)) : u32
     hint(show VBITMASK#$_(%1,%2))
 def $vswizzlop_(bshape, vswizzlop_(bshape), vec_(V128), vec_(V128)) : vec_(V128)
     hint(show %2#$_(%1,%3,%4))
-def $vshufflop_(bshape, laneidx*, vec_(V128), vec_(V128)) : vec_(V128)
+def $vshufflop_(bshape, laneidx*, vec_(V128), vec_(V128)) : vec_(V128) hint(partial)
     hint(show VSHUFFLE#$_(%1,%2,%3,%4))
 
 def $vnarrowop__(shape_1, shape_2, sx, vec_(V128), vec_(V128)) : vec_(V128)
