@@ -391,7 +391,6 @@ warning: syntax `label` was never spliced
 warning: syntax `labelidx` was never spliced
 warning: syntax `lane_` was never spliced
 warning: syntax `lane_` was never spliced
-warning: syntax `lane_` was never spliced
 warning: syntax `laneidx` was never spliced
 warning: syntax `lanetype` was never spliced
 warning: syntax `list` was never spliced

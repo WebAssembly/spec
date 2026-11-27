@@ -51,8 +51,6 @@ spectec 0.5 generator
 == Translating to AL...
 == Initializing interpreter...
 == Interpreting...
-- Failed to parse ../test-interpreter/spec-test-1/conversions.wast
-
 - Failed to parse ../test-interpreter/spec-test-1/data.wast
 
 - Failed to parse ../test-interpreter/spec-test-1/elem.wast
@@ -73,7 +71,7 @@ spectec 0.5 generator
 - print_i32: 1
 - print_i32: 2
 - print: ()
-8 parsing fail
+7 parsing fail
 == Complete.
 Running test for Wasm 2.0...
 spectec 0.5 generator
