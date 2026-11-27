@@ -10,10 +10,16 @@ syntax num_(Fnn) = fN($sizenn(Fnn))
 
 syntax pack_(Pnn) = iN($psizenn(Pnn))
 
+;; TODO: HACK! lane_ should reuse num_ and pack_.
+;; Original definition:
+;; syntax lane_(lanetype)
+;; syntax lane_(numtype) = num_(numtype)
+;; syntax lane_(packtype) = pack_(packtype)
+;; syntax lane_(Jnn) = iN($lsizenn(Jnn))  ;; HACK
+
 syntax lane_(lanetype)
-syntax lane_(numtype) = num_(numtype)
-syntax lane_(packtype) = pack_(packtype)
-syntax lane_(Jnn) = iN($lsizenn(Jnn))  ;; HACK
+syntax lane_(Jnn) = iN($lsizenn(Jnn))
+syntax lane_(Fnn) = fN($sizenn(Fnn))
 
 syntax vec_(Vnn) = vN($vsizenn(Vnn))
 
@@ -171,13 +177,13 @@ syntax vcvtop__(Jnn_1 X M_1, Fnn_2 X M_2) =
   | CONVERT half? sx hint(show CONVERT#_#%) hint(show CONVERT#_#%#_#%)
     -- if $sizenn2(Fnn_2) = $lsizenn1(Jnn_1) = `32 /\ half? = eps
        \/ $sizenn2(Fnn_2) = $(2 * $lsizenn1(Jnn_1)) /\ half? = LOW
-syntax vcvtop__(Fnn_1 X M_1, Jnn_2 X M_2) =
+syntax vcvtop__(Fnn_1 X M_1, Inn_2 X M_2) =
   | TRUNC_SAT sx zero? hint(show TRUNC_SAT#_#%) hint(show TRUNC_SAT#_#%#_#%)
-    -- if $sizenn1(Fnn_1) = $lsizenn2(Jnn_2) = `32 /\ zero? = eps
-       \/ $sizenn1(Fnn_1) = $(2 * $lsizenn2(Jnn_2)) /\ zero? = ZERO
+    -- if $sizenn1(Fnn_1) = $lsizenn2(Inn_2) = `32 /\ zero? = eps
+       \/ $sizenn1(Fnn_1) = $(2 * $lsizenn2(Inn_2)) /\ zero? = ZERO
   | RELAXED_TRUNC sx zero? hint(show RELAXED_TRUNC#_#%) hint(show RELAXED_TRUNC#_#%#_#%)
-    -- if $sizenn1(Fnn_1) = $lsizenn2(Jnn_2) = `32 /\ zero? = eps
-       \/ $sizenn1(Fnn_1) = $(2 * $lsizenn2(Jnn_2)) /\ zero? = ZERO
+    -- if $sizenn1(Fnn_1) = $lsizenn2(Inn_2) = `32 /\ zero? = eps
+       \/ $sizenn1(Fnn_1) = $(2 * $lsizenn2(Inn_2)) /\ zero? = ZERO
 syntax vcvtop__(Fnn_1 X M_1, Fnn_2 X M_2) =
   | DEMOTE zero hint(show DEMOTE#_#ZERO)
     -- if $sizenn1(Fnn_1) = $(2 * $sizenn2(Fnn_2))
@@ -198,7 +204,7 @@ syntax storeop_(numtype)
 syntax storeop_(Inn) = sz                        -- if sz < $sizenn(Inn)
 
 syntax vloadop_(vectype) hint(macro "%" "L%") =
-  | SHAPE sz X M _ sx  hint(show %1#X#%3#_#%5) hint(macro "%shape") -- if $(sz * M = $vsize(vectype)/2)
+  | SHAPE sz X M _ sx  hint(show %1#X#%3#_#%5) hint(macro "%shape") -- if $(sz * M = $vsize(vectype)/2) /\ M > `1
   | SPLAT sz           hint(show %#_#SPLAT)
   | ZERO sz            hint(show %#_#ZERO) -- if sz >= `32
 
